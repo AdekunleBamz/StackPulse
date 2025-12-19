@@ -1,0 +1,30 @@
+{
+  "name": "stackpulse",
+  "version": "1.0.0",
+  "description": "Real-time Stacks blockchain monitoring and alert system",
+  "scripts": {
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "clarinet:check": "clarinet check",
+    "clarinet:test": "clarinet test"
+  },
+  "devDependencies": {
+    "@hirosystems/clarinet-sdk": "^2.3.2",
+    "@stacks/transactions": "^6.13.0",
+    "chokidar-cli": "^3.0.0",
+    "typescript": "^5.3.3",
+    "vite": "^5.0.10",
+    "vitest": "^1.1.0",
+    "vitest-environment-clarinet": "^2.0.0"
+  },
+  "keywords": [
+    "stacks",
+    "blockchain",
+    "monitoring",
+    "alerts",
+    "chainhooks",
+    "clarity"
+  ],
+  "author": "StackPulse Team",
+  "license": "MIT"
+}

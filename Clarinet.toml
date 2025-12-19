@@ -1,0 +1,30 @@
+[project]
+name = "StackPulse"
+description = "Real-time Stacks blockchain monitoring and alert system"
+authors = ["StackPulse Team"]
+telemetry = false
+cache_dir = "./.cache"
+requirements = []
+
+[contracts.stackpulse-registry]
+path = "contracts/stackpulse-registry.clar"
+clarity_version = 2
+epoch = 2.5
+
+[contracts.alert-manager]
+path = "contracts/alert-manager.clar"
+clarity_version = 2
+epoch = 2.5
+
+[contracts.fee-vault]
+path = "contracts/fee-vault.clar"
+clarity_version = 2
+epoch = 2.5
+
+[contracts.reputation-badges]
+path = "contracts/reputation-badges.clar"
+clarity_version = 2
+epoch = 2.5
+
+[repl.analysis]
+passes = ["check_checker"]

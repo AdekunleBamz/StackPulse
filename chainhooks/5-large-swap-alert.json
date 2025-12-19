@@ -1,0 +1,29 @@
+{
+  "name": "large-swap-alert",
+  "chain": "stacks",
+  "network": "mainnet",
+  "version": 1,
+  "filters": {
+    "contract_call": {
+      "contract_identifier": "SP1Y5YSTAHZ88XYK1VPDH24GY0HPX5J4JECTMY4A1.univ2-router",
+      "method": "swap-exact-tokens-for-tokens"
+    },
+    "ft_event": {
+      "actions": ["transfer"],
+      "amount_greater_than": 1000000000
+    }
+  },
+  "options": {
+    "start_at_block_height": 175000,
+    "decode_clarity_values": true,
+    "include_proof": false
+  },
+  "action": {
+    "http": {
+      "url": "https://your-server.com/api/chainhooks/large-swap",
+      "method": "POST",
+      "authorization_header": "Bearer ${CHAINHOOK_AUTH_TOKEN}"
+    }
+  },
+  "description": "Monitors large DEX swaps above threshold for market movement alerts"
+}

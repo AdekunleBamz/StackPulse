@@ -1,0 +1,18 @@
+[network]
+name = "simnet"
+
+[accounts.deployer]
+mnemonic = "twice particular affair smile emerge adjust wrestling urban major sudden eyebrow similar"
+balance = 10_000_000_000_000_000
+
+[accounts.wallet_1]
+mnemonic = "sell invite acquire kitten bamboo drastic jelly vivid peace spawn twice guilt"
+balance = 10_000_000_000_000_000
+
+[accounts.wallet_2]
+mnemonic = "hold excess usual excess ring elephant install account glad dry fragile donkey"
+balance = 10_000_000_000_000_000
+
+[accounts.wallet_3]
+mnemonic = "cycle puppy glare enroll cost improve round unlock wink list aware surface"
+balance = 10_000_000_000_000_000

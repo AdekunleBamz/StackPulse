@@ -1,0 +1,25 @@
+{
+  "name": "fee-collected",
+  "chain": "stacks",
+  "network": "mainnet",
+  "version": 1,
+  "filters": {
+    "print_event": {
+      "contract_identifier": "YOUR_DEPLOYER.fee-vault",
+      "contains": "fee-collected"
+    }
+  },
+  "options": {
+    "start_at_block_height": 175000,
+    "decode_clarity_values": true,
+    "include_proof": false
+  },
+  "action": {
+    "http": {
+      "url": "https://your-server.com/api/chainhooks/fee-collected",
+      "method": "POST",
+      "authorization_header": "Bearer ${CHAINHOOK_AUTH_TOKEN}"
+    }
+  },
+  "description": "Tracks fee collection events for revenue analytics and staker reward calculations"
+}

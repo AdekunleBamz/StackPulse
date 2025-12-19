@@ -1,0 +1,25 @@
+{
+  "name": "whale-transfer-alert",
+  "chain": "stacks",
+  "network": "mainnet",
+  "version": 1,
+  "filters": {
+    "stx_event": {
+      "actions": ["transfer"],
+      "amount_greater_than": 100000000000
+    }
+  },
+  "options": {
+    "start_at_block_height": 175000,
+    "decode_clarity_values": true,
+    "include_proof": false
+  },
+  "action": {
+    "http": {
+      "url": "https://your-server.com/api/chainhooks/whale-transfer",
+      "method": "POST",
+      "authorization_header": "Bearer ${CHAINHOOK_AUTH_TOKEN}"
+    }
+  },
+  "description": "Monitors large STX transfers (>100K STX) for whale activity tracking and alerts"
+}

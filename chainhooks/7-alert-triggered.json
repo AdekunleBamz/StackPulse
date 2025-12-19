@@ -1,0 +1,25 @@
+{
+  "name": "alert-triggered",
+  "chain": "stacks",
+  "network": "mainnet",
+  "version": 1,
+  "filters": {
+    "print_event": {
+      "contract_identifier": "YOUR_DEPLOYER.alert-manager",
+      "contains": "alert-triggered"
+    }
+  },
+  "options": {
+    "start_at_block_height": 175000,
+    "decode_clarity_values": true,
+    "include_proof": false
+  },
+  "action": {
+    "http": {
+      "url": "https://your-server.com/api/chainhooks/alert-triggered",
+      "method": "POST",
+      "authorization_header": "Bearer ${CHAINHOOK_AUTH_TOKEN}"
+    }
+  },
+  "description": "Monitors when user alerts are triggered to send notifications and update stats"
+}

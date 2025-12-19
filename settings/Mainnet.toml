@@ -1,0 +1,7 @@
+[network]
+name = "mainnet"
+deployment_fee_rate = 10
+
+[accounts.deployer]
+mnemonic = "tourist chief old shadow clap injury join spoil birth copper valid skate"
+balance = 1000000000000
