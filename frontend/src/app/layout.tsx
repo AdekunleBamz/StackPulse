@@ -16,6 +16,11 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "StackPulse - Real-time Stacks Blockchain Alerts",
   description: "Monitor whale transfers, token launches, NFT mints, and more with Hiro Chainhooks",
+  icons: {
+    icon: "/favicon.svg",
+    shortcut: "/favicon.svg",
+    apple: "/favicon.svg",
+  },
 };
 
 export default function RootLayout({

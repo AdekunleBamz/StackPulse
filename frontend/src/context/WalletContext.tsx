@@ -41,7 +41,7 @@ export function WalletProvider({ children }: { children: ReactNode }) {
       await authenticate({
         appDetails: {
           name: 'StackPulse',
-          icon: '/logo.png',
+          icon: '/logo.svg',
         },
         onFinish: () => {
           const userData = userSession.loadUserData();
