@@ -40,10 +40,10 @@ export default function RegisterPage() {
       const { openContractCall } = await import('@stacks/connect');
       const { stringAsciiCV, uintCV } = await import('@stacks/transactions');
 
-      // V2 contract: register-and-subscribe in one step (tier 0 = free)
+      // V3 contract: register-and-subscribe in one step (tier 0 = free)
       await openContractCall({
         contractAddress: DEPLOYER_ADDRESS,
-        contractName: 'stackpulse-v2',
+        contractName: 'stackpulse-v3',
         functionName: 'register-and-subscribe',
         functionArgs: [
           stringAsciiCV(username),

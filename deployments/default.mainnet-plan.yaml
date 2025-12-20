@@ -11,57 +11,85 @@ plan:
         - contract-publish:
             contract-name: alert-manager
             expected-sender: SP3FKNEZ86RG5RT7SZ5FBRGH85FZNG94ZH1MCGG6N
-            cost: 1207252
+            cost: 1172970
             path: contracts/alert-manager.clar
             anchor-block-only: true
             clarity-version: 2
         - contract-publish:
             contract-name: alert-manager-v2
             expected-sender: SP3FKNEZ86RG5RT7SZ5FBRGH85FZNG94ZH1MCGG6N
-            cost: 1207998
+            cost: 1173695
             path: contracts/alert-manager-v2.clar
+            anchor-block-only: true
+            clarity-version: 2
+        - contract-publish:
+            contract-name: alert-manager-v3
+            expected-sender: SP3FKNEZ86RG5RT7SZ5FBRGH85FZNG94ZH1MCGG6N
+            cost: 1174419
+            path: contracts/alert-manager-v3.clar
             anchor-block-only: true
             clarity-version: 2
         - contract-publish:
             contract-name: fee-vault
             expected-sender: SP3FKNEZ86RG5RT7SZ5FBRGH85FZNG94ZH1MCGG6N
-            cost: 1207202
+            cost: 1172922
             path: contracts/fee-vault.clar
             anchor-block-only: true
             clarity-version: 2
         - contract-publish:
             contract-name: fee-vault-v2
             expected-sender: SP3FKNEZ86RG5RT7SZ5FBRGH85FZNG94ZH1MCGG6N
-            cost: 1208047
+            cost: 1173743
             path: contracts/fee-vault-v2.clar
+            anchor-block-only: true
+            clarity-version: 2
+        - contract-publish:
+            contract-name: fee-vault-v3
+            expected-sender: SP3FKNEZ86RG5RT7SZ5FBRGH85FZNG94ZH1MCGG6N
+            cost: 1174419
+            path: contracts/fee-vault-v3.clar
             anchor-block-only: true
             clarity-version: 2
         - contract-publish:
             contract-name: reputation-badges
             expected-sender: SP3FKNEZ86RG5RT7SZ5FBRGH85FZNG94ZH1MCGG6N
-            cost: 1207202
+            cost: 1172922
             path: contracts/reputation-badges.clar
             anchor-block-only: true
             clarity-version: 2
         - contract-publish:
             contract-name: reputation-badges-v2
             expected-sender: SP3FKNEZ86RG5RT7SZ5FBRGH85FZNG94ZH1MCGG6N
-            cost: 1208296
+            cost: 1173985
             path: contracts/reputation-badges-v2.clar
+            anchor-block-only: true
+            clarity-version: 2
+        - contract-publish:
+            contract-name: reputation-badges-v3
+            expected-sender: SP3FKNEZ86RG5RT7SZ5FBRGH85FZNG94ZH1MCGG6N
+            cost: 1173985
+            path: contracts/reputation-badges-v3.clar
             anchor-block-only: true
             clarity-version: 2
         - contract-publish:
             contract-name: stackpulse-registry
             expected-sender: SP3FKNEZ86RG5RT7SZ5FBRGH85FZNG94ZH1MCGG6N
-            cost: 1207252
+            cost: 1172970
             path: contracts/stackpulse-registry.clar
             anchor-block-only: true
             clarity-version: 2
         - contract-publish:
             contract-name: stackpulse-v2
             expected-sender: SP3FKNEZ86RG5RT7SZ5FBRGH85FZNG94ZH1MCGG6N
-            cost: 1208743
+            cost: 1174419
             path: contracts/stackpulse-v2.clar
+            anchor-block-only: true
+            clarity-version: 2
+        - contract-publish:
+            contract-name: stackpulse-v3
+            expected-sender: SP3FKNEZ86RG5RT7SZ5FBRGH85FZNG94ZH1MCGG6N
+            cost: 1175047
+            path: contracts/stackpulse-v3.clar
             anchor-block-only: true
             clarity-version: 2
       epoch: "2.5"

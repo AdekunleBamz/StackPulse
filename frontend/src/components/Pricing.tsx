@@ -91,9 +91,9 @@ export default function Pricing() {
         console.log('Checking registration for:', address);
         console.log('Using contract:', DEPLOYER_ADDRESS);
         
-        // Use V2 contract
+        // Use V3 contract
         const response = await fetch(
-          `https://api.mainnet.hiro.so/v2/contracts/call-read/${DEPLOYER_ADDRESS}/stackpulse-v2/get-user`,
+          `https://api.mainnet.hiro.so/v2/contracts/call-read/${DEPLOYER_ADDRESS}/stackpulse-v3/get-user`,
           {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -200,11 +200,11 @@ export default function Pricing() {
         }
       ] : [];
 
-      // V2 contract: register-and-subscribe combines both steps
+      // V3 contract: register-and-subscribe combines both steps
       // alerts bitmask: 31 = all alerts enabled (1+2+4+8+16)
       await openContractCall({
         contractAddress: DEPLOYER_ADDRESS,
-        contractName: 'stackpulse-v2',
+        contractName: 'stackpulse-v3',
         functionName: 'register-and-subscribe',
         functionArgs: [
           stringAsciiCV(username),
@@ -309,7 +309,7 @@ export default function Pricing() {
 
       await openContractCall({
         contractAddress: DEPLOYER_ADDRESS,
-        contractName: 'stackpulse-v2',
+        contractName: 'stackpulse-v3',
         functionName: 'upgrade-subscription',
         functionArgs: [uintCV(tier)],
         postConditions,
