@@ -25,7 +25,7 @@ const WalletContext = createContext<WalletContextType | null>(null);
 export function WalletProvider({ children }: { children: ReactNode }) {
   const [isConnected, setIsConnected] = useState(false);
   const [address, setAddress] = useState<string | null>(null);
-  const [network, setNetwork] = useState<'mainnet' | 'testnet'>('mainnet');
+  const [network, setNetwork] = useState<'mainnet' | 'testnet'>('testnet');
   const [userSession, setUserSession] = useState<UserSession | null>(null);
   const [isClient, setIsClient] = useState(false);
 

@@ -67,12 +67,16 @@ export default function Pricing() {
       const { openContractCall } = await import('@stacks/connect');
       const { uintCV } = await import('@stacks/transactions');
       
+      // Use the address that matches the user's connected wallet network
+      const contractAddress = network === 'mainnet' 
+        ? (process.env.NEXT_PUBLIC_MAINNET_DEPLOYER_ADDRESS || DEPLOYER_ADDRESS)
+        : DEPLOYER_ADDRESS;
+
       await openContractCall({
-        contractAddress: DEPLOYER_ADDRESS,
+        contractAddress,
         contractName: 'stackpulse-registry',
         functionName: 'subscribe',
         functionArgs: [uintCV(tier)],
-        network: getStacksNetwork(network),
         onFinish: (data: { txId: string }) => {
           console.log('Transaction submitted:', data.txId);
           alert(`Transaction submitted! TX: ${data.txId}`);
