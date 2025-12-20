@@ -51,6 +51,8 @@ const DEPLOYER_ADDRESS = process.env.NEXT_PUBLIC_DEPLOYER_ADDRESS || '';
 export default function Pricing() {
   const { isConnected, connect, address } = useWallet();
   const [isRegistered, setIsRegistered] = useState(false);
+  const [currentTier, setCurrentTier] = useState(0);
+  const [subscriptionEnds, setSubscriptionEnds] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [username, setUsername] = useState('');
@@ -60,13 +62,16 @@ export default function Pricing() {
   const [editingChannel, setEditingChannel] = useState<'email' | 'discord' | 'telegram' | null>(null);
   const [tempValue, setTempValue] = useState('');
 
+  const tierNames = ['Free', 'Basic', 'Pro', 'Premium'];
+  const tierColors = ['gray', 'blue', 'purple', 'yellow'];
+
   // Check registration status when wallet connects
   useEffect(() => {
     const checkRegistration = async () => {
       if (!address || !DEPLOYER_ADDRESS) return;
       
       try {
-        const { principalCV, cvToHex } = await import('@stacks/transactions');
+        const { principalCV, cvToHex, hexToCV, cvToValue } = await import('@stacks/transactions');
         
         // Use V2 contract
         const response = await fetch(
@@ -86,6 +91,21 @@ export default function Pricing() {
         const registered = data.result && data.result !== '0x09';
         setIsRegistered(registered);
         
+        // Parse user data to get tier
+        if (registered && data.result) {
+          try {
+            const cv = hexToCV(data.result);
+            const userData = cvToValue(cv);
+            if (userData && userData.value) {
+              setCurrentTier(Number(userData.value.tier?.value || 0));
+              setSubscriptionEnds(Number(userData.value['subscription-ends']?.value || 0));
+              setUsername(userData.value.username?.value || '');
+            }
+          } catch (parseErr) {
+            console.error('Error parsing user data:', parseErr);
+          }
+        }
+        
         // If registered, fetch saved notification preferences from server
         if (registered) {
           try {
@@ -97,7 +117,7 @@ export default function Pricing() {
                 setEmail(prefsData.user.email || '');
                 setDiscord(prefsData.user.discord || '');
                 setTelegram(prefsData.user.telegram || '');
-                setUsername(prefsData.user.username || '');
+                if (prefsData.user.username) setUsername(prefsData.user.username);
               }
             }
           } catch (err) {
@@ -263,7 +283,7 @@ export default function Pricing() {
   };
 
   return (
-    <section className="py-20 px-4 bg-gray-900/50">
+    <section className="py-20 px-4 bg-gray-900/50" id="pricing">
       <div className="max-w-6xl mx-auto">
         {/* Registration Card - Always at top */}
         <div className="mb-16">
@@ -274,10 +294,28 @@ export default function Pricing() {
               </h2>
               <p className="text-gray-400">
                 {isRegistered 
-                  ? 'Connect your notification channels and choose a plan below'
+                  ? 'Manage your notification channels and subscription below'
                   : 'Connect your wallet and register to start receiving blockchain alerts'
                 }
               </p>
+              
+              {/* Current Plan Badge - Show when registered */}
+              {isRegistered && (
+                <div className="mt-4 inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gray-800 border border-gray-700">
+                  <span className="text-gray-400">Current Plan:</span>
+                  <span className={`font-bold ${
+                    currentTier === 0 ? 'text-gray-300' :
+                    currentTier === 1 ? 'text-blue-400' :
+                    currentTier === 2 ? 'text-purple-400' :
+                    'text-yellow-400'
+                  }`}>
+                    {tierNames[currentTier] || 'Free'}
+                  </span>
+                  {currentTier === 0 && (
+                    <span className="text-xs text-gray-500 ml-2">• Upgrade for more features!</span>
+                  )}
+                </div>
+              )}
             </div>
 
             {!isRegistered ? (
@@ -465,6 +503,44 @@ export default function Pricing() {
                     </div>
                   </div>
                 )}
+
+                {/* What's Next Section - Show after registration */}
+                <div className="mt-8 pt-8 border-t border-gray-700">
+                  <h3 className="text-xl font-bold text-white mb-4 text-center">🚀 What&apos;s Next?</h3>
+                  <div className="grid md:grid-cols-3 gap-4">
+                    <div className="bg-gray-800/30 rounded-xl p-4 border border-gray-700">
+                      <div className="text-2xl mb-2">1️⃣</div>
+                      <h4 className="text-white font-semibold mb-1">Set Up Notifications</h4>
+                      <p className="text-gray-400 text-sm">Add your email, Discord, or Telegram above to receive alerts</p>
+                    </div>
+                    <div className="bg-gray-800/30 rounded-xl p-4 border border-gray-700">
+                      <div className="text-2xl mb-2">2️⃣</div>
+                      <h4 className="text-white font-semibold mb-1">Create Alerts</h4>
+                      <p className="text-gray-400 text-sm">Go to <a href="/dashboard" className="text-purple-400 hover:underline">Dashboard</a> to create custom blockchain alerts</p>
+                    </div>
+                    <div className="bg-gray-800/30 rounded-xl p-4 border border-gray-700">
+                      <div className="text-2xl mb-2">3️⃣</div>
+                      <h4 className="text-white font-semibold mb-1">
+                        {currentTier === 0 ? 'Upgrade Plan' : 'Monitor Activity'}
+                      </h4>
+                      <p className="text-gray-400 text-sm">
+                        {currentTier === 0 
+                          ? 'Unlock more alerts and features with Pro or Premium'
+                          : 'View your alerts history and blockchain activity'
+                        }
+                      </p>
+                    </div>
+                  </div>
+                  
+                  <div className="mt-6 text-center">
+                    <a 
+                      href="/dashboard"
+                      className="inline-flex items-center gap-2 px-6 py-3 bg-purple-600 hover:bg-purple-500 text-white rounded-xl font-semibold transition-all cursor-pointer"
+                    >
+                      Go to Dashboard →
+                    </a>
+                  </div>
+                </div>
               </div>
             )}
           </div>
@@ -473,10 +549,15 @@ export default function Pricing() {
         {/* Pricing Header */}
         <div className="text-center mb-12">
           <h2 className="text-4xl font-bold text-white mb-4">
-            Choose Your Plan
+            {isRegistered && currentTier > 0 ? 'Your Subscription' : 'Choose Your Plan'}
           </h2>
           <p className="text-gray-400 text-lg">
-            {isRegistered ? 'Select a subscription tier' : 'Register above, then choose your plan'}
+            {isRegistered 
+              ? currentTier === 0 
+                ? 'Upgrade to unlock more features'
+                : `You're on the ${tierNames[currentTier]} plan`
+              : 'Register above, then choose your plan'
+            }
           </p>
         </div>
 
@@ -488,10 +569,20 @@ export default function Pricing() {
               className={`relative bg-gray-800 rounded-2xl p-8 border transition-all ${
                 tier.popular
                   ? 'border-purple-500 shadow-lg shadow-purple-500/20'
-                  : 'border-gray-700'
+                  : tier.tier === currentTier && isRegistered
+                    ? 'border-green-500 shadow-lg shadow-green-500/20'
+                    : 'border-gray-700'
               } ${!isRegistered ? 'opacity-60' : ''}`}
             >
-              {tier.popular && (
+              {/* Current Plan Badge */}
+              {isRegistered && tier.tier === currentTier && (
+                <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-green-600 text-white text-sm font-semibold px-4 py-1 rounded-full">
+                  ✓ Current Plan
+                </div>
+              )}
+              
+              {/* Popular Badge - only show if not current plan */}
+              {tier.popular && !(isRegistered && tier.tier === currentTier) && (
                 <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-gradient-to-r from-purple-600 to-blue-600 text-white text-sm font-semibold px-4 py-1 rounded-full">
                   Most Popular
                 </div>
@@ -514,14 +605,23 @@ export default function Pricing() {
 
               <button
                 onClick={() => handleSubscribe(tier.tier)}
-                disabled={!isRegistered}
+                disabled={!isRegistered || (isRegistered && tier.tier === currentTier)}
                 className={`w-full py-3 rounded-xl font-semibold transition-all duration-200 cursor-pointer transform hover:scale-105 hover:-translate-y-1 active:scale-95 disabled:cursor-not-allowed disabled:transform-none ${
-                  tier.popular
-                    ? 'bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-500 hover:to-blue-500 text-white shadow-lg hover:shadow-xl hover:shadow-purple-500/30 disabled:from-gray-600 disabled:to-gray-600'
-                    : 'bg-gray-700 hover:bg-gray-600 text-white border border-gray-600 hover:border-purple-500 hover:shadow-lg hover:shadow-purple-500/20 disabled:hover:bg-gray-700 disabled:hover:border-gray-600'
+                  isRegistered && tier.tier === currentTier
+                    ? 'bg-green-600/20 text-green-400 border border-green-500'
+                    : tier.popular
+                      ? 'bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-500 hover:to-blue-500 text-white shadow-lg hover:shadow-xl hover:shadow-purple-500/30 disabled:from-gray-600 disabled:to-gray-600'
+                      : 'bg-gray-700 hover:bg-gray-600 text-white border border-gray-600 hover:border-purple-500 hover:shadow-lg hover:shadow-purple-500/20 disabled:hover:bg-gray-700 disabled:hover:border-gray-600'
                 }`}
               >
-                Subscribe
+                {isRegistered && tier.tier === currentTier 
+                  ? '✓ Active' 
+                  : isRegistered && tier.tier > currentTier 
+                    ? 'Upgrade' 
+                    : tier.tier === 0 
+                      ? 'Get Started Free'
+                      : 'Subscribe'
+                }
               </button>
             </div>
           ))}
