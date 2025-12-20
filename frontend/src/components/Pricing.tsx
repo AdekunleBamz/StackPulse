@@ -68,10 +68,28 @@ export default function Pricing() {
   // Check registration status when wallet connects
   useEffect(() => {
     const checkRegistration = async () => {
-      if (!address || !DEPLOYER_ADDRESS) return;
+      if (!address) return;
+      
+      // First check localStorage for cached registration (faster UX)
+      const cachedReg = localStorage.getItem(`stackpulse_registered_${address}`);
+      if (cachedReg) {
+        const cached = JSON.parse(cachedReg);
+        setIsRegistered(true);
+        setCurrentTier(cached.tier || 0);
+        setUsername(cached.username || '');
+      }
+      
+      // Always check contract for latest data
+      if (!DEPLOYER_ADDRESS) {
+        console.warn('DEPLOYER_ADDRESS not set!');
+        return;
+      }
       
       try {
         const { principalCV, cvToHex, hexToCV, cvToValue } = await import('@stacks/transactions');
+        
+        console.log('Checking registration for:', address);
+        console.log('Using contract:', DEPLOYER_ADDRESS);
         
         // Use V2 contract
         const response = await fetch(
@@ -87,6 +105,8 @@ export default function Pricing() {
         );
         
         const data = await response.json();
+        console.log('Contract response:', data);
+        
         // If result is not 0x09 (none), user is registered
         const registered = data.result && data.result !== '0x09';
         setIsRegistered(registered);
@@ -96,14 +116,27 @@ export default function Pricing() {
           try {
             const cv = hexToCV(data.result);
             const userData = cvToValue(cv);
+            console.log('Parsed user data:', userData);
             if (userData && userData.value) {
-              setCurrentTier(Number(userData.value.tier?.value || 0));
+              const tier = Number(userData.value.tier?.value || 0);
+              const uname = userData.value.username?.value || '';
+              setCurrentTier(tier);
               setSubscriptionEnds(Number(userData.value['subscription-ends']?.value || 0));
-              setUsername(userData.value.username?.value || '');
+              setUsername(uname);
+              
+              // Cache registration status for faster future loads
+              localStorage.setItem(`stackpulse_registered_${address}`, JSON.stringify({
+                tier,
+                username: uname,
+                timestamp: Date.now()
+              }));
             }
           } catch (parseErr) {
             console.error('Error parsing user data:', parseErr);
           }
+        } else {
+          // Not registered - clear any cached data
+          localStorage.removeItem(`stackpulse_registered_${address}`);
         }
         
         // If registered, fetch saved notification preferences from server
@@ -186,7 +219,18 @@ export default function Pricing() {
           
           const tierName = selectedTier === 0 ? 'Free' : selectedTier === 2 ? 'Pro' : 'Premium';
           alert(`🎉 Success! You're now registered on ${tierName} tier!\n\nTX: ${data.txId}\n\nYour alerts are now active. Check your dashboard!`);
+          
+          // Cache registration locally for instant UX on next visit
+          if (address) {
+            localStorage.setItem(`stackpulse_registered_${address}`, JSON.stringify({
+              tier: selectedTier,
+              username: username,
+              timestamp: Date.now()
+            }));
+          }
+          
           setIsRegistered(true);
+          setCurrentTier(selectedTier);
         },
         onCancel: () => {
           console.log('Registration cancelled');
