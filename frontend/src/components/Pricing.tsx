@@ -375,11 +375,11 @@ export default function Pricing() {
 
                 {/* Register Button */}
                 <button
-                  onClick={handleRegister}
+                  onClick={() => handleRegister(0)}
                   disabled={!isConnected || !username.trim() || isLoading}
                   className="w-full py-4 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-500 hover:to-blue-500 disabled:from-gray-600 disabled:to-gray-600 text-white rounded-xl font-bold text-lg transition-all cursor-pointer transform hover:scale-[1.02] active:scale-[0.98] disabled:cursor-not-allowed"
                 >
-                  {isLoading ? 'Registering...' : 'Register on StackPulse'}
+                  {isLoading ? 'Registering...' : 'Register Free on StackPulse'}
                 </button>
               </div>
             ) : (
