@@ -1,7 +1,7 @@
 'use client';
 
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { AppConfig, UserSession, showConnect, disconnect } from '@stacks/connect';
+import { AppConfig, UserSession, authenticate, disconnect } from '@stacks/connect';
 import { STACKS_MAINNET, STACKS_TESTNET } from '@stacks/network';
 
 const appConfig = new AppConfig(['store_write', 'publish_data']);
@@ -36,23 +36,27 @@ export function WalletProvider({ children }: { children: ReactNode }) {
     }
   }, [network]);
 
-  const handleConnect = () => {
-    showConnect({
-      appDetails: {
-        name: 'StackPulse',
-        icon: '/logo.png',
-      },
-      onFinish: () => {
-        const userData = userSession.loadUserData();
-        setIsConnected(true);
-        setAddress(
-          network === 'mainnet' 
-            ? userData.profile.stxAddress.mainnet 
-            : userData.profile.stxAddress.testnet
-        );
-      },
-      userSession,
-    });
+  const handleConnect = async () => {
+    try {
+      await authenticate({
+        appDetails: {
+          name: 'StackPulse',
+          icon: '/logo.png',
+        },
+        onFinish: () => {
+          const userData = userSession.loadUserData();
+          setIsConnected(true);
+          setAddress(
+            network === 'mainnet' 
+              ? userData.profile.stxAddress.mainnet 
+              : userData.profile.stxAddress.testnet
+          );
+        },
+        userSession,
+      });
+    } catch (error) {
+      console.error('Connection error:', error);
+    }
   };
 
   const handleDisconnect = () => {
