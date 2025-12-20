@@ -1,22 +1,20 @@
 {
-  "version": "1",
   "name": "user-subscription-created",
+  "version": 1,
   "chain": "stacks",
-  "network": "mainnet",
-  "filters": {
-    "events": [
-      {
-        "type": "contract_log",
-        "contract_identifier": "SP3FKNEZ86RG5RT7SZ5FBRGH85FZNG94ZH1MCGG6N.stackpulse-v2"
+  "networks": {
+    "mainnet": {
+      "if_this": {
+        "scope": "print_event",
+        "contract_identifier": "SP3FKNEZ86RG5RT7SZ5FBRGH85FZNG94ZH1MCGG6N.stackpulse-v2",
+        "contains": "user-registered"
+      },
+      "then_that": {
+        "http_post": {
+          "url": "https://stackpulse-b8fw.onrender.com/api/chainhooks/subscription-created",
+          "authorization_header": "Bearer stackpulse-secret"
+        }
       }
-    ]
-  },
-  "action": {
-    "type": "http_post",
-    "url": "https://stackpulse-b8fw.onrender.com/api/chainhooks/subscription-created"
-  },
-  "options": {
-    "decode_clarity_values": true,
-    "enable_on_registration": true
+    }
   }
 }
