@@ -1,24 +1,22 @@
 {
+  "version": "1",
   "name": "alert-triggered",
-  "version": 1,
   "chain": "stacks",
-  "networks": {
-    "mainnet": {
-      "filters": {
-        "events": [
-          {
-            "type": "contract_log",
-            "contract_identifier": "SP3FKNEZ86RG5RT7SZ5FBRGH85FZNG94ZH1MCGG6N.alert-manager-v2"
-          }
-        ]
-      },
-      "action": {
-        "type": "http",
-        "url": "https://stackpulse-b8fw.onrender.com/api/chainhooks/alert-triggered",
-        "authorization_header": "Bearer stackpulse-webhook-secret"
-      },
-      "start_block": 175000,
-      "decode_clarity_values": true
-    }
+  "network": "mainnet",
+  "filters": {
+    "events": [
+      {
+        "type": "contract_log",
+        "contract_identifier": "SP3FKNEZ86RG5RT7SZ5FBRGH85FZNG94ZH1MCGG6N.alert-manager-v2"
+      }
+    ]
+  },
+  "action": {
+    "type": "http_post",
+    "url": "https://stackpulse-b8fw.onrender.com/api/chainhooks/alert-triggered"
+  },
+  "options": {
+    "decode_clarity_values": true,
+    "enable_on_registration": true
   }
 }

@@ -1,23 +1,21 @@
 {
+  "version": "1",
   "name": "token-launch-detector",
-  "version": 1,
   "chain": "stacks",
-  "networks": {
-    "mainnet": {
-      "filters": {
-        "events": [
-          {
-            "type": "ft_mint"
-          }
-        ]
-      },
-      "action": {
-        "type": "http",
-        "url": "https://stackpulse-b8fw.onrender.com/api/chainhooks/token-launch",
-        "authorization_header": "Bearer stackpulse-webhook-secret"
-      },
-      "start_block": 175000,
-      "decode_clarity_values": true
-    }
+  "network": "mainnet",
+  "filters": {
+    "events": [
+      {
+        "type": "ft_mint"
+      }
+    ]
+  },
+  "action": {
+    "type": "http_post",
+    "url": "https://stackpulse-b8fw.onrender.com/api/chainhooks/token-launch"
+  },
+  "options": {
+    "decode_clarity_values": true,
+    "enable_on_registration": true
   }
 }
