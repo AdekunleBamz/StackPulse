@@ -52,10 +52,13 @@ export default function Pricing() {
   const { isConnected, connect, address } = useWallet();
   const [isRegistered, setIsRegistered] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [discord, setDiscord] = useState('');
   const [telegram, setTelegram] = useState('');
+  const [editingChannel, setEditingChannel] = useState<'email' | 'discord' | 'telegram' | null>(null);
+  const [tempValue, setTempValue] = useState('');
 
   // Check registration status when wallet connects
   useEffect(() => {
@@ -79,7 +82,27 @@ export default function Pricing() {
         
         const data = await response.json();
         // If result is not 0x09 (none), user is registered
-        setIsRegistered(data.result && data.result !== '0x09');
+        const registered = data.result && data.result !== '0x09';
+        setIsRegistered(registered);
+        
+        // If registered, fetch saved notification preferences from server
+        if (registered) {
+          try {
+            const serverUrl = process.env.NEXT_PUBLIC_SERVER_URL || 'https://stackpulse-b8fw.onrender.com';
+            const prefsResponse = await fetch(`${serverUrl}/api/users/${address}`);
+            if (prefsResponse.ok) {
+              const prefsData = await prefsResponse.json();
+              if (prefsData.user) {
+                setEmail(prefsData.user.email || '');
+                setDiscord(prefsData.user.discord || '');
+                setTelegram(prefsData.user.telegram || '');
+                setUsername(prefsData.user.username || '');
+              }
+            }
+          } catch (err) {
+            console.error('Failed to fetch user preferences:', err);
+          }
+        }
       } catch (error) {
         console.error('Error checking registration:', error);
       }
@@ -183,6 +206,45 @@ export default function Pricing() {
     } catch (error) {
       console.error('Subscription error:', error);
     }
+  };
+
+  // Save a notification channel update
+  const saveChannelUpdate = async () => {
+    if (!address || !editingChannel) return;
+    
+    setIsSaving(true);
+    try {
+      // Update local state
+      if (editingChannel === 'email') setEmail(tempValue);
+      if (editingChannel === 'discord') setDiscord(tempValue);
+      if (editingChannel === 'telegram') setTelegram(tempValue);
+      
+      // Save to server
+      const serverUrl = process.env.NEXT_PUBLIC_SERVER_URL || 'https://stackpulse-b8fw.onrender.com';
+      await fetch(`${serverUrl}/api/users/${address}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          [editingChannel]: tempValue || undefined
+        })
+      });
+      
+      setEditingChannel(null);
+      setTempValue('');
+    } catch (error) {
+      console.error('Failed to save channel:', error);
+      alert('Failed to save. Please try again.');
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  // Open edit modal for a channel
+  const openEditChannel = (channel: 'email' | 'discord' | 'telegram') => {
+    setEditingChannel(channel);
+    if (channel === 'email') setTempValue(email);
+    if (channel === 'discord') setTempValue(discord);
+    if (channel === 'telegram') setTempValue(telegram);
   };
 
   return (
@@ -314,22 +376,80 @@ export default function Pricing() {
                     <p className="text-white text-sm font-semibold">Wallet</p>
                     <p className="text-green-400 text-xs">Connected</p>
                   </div>
-                  <div className="bg-gray-800/50 rounded-xl p-4 text-center cursor-pointer hover:bg-gray-700/50 transition-all">
-                    <Mail className="w-8 h-8 text-gray-400 mx-auto mb-2" />
+                  <div 
+                    onClick={() => openEditChannel('email')}
+                    className="bg-gray-800/50 rounded-xl p-4 text-center cursor-pointer hover:bg-gray-700/50 hover:border-purple-500 border border-transparent transition-all transform hover:scale-105"
+                  >
+                    <Mail className={`w-8 h-8 mx-auto mb-2 ${email ? 'text-green-500' : 'text-gray-400'}`} />
                     <p className="text-white text-sm font-semibold">Email</p>
-                    <p className="text-gray-400 text-xs">Click to add</p>
+                    <p className={`text-xs ${email ? 'text-green-400' : 'text-gray-400'}`}>
+                      {email ? email.slice(0, 15) + (email.length > 15 ? '...' : '') : 'Click to add'}
+                    </p>
                   </div>
-                  <div className="bg-gray-800/50 rounded-xl p-4 text-center cursor-pointer hover:bg-gray-700/50 transition-all">
-                    <MessageCircle className="w-8 h-8 text-gray-400 mx-auto mb-2" />
+                  <div 
+                    onClick={() => openEditChannel('discord')}
+                    className="bg-gray-800/50 rounded-xl p-4 text-center cursor-pointer hover:bg-gray-700/50 hover:border-purple-500 border border-transparent transition-all transform hover:scale-105"
+                  >
+                    <MessageCircle className={`w-8 h-8 mx-auto mb-2 ${discord ? 'text-green-500' : 'text-gray-400'}`} />
                     <p className="text-white text-sm font-semibold">Discord</p>
-                    <p className="text-gray-400 text-xs">Click to add</p>
+                    <p className={`text-xs ${discord ? 'text-green-400' : 'text-gray-400'}`}>
+                      {discord || 'Click to add'}
+                    </p>
                   </div>
-                  <div className="bg-gray-800/50 rounded-xl p-4 text-center cursor-pointer hover:bg-gray-700/50 transition-all">
-                    <Send className="w-8 h-8 text-gray-400 mx-auto mb-2" />
+                  <div 
+                    onClick={() => openEditChannel('telegram')}
+                    className="bg-gray-800/50 rounded-xl p-4 text-center cursor-pointer hover:bg-gray-700/50 hover:border-purple-500 border border-transparent transition-all transform hover:scale-105"
+                  >
+                    <Send className={`w-8 h-8 mx-auto mb-2 ${telegram ? 'text-green-500' : 'text-gray-400'}`} />
                     <p className="text-white text-sm font-semibold">Telegram</p>
-                    <p className="text-gray-400 text-xs">Click to add</p>
+                    <p className={`text-xs ${telegram ? 'text-green-400' : 'text-gray-400'}`}>
+                      {telegram || 'Click to add'}
+                    </p>
                   </div>
                 </div>
+
+                {/* Edit Channel Modal */}
+                {editingChannel && (
+                  <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4">
+                    <div className="bg-gray-800 rounded-2xl p-6 max-w-md w-full border border-purple-500/30">
+                      <h3 className="text-xl font-bold text-white mb-4">
+                        {editingChannel === 'email' && '📧 Add Email'}
+                        {editingChannel === 'discord' && '💬 Add Discord'}
+                        {editingChannel === 'telegram' && '✈️ Add Telegram'}
+                      </h3>
+                      <input
+                        type={editingChannel === 'email' ? 'email' : 'text'}
+                        value={tempValue}
+                        onChange={(e) => setTempValue(e.target.value)}
+                        placeholder={
+                          editingChannel === 'email' ? 'your@email.com' :
+                          editingChannel === 'discord' ? 'username#1234' :
+                          '@username'
+                        }
+                        className="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-3 text-white placeholder-gray-400 focus:outline-none focus:border-purple-500 mb-4"
+                        autoFocus
+                      />
+                      <div className="flex gap-3">
+                        <button
+                          onClick={() => {
+                            setEditingChannel(null);
+                            setTempValue('');
+                          }}
+                          className="flex-1 py-3 bg-gray-700 hover:bg-gray-600 text-white rounded-lg font-semibold transition-all cursor-pointer"
+                        >
+                          Cancel
+                        </button>
+                        <button
+                          onClick={saveChannelUpdate}
+                          disabled={isSaving}
+                          className="flex-1 py-3 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-500 hover:to-blue-500 text-white rounded-lg font-semibold transition-all cursor-pointer disabled:opacity-50"
+                        >
+                          {isSaving ? 'Saving...' : 'Save'}
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
             )}
           </div>
