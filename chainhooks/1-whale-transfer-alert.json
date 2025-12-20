@@ -4,16 +4,17 @@
   "chain": "stacks",
   "networks": {
     "mainnet": {
-      "if_this": {
-        "scope": "stx_event",
-        "actions": ["transfer"],
-        "amount_greater_than": 100000000000
+      "filters": {
+        "events": [
+          {
+            "type": "stx_transfer"
+          }
+        ]
       },
-      "then_that": {
-        "http_post": {
-          "url": "https://stackpulse-b8fw.onrender.com/api/chainhooks/whale-transfer",
-          "authorization_header": "Bearer ${CHAINHOOK_AUTH_TOKEN}"
-        }
+      "action": {
+        "type": "http",
+        "url": "https://stackpulse-b8fw.onrender.com/api/chainhooks/whale-transfer",
+        "authorization_header": "Bearer stackpulse-webhook-secret"
       },
       "start_block": 175000,
       "decode_clarity_values": true
