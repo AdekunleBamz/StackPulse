@@ -180,6 +180,50 @@ const CHAINHOOKS = [
         decode_clarity_values: true
       }
     }
+  },
+  // Additional chainhooks for complete coverage (9 total matching chainhooks/ folder)
+  {
+    name: 'StackPulse-WhaleTransfers',
+    chain: 'stacks',
+    version: 1,
+    networks: {
+      mainnet: {
+        if_this: {
+          scope: 'stx_event',
+          actions: ['transfer']
+        },
+        then_that: {
+          http_post: {
+            url: `${WEBHOOK_BASE_URL}/whale-transfer`,
+            authorization_header: ''
+          }
+        },
+        start_block: START_BLOCK,
+        decode_clarity_values: true
+      }
+    }
+  },
+  {
+    name: 'StackPulse-LargeSwaps',
+    chain: 'stacks',
+    version: 1,
+    networks: {
+      mainnet: {
+        if_this: {
+          scope: 'contract_call',
+          contract_identifier: CONTRACTS.alexDex,
+          method: 'swap-helper'
+        },
+        then_that: {
+          http_post: {
+            url: `${WEBHOOK_BASE_URL}/large-swap`,
+            authorization_header: ''
+          }
+        },
+        start_block: START_BLOCK,
+        decode_clarity_values: true
+      }
+    }
   }
 ];
 
@@ -197,7 +241,7 @@ async function registerChainhook(chainhook: any): Promise<{ success: boolean; uu
     const data = await response.body.json() as any;
     
     if (response.statusCode === 200 || response.statusCode === 201) {
-      return { success: true, uuid: data.uuid || data.id };
+      return { success: true, uuid: data.chainhookUuid || data.uuid || data.id };
     } else {
       return { success: false, error: JSON.stringify(data) };
     }
@@ -237,22 +281,31 @@ async function main() {
   console.log('📋 Checking existing chainhooks...');
   const existing = await listChainhooks();
   const stackpulseHooks = existing.filter((h: any) => h.name?.startsWith('StackPulse-'));
+  const existingNames = new Set(stackpulseHooks.map((h: any) => h.name));
   
   if (stackpulseHooks.length > 0) {
-    console.log(`\n⚠️  Found ${stackpulseHooks.length} existing StackPulse chainhooks:`);
+    console.log(`\n✅ Found ${stackpulseHooks.length} existing StackPulse chainhooks:`);
     stackpulseHooks.forEach((h: any) => {
       console.log(`   - ${h.name} (${h.uuid})`);
     });
     console.log('\n');
   }
 
-  // Register new chainhooks
+  // Register new chainhooks (skip already registered)
   console.log('🚀 Registering StackPulse chainhooks...\n');
   
   let success = 0;
   let failed = 0;
+  let skipped = 0;
 
   for (const hook of CHAINHOOKS) {
+    // Skip if already registered
+    if (existingNames.has(hook.name)) {
+      console.log(`  ⏭️  Skipping: ${hook.name} (already registered)`);
+      skipped++;
+      continue;
+    }
+    
     process.stdout.write(`  Registering: ${hook.name}... `);
     
     const result = await registerChainhook(hook);
@@ -271,6 +324,7 @@ async function main() {
 
   console.log('\n────────────────────────────────────────────────────────────────');
   console.log(`\n✅ Registered: ${success}`);
+  console.log(`⏭️  Skipped: ${skipped}`);
   console.log(`❌ Failed: ${failed}`);
   
   if (success > 0) {
