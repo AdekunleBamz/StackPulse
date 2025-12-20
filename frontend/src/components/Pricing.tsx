@@ -15,7 +15,7 @@ const tiers = [
       'Basic Dashboard',
       'Community Support',
     ],
-    cta: 'Get Started',
+    cta: 'Register Free',
     popular: false,
   },
   {
