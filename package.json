@@ -26,5 +26,9 @@
     "clarity"
   ],
   "author": "StackPulse Team",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "@hirosystems/chainhooks-client": "^1.0.0",
+    "undici": "^7.16.0"
+  }
 }
