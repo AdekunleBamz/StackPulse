@@ -176,10 +176,29 @@ export default function Pricing() {
       return;
     }
 
+    // Calculate price for the tier (in microSTX)
+    const tierPrices: Record<number, number> = {
+      0: 0,         // Free
+      1: 1000000,   // 1 STX for Basic
+      2: 5000000,   // 5 STX for Pro
+      3: 20000000,  // 20 STX for Premium
+    };
+    const price = tierPrices[selectedTier] || 0;
+
     setIsLoading(true);
     try {
       const { openContractCall } = await import('@stacks/connect');
       const { stringAsciiCV, uintCV } = await import('@stacks/transactions');
+
+      // Post-condition: allow STX transfer for paid tiers (new v7+ format)
+      const postConditions: { type: 'stx-postcondition'; address: string; condition: 'eq'; amount: number }[] = price > 0 && address ? [
+        {
+          type: 'stx-postcondition',
+          address: address,
+          condition: 'eq',
+          amount: price
+        }
+      ] : [];
 
       // V2 contract: register-and-subscribe combines both steps
       // alerts bitmask: 31 = all alerts enabled (1+2+4+8+16)
@@ -193,6 +212,7 @@ export default function Pricing() {
           uintCV(selectedTier),
           uintCV(31) // Enable all alert types
         ],
+        postConditions,
         onFinish: async (data: { txId: string }) => {
           console.log('Registration + Subscription submitted:', data.txId);
           
@@ -265,18 +285,47 @@ export default function Pricing() {
       return;
     }
 
+    // Calculate price for the tier (in microSTX)
+    const tierPrices: Record<number, number> = {
+      1: 1000000,   // 1 STX for Basic
+      2: 5000000,   // 5 STX for Pro
+      3: 20000000,  // 20 STX for Premium
+    };
+    const price = tierPrices[tier] || 0;
+
     try {
       const { openContractCall } = await import('@stacks/connect');
       const { uintCV } = await import('@stacks/transactions');
+
+      // Post-condition: allow STX transfer from user to contract owner (new v7+ format)
+      const postConditions: { type: 'stx-postcondition'; address: string; condition: 'eq'; amount: number }[] = price > 0 && address ? [
+        {
+          type: 'stx-postcondition',
+          address: address,
+          condition: 'eq',
+          amount: price
+        }
+      ] : [];
 
       await openContractCall({
         contractAddress: DEPLOYER_ADDRESS,
         contractName: 'stackpulse-v2',
         functionName: 'upgrade-subscription',
         functionArgs: [uintCV(tier)],
+        postConditions,
         onFinish: async (data: { txId: string }) => {
           console.log('Upgrade submitted:', data.txId);
-          alert(`Subscription upgrade submitted! TX: ${data.txId}`);
+          setCurrentTier(tier);
+          // Update cache
+          if (address) {
+            const cached = localStorage.getItem(`stackpulse_registered_${address}`);
+            if (cached) {
+              const data = JSON.parse(cached);
+              data.tier = tier;
+              localStorage.setItem(`stackpulse_registered_${address}`, JSON.stringify(data));
+            }
+          }
+          alert(`🎉 Subscription upgraded to ${tier === 1 ? 'Basic' : tier === 2 ? 'Pro' : 'Premium'}!\n\nTX: ${data.txId}`);
         },
         onCancel: () => {
           console.log('Upgrade cancelled');
