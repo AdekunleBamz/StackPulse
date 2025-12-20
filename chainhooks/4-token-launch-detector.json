@@ -4,15 +4,17 @@
   "chain": "stacks",
   "networks": {
     "mainnet": {
-      "if_this": {
-        "scope": "contract_deployment",
-        "deployer": "*"
+      "filters": {
+        "events": [
+          {
+            "type": "ft_mint"
+          }
+        ]
       },
-      "then_that": {
-        "http_post": {
-          "url": "https://stackpulse-b8fw.onrender.com/api/chainhooks/token-launch",
-          "authorization_header": "Bearer ${CHAINHOOK_AUTH_TOKEN}"
-        }
+      "action": {
+        "type": "http",
+        "url": "https://stackpulse-b8fw.onrender.com/api/chainhooks/token-launch",
+        "authorization_header": "Bearer stackpulse-webhook-secret"
       },
       "start_block": 175000,
       "decode_clarity_values": true

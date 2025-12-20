@@ -4,16 +4,18 @@
   "chain": "stacks",
   "networks": {
     "mainnet": {
-      "if_this": {
-        "scope": "print_event",
-        "contract_identifier": "SP3FKNEZ86RG5RT7SZ5FBRGH85FZNG94ZH1MCGG6N.fee-vault-v2",
-        "contains": "fee-collected"
+      "filters": {
+        "events": [
+          {
+            "type": "contract_log",
+            "contract_identifier": "SP3FKNEZ86RG5RT7SZ5FBRGH85FZNG94ZH1MCGG6N.fee-vault-v2"
+          }
+        ]
       },
-      "then_that": {
-        "http_post": {
-          "url": "https://stackpulse-b8fw.onrender.com/api/chainhooks/fee-collected",
-          "authorization_header": "Bearer ${CHAINHOOK_AUTH_TOKEN}"
-        }
+      "action": {
+        "type": "http",
+        "url": "https://stackpulse-b8fw.onrender.com/api/chainhooks/fee-collected",
+        "authorization_header": "Bearer stackpulse-webhook-secret"
       },
       "start_block": 175000,
       "decode_clarity_values": true
