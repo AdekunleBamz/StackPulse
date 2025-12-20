@@ -49,7 +49,8 @@ const tiers = [
   },
 ];
 
-const DEPLOYER_ADDRESS = process.env.NEXT_PUBLIC_DEPLOYER_ADDRESS || 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM';
+// Set NEXT_PUBLIC_DEPLOYER_ADDRESS in your environment variables
+const DEPLOYER_ADDRESS = process.env.NEXT_PUBLIC_DEPLOYER_ADDRESS || '';
 
 export default function Pricing() {
   const { isConnected, network, connect } = useWallet();
