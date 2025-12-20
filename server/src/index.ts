@@ -9,6 +9,18 @@ import helmet from 'helmet';
 import dotenv from 'dotenv';
 import { createLogger, format, transports } from 'winston';
 
+// Import Stacks utilities using @stacks/transactions and @stacks/connect
+import {
+  parseWhaleTransfer,
+  parseContractDeployment,
+  parseNFTMint,
+  parseStackPulseEvent,
+  formatSTX,
+  decodeClarityValue,
+  createUserSession,
+  stacksAppConfig
+} from './utils/stacks';
+
 // Load environment variables
 dotenv.config();
 
@@ -108,15 +120,15 @@ app.post('/api/chainhooks/whale-transfer', authenticateWebhook, async (req: Requ
         const events = tx.metadata.receipt.events;
         
         for (const event of events) {
-          if (event.type === 'STXTransferEvent') {
-            const amount = BigInt(event.data.amount);
-            const sender = event.data.sender;
-            const recipient = event.data.recipient;
-            
+          // Use @stacks/transactions parser utility
+          const transferData = parseWhaleTransfer(event);
+          
+          if (transferData) {
             logger.info('🐋 Whale Transfer Detected', {
-              amount: amount.toString(),
-              sender,
-              recipient,
+              amount: transferData.amountFormatted,
+              amountSTX: transferData.amountSTX,
+              sender: transferData.sender,
+              recipient: transferData.recipient,
               txHash: tx.transaction_identifier.hash,
               block: block.block_identifier.index
             });
@@ -141,13 +153,14 @@ app.post('/api/chainhooks/contract-deployed', authenticateWebhook, async (req: R
     
     for (const block of payload.apply) {
       for (const tx of block.transactions) {
-        if (tx.metadata.kind?.type === 'ContractDeployment') {
-          const contractId = tx.metadata.kind.data?.contract_identifier;
-          const deployer = tx.metadata.sender;
-          
+        // Use @stacks/transactions parser utility
+        const deploymentData = parseContractDeployment(tx);
+        
+        if (deploymentData) {
           logger.info('📜 New Contract Deployed', {
-            contractId,
-            deployer,
+            contractId: deploymentData.contractId,
+            contractName: deploymentData.contractName,
+            deployer: deploymentData.deployer,
             txHash: tx.transaction_identifier.hash,
             block: block.block_identifier.index
           });
@@ -174,15 +187,16 @@ app.post('/api/chainhooks/nft-mint', authenticateWebhook, async (req: Request, r
         const events = tx.metadata.receipt.events;
         
         for (const event of events) {
-          if (event.type === 'NFTMintEvent') {
-            const assetId = event.data.asset_identifier;
-            const tokenId = event.data.value;
-            const recipient = event.data.recipient;
-            
+          // Use @stacks/transactions parser utility
+          const nftData = parseNFTMint(event);
+          
+          if (nftData) {
             logger.info('🎨 NFT Minted', {
-              assetId,
-              tokenId,
-              recipient,
+              assetId: nftData.assetIdentifier,
+              assetName: nftData.assetName,
+              tokenId: nftData.tokenId,
+              recipient: nftData.recipient,
+              contractAddress: nftData.contractAddress,
               txHash: tx.transaction_identifier.hash,
               block: block.block_identifier.index
             });
