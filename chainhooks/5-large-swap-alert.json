@@ -1,25 +1,23 @@
 {
+  "version": "1",
   "name": "large-swap-alert",
-  "version": 1,
   "chain": "stacks",
-  "networks": {
-    "mainnet": {
-      "filters": {
-        "events": [
-          {
-            "type": "contract_call",
-            "contract_identifier": "SP3K8BC0PPEVCV7NZ6QSRWPQ2JE9E5B6N3PA0KBR9.amm-swap-pool-v1-1",
-            "function_name": "swap-helper"
-          }
-        ]
-      },
-      "action": {
-        "type": "http",
-        "url": "https://stackpulse-b8fw.onrender.com/api/chainhooks/large-swap",
-        "authorization_header": "Bearer stackpulse-webhook-secret"
-      },
-      "start_block": 175000,
-      "decode_clarity_values": true
-    }
+  "network": "mainnet",
+  "filters": {
+    "events": [
+      {
+        "type": "contract_call",
+        "contract_identifier": "SP3K8BC0PPEVCV7NZ6QSRWPQ2JE9E5B6N3PA0KBR9.amm-swap-pool-v1-1",
+        "function_name": "swap-helper"
+      }
+    ]
+  },
+  "action": {
+    "type": "http_post",
+    "url": "https://stackpulse-b8fw.onrender.com/api/chainhooks/large-swap"
+  },
+  "options": {
+    "decode_clarity_values": true,
+    "enable_on_registration": true
   }
 }
