@@ -2,8 +2,6 @@
 
 import { useWallet } from '@/context/WalletContext';
 import { Check } from 'lucide-react';
-import { openContractCall } from '@stacks/connect';
-import { uintCV, stringAsciiCV } from '@stacks/transactions';
 import { getStacksNetwork } from '@/context/WalletContext';
 
 const tiers = [
@@ -65,13 +63,17 @@ export default function Pricing() {
     if (tier === 0) return; // Free tier, no transaction needed
 
     try {
+      // Dynamic import to avoid SSR issues
+      const { openContractCall } = await import('@stacks/connect');
+      const { uintCV } = await import('@stacks/transactions');
+      
       await openContractCall({
         contractAddress: DEPLOYER_ADDRESS,
         contractName: 'stackpulse-registry',
         functionName: 'subscribe',
         functionArgs: [uintCV(tier)],
         network: getStacksNetwork(network),
-        onFinish: (data) => {
+        onFinish: (data: { txId: string }) => {
           console.log('Transaction submitted:', data.txId);
           alert(`Transaction submitted! TX: ${data.txId}`);
         },
