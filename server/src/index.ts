@@ -718,8 +718,43 @@ app.get('/api/users', async (req: Request, res: Response) => {
 // ALERTS API ENDPOINTS
 // ============================================
 
-// In-memory alerts storage (use database in production)
-const userAlerts: Map<string, any[]> = new Map();
+// Persistent file-based alerts storage
+import fs from 'fs';
+import path from 'path';
+
+const ALERTS_FILE = path.join(__dirname, '../data/alerts.json');
+const DATA_DIR = path.join(__dirname, '../data');
+
+// Ensure data directory exists
+if (!fs.existsSync(DATA_DIR)) {
+  fs.mkdirSync(DATA_DIR, { recursive: true });
+}
+
+// Load alerts from file
+const loadAlerts = (): Map<string, any[]> => {
+  try {
+    if (fs.existsSync(ALERTS_FILE)) {
+      const data = fs.readFileSync(ALERTS_FILE, 'utf-8');
+      const obj = JSON.parse(data);
+      return new Map(Object.entries(obj));
+    }
+  } catch (error) {
+    logger.error('Error loading alerts from file', { error });
+  }
+  return new Map();
+};
+
+// Save alerts to file
+const saveAlerts = (alerts: Map<string, any[]>) => {
+  try {
+    const obj = Object.fromEntries(alerts);
+    fs.writeFileSync(ALERTS_FILE, JSON.stringify(obj, null, 2), 'utf-8');
+  } catch (error) {
+    logger.error('Error saving alerts to file', { error });
+  }
+};
+
+const userAlerts: Map<string, any[]> = loadAlerts();
 
 // Get user's alerts
 app.get('/api/users/:address/alerts', async (req: Request, res: Response) => {
@@ -754,6 +789,7 @@ app.post('/api/users/:address/alerts', async (req: Request, res: Response) => {
     
     alerts.push(newAlert);
     userAlerts.set(address, alerts);
+    saveAlerts(userAlerts);
     
     logger.info('Alert created', { address, alert: newAlert });
     res.json({ success: true, alert: newAlert });
@@ -778,6 +814,7 @@ app.put('/api/users/:address/alerts/:alertId', async (req: Request, res: Respons
     
     alerts[alertIndex] = { ...alerts[alertIndex], ...updates };
     userAlerts.set(address, alerts);
+    saveAlerts(userAlerts);
     
     logger.info('Alert updated', { address, alertId, updates });
     res.json({ success: true, alert: alerts[alertIndex] });
@@ -800,6 +837,7 @@ app.delete('/api/users/:address/alerts/:alertId', async (req: Request, res: Resp
     }
     
     userAlerts.set(address, filteredAlerts);
+    saveAlerts(userAlerts);
     
     logger.info('Alert deleted', { address, alertId });
     res.json({ success: true });

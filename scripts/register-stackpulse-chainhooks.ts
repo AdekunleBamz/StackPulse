@@ -20,8 +20,8 @@ const CONTRACTS = {
   alexDex: 'SP3K8BC0PPEVCV7NZ6QSRWPQ2JE9E5B6N3PA0KBR9.amm-swap-pool-v1-1'
 };
 
-// Current block height (approximately - use recent block)
-const START_BLOCK = 180000;
+// Current block height (use user-provided recent chaintip)
+const START_BLOCK = 5403581;
 
 // Chainhook definitions in Hiro Platform format
 // Using print_event scope with contains (the only reliable scope that works)
@@ -35,7 +35,7 @@ const CHAINHOOKS = [
         if_this: {
           scope: 'print_event',
           contract_identifier: CONTRACTS.registry,
-          contains: 'subscription'
+          contains: 'user-registered'
         },
         then_that: {
           http_post: {
@@ -57,7 +57,7 @@ const CHAINHOOKS = [
         if_this: {
           scope: 'print_event',
           contract_identifier: CONTRACTS.alertManager,
-          contains: 'alert'
+          contains: 'alert-triggered'
         },
         then_that: {
           http_post: {
@@ -79,7 +79,7 @@ const CHAINHOOKS = [
         if_this: {
           scope: 'print_event',
           contract_identifier: CONTRACTS.feeVault,
-          contains: 'fee'
+          contains: 'fee-collected'
         },
         then_that: {
           http_post: {
@@ -101,7 +101,7 @@ const CHAINHOOKS = [
         if_this: {
           scope: 'print_event',
           contract_identifier: CONTRACTS.badges,
-          contains: 'badge'
+          contains: 'badge-earned'
         },
         then_that: {
           http_post: {
@@ -217,10 +217,10 @@ const CHAINHOOKS = [
         then_that: {
           http_post: {
             url: `${WEBHOOK_BASE_URL}/large-swap`,
-            authorization_header: ''
+            authorization_header: 'Bearer stackpulse-secret'
           }
         },
-        start_block: START_BLOCK,
+        start_block: 5403581,
         decode_clarity_values: true
       }
     }
