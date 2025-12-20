@@ -1,25 +1,22 @@
 {
   "name": "nft-mint-tracker",
-  "chain": "stacks",
-  "network": "mainnet",
   "version": 1,
-  "filters": {
-    "nft_event": {
-      "actions": ["mint"],
-      "asset_identifier": "*"
+  "chain": "stacks",
+  "networks": {
+    "mainnet": {
+      "if_this": {
+        "scope": "contract_call",
+        "contract_identifier": "*",
+        "method": "mint"
+      },
+      "then_that": {
+        "http_post": {
+          "url": "https://stackpulse-b8fw.onrender.com/api/chainhooks/nft-mint",
+          "authorization_header": "Bearer ${CHAINHOOK_AUTH_TOKEN}"
+        }
+      },
+      "start_block": 175000,
+      "decode_clarity_values": true
     }
-  },
-  "options": {
-    "start_at_block_height": 175000,
-    "decode_clarity_values": true,
-    "include_proof": false
-  },
-  "action": {
-    "http": {
-      "url": "https://stackpulse-b8fw.onrender.com/api/chainhooks/nft-mint",
-      "method": "POST",
-      "authorization_header": "Bearer ${CHAINHOOK_AUTH_TOKEN}"
-    }
-  },
-  "description": "Tracks all NFT minting events across Stacks mainnet for collection monitoring"
+  }
 }
