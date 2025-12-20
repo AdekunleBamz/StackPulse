@@ -131,10 +131,10 @@ export default function Pricing() {
 
               <button
                 onClick={() => handleSubscribe(tier.tier, tier.price)}
-                className={`w-full py-3 rounded-xl font-semibold transition-all duration-200 ${
+                className={`w-full py-3 rounded-xl font-semibold transition-all duration-200 cursor-pointer transform hover:scale-105 hover:-translate-y-1 active:scale-95 ${
                   tier.popular
-                    ? 'bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white shadow-lg'
-                    : 'bg-gray-700 hover:bg-gray-600 text-white'
+                    ? 'bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-500 hover:to-blue-500 text-white shadow-lg hover:shadow-xl hover:shadow-purple-500/30'
+                    : 'bg-gray-700 hover:bg-gray-600 text-white border border-gray-600 hover:border-purple-500 hover:shadow-lg hover:shadow-purple-500/20'
                 }`}
               >
                 {tier.cta}
