@@ -16,7 +16,7 @@
   },
   "action": {
     "http": {
-      "url": "https://your-server.com/api/chainhooks/fee-collected",
+      "url": "https://stackpulse-b8fw.onrender.com/api/chainhooks/fee-collected",
       "method": "POST",
       "authorization_header": "Bearer ${CHAINHOOK_AUTH_TOKEN}"
     }

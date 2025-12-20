@@ -16,7 +16,7 @@
   },
   "action": {
     "http": {
-      "url": "https://your-server.com/api/chainhooks/whale-transfer",
+      "url": "https://stackpulse-b8fw.onrender.com/api/chainhooks/whale-transfer",
       "method": "POST",
       "authorization_header": "Bearer ${CHAINHOOK_AUTH_TOKEN}"
     }

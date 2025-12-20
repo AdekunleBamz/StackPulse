@@ -16,7 +16,7 @@
   },
   "action": {
     "http": {
-      "url": "https://your-server.com/api/chainhooks/alert-triggered",
+      "url": "https://stackpulse-b8fw.onrender.com/api/chainhooks/alert-triggered",
       "method": "POST",
       "authorization_header": "Bearer ${CHAINHOOK_AUTH_TOKEN}"
     }

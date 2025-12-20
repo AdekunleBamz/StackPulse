@@ -15,7 +15,7 @@
   },
   "action": {
     "http": {
-      "url": "https://your-server.com/api/chainhooks/contract-deployed",
+      "url": "https://stackpulse-b8fw.onrender.com/api/chainhooks/contract-deployed",
       "method": "POST",
       "authorization_header": "Bearer ${CHAINHOOK_AUTH_TOKEN}"
     }

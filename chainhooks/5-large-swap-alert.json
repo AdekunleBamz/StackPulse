@@ -20,7 +20,7 @@
   },
   "action": {
     "http": {
-      "url": "https://your-server.com/api/chainhooks/large-swap",
+      "url": "https://stackpulse-b8fw.onrender.com/api/chainhooks/large-swap",
       "method": "POST",
       "authorization_header": "Bearer ${CHAINHOOK_AUTH_TOKEN}"
     }
