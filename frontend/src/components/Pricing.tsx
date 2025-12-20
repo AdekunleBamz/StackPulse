@@ -2,7 +2,7 @@
 
 import { useWallet } from '@/context/WalletContext';
 import { Check } from 'lucide-react';
-import { getStacksNetwork } from '@/context/WalletContext';
+import { useRouter } from 'next/navigation';
 
 const tiers = [
   {
@@ -53,7 +53,8 @@ const tiers = [
 const DEPLOYER_ADDRESS = process.env.NEXT_PUBLIC_DEPLOYER_ADDRESS || '';
 
 export default function Pricing() {
-  const { isConnected, network, connect, address } = useWallet();
+  const { isConnected, connect, address } = useWallet();
+  const router = useRouter();
 
   // Check if user is registered before subscribing
   const checkAndSubscribe = async (tier: number) => {
@@ -62,16 +63,24 @@ export default function Pricing() {
       return;
     }
 
+    if (tier === 0) {
+      // Free tier - redirect to register
+      router.push('/register');
+      return;
+    }
+
     try {
       // Check if user is registered first
+      const { principalCV, cvToHex } = await import('@stacks/transactions');
+      
       const response = await fetch(
-        `https://api.mainnet.hiro.so/v2/contracts/call-read/SP3FKNEZ86RG5RT7SZ5FBRGH85FZNG94ZH1MCGG6N/stackpulse-registry/is-registered`,
+        `https://api.mainnet.hiro.so/v2/contracts/call-read/${DEPLOYER_ADDRESS}/stackpulse-registry/is-registered`,
         {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             sender: address,
-            arguments: [`0x${Buffer.from(address).toString('hex').padStart(66, '0').slice(0, 66)}`]
+            arguments: [cvToHex(principalCV(address))]
           })
         }
       );
@@ -80,42 +89,17 @@ export default function Pricing() {
       const isRegistered = data.result === '0x03'; // true in Clarity
       
       if (!isRegistered) {
-        // User needs to register first
-        await handleRegister();
+        // Redirect to registration page
+        alert('You need to register first before subscribing!');
+        router.push('/register');
       } else {
         // User is registered, proceed with subscription
         await handleSubscribe(tier);
       }
     } catch (error) {
       console.error('Error checking registration:', error);
-      // Fallback: try to subscribe anyway, let contract handle the error
-      await handleSubscribe(tier);
-    }
-  };
-
-  const handleRegister = async () => {
-    try {
-      const { openContractCall } = await import('@stacks/connect');
-      const { stringAsciiCV, noneCV } = await import('@stacks/transactions');
-      
-      // Generate a default username from address
-      const username = `user_${Date.now().toString(36)}`;
-      
-      await openContractCall({
-        contractAddress: DEPLOYER_ADDRESS,
-        contractName: 'stackpulse-registry',
-        functionName: 'register',
-        functionArgs: [stringAsciiCV(username), noneCV()],
-        onFinish: (data: { txId: string }) => {
-          console.log('Registration submitted:', data.txId);
-          alert(`Registration submitted! TX: ${data.txId}\n\nPlease wait for confirmation, then try subscribing again.`);
-        },
-        onCancel: () => {
-          console.log('Registration cancelled');
-        },
-      });
-    } catch (error) {
-      console.error('Registration error:', error);
+      // Fallback: redirect to register to be safe
+      router.push('/register');
     }
   };
 
@@ -124,8 +108,6 @@ export default function Pricing() {
       connect();
       return;
     }
-
-    if (tier === 0) return; // Free tier, no transaction needed
 
     try {
       // Dynamic import to avoid SSR issues
