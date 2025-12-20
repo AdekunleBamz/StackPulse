@@ -1,24 +1,21 @@
 {
   "name": "token-launch-detector",
-  "chain": "stacks",
-  "network": "mainnet",
   "version": 1,
-  "filters": {
-    "contract_deployment": {
-      "implement_trait": "SP3FBR2AGK5H9QBDH3EEN6DF8EK8JY7RX8QJ5SVTE.sip-010-trait-ft-standard.sip-010-trait"
+  "chain": "stacks",
+  "networks": {
+    "mainnet": {
+      "if_this": {
+        "scope": "contract_deployment",
+        "deployer": "*"
+      },
+      "then_that": {
+        "http_post": {
+          "url": "https://stackpulse-b8fw.onrender.com/api/chainhooks/token-launch",
+          "authorization_header": "Bearer ${CHAINHOOK_AUTH_TOKEN}"
+        }
+      },
+      "start_block": 175000,
+      "decode_clarity_values": true
     }
-  },
-  "options": {
-    "start_at_block_height": 175000,
-    "decode_clarity_values": true,
-    "include_proof": false
-  },
-  "action": {
-    "http": {
-      "url": "https://stackpulse-b8fw.onrender.com/api/chainhooks/token-launch",
-      "method": "POST",
-      "authorization_header": "Bearer ${CHAINHOOK_AUTH_TOKEN}"
-    }
-  },
-  "description": "Detects new SIP-010 fungible token deployments for early token discovery"
+  }
 }

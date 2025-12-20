@@ -1,25 +1,22 @@
 {
   "name": "badge-earned",
-  "chain": "stacks",
-  "network": "mainnet",
   "version": 1,
-  "filters": {
-    "print_event": {
-      "contract_identifier": "SP3FKNEZ86RG5RT7SZ5FBRGH85FZNG94ZH1MCGG6N.reputation-badges-v3",
-      "contains": "badge-earned"
+  "chain": "stacks",
+  "networks": {
+    "mainnet": {
+      "if_this": {
+        "scope": "print_event",
+        "contract_identifier": "SP3FKNEZ86RG5RT7SZ5FBRGH85FZNG94ZH1MCGG6N.reputation-badges-v3",
+        "contains": "badge-minted"
+      },
+      "then_that": {
+        "http_post": {
+          "url": "https://stackpulse-b8fw.onrender.com/api/chainhooks/badge-earned",
+          "authorization_header": "Bearer ${CHAINHOOK_AUTH_TOKEN}"
+        }
+      },
+      "start_block": 175000,
+      "decode_clarity_values": true
     }
-  },
-  "options": {
-    "start_at_block_height": 175000,
-    "decode_clarity_values": true,
-    "include_proof": false
-  },
-  "action": {
-    "http": {
-      "url": "https://stackpulse-b8fw.onrender.com/api/chainhooks/badge-earned",
-      "method": "POST",
-      "authorization_header": "Bearer ${CHAINHOOK_AUTH_TOKEN}"
-    }
-  },
-  "description": "Tracks reputation badge NFT minting for gamification and user engagement"
+  }
 }
