@@ -1,6 +1,0 @@
-[network]
-name = "devnet"
-
-[accounts.deployer]
-mnemonic = "twice particular affair smile emerge adjust wrestling urban major sudden eyebrow similar"
-balance = 10_000_000_000_000_000
