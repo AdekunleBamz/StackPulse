@@ -5,7 +5,7 @@
   "version": 1,
   "filters": {
     "print_event": {
-      "contract_identifier": "YOUR_DEPLOYER.fee-vault",
+      "contract_identifier": "SP3FKNEZ86RG5RT7SZ5FBRGH85FZNG94ZH1MCGG6N.fee-vault-v2",
       "contains": "fee-collected"
     }
   },

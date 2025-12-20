@@ -68,8 +68,9 @@ export default function Pricing() {
       try {
         const { principalCV, cvToHex } = await import('@stacks/transactions');
         
+        // Use V2 contract
         const response = await fetch(
-          `https://api.mainnet.hiro.so/v2/contracts/call-read/${DEPLOYER_ADDRESS}/stackpulse-registry/get-user`,
+          `https://api.mainnet.hiro.so/v2/contracts/call-read/${DEPLOYER_ADDRESS}/stackpulse-v2/get-user`,
           {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -111,7 +112,7 @@ export default function Pricing() {
     checkRegistration();
   }, [address]);
 
-  const handleRegister = async () => {
+  const handleRegister = async (selectedTier: number = 0) => {
     if (!isConnected) {
       connect();
       return;
@@ -125,15 +126,22 @@ export default function Pricing() {
     setIsLoading(true);
     try {
       const { openContractCall } = await import('@stacks/connect');
-      const { stringAsciiCV, noneCV } = await import('@stacks/transactions');
+      const { stringAsciiCV, uintCV } = await import('@stacks/transactions');
 
+      // V2 contract: register-and-subscribe combines both steps
+      // alerts bitmask: 31 = all alerts enabled (1+2+4+8+16)
       await openContractCall({
         contractAddress: DEPLOYER_ADDRESS,
-        contractName: 'stackpulse-registry',
-        functionName: 'register',
-        functionArgs: [stringAsciiCV(username), noneCV()],
+        contractName: 'stackpulse-v2',
+        functionName: 'register-and-subscribe',
+        functionArgs: [
+          stringAsciiCV(username),
+          stringAsciiCV(email || ''),
+          uintCV(selectedTier),
+          uintCV(31) // Enable all alert types
+        ],
         onFinish: async (data: { txId: string }) => {
-          console.log('Registration submitted:', data.txId);
+          console.log('Registration + Subscription submitted:', data.txId);
           
           // Save notification preferences to server
           try {
@@ -147,6 +155,7 @@ export default function Pricing() {
                 email: email || undefined,
                 discord: discord || undefined,
                 telegram: telegram || undefined,
+                tier: selectedTier,
                 enabledAlerts: ['whale', 'contract', 'nft', 'token', 'swap', 'alert', 'badge']
               })
             });
@@ -155,9 +164,9 @@ export default function Pricing() {
             console.error('Failed to save preferences:', err);
           }
           
-          alert(`Registration submitted! TX: ${data.txId}\n\nPlease wait 1-2 minutes for confirmation, then you can subscribe.`);
-          // Optimistically set registered
-          setTimeout(() => setIsRegistered(true), 60000);
+          const tierName = selectedTier === 0 ? 'Free' : selectedTier === 2 ? 'Pro' : 'Premium';
+          alert(`🎉 Success! You're now registered on ${tierName} tier!\n\nTX: ${data.txId}\n\nYour alerts are now active. Check your dashboard!`);
+          setIsRegistered(true);
         },
         onCancel: () => {
           console.log('Registration cancelled');
@@ -176,13 +185,19 @@ export default function Pricing() {
       return;
     }
 
+    // If not registered, do register-and-subscribe in one step
     if (!isRegistered) {
-      alert('Please complete registration first!');
+      if (!username.trim()) {
+        alert('Please enter a username first in the registration form above!');
+        return;
+      }
+      await handleRegister(tier);
       return;
     }
 
+    // If already registered, upgrade subscription
     if (tier === 0) {
-      alert('You are now on the Free tier! Set up your alerts in the dashboard.');
+      alert('You are on the Free tier! Upgrade below for more features.');
       return;
     }
 
@@ -192,15 +207,15 @@ export default function Pricing() {
 
       await openContractCall({
         contractAddress: DEPLOYER_ADDRESS,
-        contractName: 'stackpulse-registry',
-        functionName: 'subscribe',
+        contractName: 'stackpulse-v2',
+        functionName: 'upgrade-subscription',
         functionArgs: [uintCV(tier)],
-        onFinish: (data: { txId: string }) => {
-          console.log('Subscription submitted:', data.txId);
-          alert(`Subscription submitted! TX: ${data.txId}`);
+        onFinish: async (data: { txId: string }) => {
+          console.log('Upgrade submitted:', data.txId);
+          alert(`Subscription upgrade submitted! TX: ${data.txId}`);
         },
         onCancel: () => {
-          console.log('Subscription cancelled');
+          console.log('Upgrade cancelled');
         },
       });
     } catch (error) {

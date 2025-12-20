@@ -5,8 +5,8 @@
   "version": 1,
   "filters": {
     "print_event": {
-      "contract_identifier": "YOUR_DEPLOYER.reputation-badges",
-      "contains": "badge-minted"
+      "contract_identifier": "SP3FKNEZ86RG5RT7SZ5FBRGH85FZNG94ZH1MCGG6N.reputation-badges-v3",
+      "contains": "badge-earned"
     }
   },
   "options": {

@@ -1,0 +1,17 @@
+---
+id: 0
+name: StackPulse Badges V3 Mainnet Deployment
+network: mainnet
+stacks-node: "https://api.mainnet.hiro.so"
+bitcoin-node: "http://blockstream.info/api"
+plan:
+  batches:
+    - id: 0
+      transactions:
+        - contract-publish:
+            contract-name: reputation-badges-v3
+            expected-sender: SP3FKNEZ86RG5RT7SZ5FBRGH85FZNG94ZH1MCGG6N
+            cost: 1210000
+            path: contracts/reputation-badges-v3.clar
+            anchor-block-only: true
+            clarity-version: 2

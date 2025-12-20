@@ -38,20 +38,22 @@ export default function RegisterPage() {
 
     try {
       const { openContractCall } = await import('@stacks/connect');
-      const { stringAsciiCV, noneCV, someCV, principalCV } = await import('@stacks/transactions');
+      const { stringAsciiCV, uintCV } = await import('@stacks/transactions');
 
-      const referrerArg = referrer && referrer.startsWith('SP') 
-        ? someCV(principalCV(referrer))
-        : noneCV();
-
+      // V2 contract: register-and-subscribe in one step (tier 0 = free)
       await openContractCall({
         contractAddress: DEPLOYER_ADDRESS,
-        contractName: 'stackpulse-registry',
-        functionName: 'register',
-        functionArgs: [stringAsciiCV(username), referrerArg],
+        contractName: 'stackpulse-v2',
+        functionName: 'register-and-subscribe',
+        functionArgs: [
+          stringAsciiCV(username),
+          stringAsciiCV(''), // email (optional)
+          uintCV(0), // Free tier
+          uintCV(31) // All alerts enabled
+        ],
         onFinish: (data: { txId: string }) => {
           console.log('Registration submitted:', data.txId);
-          alert(`Registration submitted! TX: ${data.txId}\n\nYou'll be redirected to pricing once confirmed.`);
+          alert(`🎉 Registration successful! TX: ${data.txId}\n\nYou're now on the Free tier. Upgrade anytime!`);
           // Redirect to pricing after a delay
           setTimeout(() => router.push('/#pricing'), 2000);
         },
