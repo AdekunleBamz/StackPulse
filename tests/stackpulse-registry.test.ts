@@ -1,5 +1,5 @@
+/// <reference types="vitest" />
 import { describe, it, expect, beforeEach } from 'vitest';
-import { Cl } from '@stacks/transactions';
 
 describe('StackPulse Registry', () => {
   it('should register a new user', async () => {
