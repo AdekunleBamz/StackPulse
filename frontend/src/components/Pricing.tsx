@@ -53,9 +53,73 @@ const tiers = [
 const DEPLOYER_ADDRESS = process.env.NEXT_PUBLIC_DEPLOYER_ADDRESS || '';
 
 export default function Pricing() {
-  const { isConnected, network, connect } = useWallet();
+  const { isConnected, network, connect, address } = useWallet();
 
-  const handleSubscribe = async (tier: number, price: number) => {
+  // Check if user is registered before subscribing
+  const checkAndSubscribe = async (tier: number) => {
+    if (!isConnected || !address) {
+      connect();
+      return;
+    }
+
+    try {
+      // Check if user is registered first
+      const response = await fetch(
+        `https://api.mainnet.hiro.so/v2/contracts/call-read/SP3FKNEZ86RG5RT7SZ5FBRGH85FZNG94ZH1MCGG6N/stackpulse-registry/is-registered`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            sender: address,
+            arguments: [`0x${Buffer.from(address).toString('hex').padStart(66, '0').slice(0, 66)}`]
+          })
+        }
+      );
+      
+      const data = await response.json();
+      const isRegistered = data.result === '0x03'; // true in Clarity
+      
+      if (!isRegistered) {
+        // User needs to register first
+        await handleRegister();
+      } else {
+        // User is registered, proceed with subscription
+        await handleSubscribe(tier);
+      }
+    } catch (error) {
+      console.error('Error checking registration:', error);
+      // Fallback: try to subscribe anyway, let contract handle the error
+      await handleSubscribe(tier);
+    }
+  };
+
+  const handleRegister = async () => {
+    try {
+      const { openContractCall } = await import('@stacks/connect');
+      const { stringAsciiCV, noneCV } = await import('@stacks/transactions');
+      
+      // Generate a default username from address
+      const username = `user_${Date.now().toString(36)}`;
+      
+      await openContractCall({
+        contractAddress: DEPLOYER_ADDRESS,
+        contractName: 'stackpulse-registry',
+        functionName: 'register',
+        functionArgs: [stringAsciiCV(username), noneCV()],
+        onFinish: (data: { txId: string }) => {
+          console.log('Registration submitted:', data.txId);
+          alert(`Registration submitted! TX: ${data.txId}\n\nPlease wait for confirmation, then try subscribing again.`);
+        },
+        onCancel: () => {
+          console.log('Registration cancelled');
+        },
+      });
+    } catch (error) {
+      console.error('Registration error:', error);
+    }
+  };
+
+  const handleSubscribe = async (tier: number) => {
     if (!isConnected) {
       connect();
       return;
@@ -67,20 +131,15 @@ export default function Pricing() {
       // Dynamic import to avoid SSR issues
       const { openContractCall } = await import('@stacks/connect');
       const { uintCV } = await import('@stacks/transactions');
-      
-      // Use the address that matches the user's connected wallet network
-      const contractAddress = network === 'mainnet' 
-        ? (process.env.NEXT_PUBLIC_MAINNET_DEPLOYER_ADDRESS || DEPLOYER_ADDRESS)
-        : DEPLOYER_ADDRESS;
 
       await openContractCall({
-        contractAddress,
+        contractAddress: DEPLOYER_ADDRESS,
         contractName: 'stackpulse-registry',
         functionName: 'subscribe',
         functionArgs: [uintCV(tier)],
         onFinish: (data: { txId: string }) => {
           console.log('Transaction submitted:', data.txId);
-          alert(`Transaction submitted! TX: ${data.txId}`);
+          alert(`Subscription submitted! TX: ${data.txId}`);
         },
         onCancel: () => {
           console.log('Transaction cancelled');
@@ -135,7 +194,7 @@ export default function Pricing() {
               </ul>
 
               <button
-                onClick={() => handleSubscribe(tier.tier, tier.price)}
+                onClick={() => checkAndSubscribe(tier.tier)}
                 className={`w-full py-3 rounded-xl font-semibold transition-all duration-200 cursor-pointer transform hover:scale-105 hover:-translate-y-1 active:scale-95 ${
                   tier.popular
                     ? 'bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-500 hover:to-blue-500 text-white shadow-lg hover:shadow-xl hover:shadow-purple-500/30'
