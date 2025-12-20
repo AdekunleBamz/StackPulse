@@ -685,6 +685,101 @@ app.get('/api/users', async (req: Request, res: Response) => {
   }
 });
 
+// ============================================
+// ALERTS API ENDPOINTS
+// ============================================
+
+// In-memory alerts storage (use database in production)
+const userAlerts: Map<string, any[]> = new Map();
+
+// Get user's alerts
+app.get('/api/users/:address/alerts', async (req: Request, res: Response) => {
+  try {
+    const { address } = req.params;
+    const alerts = userAlerts.get(address) || [];
+    res.json({ alerts, count: alerts.length });
+  } catch (error) {
+    logger.error('Error getting alerts', { error });
+    res.status(500).json({ error: 'Failed to get alerts' });
+  }
+});
+
+// Create new alert
+app.post('/api/users/:address/alerts', async (req: Request, res: Response) => {
+  try {
+    const { address } = req.params;
+    const { type, name, threshold, targetAddress, txId } = req.body;
+    
+    const alerts = userAlerts.get(address) || [];
+    const newAlert = {
+      id: Date.now(),
+      type,
+      name,
+      threshold: threshold || 10000,
+      targetAddress: targetAddress || null,
+      enabled: true,
+      triggerCount: 0,
+      txId,
+      createdAt: new Date()
+    };
+    
+    alerts.push(newAlert);
+    userAlerts.set(address, alerts);
+    
+    logger.info('Alert created', { address, alert: newAlert });
+    res.json({ success: true, alert: newAlert });
+  } catch (error) {
+    logger.error('Error creating alert', { error });
+    res.status(500).json({ error: 'Failed to create alert' });
+  }
+});
+
+// Update alert
+app.put('/api/users/:address/alerts/:alertId', async (req: Request, res: Response) => {
+  try {
+    const { address, alertId } = req.params;
+    const updates = req.body;
+    
+    const alerts = userAlerts.get(address) || [];
+    const alertIndex = alerts.findIndex(a => a.id === parseInt(alertId));
+    
+    if (alertIndex === -1) {
+      return res.status(404).json({ error: 'Alert not found' });
+    }
+    
+    alerts[alertIndex] = { ...alerts[alertIndex], ...updates };
+    userAlerts.set(address, alerts);
+    
+    logger.info('Alert updated', { address, alertId, updates });
+    res.json({ success: true, alert: alerts[alertIndex] });
+  } catch (error) {
+    logger.error('Error updating alert', { error });
+    res.status(500).json({ error: 'Failed to update alert' });
+  }
+});
+
+// Delete alert
+app.delete('/api/users/:address/alerts/:alertId', async (req: Request, res: Response) => {
+  try {
+    const { address, alertId } = req.params;
+    
+    const alerts = userAlerts.get(address) || [];
+    const filteredAlerts = alerts.filter(a => a.id !== parseInt(alertId));
+    
+    if (filteredAlerts.length === alerts.length) {
+      return res.status(404).json({ error: 'Alert not found' });
+    }
+    
+    userAlerts.set(address, filteredAlerts);
+    
+    logger.info('Alert deleted', { address, alertId });
+    res.json({ success: true });
+  } catch (error) {
+    logger.error('Error deleting alert', { error });
+    res.status(500).json({ error: 'Failed to delete alert' });
+  }
+});
+
 // Error handling middleware
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
   logger.error('Unhandled error', { error: err.message, stack: err.stack });
