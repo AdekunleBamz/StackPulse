@@ -1,21 +1,19 @@
 {
-  "version": "1",
   "name": "whale-transfer-alert",
+  "version": 1,
   "chain": "stacks",
-  "network": "mainnet",
-  "filters": {
-    "events": [
-      {
-        "type": "stx_transfer"
+  "networks": {
+    "mainnet": {
+      "if_this": {
+        "scope": "stx_event",
+        "actions": ["transfer"]
+      },
+      "then_that": {
+        "http_post": {
+          "url": "https://stackpulse-b8fw.onrender.com/api/chainhooks/whale-transfer",
+          "authorization_header": "Bearer stackpulse-secret"
+        }
       }
-    ]
-  },
-  "action": {
-    "type": "http_post",
-    "url": "https://stackpulse-b8fw.onrender.com/api/chainhooks/whale-transfer"
-  },
-  "options": {
-    "decode_clarity_values": true,
-    "enable_on_registration": true
+    }
   }
 }

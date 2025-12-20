@@ -1,21 +1,19 @@
 {
-  "version": "1",
   "name": "new-contract-deployed",
+  "version": 1,
   "chain": "stacks",
-  "network": "mainnet",
-  "filters": {
-    "events": [
-      {
-        "type": "contract_deploy"
+  "networks": {
+    "mainnet": {
+      "if_this": {
+        "scope": "contract_deployment",
+        "deployer": "*"
+      },
+      "then_that": {
+        "http_post": {
+          "url": "https://stackpulse-b8fw.onrender.com/api/chainhooks/contract-deployed",
+          "authorization_header": "Bearer stackpulse-secret"
+        }
       }
-    ]
-  },
-  "action": {
-    "type": "http_post",
-    "url": "https://stackpulse-b8fw.onrender.com/api/chainhooks/contract-deployed"
-  },
-  "options": {
-    "decode_clarity_values": true,
-    "enable_on_registration": true
+    }
   }
 }
