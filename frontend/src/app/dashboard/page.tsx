@@ -77,7 +77,7 @@ export default function DashboardPage() {
 
         // Check V3 contract for user data
         const response = await fetch(
-          `https://api.mainnet.hiro.so/v2/contracts/call-read/${DEPLOYER_ADDRESS}/stackpulse-v3/get-user`,
+          `https://api.mainnet.hiro.so/v2/contracts/call-read/${DEPLOYER_ADDRESS}/stackpulse-v3-1/get-user`,
           {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },

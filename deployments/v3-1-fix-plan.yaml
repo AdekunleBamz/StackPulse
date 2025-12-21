@@ -1,0 +1,18 @@
+---
+id: 0
+name: V3-1 Fixed Contract Deployment
+network: mainnet
+stacks-node: "https://api.hiro.so"
+bitcoin-node: "http://blockstack:blockstacksystem@bitcoin.blockstack.com:8332"
+plan:
+  batches:
+    - id: 0
+      transactions:
+        - contract-publish:
+            contract-name: stackpulse-v3-1
+            expected-sender: SP3FKNEZ86RG5RT7SZ5FBRGH85FZNG94ZH1MCGG6N
+            cost: 1175047
+            path: contracts/stackpulse-v3-1.clar
+            anchor-block-only: true
+            clarity-version: 2
+      epoch: "2.5"
