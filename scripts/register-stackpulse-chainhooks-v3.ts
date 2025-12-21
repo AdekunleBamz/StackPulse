@@ -14,7 +14,7 @@ const WEBHOOK_BASE_URL = 'https://stackpulse-b8fw.onrender.com/api/chainhooks';
 
 // StackPulse V3 contract addresses
 const CONTRACTS = {
-  registry: 'SP3FKNEZ86RG5RT7SZ5FBRGH85FZNG94ZH1MCGG6N.stackpulse-v3',
+  registry: 'SP3FKNEZ86RG5RT7SZ5FBRGH85FZNG94ZH1MCGG6N.stackpulse-v3-1',
   alertManager: 'SP3FKNEZ86RG5RT7SZ5FBRGH85FZNG94ZH1MCGG6N.alert-manager-v3',
   feeVault: 'SP3FKNEZ86RG5RT7SZ5FBRGH85FZNG94ZH1MCGG6N.fee-vault-v3',
   badges: 'SP3FKNEZ86RG5RT7SZ5FBRGH85FZNG94ZH1MCGG6N.reputation-badges-v3',
