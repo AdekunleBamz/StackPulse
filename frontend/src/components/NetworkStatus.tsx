@@ -1,0 +1,181 @@
+'use client';
+
+import { useState, useEffect, useMemo } from 'react';
+import { Users, Activity, AlertTriangle, TrendingUp } from 'lucide-react';
+
+interface NetworkStats {
+  blockHeight: number;
+  txCount24h: number;
+  avgBlockTime: number;
+  hashRate: string;
+  difficulty: string;
+  stackingParticipation: number;
+  totalSTXLocked: number;
+  activeContracts: number;
+}
+
+interface NetworkStatusProps {
+  refreshInterval?: number;
+}
+
+export default function NetworkStatus({ refreshInterval = 30000 }: NetworkStatusProps) {
+  const [stats, setStats] = useState<NetworkStats | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [networkHealth, setNetworkHealth] = useState<'healthy' | 'degraded' | 'down'>('healthy');
+
+  useEffect(() => {
+    const fetchNetworkStats = async () => {
+      try {
+        // Fetch from Stacks API
+        const [infoRes, coreRes] = await Promise.all([
+          fetch('https://api.mainnet.hiro.so/extended/v1/info'),
+          fetch('https://api.mainnet.hiro.so/v2/info'),
+        ]);
+
+        if (!infoRes.ok || !coreRes.ok) {
+          throw new Error('Failed to fetch network data');
+        }
+
+        const [info, core] = await Promise.all([infoRes.json(), coreRes.json()]);
+
+        setStats({
+          blockHeight: core.stacks_tip_height || 0,
+          txCount24h: info.tx_count_per_24h || 0,
+          avgBlockTime: core.stacks_tip_consensus_hash ? 10 : 0, // Approximate
+          hashRate: 'N/A',
+          difficulty: 'N/A',
+          stackingParticipation: 0.45, // Approximate
+          totalSTXLocked: 400000000, // Approximate
+          activeContracts: info.smart_contract_count || 0,
+        });
+        setNetworkHealth('healthy');
+        setError(null);
+      } catch (err) {
+        console.error('Error fetching network stats:', err);
+        setError('Failed to fetch network data');
+        setNetworkHealth('degraded');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchNetworkStats();
+    const interval = setInterval(fetchNetworkStats, refreshInterval);
+    return () => clearInterval(interval);
+  }, [refreshInterval]);
+
+  const healthColor = useMemo(() => {
+    switch (networkHealth) {
+      case 'healthy':
+        return 'bg-green-500';
+      case 'degraded':
+        return 'bg-yellow-500';
+      case 'down':
+        return 'bg-red-500';
+    }
+  }, [networkHealth]);
+
+  const healthText = useMemo(() => {
+    switch (networkHealth) {
+      case 'healthy':
+        return 'Network Healthy';
+      case 'degraded':
+        return 'Degraded Performance';
+      case 'down':
+        return 'Network Issues';
+    }
+  }, [networkHealth]);
+
+  if (loading) {
+    return (
+      <div className="bg-gray-900/50 border border-gray-800 rounded-xl p-4 animate-pulse">
+        <div className="h-4 bg-gray-700 rounded w-1/3 mb-4"></div>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          {[1, 2, 3, 4].map((i) => (
+            <div key={i} className="h-16 bg-gray-800 rounded-lg"></div>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="bg-gray-900/50 border border-gray-800 rounded-xl p-4">
+      {/* Header */}
+      <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center gap-2">
+          <Activity className="w-5 h-5 text-purple-400" />
+          <h3 className="font-medium text-white">Stacks Network Status</h3>
+        </div>
+        <div className="flex items-center gap-2">
+          <span className={`w-2 h-2 rounded-full ${healthColor} animate-pulse`}></span>
+          <span className="text-sm text-gray-400">{healthText}</span>
+        </div>
+      </div>
+
+      {error ? (
+        <div className="flex items-center gap-2 p-4 bg-red-900/20 border border-red-800 rounded-lg">
+          <AlertTriangle className="w-5 h-5 text-red-400" />
+          <span className="text-red-400">{error}</span>
+        </div>
+      ) : stats ? (
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          {/* Block Height */}
+          <div className="bg-gray-800/50 rounded-lg p-3">
+            <div className="text-gray-400 text-xs mb-1">Block Height</div>
+            <div className="text-xl font-semibold text-white">
+              {stats.blockHeight.toLocaleString()}
+            </div>
+          </div>
+
+          {/* 24h Transactions */}
+          <div className="bg-gray-800/50 rounded-lg p-3">
+            <div className="text-gray-400 text-xs mb-1">24h Transactions</div>
+            <div className="text-xl font-semibold text-white">
+              {stats.txCount24h.toLocaleString()}
+            </div>
+          </div>
+
+          {/* Stacking Rate */}
+          <div className="bg-gray-800/50 rounded-lg p-3">
+            <div className="text-gray-400 text-xs mb-1">Stacking Rate</div>
+            <div className="text-xl font-semibold text-white">
+              {(stats.stackingParticipation * 100).toFixed(1)}%
+            </div>
+          </div>
+
+          {/* Active Contracts */}
+          <div className="bg-gray-800/50 rounded-lg p-3">
+            <div className="text-gray-400 text-xs mb-1">Smart Contracts</div>
+            <div className="text-xl font-semibold text-white">
+              {stats.activeContracts.toLocaleString()}
+            </div>
+          </div>
+        </div>
+      ) : null}
+
+      {/* Quick Links */}
+      <div className="mt-4 flex items-center gap-4 text-xs">
+        <a
+          href="https://explorer.hiro.so/?chain=mainnet"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-purple-400 hover:text-purple-300 flex items-center gap-1"
+        >
+          <TrendingUp className="w-3 h-3" />
+          Explorer
+        </a>
+        <a
+          href="https://stx.is/"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-purple-400 hover:text-purple-300 flex items-center gap-1"
+        >
+          <Users className="w-3 h-3" />
+          Stacking
+        </a>
+      </div>
+    </div>
+  );
+}
