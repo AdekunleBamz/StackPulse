@@ -1,0 +1,41 @@
+name: Clarity Check
+
+on:
+  push:
+    paths:
+      - 'contracts/**'
+      - 'Clarinet.toml'
+  pull_request:
+    paths:
+      - 'contracts/**'
+      - 'Clarinet.toml'
+
+jobs:
+  check:
+    name: Check Clarity Contracts
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Clarinet
+        uses: hirosystems/clarinet-action@v1
+        with:
+          clarinet-version: '2.4.1'
+
+      - name: Check contracts
+        run: clarinet check
+
+      - name: Run contract tests
+        run: clarinet test
+
+      - name: Analyze contracts
+        run: |
+          echo "## Contract Analysis" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          
+          for contract in contracts/*.clar; do
+            name=$(basename "$contract" .clar)
+            lines=$(wc -l < "$contract")
+            echo "- **$name**: $lines lines" >> $GITHUB_STEP_SUMMARY
+          done
