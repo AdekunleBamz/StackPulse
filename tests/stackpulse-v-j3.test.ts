@@ -19,7 +19,7 @@ const mockSimnet = {
 };
 
 describe('StackPulse V3 Registry', () => {
-  const contractName = 'stackpulse-v3';
+  const contractName = 'stackpulse-v-j3';
   
   describe('User Registration', () => {
     it('should register a new user with free tier', async () => {

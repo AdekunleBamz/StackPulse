@@ -9,67 +9,67 @@ requirements = [
 ]
 
 [contracts.stackpulse-registry]
-path = "contracts/stackpulse-registry.clar"
+path = "contracts/archive/stackpulse-registry.clar"
 clarity_version = 2
 epoch = 2.5
 
 [contracts.alert-manager]
-path = "contracts/alert-manager.clar"
+path = "contracts/archive/alert-manager.clar"
 clarity_version = 2
 epoch = 2.5
 
 [contracts.fee-vault]
-path = "contracts/fee-vault.clar"
+path = "contracts/archive/fee-vault.clar"
 clarity_version = 2
 epoch = 2.5
 
 [contracts.reputation-badges]
-path = "contracts/reputation-badges.clar"
+path = "contracts/archive/reputation-badges.clar"
 clarity_version = 2
 epoch = 2.5
 
 [contracts.stackpulse-v2]
-path = "contracts/stackpulse-v2.clar"
+path = "contracts/archive/stackpulse-v2.clar"
 clarity_version = 2
 epoch = 2.5
 
 [contracts.alert-manager-v2]
-path = "contracts/alert-manager-v2.clar"
+path = "contracts/archive/alert-manager-v2.clar"
 clarity_version = 2
 epoch = 2.5
 
 [contracts.fee-vault-v2]
-path = "contracts/fee-vault-v2.clar"
+path = "contracts/archive/fee-vault-v2.clar"
 clarity_version = 2
 epoch = 2.5
 
 [contracts.reputation-badges-v2]
-path = "contracts/reputation-badges-v2.clar"
+path = "contracts/archive/reputation-badges-v2.clar"
 clarity_version = 2
 epoch = 2.5
 
-[contracts.reputation-badges-v3]
-path = "contracts/reputation-badges-v3.clar"
+[contracts.reputation-badges-v-j3]
+path = "contracts/reputation-badges-v-j3.clar"
 clarity_version = 2
 epoch = 2.5
 
 [contracts.stackpulse-v3]
-path = "contracts/stackpulse-v3.clar"
+path = "contracts/archive/stackpulse-v3.clar"
 clarity_version = 2
 epoch = 2.5
 
-[contracts.stackpulse-v3-1]
-path = "contracts/stackpulse-v3-1.clar"
+[contracts.stackpulse-v-j3]
+path = "contracts/stackpulse-v-j3.clar"
 clarity_version = 2
 epoch = 2.5
 
-[contracts.alert-manager-v3]
-path = "contracts/alert-manager-v3.clar"
+[contracts.alert-manager-v-j3]
+path = "contracts/alert-manager-v-j3.clar"
 clarity_version = 2
 epoch = 2.5
 
-[contracts.fee-vault-v3]
-path = "contracts/fee-vault-v3.clar"
+[contracts.fee-vault-v-j3]
+path = "contracts/fee-vault-v-j3.clar"
 clarity_version = 2
 epoch = 2.5
 

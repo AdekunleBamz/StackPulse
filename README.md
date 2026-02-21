@@ -49,6 +49,13 @@ StackPulse/
 8. Fee Collected
 9. Badge Earned
 
+## Stacks.js Integration
+
+This project makes extensive use of the Stacks blockchain ecosystem tools:
+
+- **[`@stacks/connect`](https://github.com/hirosystems/stacks.js/tree/main/packages/connect)**: Used in `frontend/src/context/WalletContext.tsx` for wallet authentication and transaction signing capabilities.
+- **[`@stacks/transactions`](https://github.com/hirosystems/stacks.js/tree/main/packages/transactions)**: Used throughout the frontend (e.g., `Pricing.tsx`, `dashboard/page.tsx`) to build and format Clarity values (`uintCV`, `stringAsciiCV`, `principalCV`) before interacting with the StackPulse smart contracts.
+
 ## Getting Started
 
 ### Prerequisites

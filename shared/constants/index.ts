@@ -7,10 +7,10 @@
 // CONTRACT ADDRESSES
 // ============================================
 
-export const DEPLOYER_ADDRESS = 'SP3FKNEZ86RG5RT7SZ5FBRGH85FZNG94ZH1MCGG6N';
+export const DEPLOYER_ADDRESS = 'SP5K2RHMSBH4PAP4PGX77MCVNK1ZEED07CWX9TJT';
 
 export const CONTRACTS = {
-  REGISTRY: 'stackpulse-v3-1',
+  REGISTRY: 'stackpulse-v-j3',
   ALERT_MANAGER: 'alert-manager-v3',
   FEE_VAULT: 'fee-vault-v3',
   BADGES: 'reputation-badges-v3',

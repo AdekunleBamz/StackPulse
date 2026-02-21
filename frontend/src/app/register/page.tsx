@@ -43,7 +43,7 @@ export default function RegisterPage() {
       // V3 contract: register-and-subscribe in one step (tier 0 = free)
       await openContractCall({
         contractAddress: DEPLOYER_ADDRESS,
-        contractName: 'stackpulse-v3-1',
+        contractName: 'stackpulse-v-j3',
         functionName: 'register-and-subscribe',
         functionArgs: [
           stringAsciiCV(username),

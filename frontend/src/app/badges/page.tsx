@@ -152,7 +152,7 @@ export default function BadgesPage() {
           </p>
           <div className="flex justify-center gap-4">
             <a
-              href="https://explorer.hiro.so/address/SP3FKNEZ86RG5RT7SZ5FBRGH85FZNG94ZH1MCGG6N.reputation-badges-v3?chain=mainnet"
+              href="https://explorer.hiro.so/address/SP5K2RHMSBH4PAP4PGX77MCVNK1ZEED07CWX9TJT.reputation-badges-v3?chain=mainnet"
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center gap-2 px-6 py-3 bg-purple-600 hover:bg-purple-500 rounded-lg font-medium transition-all"

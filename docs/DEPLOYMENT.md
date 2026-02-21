@@ -65,8 +65,8 @@ plan:
     - id: 0
       transactions:
         - contract-publish:
-            contract-name: stackpulse-v3-1
-            path: contracts/stackpulse-v3-1.clar
+            contract-name: stackpulse-v-j3
+            path: contracts/stackpulse-v-j3.clar
             anchor-block-only: true
             cost: 500000
             
@@ -121,8 +121,8 @@ LOG_LEVEL=info
 CHAINHOOK_AUTH_TOKEN=your-secure-token
 
 # Contract Addresses
-DEPLOYER_ADDRESS=SP3FKNEZ86RG5RT7SZ5FBRGH85FZNG94ZH1MCGG6N
-REGISTRY_CONTRACT=stackpulse-v3-1
+DEPLOYER_ADDRESS=SP5K2RHMSBH4PAP4PGX77MCVNK1ZEED07CWX9TJT
+REGISTRY_CONTRACT=stackpulse-v-j3
 ALERT_CONTRACT=alert-manager-v3
 VAULT_CONTRACT=fee-vault-v3
 BADGE_CONTRACT=reputation-badges-v3
@@ -162,7 +162,7 @@ Configure Render health check:
 NEXT_PUBLIC_STACKS_NETWORK=mainnet
 
 # Contract Deployer
-NEXT_PUBLIC_DEPLOYER_ADDRESS=SP3FKNEZ86RG5RT7SZ5FBRGH85FZNG94ZH1MCGG6N
+NEXT_PUBLIC_DEPLOYER_ADDRESS=SP5K2RHMSBH4PAP4PGX77MCVNK1ZEED07CWX9TJT
 
 # Server URL
 NEXT_PUBLIC_SERVER_URL=https://stackpulse-b8fw.onrender.com

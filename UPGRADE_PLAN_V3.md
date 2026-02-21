@@ -23,17 +23,17 @@ Upgrading from StackPulse V2 to V3 involves:
 
 ### Deployed Contracts (Mainnet)
 ```
-Deployer: SP3FKNEZ86RG5RT7SZ5FBRGH85FZNG94ZH1MCGG6N
+Deployer: SP5K2RHMSBH4PAP4PGX77MCVNK1ZEED07CWX9TJT
 
 ✅ stackpulse-v2              - User registry & subscriptions
 ✅ alert-manager-v2          - Alert creation & management
 ✅ fee-vault-v2              - Fee collection
-✅ reputation-badges-v3      - Badge system (already on V3)
+✅ reputation-badges-v-j3      - Badge system (already on V3)
 ```
 
 ### Environment Variables (Current)
 ```
-NEXT_PUBLIC_DEPLOYER_ADDRESS=SP3FKNEZ86RG5RT7SZ5FBRGH85FZNG94ZH1MCGG6N
+NEXT_PUBLIC_DEPLOYER_ADDRESS=SP5K2RHMSBH4PAP4PGX77MCVNK1ZEED07CWX9TJT
 NEXT_PUBLIC_STACKS_NETWORK=mainnet
 ```
 
@@ -42,7 +42,7 @@ NEXT_PUBLIC_STACKS_NETWORK=mainnet
 1. StackPulse-Registrations    → stackpulse-v2
 2. StackPulse-AlertsTriggered  → alert-manager-v2
 3. StackPulse-FeesCollected    → fee-vault-v2
-4. StackPulse-BadgesEarned     → reputation-badges-v3
+4. StackPulse-BadgesEarned     → reputation-badges-v-j3
 + 5 more contract_call chainhooks
 ```
 
@@ -53,9 +53,9 @@ NEXT_PUBLIC_STACKS_NETWORK=mainnet
 ### Phase 1: Smart Contract Creation (V3 versions)
 
 **Files to Create:**
-- [x] `/contracts/stackpulse-v3.clar` - Enhanced user registry ✅ CREATED
-- [x] `/contracts/alert-manager-v3.clar` - Improved alert management ✅ CREATED
-- [x] `/contracts/fee-vault-v3.clar` - Enhanced fee collection ✅ CREATED
+- [x] `/contracts/stackpulse-v-j3.clar` - Enhanced user registry ✅ CREATED
+- [x] `/contracts/alert-manager-v-j3.clar` - Improved alert management ✅ CREATED
+- [x] `/contracts/fee-vault-v-j3.clar` - Enhanced fee collection ✅ CREATED
 
 **V3 Enhancement Areas:**
 - Better error handling ✅ Added more specific error codes
@@ -67,17 +67,17 @@ NEXT_PUBLIC_STACKS_NETWORK=mainnet
 
 **Commands to Execute:**
 ```bash
-# 1. Deploy stackpulse-v3
-clarinet contract publish stackpulse-v3 --network mainnet
+# 1. Deploy stackpulse-v-j3
+clarinet contract publish stackpulse-v-j3 --network mainnet
 
-# 2. Deploy alert-manager-v3
-clarinet contract publish alert-manager-v3 --network mainnet
+# 2. Deploy alert-manager-v-j3
+clarinet contract publish alert-manager-v-j3 --network mainnet
 
-# 3. Deploy fee-vault-v3
-clarinet contract publish fee-vault-v3 --network mainnet
+# 3. Deploy fee-vault-v-j3
+clarinet contract publish fee-vault-v-j3 --network mainnet
 ```
 
-**Output:** New contract addresses will be generated (e.g., `SP3F...stackpulse-v3`)
+**Output:** New contract addresses will be generated (e.g., `SP3F...stackpulse-v-j3`)
 
 ### Phase 3: Frontend Update
 
@@ -98,9 +98,9 @@ contractName: 'alert-manager-v2',
 contractName: 'fee-vault-v2',
 
 // NEW
-contractName: 'stackpulse-v3',
-contractName: 'alert-manager-v3',
-contractName: 'fee-vault-v3',
+contractName: 'stackpulse-v-j3',
+contractName: 'alert-manager-v-j3',
+contractName: 'fee-vault-v-j3',
 ```
 
 **2. In API calls, update:**
@@ -109,7 +109,7 @@ contractName: 'fee-vault-v3',
 `https://api.mainnet.hiro.so/v2/contracts/call-read/${DEPLOYER_ADDRESS}/stackpulse-v2/get-user`
 
 // NEW
-`https://api.mainnet.hiro.so/v2/contracts/call-read/${DEPLOYER_ADDRESS}/stackpulse-v3/get-user`
+`https://api.mainnet.hiro.so/v2/contracts/call-read/${DEPLOYER_ADDRESS}/stackpulse-v-j3/get-user`
 ```
 
 ### Phase 4: Backend Update
@@ -129,9 +129,9 @@ ALERT_CONTRACT=alert-manager-v2
 VAULT_CONTRACT=fee-vault-v2
 
 # NEW
-REGISTRY_CONTRACT=stackpulse-v3
-ALERT_CONTRACT=alert-manager-v3
-VAULT_CONTRACT=fee-vault-v3
+REGISTRY_CONTRACT=stackpulse-v-j3
+ALERT_CONTRACT=alert-manager-v-j3
+VAULT_CONTRACT=fee-vault-v-j3
 ```
 
 ### Phase 5: Chainhook Migration
@@ -140,21 +140,21 @@ VAULT_CONTRACT=fee-vault-v3
 
 Run the registration script with updated contracts:
 ```bash
-HIRO_API_KEY=e447aec3d7d0f623c90051728d2992fd npx ts-node scripts/register-stackpulse-chainhooks-v3.ts
+HIRO_API_KEY=e447aec3d7d0f623c90051728d2992fd npx ts-node scripts/register-stackpulse-chainhooks-v-j3.ts
 ```
 
 **Action Items:**
-1. ✅ Created `scripts/register-stackpulse-chainhooks-v3.ts` with V3 contract identifiers
+1. ✅ Created `scripts/register-stackpulse-chainhooks-v-j3.ts` with V3 contract identifiers
 2. Delete old V2 chainhooks (optional, but recommended for clean up)
 3. Register new V3 chainhooks
 
 **V3 Chainhook Predicates:**
 ```javascript
 CONTRACTS = {
-  registry: 'SP3F...stackpulse-v3',
-  alertManager: 'SP3F...alert-manager-v3',
-  feeVault: 'SP3F...fee-vault-v3',
-  badges: 'SP3F...reputation-badges-v3',
+  registry: 'SP3F...stackpulse-v-j3',
+  alertManager: 'SP3F...alert-manager-v-j3',
+  feeVault: 'SP3F...fee-vault-v-j3',
+  badges: 'SP3F...reputation-badges-v-j3',
 }
 ```
 
@@ -205,7 +205,7 @@ If V3 deployment has critical issues:
 
 | Aspect | V2 | V3 |
 |--------|-----|-----|
-| Contract Names | `stackpulse-v2` | `stackpulse-v3` |
+| Contract Names | `stackpulse-v2` | `stackpulse-v-j3` |
 | Addresses | `SP3F...` (V2 contracts) | `SP3F...` (new V3 contracts) |
 | Chainhooks | 9 registered for V2 | 9 new for V3 |
 | Frontend Refs | 15+ contract references | Updated to V3 |
@@ -216,9 +216,9 @@ If V3 deployment has critical issues:
 ## Files That Will Change
 
 ### Smart Contracts
-- [x] `contracts/stackpulse-v3.clar` (NEW) ✅ CREATED
-- [x] `contracts/alert-manager-v3.clar` (NEW) ✅ CREATED
-- [x] `contracts/fee-vault-v3.clar` (NEW) ✅ CREATED
+- [x] `contracts/stackpulse-v-j3.clar` (NEW) ✅ CREATED
+- [x] `contracts/alert-manager-v-j3.clar` (NEW) ✅ CREATED
+- [x] `contracts/fee-vault-v-j3.clar` (NEW) ✅ CREATED
 
 ### Frontend
 - [x] `frontend/src/app/register/page.tsx` ✅ UPDATED
@@ -230,7 +230,7 @@ If V3 deployment has critical issues:
 
 ### Backend
 - [x] `server/.env.example` ✅ UPDATED
-- [x] `scripts/register-stackpulse-chainhooks-v3.ts` (NEW) ✅ CREATED
+- [x] `scripts/register-stackpulse-chainhooks-v-j3.ts` (NEW) ✅ CREATED
 - [ ] `server/src/services/notifications.ts` (if contract-specific)
 
 ### Config
@@ -283,13 +283,13 @@ If V3 deployment has critical issues:
 
 ```bash
 # 1. Create V3 contracts (if not already created)
-# [Manual: Create stackpulse-v3.clar, alert-manager-v3.clar, fee-vault-v3.clar]
+# [Manual: Create stackpulse-v-j3.clar, alert-manager-v-j3.clar, fee-vault-v-j3.clar]
 
 # 2. Deploy V3 contracts
 cd /Users/apple/StackPulse
-clarinet contract publish stackpulse-v3 --network mainnet
-clarinet contract publish alert-manager-v3 --network mainnet
-clarinet contract publish fee-vault-v3 --network mainnet
+clarinet contract publish stackpulse-v-j3 --network mainnet
+clarinet contract publish alert-manager-v-j3 --network mainnet
+clarinet contract publish fee-vault-v-j3 --network mainnet
 
 # 3. Update frontend & backend environment
 # [Manual: Update contract references in frontend files]
@@ -303,10 +303,10 @@ cd ../server && npm run build && git push
 # (Render auto-deploys on git push)
 
 # 6. Register V3 chainhooks
-HIRO_API_KEY=e447aec3d7d0f623c90051728d2992fd npx ts-node scripts/register-stackpulse-chainhooks-v3.ts
+HIRO_API_KEY=e447aec3d7d0f623c90051728d2992fd npx ts-node scripts/register-stackpulse-chainhooks-v-j3.ts
 
 # 7. Run tests
-curl https://stackpulse-v3.vercel.app/health
+curl https://stackpulse-v-j3.vercel.app/health
 ```
 
 ---
@@ -317,9 +317,9 @@ This plan is complete and ready to execute. ✅ **CODE CHANGES IMPLEMENTED!**
 
 ### What's Been Done:
 1. ✅ Created 3 V3 smart contract files with all enhancements
-   - `contracts/stackpulse-v3.clar` - Enhanced user registry
-   - `contracts/alert-manager-v3.clar` - Improved alert management
-   - `contracts/fee-vault-v3.clar` - Enhanced fee collection
+   - `contracts/stackpulse-v-j3.clar` - Enhanced user registry
+   - `contracts/alert-manager-v-j3.clar` - Improved alert management
+   - `contracts/fee-vault-v-j3.clar` - Enhanced fee collection
 2. ✅ Updated 3 frontend files with V3 contract references
    - `frontend/src/app/register/page.tsx`
    - `frontend/src/app/dashboard/page.tsx`
@@ -327,7 +327,7 @@ This plan is complete and ready to execute. ✅ **CODE CHANGES IMPLEMENTED!**
 3. ✅ Updated backend configuration files
    - `server/.env.example`
 4. ✅ Created V3 chainhook registration script
-   - `scripts/register-stackpulse-chainhooks-v3.ts`
+   - `scripts/register-stackpulse-chainhooks-v-j3.ts`
 5. ✅ Updated `Clarinet.toml` with V3 contracts
 
 ### Remaining Manual Steps:
@@ -335,7 +335,7 @@ This plan is complete and ready to execute. ✅ **CODE CHANGES IMPLEMENTED!**
 2. ⏳ Update `server/.env` with V3 contract names (copy from .env.example)
 3. ⏳ Deploy frontend to Vercel
 4. ⏳ Deploy backend to Render
-5. ⏳ Register V3 chainhooks with: `HIRO_API_KEY=... npx ts-node scripts/register-stackpulse-chainhooks-v3.ts`
+5. ⏳ Register V3 chainhooks with: `HIRO_API_KEY=... npx ts-node scripts/register-stackpulse-chainhooks-v-j3.ts`
 6. ⏳ Verify all systems are working
 7. ⏳ Commit changes to git
 

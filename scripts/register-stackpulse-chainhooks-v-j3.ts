@@ -14,10 +14,10 @@ const WEBHOOK_BASE_URL = 'https://stackpulse-b8fw.onrender.com/api/chainhooks';
 
 // StackPulse V3 contract addresses
 const CONTRACTS = {
-  registry: 'SP3FKNEZ86RG5RT7SZ5FBRGH85FZNG94ZH1MCGG6N.stackpulse-v3-1',
-  alertManager: 'SP3FKNEZ86RG5RT7SZ5FBRGH85FZNG94ZH1MCGG6N.alert-manager-v3',
-  feeVault: 'SP3FKNEZ86RG5RT7SZ5FBRGH85FZNG94ZH1MCGG6N.fee-vault-v3',
-  badges: 'SP3FKNEZ86RG5RT7SZ5FBRGH85FZNG94ZH1MCGG6N.reputation-badges-v3',
+  registry: 'SP5K2RHMSBH4PAP4PGX77MCVNK1ZEED07CWX9TJT.stackpulse-v-j3',
+  alertManager: 'SP5K2RHMSBH4PAP4PGX77MCVNK1ZEED07CWX9TJT.alert-manager-v-j3',
+  feeVault: 'SP5K2RHMSBH4PAP4PGX77MCVNK1ZEED07CWX9TJT.fee-vault-v-j3',
+  badges: 'SP5K2RHMSBH4PAP4PGX77MCVNK1ZEED07CWX9TJT.reputation-badges-v-j3',
   alexDex: 'SP3K8BC0PPEVCV7NZ6QSRWPQ2JE9E5B6N3PA0KBR9.amm-swap-pool-v1-1'
 };
 
@@ -287,7 +287,7 @@ async function deleteChainhook(uuid: string): Promise<boolean> {
 async function main() {
   if (!API_KEY) {
     console.error('❌ HIRO_API_KEY environment variable is required');
-    console.error('   Usage: HIRO_API_KEY=your_key npx ts-node scripts/register-stackpulse-chainhooks-v3.ts');
+    console.error('   Usage: HIRO_API_KEY=your_key npx ts-node scripts/register-stackpulse-chainhooks-v-j3.ts');
     process.exit(1);
   }
 
