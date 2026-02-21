@@ -3,7 +3,11 @@ import { StacksMainnet } from '@stacks/network';
 import * as fs from 'fs';
 
 const network = new StacksMainnet();
-const DEPLOYER_KEY = '36d230b26febd3291768ada53aee49d8e395d3ef3c0b8598e4263b44338cf24a0101'; // Compressed PK format
+const DEPLOYER_KEY = process.env.DEPLOYER_KEY || ''; // DO NOT HARDCODE PRIVATE KEYS
+if (!DEPLOYER_KEY) {
+    console.error("Please set DEPLOYER_KEY environment variable.");
+    process.exit(1);
+}
 const AMOUNT_MICRO_STX = 38000; // 0.038 STX
 
 async function run() {
