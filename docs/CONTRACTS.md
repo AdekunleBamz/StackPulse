@@ -4,16 +4,16 @@
 
 StackPulse consists of four main smart contracts deployed on the Stacks blockchain:
 
-1. **stackpulse-v3-1** - User registry and subscription management
-2. **alert-manager-v3** - Alert creation and triggering
-3. **fee-vault-v3** - Fee collection and referral system
-4. **reputation-badges-v3** - NFT achievement badges (SIP-009)
+1. **stackpulse-v-j3** - User registry and subscription management
+2. **alert-manager-v-j3** - Alert creation and triggering
+3. **fee-vault-v-j3** - Fee collection and referral system
+4. **reputation-badges-v-j3** - NFT achievement badges (SIP-009)
 
 All contracts are deployed by: `SP3FKNEZ86RG5RT7SZ5FBRGH85FZNG94ZH1MCGG6N`
 
 ---
 
-## StackPulse Registry (stackpulse-v3-1)
+## StackPulse Registry (stackpulse-v-j3)
 
 ### Overview
 
@@ -124,7 +124,7 @@ Upgrade to a higher subscription tier.
 
 ---
 
-## Alert Manager (alert-manager-v3)
+## Alert Manager (alert-manager-v-j3)
 
 ### Overview
 
@@ -220,7 +220,7 @@ Manages user alerts and tracks trigger events.
 
 ---
 
-## Fee Vault (fee-vault-v3)
+## Fee Vault (fee-vault-v-j3)
 
 ### Overview
 
@@ -293,7 +293,7 @@ Handles subscription payments, platform fees, and referral rewards.
 
 ---
 
-## Reputation Badges (reputation-badges-v3)
+## Reputation Badges (reputation-badges-v-j3)
 
 ### Overview
 
@@ -366,7 +366,7 @@ import { stringAsciiCV, uintCV } from '@stacks/transactions';
 
 await openContractCall({
   contractAddress: 'SP3FKNEZ86RG5RT7SZ5FBRGH85FZNG94ZH1MCGG6N',
-  contractName: 'stackpulse-v3-1',
+  contractName: 'stackpulse-v-j3',
   functionName: 'register-and-subscribe',
   functionArgs: [
     stringAsciiCV('username'),
@@ -383,7 +383,7 @@ await openContractCall({
 ```javascript
 await openContractCall({
   contractAddress: 'SP3FKNEZ86RG5RT7SZ5FBRGH85FZNG94ZH1MCGG6N',
-  contractName: 'alert-manager-v3',
+  contractName: 'alert-manager-v-j3',
   functionName: 'create-alert',
   functionArgs: [
     uintCV(1), // Whale transfer
@@ -400,7 +400,7 @@ await openContractCall({
 
 ```javascript
 const response = await fetch(
-  `https://api.mainnet.hiro.so/v2/contracts/call-read/SP3FKNEZ86RG5RT7SZ5FBRGH85FZNG94ZH1MCGG6N/stackpulse-v3-1/get-user`,
+  `https://api.mainnet.hiro.so/v2/contracts/call-read/SP3FKNEZ86RG5RT7SZ5FBRGH85FZNG94ZH1MCGG6N/stackpulse-v-j3/get-user`,
   {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },

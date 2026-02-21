@@ -331,7 +331,7 @@ export default function BadgeShowcase({ userBadges = [] }: BadgeShowcaseProps) {
 
             {selectedBadge.earned && selectedBadge.tokenId && (
               <a
-                href={`https://explorer.hiro.so/txid/SP3FKNEZ86RG5RT7SZ5FBRGH85FZNG94ZH1MCGG6N.reputation-badges-v3?chain=mainnet`}
+                href={`https://explorer.hiro.so/txid/SP5K2RHMSBH4PAP4PGX77MCVNK1ZEED07CWX9TJT.reputation-badges-v-j3?chain=mainnet`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-full flex items-center justify-center gap-2 py-3 bg-purple-600 hover:bg-purple-500 rounded-lg text-white font-medium transition-all"

@@ -7,7 +7,7 @@ import { describe, it, expect, beforeEach } from 'vitest';
  */
 
 describe('Reputation Badges V3', () => {
-  const contractName = 'reputation-badges-v3';
+  const contractName = 'reputation-badges-v-j3';
   const BASE_URI = 'https://stackpulse.vercel.app/api/badges/';
 
   describe('SIP-009 Compliance', () => {
@@ -245,7 +245,7 @@ describe('Reputation Badges V3', () => {
 
     it('should allow contract-to-contract minting', async () => {
       // Other StackPulse contracts can mint badges
-      const stackpulseContract = 'stackpulse-v3';
+      const stackpulseContract = 'stackpulse-v-j3';
       const isAuthorized = true;
       
       expect(isAuthorized).toBe(true);

@@ -7,7 +7,7 @@ import { describe, it, expect, beforeEach } from 'vitest';
  */
 
 describe('Fee Vault V3', () => {
-  const contractName = 'fee-vault-v3';
+  const contractName = 'fee-vault-v-j3';
 
   describe('Subscription Fee Collection', () => {
     it('should collect 0 STX for Free tier', async () => {

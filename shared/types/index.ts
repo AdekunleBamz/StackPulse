@@ -323,7 +323,7 @@ export interface UserAnalytics {
 
 export type ContractName = 
   | 'stackpulse-v3'
-  | 'stackpulse-v3-1'
+  | 'stackpulse-v-j3'
   | 'alert-manager-v3'
   | 'fee-vault-v3'
   | 'reputation-badges-v3';

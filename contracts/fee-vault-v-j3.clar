@@ -28,9 +28,9 @@
 
 ;; Subscription prices in microSTX
 (define-constant PRICE-FREE u0)
-(define-constant PRICE-BASIC u5000000)       ;; 5 STX
-(define-constant PRICE-PRO u15000000)        ;; 15 STX  
-(define-constant PRICE-PREMIUM u45000000)    ;; 45 STX
+(define-constant PRICE-BASIC u10000)         ;; 0.01 STX
+(define-constant PRICE-PRO u150000)          ;; 0.15 STX  
+(define-constant PRICE-PREMIUM u450000)      ;; 0.45 STX
 
 ;; Platform fee percentage (10%)
 (define-constant PLATFORM-FEE-BPS u1000)     ;; 10% in basis points (1000/10000)

@@ -7,7 +7,7 @@ import { describe, it, expect, beforeEach } from 'vitest';
  */
 
 describe('Alert Manager V3', () => {
-  const contractName = 'alert-manager-v3';
+  const contractName = 'alert-manager-v-j3';
 
   describe('Alert Creation', () => {
     it('should create a whale transfer alert', async () => {

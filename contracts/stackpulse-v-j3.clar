@@ -34,9 +34,9 @@
 
 ;; Tier prices in microSTX
 (define-constant PRICE-FREE u0)
-(define-constant PRICE-BASIC u1000000)      ;; 1 STX
-(define-constant PRICE-PRO u5000000)        ;; 5 STX  
-(define-constant PRICE-PREMIUM u20000000)   ;; 20 STX
+(define-constant PRICE-BASIC u10000)        ;; 0.01 STX
+(define-constant PRICE-PRO u50000)          ;; 0.05 STX  
+(define-constant PRICE-PREMIUM u200000)     ;; 0.20 STX
 
 ;; Maximum valid tier
 (define-constant MAX-TIER u3)
