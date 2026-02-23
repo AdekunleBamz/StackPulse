@@ -1,7 +1,7 @@
 import { Router, Request, Response } from 'express';
 import { validateRequest, schemas } from '../middleware/validation';
 import { asyncHandler } from '../middleware/errorHandler';
-import { cache } from '../services/cache';
+import cache from '../services/cache';
 
 const router = Router();
 
@@ -69,17 +69,69 @@ router.get(
     }
 
     // Filter alerts by user
-    const userAlerts = Array.from(alerts.values())
+    let userAlerts = Array.from(alerts.values())
       .filter(alert => alert.userId === address)
       .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
 
+    // Pagination
+    const page = parseInt(req.query.page as string) || 1;
+    const limit = parseInt(req.query.limit as string) || 10;
+    const sortBy = req.query.sortBy as string || 'createdAt';
+    const sortOrder = req.query.sortOrder as string || 'desc';
+
+    // Apply sorting
+    userAlerts.sort((a, b) => {
+      let aVal: any, bVal: any;
+      
+      switch (sortBy) {
+        case 'name':
+          aVal = a.name.toLowerCase();
+          bVal = b.name.toLowerCase();
+          break;
+        case 'alertType':
+          aVal = a.alertType;
+          bVal = b.alertType;
+          break;
+        case 'enabled':
+          aVal = a.enabled ? 1 : 0;
+          bVal = b.enabled ? 1 : 0;
+          break;
+        case 'triggerCount':
+          aVal = a.triggerCount;
+          bVal = b.triggerCount;
+          break;
+        default:
+          aVal = a.createdAt.getTime();
+          bVal = b.createdAt.getTime();
+      }
+      
+      if (sortOrder === 'asc') {
+        return aVal > bVal ? 1 : -1;
+      }
+      return aVal < bVal ? 1 : -1;
+    });
+
+    // Calculate pagination
+    const total = userAlerts.length;
+    const totalPages = Math.ceil(total / limit);
+    const startIndex = (page - 1) * limit;
+    const endIndex = startIndex + limit;
+    const paginatedAlerts = userAlerts.slice(startIndex, endIndex);
+
     // Cache for 1 minute
-    cache.set(cacheKey, userAlerts, 60000);
+    cache.set(cacheKey, paginatedAlerts, 60000);
 
     res.json({
       success: true,
-      alerts: userAlerts,
-      count: userAlerts.length,
+      alerts: paginatedAlerts,
+      pagination: {
+        page,
+        limit,
+        total,
+        totalPages,
+        hasNext: page < totalPages,
+        hasPrev: page > 1
+      }
     });
   })
 );
