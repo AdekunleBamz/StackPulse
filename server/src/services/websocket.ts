@@ -1,304 +1,211 @@
-import { Server as HttpServer } from 'http';
-import { WebSocket, WebSocketServer } from 'ws';
+/**
+ * StackPulse WebSocket Service
+ * Provides real-time notifications to connected clients
+ */
+
+import { Server as HTTPServer } from 'http';
+import { WebSocketServer, WebSocket } from 'ws';
+import { IncomingMessage } from 'http';
 import logger from '../utils/logger';
 
-// Types
+// WebSocket connection types
 interface WSClient {
-  ws: WebSocket;
+  id: string;
+  socket: WebSocket;
   address?: string;
-  subscribedChannels: Set<string>;
-  lastPing: number;
-  isAlive: boolean;
+  subscriptions: Set<string>;
+  connectedAt: number;
 }
 
+// Message types
 interface WSMessage {
-  type: string;
-  channel?: string;
-  data?: any;
-  error?: string;
+  type: 'subscribe' | 'unsubscribe' | 'notification' | 'stats' | 'error' | 'ping' | 'pong';
+  data?: Record<string, unknown>;
+  subscription?: string;
 }
 
-// Event channels
-export const channels = {
-  WHALE_TRANSFERS: 'whale-transfers',
-  CONTRACT_DEPLOYS: 'contract-deploys',
-  NFT_MINTS: 'nft-mints',
-  TOKEN_LAUNCHES: 'token-launches',
-  LARGE_SWAPS: 'large-swaps',
-  ALERTS: 'alerts',
-  BLOCKS: 'blocks',
-  PRICES: 'prices',
-};
-
-// WebSocket server singleton
-let wss: WebSocketServer | null = null;
+// Active connections
 const clients: Map<string, WSClient> = new Map();
 
-// Heartbeat interval
-const HEARTBEAT_INTERVAL = 30000;
-const CLIENT_TIMEOUT = 60000;
+// Broadcast to all connected clients
+export function broadcastNotification(notification: Record<string, unknown>): void {
+  const message: WSMessage = {
+    type: 'notification',
+    data: notification
+  };
 
-/**
- * Initialize WebSocket server
- */
-export function initWebSocket(server: HttpServer): WebSocketServer {
-  if (wss) {
-    return wss;
-  }
+  const messageStr = JSON.stringify(message);
+  
+  clients.forEach((client) => {
+    if (client.socket.readyState === WebSocket.OPEN) {
+      client.socket.send(messageStr);
+    }
+  });
+  
+  logger.debug('Broadcast notification', { type: notification.type });
+}
 
-  wss = new WebSocketServer({ 
+// Broadcast stats update
+export function broadcastStats(stats: Record<string, unknown>): void {
+  const message: WSMessage = {
+    type: 'stats',
+    data: stats
+  };
+
+  const messageStr = JSON.stringify(message);
+  
+  clients.forEach((client) => {
+    if (client.socket.readyState === WebSocket.OPEN) {
+      client.socket.send(messageStr);
+    }
+  });
+}
+
+// Send to specific address
+export function sendToAddress(address: string, message: WSMessage): boolean {
+  let sent = false;
+  
+  clients.forEach((client) => {
+    if (client.address === address && client.socket.readyState === WebSocket.OPEN) {
+      client.socket.send(JSON.stringify(message));
+      sent = true;
+    }
+  });
+  
+  return sent;
+}
+
+// Initialize WebSocket server
+export function initWebSocket(server: HTTPServer): WebSocketServer {
+  const wss = new WebSocketServer({ 
     server,
-    path: '/ws',
-    clientTracking: true,
+    path: '/ws'
   });
 
-  logger.info('WebSocket server initialized');
-
-  wss.on('connection', (ws: WebSocket, req) => {
-    const clientId = `ws-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
-    
+  wss.on('connection', (ws: WebSocket, req: IncomingMessage) => {
+    const clientId = generateClientId();
     const client: WSClient = {
-      ws,
-      subscribedChannels: new Set(),
-      lastPing: Date.now(),
-      isAlive: true,
+      id: clientId,
+      socket: ws,
+      subscriptions: new Set<string>(),
+      connectedAt: Date.now()
     };
     
     clients.set(clientId, client);
     
-    logger.info(`WebSocket client connected: ${clientId}`);
-
+    logger.info('WebSocket client connected', { clientId, ip: req.socket.remoteAddress });
+    
     // Send welcome message
-    send(ws, {
-      type: 'connected',
+    ws.send(JSON.stringify({
+      type: 'notification',
       data: {
-        clientId,
-        availableChannels: Object.values(channels),
-        message: 'Welcome to StackPulse real-time updates',
-      },
-    });
-
-    // Handle messages
+        title: 'Connected to StackPulse',
+        message: 'Real-time notifications enabled',
+        connectedAt: client.connectedAt
+      }
+    }));
+    
+    // Handle incoming messages
     ws.on('message', (data: Buffer) => {
       try {
-        const message = JSON.parse(data.toString()) as WSMessage;
-        handleMessage(clientId, client, message);
+        const message: WSMessage = JSON.parse(data.toString());
+        handleMessage(client, message);
       } catch (error) {
-        send(ws, {
+        logger.error('WebSocket message parse error', { error });
+        ws.send(JSON.stringify({
           type: 'error',
-          error: 'Invalid message format',
-        });
+          data: { message: 'Invalid message format' }
+        }));
       }
     });
-
-    // Handle pong (heartbeat response)
-    ws.on('pong', () => {
-      client.isAlive = true;
-      client.lastPing = Date.now();
-    });
-
-    // Handle close
+    
+    // Handle disconnection
     ws.on('close', () => {
       clients.delete(clientId);
-      logger.info(`WebSocket client disconnected: ${clientId}`);
+      logger.info('WebSocket client disconnected', { clientId });
     });
-
+    
     // Handle errors
-    ws.on('error', (error) => {
-      logger.error(`WebSocket error for ${clientId}:`, error);
+    ws.on('error', (error: Error) => {
+      logger.error('WebSocket error', { clientId, error });
       clients.delete(clientId);
     });
+    
+    // Send ping every 30 seconds
+    const pingInterval = setInterval(() => {
+      if (ws.readyState === WebSocket.OPEN) {
+        ws.ping();
+      } else {
+        clearInterval(pingInterval);
+      }
+    }, 30000);
   });
 
-  // Start heartbeat interval
-  setInterval(() => {
-    heartbeat();
-  }, HEARTBEAT_INTERVAL);
-
+  logger.info('WebSocket server initialized');
   return wss;
 }
 
-/**
- * Handle incoming WebSocket message
- */
-function handleMessage(clientId: string, client: WSClient, message: WSMessage): void {
+// Handle incoming WebSocket messages
+function handleMessage(client: WSClient, message: WSMessage): void {
+  const { socket } = client;
+  
   switch (message.type) {
     case 'subscribe':
-      if (message.channel && Object.values(channels).includes(message.channel)) {
-        client.subscribedChannels.add(message.channel);
-        send(client.ws, {
-          type: 'subscribed',
-          channel: message.channel,
-        });
-        logger.debug(`Client ${clientId} subscribed to ${message.channel}`);
-      } else {
-        send(client.ws, {
-          type: 'error',
-          error: `Invalid channel: ${message.channel}`,
-        });
+      if (message.subscription) {
+        client.subscriptions.add(message.subscription);
+        socket.send(JSON.stringify({
+          type: 'notification',
+          data: {
+            title: 'Subscribed',
+            message: `Now tracking: ${message.subscription}`
+          }
+        }));
+        logger.debug('Client subscribed', { clientId: client.id, subscription: message.subscription });
       }
       break;
-
+      
     case 'unsubscribe':
-      if (message.channel) {
-        client.subscribedChannels.delete(message.channel);
-        send(client.ws, {
-          type: 'unsubscribed',
-          channel: message.channel,
-        });
-        logger.debug(`Client ${clientId} unsubscribed from ${message.channel}`);
+      if (message.subscription) {
+        client.subscriptions.delete(message.subscription);
+        socket.send(JSON.stringify({
+          type: 'notification',
+          data: {
+            title: 'Unsubscribed',
+            message: `No longer tracking: ${message.subscription}`
+          }
+        }));
+        logger.debug('Client unsubscribed', { clientId: client.id, subscription: message.subscription });
       }
       break;
-
-    case 'auth':
-      // Authenticate user for personalized alerts
-      if (message.data?.address) {
-        client.address = message.data.address;
-        send(client.ws, {
-          type: 'authenticated',
-          data: { address: message.data.address },
-        });
-        logger.debug(`Client ${clientId} authenticated as ${message.data.address}`);
-      }
-      break;
-
+      
     case 'ping':
-      send(client.ws, { type: 'pong' });
+      socket.send(JSON.stringify({ type: 'pong' }));
       break;
-
+      
     default:
-      send(client.ws, {
-        type: 'error',
-        error: `Unknown message type: ${message.type}`,
-      });
+      logger.warn('Unknown WebSocket message type', { clientId: client.id, type: message.type });
   }
 }
 
-/**
- * Send message to a WebSocket client
- */
-function send(ws: WebSocket, message: WSMessage): void {
-  if (ws.readyState === WebSocket.OPEN) {
-    ws.send(JSON.stringify(message));
-  }
+// Generate unique client ID
+function generateClientId(): string {
+  return `ws_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`;
 }
 
-/**
- * Broadcast message to all clients subscribed to a channel
- */
-export function broadcast(channel: string, data: any): void {
-  let count = 0;
-  
-  for (const [clientId, client] of clients) {
-    if (client.ws.readyState === WebSocket.OPEN && client.subscribedChannels.has(channel)) {
-      send(client.ws, {
-        type: 'event',
-        channel,
-        data,
-      });
-      count++;
-    }
-  }
-
-  logger.debug(`Broadcast to ${count} clients on channel ${channel}`);
+// Get connected client count
+export function getClientCount(): number {
+  return clients.size;
 }
 
-/**
- * Send message to a specific user by address
- */
-export function sendToUser(address: string, message: WSMessage): void {
-  for (const [clientId, client] of clients) {
-    if (client.address === address && client.ws.readyState === WebSocket.OPEN) {
-      send(client.ws, message);
-    }
-  }
-}
-
-/**
- * Send alert to a specific user
- */
-export function sendAlert(address: string, alert: any): void {
-  sendToUser(address, {
-    type: 'alert',
-    channel: channels.ALERTS,
-    data: alert,
+// Get client stats
+export function getClientStats(): { connected: number; subscriptions: number } {
+  let subscriptions = 0;
+  clients.forEach(client => {
+    subscriptions += client.subscriptions.size;
   });
-}
-
-/**
- * Heartbeat to keep connections alive and cleanup dead ones
- */
-function heartbeat(): void {
-  const now = Date.now();
   
-  for (const [clientId, client] of clients) {
-    // Check if client has timed out
-    if (now - client.lastPing > CLIENT_TIMEOUT) {
-      logger.info(`Client ${clientId} timed out, terminating`);
-      client.ws.terminate();
-      clients.delete(clientId);
-      continue;
-    }
-
-    // Check if previous ping was not responded to
-    if (!client.isAlive) {
-      logger.info(`Client ${clientId} not responding, terminating`);
-      client.ws.terminate();
-      clients.delete(clientId);
-      continue;
-    }
-
-    // Send ping
-    client.isAlive = false;
-    client.ws.ping();
-  }
-}
-
-/**
- * Get WebSocket server stats
- */
-export function getStats(): {
-  totalClients: number;
-  clientsByChannel: Record<string, number>;
-  authenticatedClients: number;
-} {
-  const stats = {
-    totalClients: clients.size,
-    clientsByChannel: {} as Record<string, number>,
-    authenticatedClients: 0,
+  return {
+    connected: clients.size,
+    subscriptions
   };
-
-  // Initialize channel counts
-  for (const channel of Object.values(channels)) {
-    stats.clientsByChannel[channel] = 0;
-  }
-
-  // Count clients
-  for (const [, client] of clients) {
-    if (client.address) {
-      stats.authenticatedClients++;
-    }
-    for (const channel of client.subscribedChannels) {
-      stats.clientsByChannel[channel] = (stats.clientsByChannel[channel] || 0) + 1;
-    }
-  }
-
-  return stats;
 }
-
-/**
- * Get the WebSocket server instance
- */
-export function getWSS(): WebSocketServer | null {
-  return wss;
-}
-
-export default {
-  initWebSocket,
-  broadcast,
-  sendToUser,
-  sendAlert,
-  getStats,
-  getWSS,
-  channels,
-};
