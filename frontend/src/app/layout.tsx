@@ -21,7 +21,6 @@ export const metadata: Metadata = {
     shortcut: "/favicon.svg",
     apple: "/favicon.svg",
   },
-},
 };
 
 export default function RootLayout({
