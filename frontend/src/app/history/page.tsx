@@ -123,7 +123,7 @@ export default function HistoryPage() {
             {recentTriggers.map((trigger) => {
               const typeInfo = alertTypeInfo.find(t => t.id === trigger.type);
               const timeAgo = Math.floor((Date.now() - trigger.triggeredAt.getTime()) / 60000);
-              
+
               return (
                 <div
                   key={trigger.id}
@@ -139,9 +139,9 @@ export default function HistoryPage() {
                         </span>
                       </div>
                       <p className="text-sm text-gray-400">
-                        {trigger.type === 1 && `${(trigger.amount / 1000).toFixed(0)}k STX transferred`}
-                        {trigger.type === 2 && `Contract: ${trigger.contractName}`}
-                        {trigger.type === 3 && `Collection: ${trigger.collection}`}
+                        {trigger.type === 1 && trigger.amount !== undefined && `${(trigger.amount / 1000).toFixed(0)}k STX transferred`}
+                        {trigger.type === 2 && trigger.contractName && `Contract: ${trigger.contractName}`}
+                        {trigger.type === 3 && trigger.collection && `Collection: ${trigger.collection}`}
                       </p>
                     </div>
                     <a
@@ -172,7 +172,7 @@ export default function HistoryPage() {
             {alertTypeInfo.map((type) => {
               const count = Math.floor(Math.random() * 200) + 50;
               const percentage = Math.floor((count / stats.totalTriggers) * 100);
-              
+
               return (
                 <div
                   key={type.id}
@@ -204,7 +204,7 @@ export default function HistoryPage() {
               {Array.from({ length: 24 }).map((_, i) => {
                 const height = Math.random() * 80 + 20;
                 const hour = (new Date().getHours() - 23 + i + 24) % 24;
-                
+
                 return (
                   <div key={i} className="flex-1 flex flex-col items-center">
                     <div
