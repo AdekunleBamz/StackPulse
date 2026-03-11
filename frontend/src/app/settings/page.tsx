@@ -214,7 +214,7 @@ export default function SettingsPage() {
 
   if (!isConnected) {
     return (
-      <div className="min-h-screen bg-gray-950 flex items-center justify-center">
+      <main id="main" className="min-h-screen bg-gray-950 flex items-center justify-center">
         <div className="text-center">
           <Settings className="w-16 h-16 text-gray-600 mx-auto mb-4" />
           <h2 className="text-2xl font-bold text-white mb-2">Connect Wallet</h2>
@@ -223,7 +223,7 @@ export default function SettingsPage() {
             Go to Home
           </Link>
         </div>
-      </div>
+      </main>
     );
   }
 
