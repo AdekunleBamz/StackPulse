@@ -91,136 +91,138 @@ export default function HistoryPage() {
         </div>
       </header>
 
-      {/* Stats */}
-      <section className="py-8 border-b border-gray-800">
-        <div className="container mx-auto px-4">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div className="bg-gray-900/50 border border-gray-800 rounded-xl p-4">
-              <div className="text-2xl font-bold text-white">{stats.totalTriggers}</div>
-              <div className="text-gray-400 text-sm">Total Triggers</div>
-            </div>
-            <div className="bg-gray-900/50 border border-gray-800 rounded-xl p-4">
-              <div className="text-2xl font-bold text-green-400">{stats.todayTriggers}</div>
-              <div className="text-gray-400 text-sm">Today</div>
-            </div>
-            <div className="bg-gray-900/50 border border-gray-800 rounded-xl p-4">
-              <div className="text-2xl font-bold text-purple-400">{stats.avgPerDay}</div>
-              <div className="text-gray-400 text-sm">Avg / Day</div>
-            </div>
-            <div className="bg-gray-900/50 border border-gray-800 rounded-xl p-4">
-              <div className="text-lg font-bold text-blue-400">🐋 {stats.topType}</div>
-              <div className="text-gray-400 text-sm">Top Alert Type</div>
+      <main id="main">
+        {/* Stats */}
+        <section className="py-8 border-b border-gray-800">
+          <div className="container mx-auto px-4">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <div className="bg-gray-900/50 border border-gray-800 rounded-xl p-4">
+                <div className="text-2xl font-bold text-white">{stats.totalTriggers}</div>
+                <div className="text-gray-400 text-sm">Total Triggers</div>
+              </div>
+              <div className="bg-gray-900/50 border border-gray-800 rounded-xl p-4">
+                <div className="text-2xl font-bold text-green-400">{stats.todayTriggers}</div>
+                <div className="text-gray-400 text-sm">Today</div>
+              </div>
+              <div className="bg-gray-900/50 border border-gray-800 rounded-xl p-4">
+                <div className="text-2xl font-bold text-purple-400">{stats.avgPerDay}</div>
+                <div className="text-gray-400 text-sm">Avg / Day</div>
+              </div>
+              <div className="bg-gray-900/50 border border-gray-800 rounded-xl p-4">
+                <div className="text-lg font-bold text-blue-400">🐋 {stats.topType}</div>
+                <div className="text-gray-400 text-sm">Top Alert Type</div>
+              </div>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* Recent Triggers */}
-      <section className="py-8">
-        <div className="container mx-auto px-4">
-          <h2 className="text-xl font-semibold mb-4">Recent Triggers</h2>
-          <div className="grid gap-4 mb-8">
-            {recentTriggers.map((trigger) => {
-              const typeInfo = alertTypeInfo.find(t => t.id === trigger.type);
-              const timeAgo = Math.floor((Date.now() - trigger.triggeredAt.getTime()) / 60000);
-
-              return (
-                <div
-                  key={trigger.id}
-                  className="bg-gray-900/50 border border-gray-800 rounded-xl p-4 hover:border-gray-700 transition-all"
-                >
-                  <div className="flex items-center gap-4">
-                    <span className="text-3xl">{typeInfo?.icon}</span>
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2">
-                        <h3 className="font-medium text-white truncate">{trigger.alertName}</h3>
-                        <span className="text-xs text-gray-500">
-                          {timeAgo < 60 ? `${timeAgo}m ago` : `${Math.floor(timeAgo / 60)}h ago`}
-                        </span>
-                      </div>
-                      <p className="text-sm text-gray-400">
-                        {trigger.type === 1 && trigger.amount !== undefined && `${(trigger.amount / 1000).toFixed(0)}k STX transferred`}
-                        {trigger.type === 2 && trigger.contractName && `Contract: ${trigger.contractName}`}
-                        {trigger.type === 3 && trigger.collection && `Collection: ${trigger.collection}`}
-                      </p>
-                    </div>
-                    <a
-                      href={`https://explorer.hiro.so/txid/${trigger.txHash}?chain=mainnet`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center gap-1 text-purple-400 hover:text-purple-300 text-sm"
-                    >
-                      View TX
-                      <ExternalLink className="w-3 h-3" />
-                    </a>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-
-          {/* Full History Table */}
-          <AlertHistory />
-        </div>
-      </section>
-
-      {/* Alert Type Breakdown */}
-      <section className="py-8 bg-gray-900/30">
-        <div className="container mx-auto px-4">
-          <h2 className="text-xl font-semibold mb-6">Triggers by Type</h2>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-            {alertTypeInfo.map((type) => {
-              const count = Math.floor(Math.random() * 200) + 50;
-              const percentage = Math.floor((count / stats.totalTriggers) * 100);
-
-              return (
-                <div
-                  key={type.id}
-                  className="bg-gray-900/50 border border-gray-800 rounded-xl p-4 text-center"
-                >
-                  <span className="text-3xl mb-2 block">{type.icon}</span>
-                  <div className="text-xl font-bold text-white">{count}</div>
-                  <div className="text-sm text-gray-400">{type.name}</div>
-                  <div className="mt-2 h-1.5 bg-gray-800 rounded-full overflow-hidden">
-                    <div
-                      className="h-full bg-purple-500"
-                      style={{ width: `${percentage}%` }}
-                    />
-                  </div>
-                  <div className="text-xs text-gray-500 mt-1">{percentage}%</div>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      </section>
-
-      {/* Activity Timeline */}
-      <section className="py-8">
-        <div className="container mx-auto px-4">
-          <h2 className="text-xl font-semibold mb-6">Activity Timeline (Last 24h)</h2>
-          <div className="bg-gray-900/50 border border-gray-800 rounded-xl p-6">
-            <div className="h-40 flex items-end gap-1">
-              {Array.from({ length: 24 }).map((_, i) => {
-                const height = Math.random() * 80 + 20;
-                const hour = (new Date().getHours() - 23 + i + 24) % 24;
+        {/* Recent Triggers */}
+        <section className="py-8">
+          <div className="container mx-auto px-4">
+            <h2 className="text-xl font-semibold mb-4">Recent Triggers</h2>
+            <div className="grid gap-4 mb-8">
+              {recentTriggers.map((trigger) => {
+                const typeInfo = alertTypeInfo.find(t => t.id === trigger.type);
+                const timeAgo = Math.floor((Date.now() - trigger.triggeredAt.getTime()) / 60000);
 
                 return (
-                  <div key={i} className="flex-1 flex flex-col items-center">
-                    <div
-                      className="w-full bg-gradient-to-t from-purple-600 to-purple-400 rounded-t"
-                      style={{ height: `${height}%` }}
-                    />
-                    {i % 4 === 0 && (
-                      <span className="text-xs text-gray-500 mt-2">{hour}:00</span>
-                    )}
+                  <div
+                    key={trigger.id}
+                    className="bg-gray-900/50 border border-gray-800 rounded-xl p-4 hover:border-gray-700 transition-all"
+                  >
+                    <div className="flex items-center gap-4">
+                      <span className="text-3xl">{typeInfo?.icon}</span>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2">
+                          <h3 className="font-medium text-white truncate">{trigger.alertName}</h3>
+                          <span className="text-xs text-gray-500">
+                            {timeAgo < 60 ? `${timeAgo}m ago` : `${Math.floor(timeAgo / 60)}h ago`}
+                          </span>
+                        </div>
+                        <p className="text-sm text-gray-400">
+                          {trigger.type === 1 && trigger.amount !== undefined && `${(trigger.amount / 1000).toFixed(0)}k STX transferred`}
+                          {trigger.type === 2 && trigger.contractName && `Contract: ${trigger.contractName}`}
+                          {trigger.type === 3 && trigger.collection && `Collection: ${trigger.collection}`}
+                        </p>
+                      </div>
+                      <a
+                        href={`https://explorer.hiro.so/txid/${trigger.txHash}?chain=mainnet`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-1 text-purple-400 hover:text-purple-300 text-sm"
+                      >
+                        View TX
+                        <ExternalLink className="w-3 h-3" />
+                      </a>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* Full History Table */}
+            <AlertHistory />
+          </div>
+        </section>
+
+        {/* Alert Type Breakdown */}
+        <section className="py-8 bg-gray-900/30">
+          <div className="container mx-auto px-4">
+            <h2 className="text-xl font-semibold mb-6">Triggers by Type</h2>
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+              {alertTypeInfo.map((type) => {
+                const count = Math.floor(Math.random() * 200) + 50;
+                const percentage = Math.floor((count / stats.totalTriggers) * 100);
+
+                return (
+                  <div
+                    key={type.id}
+                    className="bg-gray-900/50 border border-gray-800 rounded-xl p-4 text-center"
+                  >
+                    <span className="text-3xl mb-2 block">{type.icon}</span>
+                    <div className="text-xl font-bold text-white">{count}</div>
+                    <div className="text-sm text-gray-400">{type.name}</div>
+                    <div className="mt-2 h-1.5 bg-gray-800 rounded-full overflow-hidden">
+                      <div
+                        className="h-full bg-purple-500"
+                        style={{ width: `${percentage}%` }}
+                      />
+                    </div>
+                    <div className="text-xs text-gray-500 mt-1">{percentage}%</div>
                   </div>
                 );
               })}
             </div>
           </div>
-        </div>
-      </section>
+        </section>
+
+        {/* Activity Timeline */}
+        <section className="py-8">
+          <div className="container mx-auto px-4">
+            <h2 className="text-xl font-semibold mb-6">Activity Timeline (Last 24h)</h2>
+            <div className="bg-gray-900/50 border border-gray-800 rounded-xl p-6">
+              <div className="h-40 flex items-end gap-1">
+                {Array.from({ length: 24 }).map((_, i) => {
+                  const height = Math.random() * 80 + 20;
+                  const hour = (new Date().getHours() - 23 + i + 24) % 24;
+
+                  return (
+                    <div key={i} className="flex-1 flex flex-col items-center">
+                      <div
+                        className="w-full bg-gradient-to-t from-purple-600 to-purple-400 rounded-t"
+                        style={{ height: `${height}%` }}
+                      />
+                      {i % 4 === 0 && (
+                        <span className="text-xs text-gray-500 mt-2">{hour}:00</span>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
     </div>
   );
 }
