@@ -41,6 +41,7 @@ export default function CopyButton({
       className={cn(
         'inline-flex items-center justify-center rounded-lg border border-gray-700 bg-gray-800/60',
         'h-9 w-9 text-gray-200 hover:bg-gray-700 transition-colors',
+        'focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400/90',
         className
       )}
       aria-label={copied ? copiedLabel : label}
@@ -50,4 +51,3 @@ export default function CopyButton({
     </button>
   );
 }
-
