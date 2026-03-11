@@ -461,18 +461,23 @@ export default function Pricing() {
                   <div className="w-12 h-12 rounded-full bg-blue-600 flex items-center justify-center">
                     <span className="text-white text-xl">@</span>
                   </div>
-                  <div className="flex-1">
-                    <h3 className="text-white font-semibold">2. Choose Username</h3>
-                    <input
-                      type="text"
-                      value={username}
-                      onChange={(e) => setUsername(e.target.value)}
-                      placeholder="Enter your username"
-                      maxLength={32}
-                      className="mt-1 w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-white placeholder-gray-400 focus:outline-none focus:border-purple-500"
-                    />
-                  </div>
-                </div>
+	                  <div className="flex-1">
+	                    <h3 className="text-white font-semibold">2. Choose Username</h3>
+	                    <input
+	                      type="text"
+	                      value={username}
+	                      onChange={(e) => setUsername(e.target.value.toLowerCase())}
+	                      placeholder="Enter your username"
+	                      maxLength={32}
+	                      autoComplete="username"
+	                      spellCheck={false}
+	                      className="mt-1 w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-white placeholder-gray-400 focus:outline-none focus:border-purple-500"
+	                    />
+	                    <p className="mt-1 text-xs text-gray-500">
+	                      3–32 characters, letters/numbers/underscores only
+	                    </p>
+	                  </div>
+	                </div>
 
                 {/* Optional: Email */}
                 <div className="flex items-center gap-4 bg-gray-800/50 rounded-xl p-4">
