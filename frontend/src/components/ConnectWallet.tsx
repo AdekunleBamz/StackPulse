@@ -101,7 +101,11 @@ export default function ConnectWallet() {
             <div className="flex gap-2 mt-2">
               <button
                 type="button"
-                onClick={() => switchNetwork('mainnet')}
+                onClick={() => {
+                  switchNetwork('mainnet');
+                  setShowDropdown(false);
+                }}
+                aria-pressed={network === 'mainnet'}
                 className={`px-3 py-1 rounded-lg text-xs font-medium transition-colors ${
                   network === 'mainnet'
                     ? 'bg-purple-600 text-white'
@@ -112,7 +116,11 @@ export default function ConnectWallet() {
               </button>
               <button
                 type="button"
-                onClick={() => switchNetwork('testnet')}
+                onClick={() => {
+                  switchNetwork('testnet');
+                  setShowDropdown(false);
+                }}
+                aria-pressed={network === 'testnet'}
                 className={`px-3 py-1 rounded-lg text-xs font-medium transition-colors ${
                   network === 'testnet'
                     ? 'bg-purple-600 text-white'
