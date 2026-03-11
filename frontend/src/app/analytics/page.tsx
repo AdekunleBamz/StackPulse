@@ -84,17 +84,32 @@ const EventTypeCard = ({
   count: number;
   icon: string;
   color: string;
-}) => (
-  <div className={`bg-gray-800/30 border border-gray-700 rounded-lg p-4 hover:bg-gray-800/50 transition-all`}>
-    <div className="flex items-center gap-3">
-      <span className="text-2xl">{icon}</span>
-      <div>
-        <p className="text-white font-medium">{type}</p>
-        <p className="text-gray-400 text-sm">{count.toLocaleString()} events</p>
+}) => {
+  const accent =
+    {
+      blue: 'border-blue-500/20 hover:border-blue-500/30',
+      purple: 'border-purple-500/20 hover:border-purple-500/30',
+      pink: 'border-pink-500/20 hover:border-pink-500/30',
+      yellow: 'border-yellow-500/20 hover:border-yellow-500/30',
+      green: 'border-green-500/20 hover:border-green-500/30',
+    }[color] || 'border-gray-700 hover:border-gray-600';
+
+  return (
+    <div
+      className={`bg-gray-800/30 border ${accent} rounded-lg p-4 hover:bg-gray-800/50 transition-all`}
+    >
+      <div className="flex items-center gap-3">
+        <span className="text-2xl" aria-hidden="true">
+          {icon}
+        </span>
+        <div>
+          <p className="text-white font-medium">{type}</p>
+          <p className="text-gray-400 text-sm">{count.toLocaleString()} events</p>
+        </div>
       </div>
     </div>
-  </div>
-);
+  );
+};
 
 export default function AnalyticsPage() {
   const { isConnected, address } = useWallet();
