@@ -423,7 +423,10 @@ export default function DashboardPage() {
 	          <div className="flex items-center justify-between mb-4">
 	            <h2 className="text-xl font-bold text-white">Available Alert Types</h2>
 	            <Button
-	              onClick={() => setShowCreateAlert(true)}
+	              onClick={() => {
+	                setNewAlertName((prev) => (prev.trim() ? prev : alertTypes[newAlertType - 1]?.name || ''));
+	                setShowCreateAlert(true);
+	              }}
 	              disabled={alerts.length >= maxAlerts[userData.tier]}
 	              variant="primary"
 	              size="md"
