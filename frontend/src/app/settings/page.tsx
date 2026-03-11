@@ -390,9 +390,10 @@ export default function SettingsPage() {
               { key: 'token', icon: '🪙', name: 'Token Launches', desc: 'New token deployments' },
               { key: 'swap', icon: '💱', name: 'Large Swaps', desc: 'DEX swap events' },
             ].map((alert) => (
-              <div
+              <button
+                type="button"
                 key={alert.key}
-                className={`flex items-center justify-between p-4 rounded-lg border transition-all cursor-pointer ${
+                className={`w-full text-left flex items-center justify-between p-4 rounded-lg border transition-all cursor-pointer focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400/90 ${
                   settings.alertTypes[alert.key as keyof typeof settings.alertTypes]
                     ? 'bg-purple-900/20 border-purple-500/50'
                     : 'bg-gray-900/50 border-gray-700 hover:border-gray-600'
@@ -403,6 +404,7 @@ export default function SettingsPage() {
                     !settings.alertTypes[alert.key as keyof typeof settings.alertTypes]
                   )
                 }
+                aria-pressed={settings.alertTypes[alert.key as keyof typeof settings.alertTypes]}
               >
                 <div className="flex items-center gap-3">
                   <span className="text-2xl">{alert.icon}</span>
@@ -422,7 +424,7 @@ export default function SettingsPage() {
                     <Check className="w-3 h-3 text-white" />
                   )}
                 </div>
-              </div>
+              </button>
             ))}
           </div>
         </SettingsSection>
