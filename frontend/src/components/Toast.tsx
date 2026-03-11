@@ -100,25 +100,25 @@ const notifyListeners = () => {
 
 export const toast = {
   success: (title: string, message?: string, duration?: number) => {
-    const id = `toast-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    const id = `toast-${Date.now()}-${Math.random().toString(36).slice(2, 11)}`;
     toasts = [...toasts, { id, type: 'success', title, message, duration }];
     notifyListeners();
     return id;
   },
   error: (title: string, message?: string, duration?: number) => {
-    const id = `toast-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    const id = `toast-${Date.now()}-${Math.random().toString(36).slice(2, 11)}`;
     toasts = [...toasts, { id, type: 'error', title, message, duration }];
     notifyListeners();
     return id;
   },
   warning: (title: string, message?: string, duration?: number) => {
-    const id = `toast-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    const id = `toast-${Date.now()}-${Math.random().toString(36).slice(2, 11)}`;
     toasts = [...toasts, { id, type: 'warning', title, message, duration }];
     notifyListeners();
     return id;
   },
   info: (title: string, message?: string, duration?: number) => {
-    const id = `toast-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    const id = `toast-${Date.now()}-${Math.random().toString(36).slice(2, 11)}`;
     toasts = [...toasts, { id, type: 'info', title, message, duration }];
     notifyListeners();
     return id;

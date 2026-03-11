@@ -1,5 +1,8 @@
 /**
- * Application constants
+ * Shared application constants.
+ *
+ * Keep this file additive/backwards-compatible where possible because it is
+ * imported from both server and frontend code.
  */
 
 // API URLs
@@ -7,9 +10,10 @@ export const API_URLS = {
   SERVER: process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:3000',
   STACKS_API: 'https://stacks-node-api.mainnet.stacks.co',
   STACKS_API_TESTNET: 'https://stacks-node-api.testnet.stacks.co',
+  HIRO_API: 'https://api.hiro.so',
 } as const;
 
-// Contract Addresses
+// Contract Addresses (optional env-driven config)
 export const CONTRACT_ADDRESSES = {
   MAINNET: {
     ALERT_MANAGER: process.env.ALERT_MANAGER_MAINNET || '',
@@ -30,6 +34,9 @@ export const NETWORKS = {
   DEVNET: 'devnet',
 } as const;
 
+// Backwards-compatible alias
+export const NETWORK_TYPES = NETWORKS;
+
 // Pagination
 export const PAGINATION = {
   DEFAULT_PAGE: 1,
@@ -39,10 +46,10 @@ export const PAGINATION = {
 
 // Cache TTL (in milliseconds)
 export const CACHE_TTL = {
-  SHORT: 60000,      // 1 minute
-  MEDIUM: 300000,    // 5 minutes
-  LONG: 3600000,     // 1 hour
-  DAY: 86400000,     // 24 hours
+  SHORT: 60000, // 1 minute
+  MEDIUM: 300000, // 5 minutes
+  LONG: 3600000, // 1 hour
+  DAY: 86400000, // 24 hours
 } as const;
 
 // Rate Limits
@@ -68,9 +75,10 @@ export const WS_CONFIG = {
   PING_INTERVAL: 30000,
 } as const;
 
-// Alert Types
+// Alert Types (support both CONTRACT_DEPLOY and CONTRACT_DEPLOYED names)
 export const ALERT_TYPES = {
   WHALE_TRANSFER: 1,
+  CONTRACT_DEPLOYED: 2,
   CONTRACT_DEPLOY: 2,
   NFT_MINT: 3,
   TOKEN_LAUNCH: 4,
@@ -78,7 +86,17 @@ export const ALERT_TYPES = {
   ADDRESS_WATCH: 6,
 } as const;
 
-// Subscription Tiers
+// Alert Type Names
+export const ALERT_TYPE_NAMES: Record<number, string> = {
+  [ALERT_TYPES.WHALE_TRANSFER]: 'Whale Transfer',
+  [ALERT_TYPES.CONTRACT_DEPLOYED]: 'Contract Deployed',
+  [ALERT_TYPES.NFT_MINT]: 'NFT Mint',
+  [ALERT_TYPES.TOKEN_LAUNCH]: 'Token Launch',
+  [ALERT_TYPES.LARGE_SWAP]: 'Large Swap',
+  [ALERT_TYPES.ADDRESS_WATCH]: 'Address Watch',
+};
+
+// Subscription Tiers (matches contract tiers)
 export const SUBSCRIPTION_TIERS = {
   FREE: 0,
   BASIC: 1,
@@ -86,8 +104,33 @@ export const SUBSCRIPTION_TIERS = {
   PREMIUM: 3,
 } as const;
 
-// User Tiers
 export const USER_TIERS = SUBSCRIPTION_TIERS;
+
+// Tier Names
+export const TIER_NAMES: Record<number, string> = {
+  [SUBSCRIPTION_TIERS.FREE]: 'Free',
+  [SUBSCRIPTION_TIERS.BASIC]: 'Basic',
+  [SUBSCRIPTION_TIERS.PRO]: 'Pro',
+  [SUBSCRIPTION_TIERS.PREMIUM]: 'Premium',
+};
+
+// Default Values
+export const DEFAULTS = {
+  PAGE_SIZE: 20,
+  MAX_PAGE_SIZE: 100,
+  API_TIMEOUT: 30000,
+  WS_RECONNECT_DELAY: 5000,
+  CACHE_TTL: CACHE_TTL.MEDIUM,
+};
+
+// Error Messages
+export const ERROR_MESSAGES = {
+  INVALID_ADDRESS: 'Invalid Stacks address',
+  NETWORK_ERROR: 'Network error occurred',
+  UNAUTHORIZED: 'Unauthorized access',
+  NOT_FOUND: 'Resource not found',
+  RATE_LIMITED: 'Rate limit exceeded',
+} as const;
 
 // Event Types
 export const EVENT_TYPES = {
@@ -130,7 +173,7 @@ export const ERROR_CODES = {
   INVALID_ALERT_TYPE: 'INVALID_ALERT_TYPE',
 } as const;
 
-// Chainhook
+// Chainhook event keys (naming may vary by integration)
 export const CHAINHOOK_EVENTS = {
   WHALE_TRANSFER: 'bitcoin::transfer',
   CONTRACT_DEPLOY: 'stacks::contract_deployment',
@@ -148,3 +191,26 @@ export const FEATURE_FLAGS = {
   REAL_TIME_STATS: true,
   PROMETHEUS_METRICS: true,
 } as const;
+
+export default {
+  API_URLS,
+  CONTRACT_ADDRESSES,
+  NETWORKS,
+  NETWORK_TYPES,
+  PAGINATION,
+  CACHE_TTL,
+  RATE_LIMITS,
+  WS_CONFIG,
+  ALERT_TYPES,
+  ALERT_TYPE_NAMES,
+  SUBSCRIPTION_TIERS,
+  USER_TIERS,
+  TIER_NAMES,
+  DEFAULTS,
+  ERROR_MESSAGES,
+  EVENT_TYPES,
+  HTTP_STATUS,
+  ERROR_CODES,
+  CHAINHOOK_EVENTS,
+  FEATURE_FLAGS,
+};
