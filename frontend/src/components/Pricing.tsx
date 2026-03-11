@@ -2,7 +2,7 @@
 
 import { useWallet } from '@/context/WalletContext';
 import { Check, Wallet, Mail, MessageCircle, Send } from 'lucide-react';
-import { useState, useEffect } from 'react';
+import { useEffect, useId, useState } from 'react';
 import { toast } from '@/components/Toast';
 import Button from '@/components/ui/Button';
 
@@ -52,6 +52,7 @@ const DEPLOYER_ADDRESS = process.env.NEXT_PUBLIC_DEPLOYER_ADDRESS || '';
 
 export default function Pricing() {
   const { isConnected, connect, address } = useWallet();
+  const editChannelTitleId = useId();
   const [isRegistered, setIsRegistered] = useState(false);
   const [currentTier, setCurrentTier] = useState(0);
   const [subscriptionEnds, setSubscriptionEnds] = useState(0);
@@ -166,6 +167,26 @@ export default function Pricing() {
 
     checkRegistration();
   }, [address]);
+
+  useEffect(() => {
+    if (!editingChannel) return;
+
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setEditingChannel(null);
+        setTempValue('');
+      }
+    };
+    window.addEventListener('keydown', onKeyDown);
+
+    return () => {
+      window.removeEventListener('keydown', onKeyDown);
+      document.body.style.overflow = previousOverflow;
+    };
+  }, [editingChannel]);
 
   const handleRegister = async (selectedTier: number = 0) => {
     if (!isConnected) {
@@ -590,14 +611,26 @@ export default function Pricing() {
                 </div>
 
                 {/* Edit Channel Modal */}
-                {editingChannel && (
-                  <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4">
-                    <div className="bg-gray-800 rounded-2xl p-6 max-w-md w-full border border-purple-500/30">
-                      <h3 className="text-xl font-bold text-white mb-4">
-                        {editingChannel === 'email' && '📧 Add Email'}
-                        {editingChannel === 'discord' && '💬 Add Discord'}
-                        {editingChannel === 'telegram' && '✈️ Add Telegram'}
-                      </h3>
+	                {editingChannel && (
+	                  <div
+	                    className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4"
+	                    onClick={() => {
+	                      setEditingChannel(null);
+	                      setTempValue('');
+	                    }}
+	                  >
+	                    <div
+	                      className="bg-gray-800 rounded-2xl p-6 max-w-md w-full border border-purple-500/30"
+	                      role="dialog"
+	                      aria-modal="true"
+	                      aria-labelledby={editChannelTitleId}
+	                      onClick={(e) => e.stopPropagation()}
+	                    >
+	                      <h3 id={editChannelTitleId} className="text-xl font-bold text-white mb-4">
+	                        {editingChannel === 'email' && '📧 Add Email'}
+	                        {editingChannel === 'discord' && '💬 Add Discord'}
+	                        {editingChannel === 'telegram' && '✈️ Add Telegram'}
+	                      </h3>
                       <input
                         type={editingChannel === 'email' ? 'email' : 'text'}
                         value={tempValue}
