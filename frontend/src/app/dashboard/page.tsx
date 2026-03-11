@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useWallet } from '@/context/WalletContext';
 import { useRouter } from 'next/navigation';
+import { toast } from '@/components/Toast';
 import { 
   Bell, 
   Wallet, 
@@ -169,9 +170,10 @@ export default function DashboardPage() {
             });
           } catch (err) {
             console.error('Error saving alert to server:', err);
+            toast.warning('Alert created', 'Saved on-chain but failed to sync to server.');
           }
 
-          alert(`Alert created! TX: ${data.txId}`);
+          toast.success('Alert created', `TX: ${data.txId}`);
           setShowCreateAlert(false);
           setNewAlertName('');
           setNewAlertThreshold('10000');
@@ -192,7 +194,7 @@ export default function DashboardPage() {
       });
     } catch (error) {
       console.error('Error creating alert:', error);
-      alert('Failed to create alert. Please try again.');
+      toast.error('Failed to create alert', 'Please try again.');
     } finally {
       setIsCreating(false);
     }
@@ -238,7 +240,7 @@ export default function DashboardPage() {
   // Not connected - show connect prompt
   if (!isConnected) {
     return (
-      <main className="min-h-screen bg-gray-950 flex items-center justify-center px-4">
+      <main id="main" className="min-h-screen bg-gray-950 flex items-center justify-center px-4">
         <div className="max-w-md w-full text-center">
           <div className="w-20 h-20 bg-gradient-to-br from-purple-500 to-blue-500 rounded-2xl flex items-center justify-center mx-auto mb-6">
             <Wallet className="w-10 h-10 text-white" />
@@ -259,7 +261,7 @@ export default function DashboardPage() {
   // Loading state
   if (isLoading) {
     return (
-      <main className="min-h-screen bg-gray-950 flex items-center justify-center">
+      <main id="main" className="min-h-screen bg-gray-950 flex items-center justify-center">
         <div className="text-center">
           <div className="w-16 h-16 border-4 border-purple-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
           <p className="text-gray-400">Loading your dashboard...</p>
@@ -271,7 +273,7 @@ export default function DashboardPage() {
   // Not registered - redirect to pricing
   if (!userData) {
     return (
-      <main className="min-h-screen bg-gray-950 flex items-center justify-center px-4">
+      <main id="main" className="min-h-screen bg-gray-950 flex items-center justify-center px-4">
         <div className="max-w-md w-full text-center">
           <div className="w-20 h-20 bg-gradient-to-br from-yellow-500 to-orange-500 rounded-2xl flex items-center justify-center mx-auto mb-6">
             <Bell className="w-10 h-10 text-white" />
@@ -290,7 +292,7 @@ export default function DashboardPage() {
   }
 
   return (
-    <main className="min-h-screen bg-gray-950 py-8 px-4">
+    <main id="main" className="min-h-screen bg-gray-950 py-8 px-4">
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <div className="flex items-center justify-between mb-8">

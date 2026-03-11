@@ -2,10 +2,30 @@
 
 import ConnectWallet from './ConnectWallet';
 import Link from 'next/link';
+import { Menu, X } from 'lucide-react';
+import { useEffect, useId, useState } from 'react';
 
 export default function Header() {
+  const [isOpen, setIsOpen] = useState(false);
+  const mobileNavId = useId();
+
+  useEffect(() => {
+    if (!isOpen) return;
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setIsOpen(false);
+    };
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [isOpen]);
+
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-gray-950/80 backdrop-blur-md border-b border-gray-800">
+      <a
+        href="#main"
+        className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 rounded-md bg-gray-900 px-3 py-2 text-sm text-white"
+      >
+        Skip to content
+      </a>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
@@ -57,9 +77,67 @@ export default function Header() {
             </a>
           </nav>
 
-          {/* Wallet Connection */}
-          <ConnectWallet />
+          <div className="flex items-center gap-3">
+            <button
+              type="button"
+              className="md:hidden inline-flex items-center justify-center w-10 h-10 rounded-lg border border-gray-800 bg-gray-900/40 text-gray-200 hover:bg-gray-900 transition-colors"
+              aria-expanded={isOpen}
+              aria-controls={mobileNavId}
+              aria-label={isOpen ? 'Close menu' : 'Open menu'}
+              onClick={() => setIsOpen((v) => !v)}
+            >
+              {isOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+            </button>
+
+            {/* Wallet Connection */}
+            <ConnectWallet />
+          </div>
         </div>
+
+        {/* Mobile Navigation */}
+        {isOpen && (
+          <div className="md:hidden pb-4" id={mobileNavId}>
+            <nav className="mt-2 rounded-xl border border-gray-800 bg-gray-950/80 backdrop-blur-md p-2">
+              <a
+                href="/#features"
+                className="block rounded-lg px-3 py-2 text-gray-200 hover:bg-gray-900/60 transition-colors"
+                onClick={() => setIsOpen(false)}
+              >
+                Features
+              </a>
+              <a
+                href="/#pricing"
+                className="block rounded-lg px-3 py-2 text-gray-200 hover:bg-gray-900/60 transition-colors"
+                onClick={() => setIsOpen(false)}
+              >
+                Pricing
+              </a>
+              <a
+                href="/#stats"
+                className="block rounded-lg px-3 py-2 text-gray-200 hover:bg-gray-900/60 transition-colors"
+                onClick={() => setIsOpen(false)}
+              >
+                Live Stats
+              </a>
+              <Link
+                href="/register"
+                className="block rounded-lg px-3 py-2 font-medium text-purple-300 hover:bg-gray-900/60 transition-colors"
+                onClick={() => setIsOpen(false)}
+              >
+                Register
+              </Link>
+              <a
+                href="https://docs.hiro.so/stacks/chainhook"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block rounded-lg px-3 py-2 text-gray-200 hover:bg-gray-900/60 transition-colors"
+                onClick={() => setIsOpen(false)}
+              >
+                Docs
+              </a>
+            </nav>
+          </div>
+        )}
       </div>
     </header>
   );
