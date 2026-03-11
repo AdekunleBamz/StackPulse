@@ -245,22 +245,33 @@ export default function BadgesPage() {
 
                     {/* Badge Info */}
                     <div className="flex-1">
-                      <div className="flex items-start justify-between mb-2">
-                        <div>
-                          <h4 className="text-xl font-semibold text-white flex items-center gap-2">
-                            {badge.name}
-                            {isEarned && <Check className="w-5 h-5 text-green-400" />}
-                          </h4>
-                          <span className={`text-sm font-medium ${colors.text}`}>
-                            {badge.rarity.toUpperCase()}
-                          </span>
-                        </div>
-                        {badge.maxSupply > 0 && (
-                          <span className="text-sm text-gray-500">
-                            Limited: {badge.maxSupply} max
-                          </span>
-                        )}
-                      </div>
+	                      <div className="flex items-start justify-between mb-2">
+	                        <div>
+	                          <h4 className="text-xl font-semibold text-white flex items-center gap-2">
+	                            {badge.name}
+	                            {isEarned && <Check className="w-5 h-5 text-green-400" />}
+	                          </h4>
+	                          <span className={`text-sm font-medium ${colors.text}`}>
+	                            {badge.rarity.toUpperCase()}
+	                          </span>
+	                        </div>
+	                        <div className="flex flex-col items-end gap-2">
+	                          <span
+	                            className={`inline-flex items-center rounded-full px-2.5 py-1 text-xs font-semibold ${
+	                              isEarned
+	                                ? 'bg-green-500/10 text-green-300 border border-green-500/20'
+	                                : 'bg-gray-800 text-gray-300 border border-gray-700'
+	                            }`}
+	                          >
+	                            {isEarned ? 'Earned' : 'Locked'}
+	                          </span>
+	                          {badge.maxSupply > 0 && (
+	                            <span className="text-sm text-gray-500">
+	                              Limited: {badge.maxSupply} max
+	                            </span>
+	                          )}
+	                        </div>
+	                      </div>
                       
                       <p className="text-gray-400 mb-4">{badge.description}</p>
 
