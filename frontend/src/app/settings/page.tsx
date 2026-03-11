@@ -20,6 +20,7 @@ import {
 } from 'lucide-react';
 import CopyButton from '@/components/ui/CopyButton';
 import { toast } from '@/components/Toast';
+import { useConfirmDialog } from '@/components/ConfirmDialog';
 
 interface UserSettings {
   notifications: {
@@ -102,6 +103,7 @@ const SettingsSection = ({
 
 export default function SettingsPage() {
   const { isConnected, address, disconnect } = useWallet();
+  const { confirm, ConfirmDialog } = useConfirmDialog();
   const [settings, setSettings] = useState<UserSettings>({
     notifications: {
       email: true,
@@ -461,7 +463,17 @@ export default function SettingsPage() {
         >
           <div className="space-y-4">
             <button
-              onClick={disconnect}
+              type="button"
+              onClick={() =>
+                confirm({
+                  title: 'Disconnect wallet?',
+                  message: 'You can reconnect anytime, but you may need to re-approve wallet permissions.',
+                  confirmLabel: 'Disconnect',
+                  cancelLabel: 'Cancel',
+                  variant: 'warning',
+                  onConfirm: () => disconnect(),
+                })
+              }
               className="w-full py-3 border border-red-500/50 text-red-400 rounded-lg hover:bg-red-500/10 transition-all"
             >
               Disconnect Wallet
@@ -469,6 +481,7 @@ export default function SettingsPage() {
           </div>
         </SettingsSection>
       </main>
+      {ConfirmDialog}
     </div>
   );
 }
