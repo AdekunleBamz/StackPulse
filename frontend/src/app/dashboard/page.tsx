@@ -593,21 +593,24 @@ export default function DashboardPage() {
                 )}
               </div>
 
-              <div className="flex gap-3 mt-6">
-                <button
-                  onClick={() => setShowCreateAlert(false)}
-                  className="flex-1 py-3 bg-gray-700 hover:bg-gray-600 text-white rounded-lg font-semibold transition-all cursor-pointer"
-                >
-                  Cancel
-                </button>
-                <button
-                  onClick={handleCreateAlert}
-                  disabled={isCreating || !newAlertName.trim()}
-                  className="flex-1 py-3 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-500 hover:to-blue-500 text-white rounded-lg font-semibold transition-all cursor-pointer disabled:opacity-50"
-                >
-                  {isCreating ? 'Creating...' : 'Create Alert'}
-                </button>
-              </div>
+	              <div className="flex gap-3 mt-6">
+	                <Button
+	                  onClick={() => setShowCreateAlert(false)}
+	                  variant="secondary"
+	                  className="flex-1"
+	                >
+	                  Cancel
+	                </Button>
+	                <Button
+	                  onClick={handleCreateAlert}
+	                  disabled={!newAlertName.trim()}
+	                  variant="primary"
+	                  className="flex-1"
+	                  isLoading={isCreating}
+	                >
+	                  Create Alert
+	                </Button>
+	              </div>
             </div>
           </div>
         )}
