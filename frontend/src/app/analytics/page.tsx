@@ -103,6 +103,7 @@ export default function AnalyticsPage() {
   const [error, setError] = useState<string | null>(null);
   const [timeRange, setTimeRange] = useState<'24h' | '7d' | '30d'>('7d');
   const [refreshKey, setRefreshKey] = useState(0);
+  const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
 
   useEffect(() => {
     const fetchAnalytics = async () => {
@@ -129,6 +130,7 @@ export default function AnalyticsPage() {
             },
             recentEvents: [],
           });
+          setLastUpdated(new Date());
         } else {
           setError('Failed to load analytics. Please try again.');
         }
@@ -377,11 +379,16 @@ export default function AnalyticsPage() {
         <div className="bg-gray-800/50 border border-gray-700 rounded-xl p-6 mb-8">
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-xl font-semibold">Activity Over Time</h2>
-            <div className="flex items-center gap-2 text-sm text-gray-400">
-              <Clock className="w-4 h-4" />
-              <span>Last updated: Just now</span>
-            </div>
+          <div className="flex items-center gap-2 text-sm text-gray-400">
+            <Clock className="w-4 h-4" />
+            <span>
+              Last updated:{' '}
+              {lastUpdated
+                ? lastUpdated.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+                : '—'}
+            </span>
           </div>
+        </div>
           
           {/* Chart placeholder - would integrate with a charting library */}
           <div className="h-64 flex items-center justify-center border border-dashed border-gray-600 rounded-lg">
