@@ -648,18 +648,26 @@ export default function Pricing() {
 	                        {editingChannel === 'discord' && '💬 Add Discord'}
 	                        {editingChannel === 'telegram' && '✈️ Add Telegram'}
 	                      </h3>
-                      <input
-                        type={editingChannel === 'email' ? 'email' : 'text'}
-                        value={tempValue}
-                        onChange={(e) => setTempValue(e.target.value)}
-                        placeholder={
-                          editingChannel === 'email' ? 'your@email.com' :
-                          editingChannel === 'discord' ? 'username#1234' :
-                          '@username'
-                        }
-                        className="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-3 text-white placeholder-gray-400 focus:outline-none focus:border-purple-500 mb-4"
-                        autoFocus
-                      />
+	                      <input
+	                        type={editingChannel === 'email' ? 'email' : 'text'}
+	                        value={tempValue}
+	                        onChange={(e) => setTempValue(e.target.value)}
+	                        placeholder={
+	                          editingChannel === 'email' ? 'your@email.com' :
+	                          editingChannel === 'discord' ? 'username#1234' :
+	                          '@username'
+	                        }
+	                        aria-label={
+	                          editingChannel === 'email'
+	                            ? 'Email address'
+	                            : editingChannel === 'discord'
+	                              ? 'Discord username or webhook'
+	                              : 'Telegram username'
+	                        }
+	                        autoComplete={editingChannel === 'email' ? 'email' : 'off'}
+	                        className="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-3 text-white placeholder-gray-400 focus:outline-none focus:border-purple-500 mb-4"
+	                        autoFocus
+	                      />
 	                      <div className="flex gap-3">
 	                        <Button
 	                          onClick={() => {
