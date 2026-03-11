@@ -188,7 +188,7 @@ export default function AnalyticsPage() {
         </div>
       </header>
 
-      <main className="max-w-7xl mx-auto px-4 py-8">
+      <main id="main" className="max-w-7xl mx-auto px-4 py-8">
         {/* Page Title */}
         <div className="mb-8">
           <h1 className="text-3xl font-bold">Analytics Dashboard</h1>
