@@ -422,18 +422,25 @@ export default function DashboardPage() {
 	        <div className="mb-8">
 	          <div className="flex items-center justify-between mb-4">
 	            <h2 className="text-xl font-bold text-white">Available Alert Types</h2>
-	            <Button
-	              onClick={() => {
-	                setNewAlertName((prev) => (prev.trim() ? prev : alertTypes[newAlertType - 1]?.name || ''));
-	                setShowCreateAlert(true);
-	              }}
-	              disabled={alerts.length >= maxAlerts[userData.tier]}
-	              variant="primary"
-	              size="md"
-	              leftIcon={<Plus className="w-4 h-4" />}
-	            >
-	              Create Alert
-	            </Button>
+	            <div className="flex flex-col items-end gap-1">
+	              <Button
+	                onClick={() => {
+	                  setNewAlertName((prev) => (prev.trim() ? prev : alertTypes[newAlertType - 1]?.name || ''));
+	                  setShowCreateAlert(true);
+	                }}
+	                disabled={alerts.length >= maxAlerts[userData.tier]}
+	                variant="primary"
+	                size="md"
+	                leftIcon={<Plus className="w-4 h-4" />}
+	              >
+	                Create Alert
+	              </Button>
+	              {alerts.length >= maxAlerts[userData.tier] && (
+	                <span className="text-xs text-yellow-300">
+	                  Limit reached ({maxAlerts[userData.tier]} alerts). Upgrade to add more.
+	                </span>
+	              )}
+	            </div>
 	          </div>
 	          
 	          <div className="grid md:grid-cols-3 gap-4">
