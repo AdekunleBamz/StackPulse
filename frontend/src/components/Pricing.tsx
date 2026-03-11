@@ -643,24 +643,27 @@ export default function Pricing() {
                         className="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-3 text-white placeholder-gray-400 focus:outline-none focus:border-purple-500 mb-4"
                         autoFocus
                       />
-                      <div className="flex gap-3">
-                        <button
-                          onClick={() => {
-                            setEditingChannel(null);
-                            setTempValue('');
-                          }}
-                          className="flex-1 py-3 bg-gray-700 hover:bg-gray-600 text-white rounded-lg font-semibold transition-all cursor-pointer"
-                        >
-                          Cancel
-                        </button>
-                        <button
-                          onClick={saveChannelUpdate}
-                          disabled={isSaving}
-                          className="flex-1 py-3 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-500 hover:to-blue-500 text-white rounded-lg font-semibold transition-all cursor-pointer disabled:opacity-50"
-                        >
-                          {isSaving ? 'Saving...' : 'Save'}
-                        </button>
-                      </div>
+	                      <div className="flex gap-3">
+	                        <Button
+	                          onClick={() => {
+	                            setEditingChannel(null);
+	                            setTempValue('');
+	                          }}
+	                          variant="secondary"
+	                          className="flex-1"
+	                        >
+	                          Cancel
+	                        </Button>
+	                        <Button
+	                          onClick={saveChannelUpdate}
+	                          disabled={isSaving}
+	                          variant="primary"
+	                          className="flex-1"
+	                          isLoading={isSaving}
+	                        >
+	                          Save
+	                        </Button>
+	                      </div>
                     </div>
                   </div>
                 )}
