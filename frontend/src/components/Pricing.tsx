@@ -551,36 +551,42 @@ export default function Pricing() {
                     <p className="text-white text-sm font-semibold">Wallet</p>
                     <p className="text-green-400 text-xs">Connected</p>
                   </div>
-                  <div 
-                    onClick={() => openEditChannel('email')}
-                    className="bg-gray-800/50 rounded-xl p-4 text-center cursor-pointer hover:bg-gray-700/50 hover:border-purple-500 border border-transparent transition-all transform hover:scale-105"
-                  >
-                    <Mail className={`w-8 h-8 mx-auto mb-2 ${email ? 'text-green-500' : 'text-gray-400'}`} />
-                    <p className="text-white text-sm font-semibold">Email</p>
-                    <p className={`text-xs ${email ? 'text-green-400' : 'text-gray-400'}`}>
-                      {email ? email.slice(0, 15) + (email.length > 15 ? '...' : '') : 'Click to add'}
-                    </p>
-                  </div>
-                  <div 
-                    onClick={() => openEditChannel('discord')}
-                    className="bg-gray-800/50 rounded-xl p-4 text-center cursor-pointer hover:bg-gray-700/50 hover:border-purple-500 border border-transparent transition-all transform hover:scale-105"
-                  >
-                    <MessageCircle className={`w-8 h-8 mx-auto mb-2 ${discord ? 'text-green-500' : 'text-gray-400'}`} />
-                    <p className="text-white text-sm font-semibold">Discord</p>
-                    <p className={`text-xs ${discord ? 'text-green-400' : 'text-gray-400'}`}>
-                      {discord || 'Click to add'}
-                    </p>
-                  </div>
-                  <div 
-                    onClick={() => openEditChannel('telegram')}
-                    className="bg-gray-800/50 rounded-xl p-4 text-center cursor-pointer hover:bg-gray-700/50 hover:border-purple-500 border border-transparent transition-all transform hover:scale-105"
-                  >
-                    <Send className={`w-8 h-8 mx-auto mb-2 ${telegram ? 'text-green-500' : 'text-gray-400'}`} />
-                    <p className="text-white text-sm font-semibold">Telegram</p>
-                    <p className={`text-xs ${telegram ? 'text-green-400' : 'text-gray-400'}`}>
-                      {telegram || 'Click to add'}
-                    </p>
-                  </div>
+	                  <button
+	                    type="button"
+	                    onClick={() => openEditChannel('email')}
+	                    className="bg-gray-800/50 rounded-xl p-4 text-center cursor-pointer hover:bg-gray-700/50 hover:border-purple-500 border border-transparent transition-all transform hover:scale-105 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400/90"
+	                    aria-label="Edit email notification channel"
+	                  >
+	                    <Mail className={`w-8 h-8 mx-auto mb-2 ${email ? 'text-green-500' : 'text-gray-400'}`} />
+	                    <p className="text-white text-sm font-semibold">Email</p>
+	                    <p className={`text-xs ${email ? 'text-green-400' : 'text-gray-400'}`}>
+	                      {email ? email.slice(0, 15) + (email.length > 15 ? '...' : '') : 'Click to add'}
+	                    </p>
+	                  </button>
+	                  <button
+	                    type="button"
+	                    onClick={() => openEditChannel('discord')}
+	                    className="bg-gray-800/50 rounded-xl p-4 text-center cursor-pointer hover:bg-gray-700/50 hover:border-purple-500 border border-transparent transition-all transform hover:scale-105 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400/90"
+	                    aria-label="Edit Discord notification channel"
+	                  >
+	                    <MessageCircle className={`w-8 h-8 mx-auto mb-2 ${discord ? 'text-green-500' : 'text-gray-400'}`} />
+	                    <p className="text-white text-sm font-semibold">Discord</p>
+	                    <p className={`text-xs ${discord ? 'text-green-400' : 'text-gray-400'}`}>
+	                      {discord || 'Click to add'}
+	                    </p>
+	                  </button>
+	                  <button
+	                    type="button"
+	                    onClick={() => openEditChannel('telegram')}
+	                    className="bg-gray-800/50 rounded-xl p-4 text-center cursor-pointer hover:bg-gray-700/50 hover:border-purple-500 border border-transparent transition-all transform hover:scale-105 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400/90"
+	                    aria-label="Edit Telegram notification channel"
+	                  >
+	                    <Send className={`w-8 h-8 mx-auto mb-2 ${telegram ? 'text-green-500' : 'text-gray-400'}`} />
+	                    <p className="text-white text-sm font-semibold">Telegram</p>
+	                    <p className={`text-xs ${telegram ? 'text-green-400' : 'text-gray-400'}`}>
+	                      {telegram || 'Click to add'}
+	                    </p>
+	                  </button>
                 </div>
 
                 {/* Edit Channel Modal */}
