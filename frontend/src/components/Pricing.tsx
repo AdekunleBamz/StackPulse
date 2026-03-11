@@ -3,6 +3,7 @@
 import { useWallet } from '@/context/WalletContext';
 import { Check, Wallet, Mail, MessageCircle, Send } from 'lucide-react';
 import { useState, useEffect } from 'react';
+import { toast } from '@/components/Toast';
 
 const tiers = [
   {
@@ -172,7 +173,7 @@ export default function Pricing() {
     }
 
     if (!username.trim()) {
-      alert('Please enter a username');
+      toast.warning('Username required', 'Enter a username to continue.');
       return;
     }
 
@@ -235,10 +236,11 @@ export default function Pricing() {
             console.log('User preferences saved to server');
           } catch (err) {
             console.error('Failed to save preferences:', err);
+            toast.warning('Registered', 'Saved on-chain but failed to sync preferences.');
           }
           
           const tierName = selectedTier === 0 ? 'Free' : selectedTier === 2 ? 'Pro' : 'Premium';
-          alert(`🎉 Success! You're now registered on ${tierName} tier!\n\nTX: ${data.txId}\n\nYour alerts are now active. Check your dashboard!`);
+          toast.success('Registration submitted', `Tier: ${tierName}. TX: ${data.txId}`);
           
           // Cache registration locally for instant UX on next visit
           if (address) {
@@ -258,6 +260,7 @@ export default function Pricing() {
       });
     } catch (error) {
       console.error('Registration error:', error);
+      toast.error('Registration failed', 'Please try again.');
     } finally {
       setIsLoading(false);
     }
@@ -272,7 +275,7 @@ export default function Pricing() {
     // If not registered, do register-and-subscribe in one step
     if (!isRegistered) {
       if (!username.trim()) {
-        alert('Please enter a username first in the registration form above!');
+        toast.warning('Username required', 'Enter a username to register first.');
         return;
       }
       await handleRegister(tier);
@@ -281,7 +284,7 @@ export default function Pricing() {
 
     // If already registered, upgrade subscription
     if (tier === 0) {
-      alert('You are on the Free tier! Upgrade below for more features.');
+      toast.info('Free tier', 'Upgrade below for more features.');
       return;
     }
 
@@ -325,7 +328,10 @@ export default function Pricing() {
               localStorage.setItem(`stackpulse_registered_${address}`, JSON.stringify(data));
             }
           }
-          alert(`🎉 Subscription upgraded to ${tier === 1 ? 'Basic' : tier === 2 ? 'Pro' : 'Premium'}!\n\nTX: ${data.txId}`);
+          toast.success(
+            'Subscription upgraded',
+            `${tier === 1 ? 'Basic' : tier === 2 ? 'Pro' : 'Premium'} tier. TX: ${data.txId}`
+          );
         },
         onCancel: () => {
           console.log('Upgrade cancelled');
@@ -333,6 +339,7 @@ export default function Pricing() {
       });
     } catch (error) {
       console.error('Subscription error:', error);
+      toast.error('Upgrade failed', 'Please try again.');
     }
   };
 
@@ -361,7 +368,7 @@ export default function Pricing() {
       setTempValue('');
     } catch (error) {
       console.error('Failed to save channel:', error);
-      alert('Failed to save. Please try again.');
+      toast.error('Save failed', 'Please try again.');
     } finally {
       setIsSaving(false);
     }

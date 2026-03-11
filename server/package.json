@@ -23,6 +23,7 @@
     "helmet": "^7.1.0",
     "winston": "^3.11.0",
     "redis": "^4.6.12",
+    "ws": "^8.18.1",
     "typescript": "^5.3.3"
   },
   "devDependencies": {

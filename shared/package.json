@@ -1,0 +1,25 @@
+{
+  "name": "@stackpulse/shared",
+  "version": "1.0.0",
+  "description": "Shared types, constants, and utilities for StackPulse",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "keywords": [
+    "stacks",
+    "blockchain",
+    "shared"
+  ],
+  "author": "StackPulse Team",
+  "license": "MIT",
+  "devDependencies": {
+    "typescript": "^5.3.3"
+  }
+}

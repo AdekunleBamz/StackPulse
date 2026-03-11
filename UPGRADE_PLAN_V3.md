@@ -140,7 +140,7 @@ VAULT_CONTRACT=fee-vault-v-j3
 
 Run the registration script with updated contracts:
 ```bash
-HIRO_API_KEY=e447aec3d7d0f623c90051728d2992fd npx ts-node scripts/register-stackpulse-chainhooks-v-j3.ts
+HIRO_API_KEY=<your_hiro_api_key> npx ts-node scripts/register-stackpulse-chainhooks-v-j3.ts
 ```
 
 **Action Items:**
@@ -303,7 +303,7 @@ cd ../server && npm run build && git push
 # (Render auto-deploys on git push)
 
 # 6. Register V3 chainhooks
-HIRO_API_KEY=e447aec3d7d0f623c90051728d2992fd npx ts-node scripts/register-stackpulse-chainhooks-v-j3.ts
+HIRO_API_KEY=<your_hiro_api_key> npx ts-node scripts/register-stackpulse-chainhooks-v-j3.ts
 
 # 7. Run tests
 curl https://stackpulse-v-j3.vercel.app/health
