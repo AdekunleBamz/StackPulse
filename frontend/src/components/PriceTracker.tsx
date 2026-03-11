@@ -17,32 +17,37 @@ interface PriceData {
 export default function PriceTracker() {
   const [prices, setPrices] = useState<PriceData | null>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [lastUpdate, setLastUpdate] = useState<Date | null>(null);
+  const [refreshKey, setRefreshKey] = useState(0);
 
   useEffect(() => {
     const fetchPrices = async () => {
+      setLoading(true);
       try {
         // Using CoinGecko API for price data
         const response = await fetch(
           'https://api.coingecko.com/api/v3/simple/price?ids=blockstack,bitcoin&vs_currencies=usd&include_24hr_change=true'
         );
         
-        if (response.ok) {
-          const data = await response.json();
-          setPrices({
-            stx: {
-              usd: data.blockstack?.usd || 0,
-              change24h: data.blockstack?.usd_24h_change || 0,
-            },
-            btc: {
-              usd: data.bitcoin?.usd || 0,
-              change24h: data.bitcoin?.usd_24h_change || 0,
-            },
-          });
-          setLastUpdate(new Date());
-        }
+        if (!response.ok) throw new Error('Bad response');
+        const data = await response.json();
+        setPrices({
+          stx: {
+            usd: data.blockstack?.usd || 0,
+            change24h: data.blockstack?.usd_24h_change || 0,
+          },
+          btc: {
+            usd: data.bitcoin?.usd || 0,
+            change24h: data.bitcoin?.usd_24h_change || 0,
+          },
+        });
+        setLastUpdate(new Date());
+        setError(null);
       } catch (error) {
         console.error('Error fetching prices:', error);
+        setError('Unable to load prices right now.');
+        setPrices(null);
       } finally {
         setLoading(false);
       }
@@ -51,7 +56,7 @@ export default function PriceTracker() {
     fetchPrices();
     const interval = setInterval(fetchPrices, 60000); // Update every minute
     return () => clearInterval(interval);
-  }, []);
+  }, [refreshKey]);
 
   const formatPrice = (price: number) => {
     if (price >= 1000) {
@@ -87,7 +92,19 @@ export default function PriceTracker() {
   }
 
   if (!prices) {
-    return null;
+    return (
+      <div className="flex items-center gap-3 px-4 py-2 bg-gray-800/50 rounded-lg border border-gray-700">
+        <TrendingUp className="w-4 h-4 text-purple-400" />
+        <span className="text-gray-400 text-sm">{error || 'Prices unavailable'}</span>
+        <button
+          type="button"
+          onClick={() => setRefreshKey((k) => k + 1)}
+          className="ml-auto text-sm text-purple-300 hover:text-purple-200 transition-colors"
+        >
+          Retry
+        </button>
+      </div>
+    );
   }
 
   return (
