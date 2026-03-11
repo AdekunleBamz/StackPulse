@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useMemo } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Users, Activity, AlertTriangle, TrendingUp } from 'lucide-react';
 
 interface NetworkStats {
@@ -23,47 +23,52 @@ export default function NetworkStatus({ refreshInterval = 30000 }: NetworkStatus
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [networkHealth, setNetworkHealth] = useState<'healthy' | 'degraded' | 'down'>('healthy');
+  const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
+  const [refreshing, setRefreshing] = useState(false);
+
+  const fetchNetworkStats = useCallback(async () => {
+    setRefreshing(true);
+    try {
+      // Fetch from Stacks API
+      const [infoRes, coreRes] = await Promise.all([
+        fetch('https://api.mainnet.hiro.so/extended/v1/info'),
+        fetch('https://api.mainnet.hiro.so/v2/info'),
+      ]);
+
+      if (!infoRes.ok || !coreRes.ok) {
+        throw new Error('Failed to fetch network data');
+      }
+
+      const [info, core] = await Promise.all([infoRes.json(), coreRes.json()]);
+
+      setStats({
+        blockHeight: core.stacks_tip_height || 0,
+        txCount24h: info.tx_count_per_24h || 0,
+        avgBlockTime: core.stacks_tip_consensus_hash ? 10 : 0, // Approximate
+        hashRate: 'N/A',
+        difficulty: 'N/A',
+        stackingParticipation: 0.45, // Approximate
+        totalSTXLocked: 400000000, // Approximate
+        activeContracts: info.smart_contract_count || 0,
+      });
+      setLastUpdated(new Date());
+      setNetworkHealth('healthy');
+      setError(null);
+    } catch (err) {
+      console.error('Error fetching network stats:', err);
+      setError('Failed to fetch network data');
+      setNetworkHealth('degraded');
+    } finally {
+      setLoading(false);
+      setRefreshing(false);
+    }
+  }, []);
 
   useEffect(() => {
-    const fetchNetworkStats = async () => {
-      try {
-        // Fetch from Stacks API
-        const [infoRes, coreRes] = await Promise.all([
-          fetch('https://api.mainnet.hiro.so/extended/v1/info'),
-          fetch('https://api.mainnet.hiro.so/v2/info'),
-        ]);
-
-        if (!infoRes.ok || !coreRes.ok) {
-          throw new Error('Failed to fetch network data');
-        }
-
-        const [info, core] = await Promise.all([infoRes.json(), coreRes.json()]);
-
-        setStats({
-          blockHeight: core.stacks_tip_height || 0,
-          txCount24h: info.tx_count_per_24h || 0,
-          avgBlockTime: core.stacks_tip_consensus_hash ? 10 : 0, // Approximate
-          hashRate: 'N/A',
-          difficulty: 'N/A',
-          stackingParticipation: 0.45, // Approximate
-          totalSTXLocked: 400000000, // Approximate
-          activeContracts: info.smart_contract_count || 0,
-        });
-        setNetworkHealth('healthy');
-        setError(null);
-      } catch (err) {
-        console.error('Error fetching network stats:', err);
-        setError('Failed to fetch network data');
-        setNetworkHealth('degraded');
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchNetworkStats();
     const interval = setInterval(fetchNetworkStats, refreshInterval);
     return () => clearInterval(interval);
-  }, [refreshInterval]);
+  }, [fetchNetworkStats, refreshInterval]);
 
   const healthColor = useMemo(() => {
     switch (networkHealth) {
@@ -108,9 +113,24 @@ export default function NetworkStatus({ refreshInterval = 30000 }: NetworkStatus
           <Activity className="w-5 h-5 text-purple-400" />
           <h3 className="font-medium text-white">Stacks Network Status</h3>
         </div>
-        <div className="flex items-center gap-2">
-          <span className={`w-2 h-2 rounded-full ${healthColor} animate-pulse`}></span>
-          <span className="text-sm text-gray-400">{healthText}</span>
+        <div className="flex items-center gap-3">
+          {lastUpdated && (
+            <span className="hidden sm:inline text-xs text-gray-500">
+              Updated {lastUpdated.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+            </span>
+          )}
+          <button
+            type="button"
+            onClick={fetchNetworkStats}
+            disabled={refreshing}
+            className="text-xs text-purple-300 hover:text-purple-200 transition-colors disabled:opacity-50"
+          >
+            {refreshing ? 'Refreshing…' : 'Refresh'}
+          </button>
+          <div className="flex items-center gap-2">
+            <span className={`w-2 h-2 rounded-full ${healthColor} animate-pulse`}></span>
+            <span className="text-sm text-gray-400">{healthText}</span>
+          </div>
         </div>
       </div>
 
