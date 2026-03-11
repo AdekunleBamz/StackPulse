@@ -20,15 +20,24 @@ const SERVER_URL = process.env.NEXT_PUBLIC_SERVER_URL || 'https://stackpulse-b8f
 export default function LiveStats() {
   const [stats, setStats] = useState<EventStats | null>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
+  const [refreshKey, setRefreshKey] = useState(0);
 
   useEffect(() => {
     const fetchStats = async () => {
       try {
         const res = await fetch(`${SERVER_URL}/api/stats`);
+        if (!res.ok) throw new Error('Bad response');
         const data = await res.json();
-        setStats(data.stats);
+        const payload = data?.stats ?? data;
+        if (!payload) throw new Error('Missing stats');
+        setStats(payload);
+        setLastUpdated(new Date());
+        setError(null);
       } catch (error) {
         console.error('Failed to fetch stats:', error);
+        setError('Unable to load live stats right now.');
       } finally {
         setLoading(false);
       }
@@ -37,7 +46,7 @@ export default function LiveStats() {
     fetchStats();
     const interval = setInterval(fetchStats, 30000); // Refresh every 30s
     return () => clearInterval(interval);
-  }, []);
+  }, [refreshKey]);
 
   const statItems = stats ? [
     { label: 'Whale Transfers', value: stats.whaleTransfers, color: 'text-blue-400' },
@@ -61,12 +70,40 @@ export default function LiveStats() {
     );
   }
 
+  if (error) {
+    return (
+      <section className="py-12 px-4 border-y border-gray-800 bg-gray-900/30">
+        <div className="max-w-6xl mx-auto">
+          <div className="bg-gray-900/50 border border-gray-800 rounded-xl p-6 text-center">
+            <p className="text-gray-300 font-medium">Live stats unavailable</p>
+            <p className="text-gray-500 text-sm mt-1">{error}</p>
+            <button
+              type="button"
+              onClick={() => {
+                setLoading(true);
+                setRefreshKey((k) => k + 1);
+              }}
+              className="mt-4 inline-flex items-center justify-center px-4 py-2 bg-purple-600 hover:bg-purple-500 text-white rounded-lg font-semibold transition-all"
+            >
+              Retry
+            </button>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
   return (
     <section className="py-12 px-4 border-y border-gray-800 bg-gray-900/30">
       <div className="max-w-6xl mx-auto">
         <div className="flex items-center justify-center gap-3 mb-8">
           <Activity className="w-5 h-5 text-green-500 animate-pulse" />
           <span className="text-gray-400">Live Chainhook Events</span>
+          {lastUpdated && (
+            <span className="hidden sm:inline text-xs text-gray-500">
+              Updated {lastUpdated.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+            </span>
+          )}
           <a
             href={`${SERVER_URL}/health`}
             target="_blank"
