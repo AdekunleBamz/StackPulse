@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Users, Activity, AlertTriangle, TrendingUp } from 'lucide-react';
 
 interface NetworkStats {
@@ -25,6 +25,7 @@ export default function NetworkStatus({ refreshInterval = 30000 }: NetworkStatus
   const [networkHealth, setNetworkHealth] = useState<'healthy' | 'degraded' | 'down'>('healthy');
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
   const [refreshing, setRefreshing] = useState(false);
+  const hasStatsRef = useRef(false);
 
   const fetchNetworkStats = useCallback(async () => {
     setRefreshing(true);
@@ -51,13 +52,14 @@ export default function NetworkStatus({ refreshInterval = 30000 }: NetworkStatus
         totalSTXLocked: 400000000, // Approximate
         activeContracts: info.smart_contract_count || 0,
       });
+      hasStatsRef.current = true;
       setLastUpdated(new Date());
       setNetworkHealth('healthy');
       setError(null);
     } catch (err) {
       console.error('Error fetching network stats:', err);
       setError('Failed to fetch network data');
-      setNetworkHealth('degraded');
+      setNetworkHealth(hasStatsRef.current ? 'degraded' : 'down');
     } finally {
       setLoading(false);
       setRefreshing(false);
