@@ -19,6 +19,7 @@ import {
   ChevronRight,
 } from 'lucide-react';
 import CopyButton from '@/components/ui/CopyButton';
+import { toast } from '@/components/Toast';
 
 interface UserSettings {
   notifications: {
@@ -166,7 +167,7 @@ export default function SettingsPage() {
     setSaving(true);
     try {
       const serverUrl = process.env.NEXT_PUBLIC_SERVER_URL || 'https://stackpulse-b8fw.onrender.com';
-      await fetch(`${serverUrl}/api/users/${address}/preferences`, {
+      const res = await fetch(`${serverUrl}/api/users/${address}/preferences`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -176,10 +177,13 @@ export default function SettingsPage() {
             .map(([type]) => type),
         }),
       });
+      if (!res.ok) throw new Error('Save failed');
       setSaved(true);
+      toast.success('Settings saved');
       setTimeout(() => setSaved(false), 3000);
     } catch (error) {
       console.error('Error saving settings:', error);
+      toast.error('Save failed', 'Please try again.');
     } finally {
       setSaving(false);
     }
