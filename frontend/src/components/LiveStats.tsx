@@ -108,7 +108,9 @@ export default function LiveStats() {
             href={`${SERVER_URL}/health`}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-purple-400 hover:text-purple-300 transition-colors"
+            className="text-purple-400 hover:text-purple-300 transition-colors rounded-md focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400/90"
+            aria-label="Open server health endpoint"
+            title="Open server health endpoint"
           >
             <ExternalLink className="w-4 h-4" />
           </a>
