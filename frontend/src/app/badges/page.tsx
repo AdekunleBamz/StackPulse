@@ -4,6 +4,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { Award, ArrowLeft, Share2, Twitter, Download, Lock, Check, ExternalLink } from 'lucide-react';
 import BadgeShowcase from '@/components/BadgeShowcase';
+import { toast } from '@/components/Toast';
 
 // Badge type definitions
 const badgeDetails = [
@@ -112,6 +113,24 @@ export default function BadgesPage() {
   // TODO: Get from wallet context
   const userBadges = [2, 4]; // Example: user has badges 2 and 4
 
+  const shareCollection = async () => {
+    try {
+      const url = window.location.href;
+      if (navigator.share) {
+        await navigator.share({
+          title: 'My StackPulse badges',
+          text: 'Check out my StackPulse reputation badges.',
+          url,
+        });
+        return;
+      }
+      await navigator.clipboard.writeText(url);
+      toast.success('Link copied', 'Share it anywhere.');
+    } catch {
+      toast.error('Share failed', 'Please try again.');
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gray-950 text-white">
       {/* Header */}
@@ -130,12 +149,17 @@ export default function BadgesPage() {
                 <h1 className="text-xl font-semibold">Reputation Badges</h1>
               </div>
             </div>
-            <div className="flex items-center gap-2">
-              <button className="flex items-center gap-2 px-4 py-2 bg-gray-800 hover:bg-gray-700 rounded-lg transition-all">
-                <Share2 className="w-4 h-4" />
-                <span className="hidden sm:inline">Share Collection</span>
-              </button>
-            </div>
+	            <div className="flex items-center gap-2">
+	              <button
+	                type="button"
+	                onClick={shareCollection}
+	                className="flex items-center gap-2 px-4 py-2 bg-gray-800 hover:bg-gray-700 rounded-lg transition-all"
+	                aria-label="Share badge collection"
+	              >
+	                <Share2 className="w-4 h-4" />
+	                <span className="hidden sm:inline">Share Collection</span>
+	              </button>
+	            </div>
           </div>
         </div>
 	      </header>
