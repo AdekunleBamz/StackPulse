@@ -66,6 +66,26 @@ async function getNextNonce(address: string) {
   return nonce;
 }
 
+async function getBalanceUstx(address: string) {
+  const res = await fetch(`${HIRO_API_ORIGIN}/extended/v1/address/${address}/balances`);
+  if (!res.ok) throw new Error(`Balance fetch failed: ${res.status}`);
+  const data: any = await res.json();
+  const balance = Number(data?.stx?.balance ?? NaN);
+  if (!Number.isFinite(balance)) throw new Error('Balance missing in response');
+  return balance;
+}
+
+function getTierCostUstx(tier: number) {
+  // Keep in sync with contract constants.
+  const stackpulse: Record<number, number> = { 0: 0, 1: 10_000, 2: 50_000, 3: 200_000 };
+  const feeVault: Record<number, number> = { 0: 0, 1: 10_000, 2: 150_000, 3: 450_000 };
+  return (stackpulse[tier] ?? 0) + (feeVault[tier] ?? 0);
+}
+
+function formatStx(ustx: number) {
+  return `${(ustx / 1_000_000).toFixed(6)} STX`;
+}
+
 async function broadcastAndConfirm(tx: any, label: string, timeoutMs: number) {
   const result: any = await broadcastTransaction(tx, network);
 
@@ -75,8 +95,9 @@ async function broadcastAndConfirm(tx: any, label: string, timeoutMs: number) {
   }
 
   if (result?.error) {
-    const reason = result?.reason ? `: ${result.reason}` : '';
-    throw new Error(`Broadcast failed${reason}`);
+    const reason = result?.reason ? ` (${result.reason})` : '';
+    const details = result?.reason_data ? ` ${JSON.stringify(result.reason_data)}` : '';
+    throw new Error(`Broadcast failed: ${result.error}${reason}${details}`);
   }
 
   const txid = result?.txid;
@@ -178,6 +199,18 @@ async function run() {
     try {
       const privateKey = await generateAccountKey(w.mnemonic);
       let nonce = await getNextNonce(w.address);
+      const balanceUstx = await getBalanceUstx(w.address);
+
+      const txCount = 3; // register + create-alert + collect-fee
+      const requiredUstx = txFeeUstx * txCount + getTierCostUstx(tier);
+      console.log(`   Balance: ${balanceUstx} uSTX (${formatStx(balanceUstx)})`);
+      console.log(`   Required (est.): ${requiredUstx} uSTX (${formatStx(requiredUstx)})`);
+
+      if (balanceUstx < requiredUstx) {
+        console.log(`   ${FAIL} Insufficient STX to run interactions at tier ${tier}.`);
+        console.log(`   ${ansi.dim('Fund this wallet (or run with --tier 0 / lower --fee-ustx). Skipping.')}`);
+        continue;
+      }
 
       // 1) stackpulse-v-j3: register-and-subscribe
       console.log(`   -> 1: Registering to StackPulse v-j3...`);
