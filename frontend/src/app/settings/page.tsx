@@ -18,6 +18,7 @@ import {
   X,
   ChevronRight,
 } from 'lucide-react';
+import CopyButton from '@/components/ui/CopyButton';
 
 interface UserSettings {
   notifications: {
@@ -265,8 +266,11 @@ export default function SettingsPage() {
           <div className="space-y-4">
             <div>
               <label className="block text-sm text-gray-400 mb-1">Wallet Address</label>
-              <div className="bg-gray-900 border border-gray-700 rounded-lg px-4 py-2 text-gray-300 font-mono text-sm">
-                {address}
+              <div className="flex items-center gap-2">
+                <div className="min-w-0 flex-1 bg-gray-900 border border-gray-700 rounded-lg px-4 py-2 text-gray-300 font-mono text-sm truncate">
+                  {address}
+                </div>
+                <CopyButton value={address || ''} />
               </div>
             </div>
             <div>
