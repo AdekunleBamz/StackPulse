@@ -118,7 +118,10 @@ export default function PriceTracker() {
       <div className="flex items-center gap-2">
         <span className="font-medium text-white">STX</span>
         <span className="text-gray-300">{formatPrice(prices.stx.usd)}</span>
-        <span className={`flex items-center text-xs ${getChangeColor(prices.stx.change24h)}`}>
+        <span
+          className={`flex items-center text-xs ${getChangeColor(prices.stx.change24h)}`}
+          aria-label={`STX ${prices.stx.change24h >= 0 ? 'up' : 'down'} ${Math.abs(prices.stx.change24h).toFixed(2)} percent in 24 hours`}
+        >
           {getChangeIcon(prices.stx.change24h)}
           {formatChange(prices.stx.change24h)}
         </span>
@@ -131,7 +134,10 @@ export default function PriceTracker() {
       <div className="flex items-center gap-2">
         <span className="font-medium text-white">BTC</span>
         <span className="text-gray-300">{formatPrice(prices.btc.usd)}</span>
-        <span className={`flex items-center text-xs ${getChangeColor(prices.btc.change24h)}`}>
+        <span
+          className={`flex items-center text-xs ${getChangeColor(prices.btc.change24h)}`}
+          aria-label={`BTC ${prices.btc.change24h >= 0 ? 'up' : 'down'} ${Math.abs(prices.btc.change24h).toFixed(2)} percent in 24 hours`}
+        >
           {getChangeIcon(prices.btc.change24h)}
           {formatChange(prices.btc.change24h)}
         </span>
@@ -140,7 +146,7 @@ export default function PriceTracker() {
       {/* Last update tooltip */}
       {lastUpdate && (
         <div className="hidden lg:block text-xs text-gray-500">
-          Updated {lastUpdate.toLocaleTimeString()}
+          Updated {lastUpdate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
         </div>
       )}
     </div>
