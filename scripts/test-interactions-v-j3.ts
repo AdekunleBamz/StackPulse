@@ -86,6 +86,33 @@ function formatStx(ustx: number) {
   return `${(ustx / 1_000_000).toFixed(6)} STX`;
 }
 
+async function isStackpulseRegistered(address: string) {
+  const ro: any = await callReadOnlyFunction({
+    contractAddress: DEPLOYER_ADDRESS,
+    contractName: 'stackpulse-v-j3',
+    functionName: 'is-registered',
+    functionArgs: [principalCV(address)],
+    network,
+    senderAddress: address,
+  });
+  return Boolean(cvToValue(ro));
+}
+
+async function getStackpulseTier(address: string) {
+  const ro: any = await callReadOnlyFunction({
+    contractAddress: DEPLOYER_ADDRESS,
+    contractName: 'stackpulse-v-j3',
+    functionName: 'get-user',
+    functionArgs: [principalCV(address)],
+    network,
+    senderAddress: address,
+  });
+  const user = cvToValue(ro) as any;
+  const tierValue = user?.value?.tier?.value;
+  const tier = typeof tierValue === 'string' ? Number(tierValue) : NaN;
+  return Number.isFinite(tier) ? tier : null;
+}
+
 async function broadcastAndConfirm(tx: any, label: string, timeoutMs: number) {
   const result: any = await broadcastTransaction(tx, network);
 
@@ -166,6 +193,9 @@ async function run() {
   const args = parseArgs(process.argv);
   const walletsPath = args.get('--wallets') || process.env.WALLETS_PATH || DEFAULT_WALLETS_PATH;
   const walletCount = Number(args.get('--count') || process.env.WALLET_COUNT || 25);
+  const onlyAddress = args.get('--only-address') || process.env.ONLY_ADDRESS || null;
+  const onlyIndexRaw = args.get('--only-index') || process.env.ONLY_INDEX || null;
+  const onlyIndex = onlyIndexRaw ? Number(onlyIndexRaw) : null; // 1-based
   const txFeeUstx = Number(args.get('--fee-ustx') || process.env.TX_FEE_USTX || 1000); // 0.001 STX
   const tier = Number(args.get('--tier') || process.env.SUBSCRIPTION_TIER || 0);
   const confirmTimeoutMs = Number(args.get('--confirm-timeout-ms') || process.env.CONFIRM_TIMEOUT_MS || 20 * 60 * 1000);
@@ -173,12 +203,20 @@ async function run() {
   const badgeMinterMnemonic = args.get('--badge-minter-mnemonic') || process.env.BADGE_MINTER_MNEMONIC;
 
   const data = JSON.parse(fs.readFileSync(walletsPath, 'utf8'));
-  const wallets = data.wallets.slice(0, walletCount);
+  let wallets = data.wallets.slice(0, walletCount);
+  if (onlyAddress) {
+    wallets = wallets.filter((w: any) => w.address === onlyAddress);
+  } else if (onlyIndex != null && Number.isFinite(onlyIndex) && onlyIndex > 0) {
+    const picked = wallets[onlyIndex - 1];
+    wallets = picked ? [picked] : [];
+  }
 
   console.log(`Starting interactions for ${wallets.length} wallets on -v-j3 contracts...`);
   console.log(`- Fee: ${txFeeUstx} uSTX (0.001 STX) per tx`);
   console.log(`- Tier: ${tier}`);
   console.log(`- Wallets: ${walletsPath}`);
+  if (onlyAddress) console.log(`- Only address: ${onlyAddress}`);
+  if (onlyIndex != null && Number.isFinite(onlyIndex) && onlyIndex > 0) console.log(`- Only index: ${onlyIndex}`);
   if (!badgeMinterMnemonic) {
     console.log(
       `${WARN} reputation-badges mint will be skipped (set BADGE_MINTER_MNEMONIC to an authorized minter/owner mnemonic).`
@@ -212,25 +250,68 @@ async function run() {
         continue;
       }
 
-      // 1) stackpulse-v-j3: register-and-subscribe
-      console.log(`   -> 1: Registering to StackPulse v-j3...`);
-      const tx1 = await makeContractCall({
-        contractAddress: DEPLOYER_ADDRESS,
-        contractName: 'stackpulse-v-j3',
-        functionName: 'register-and-subscribe',
-        functionArgs: [
-          stringAsciiCV(`testuser${i}`),
-          stringAsciiCV(`test${i}@stackpulse.app`),
-          uintCV(tier),
-          uintCV(31),
-        ],
-        senderKey: privateKey,
-        network,
-        nonce: nonce++,
-        fee: txFeeUstx,
-        anchorMode: AnchorMode.Any,
-      });
-      await broadcastAndConfirm(tx1, 'register-and-subscribe', confirmTimeoutMs);
+      // 1) stackpulse-v-j3: register-and-subscribe (or update/upgrade if already registered)
+      const alreadyRegistered = await isStackpulseRegistered(w.address);
+      const currentTier = alreadyRegistered ? await getStackpulseTier(w.address) : null;
+      let effectiveTier = tier;
+
+      if (alreadyRegistered) {
+        effectiveTier = typeof currentTier === 'number' ? currentTier : tier;
+        if (typeof currentTier === 'number' && tier > currentTier) {
+          console.log(`   -> 1: Upgrading StackPulse subscription (current tier ${currentTier} → ${tier})...`);
+          const upgradeTx = await makeContractCall({
+            contractAddress: DEPLOYER_ADDRESS,
+            contractName: 'stackpulse-v-j3',
+            functionName: 'upgrade-subscription',
+            functionArgs: [uintCV(tier)],
+            senderKey: privateKey,
+            network,
+            nonce: nonce++,
+            fee: txFeeUstx,
+            anchorMode: AnchorMode.Any,
+          });
+          await broadcastAndConfirm(upgradeTx, 'upgrade-subscription', confirmTimeoutMs);
+          effectiveTier = tier;
+        } else {
+          console.log(`   -> 1: Already registered (err u101). Updating profile instead...`);
+          const updateTx = await makeContractCall({
+            contractAddress: DEPLOYER_ADDRESS,
+            contractName: 'stackpulse-v-j3',
+            functionName: 'update-profile',
+            functionArgs: [
+              stringAsciiCV(`testuser${i}`),
+              stringAsciiCV(`test${i}@stackpulse.app`),
+              uintCV(31),
+            ],
+            senderKey: privateKey,
+            network,
+            nonce: nonce++,
+            fee: txFeeUstx,
+            anchorMode: AnchorMode.Any,
+          });
+          await broadcastAndConfirm(updateTx, 'update-profile', confirmTimeoutMs);
+        }
+      } else {
+        console.log(`   -> 1: Registering to StackPulse v-j3...`);
+        const tx1 = await makeContractCall({
+          contractAddress: DEPLOYER_ADDRESS,
+          contractName: 'stackpulse-v-j3',
+          functionName: 'register-and-subscribe',
+          functionArgs: [
+            stringAsciiCV(`testuser${i}`),
+            stringAsciiCV(`test${i}@stackpulse.app`),
+            uintCV(tier),
+            uintCV(31),
+          ],
+          senderKey: privateKey,
+          network,
+          nonce: nonce++,
+          fee: txFeeUstx,
+          anchorMode: AnchorMode.Any,
+        });
+        await broadcastAndConfirm(tx1, 'register-and-subscribe', confirmTimeoutMs);
+        effectiveTier = tier;
+      }
 
       // 2) alert-manager-v-j3: create-alert (basic whale alert)
       console.log(`   -> 2: Creating alert (alert-manager-v-j3)...`);
@@ -243,7 +324,7 @@ async function run() {
           stringAsciiCV('Whale Alert'),
           noneCV(),
           uintCV(10_000),
-          uintCV(tier),
+          uintCV(effectiveTier),
         ],
         senderKey: privateKey,
         network,
