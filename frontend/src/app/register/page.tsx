@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useWallet } from '@/context/WalletContext';
 import { useRouter } from 'next/navigation';
+import { toast } from '@/components/Toast';
 
 const DEPLOYER_ADDRESS = process.env.NEXT_PUBLIC_DEPLOYER_ADDRESS || '';
 
@@ -53,7 +54,7 @@ export default function RegisterPage() {
         ],
         onFinish: (data: { txId: string }) => {
           console.log('Registration submitted:', data.txId);
-          alert(`🎉 Registration successful! TX: ${data.txId}\n\nYou're now on the Free tier. Upgrade anytime!`);
+          toast.success('Registration submitted', `TX: ${data.txId}`);
           // Redirect to pricing after a delay
           setTimeout(() => router.push('/#pricing'), 2000);
         },
@@ -64,6 +65,7 @@ export default function RegisterPage() {
       });
     } catch (err) {
       console.error('Registration error:', err);
+      toast.error('Registration failed', 'Please try again.');
       setError('Failed to submit registration. Please try again.');
     } finally {
       setIsLoading(false);
