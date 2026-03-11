@@ -1,6 +1,14 @@
 # Dependencies
 node_modules/
 server/node_modules/
+frontend/node_modules/
+
+# Build outputs
+dist/
+server/dist/
+frontend/.next/
+*.js.map
+*.js
 
 # Environment files
 .env
@@ -14,6 +22,7 @@ settings/
 # Build outputs
 dist/
 server/dist/
+frontend/.next/
 *.js.map
 
 # Logs
