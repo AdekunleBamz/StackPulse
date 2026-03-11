@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useWallet } from '@/context/WalletContext';
 import Link from 'next/link';
 import { StatsCardSkeleton } from '@/components/LoadingSkeleton';
+import { ErrorState } from '@/components/EmptyState';
 import {
   BarChart3,
   TrendingUp,
@@ -99,11 +100,14 @@ export default function AnalyticsPage() {
   const { isConnected, address } = useWallet();
   const [analytics, setAnalytics] = useState<AnalyticsData | null>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [timeRange, setTimeRange] = useState<'24h' | '7d' | '30d'>('7d');
+  const [refreshKey, setRefreshKey] = useState(0);
 
   useEffect(() => {
     const fetchAnalytics = async () => {
       try {
+        setError(null);
         const serverUrl = process.env.NEXT_PUBLIC_SERVER_URL || 'https://stackpulse-b8fw.onrender.com';
         const response = await fetch(`${serverUrl}/api/stats`);
         
@@ -125,9 +129,12 @@ export default function AnalyticsPage() {
             },
             recentEvents: [],
           });
+        } else {
+          setError('Failed to load analytics. Please try again.');
         }
       } catch (error) {
         console.error('Error fetching analytics:', error);
+        setError('Failed to load analytics. Please try again.');
       } finally {
         setLoading(false);
       }
@@ -137,7 +144,7 @@ export default function AnalyticsPage() {
     // Refresh every 30 seconds
     const interval = setInterval(fetchAnalytics, 30000);
     return () => clearInterval(interval);
-  }, [timeRange]);
+  }, [timeRange, refreshKey]);
 
   if (loading) {
     return (
@@ -189,6 +196,44 @@ export default function AnalyticsPage() {
             <div className="h-6 w-48 bg-gray-700 rounded animate-pulse mb-6" />
             <div className="h-64 border border-dashed border-gray-700 rounded-lg animate-pulse" />
           </div>
+        </main>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gray-950 text-white">
+        <header className="border-b border-gray-800 bg-gray-900/50 backdrop-blur-sm sticky top-0 z-10">
+          <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <Link href="/" className="flex items-center gap-2">
+                <div className="w-8 h-8 bg-gradient-to-br from-purple-500 to-blue-500 rounded-lg flex items-center justify-center">
+                  <Zap className="w-5 h-5 text-white" />
+                </div>
+                <span className="text-xl font-bold">StackPulse</span>
+              </Link>
+              <span className="text-gray-500">/</span>
+              <span className="text-gray-400">Analytics</span>
+            </div>
+
+            <Link
+              href="/dashboard"
+              className="px-4 py-2 bg-purple-600 hover:bg-purple-500 rounded-lg text-sm font-medium transition-all"
+            >
+              Dashboard
+            </Link>
+          </div>
+        </header>
+
+        <main id="main" className="max-w-7xl mx-auto px-4 py-8">
+          <ErrorState
+            message={error}
+            onRetry={() => {
+              setLoading(true);
+              setRefreshKey((k) => k + 1);
+            }}
+          />
         </main>
       </div>
     );
