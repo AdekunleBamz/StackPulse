@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useWallet } from '@/context/WalletContext';
 import { useRouter } from 'next/navigation';
 import { toast } from '@/components/Toast';
+import { useConfirmDialog } from '@/components/ConfirmDialog';
 import { 
   Bell, 
   Wallet, 
@@ -53,6 +54,7 @@ interface UserData {
 export default function DashboardPage() {
   const { isConnected, address, connect } = useWallet();
   const router = useRouter();
+  const { confirm, ConfirmDialog } = useConfirmDialog();
   const [isLoading, setIsLoading] = useState(true);
   const [userData, setUserData] = useState<UserData | null>(null);
   const [alerts, setAlerts] = useState<UserAlert[]>([]);
@@ -223,18 +225,35 @@ export default function DashboardPage() {
 
   // Delete alert
   const deleteAlert = async (alertId: number) => {
-    if (!confirm('Delete this alert?')) return;
+    confirm({
+      title: 'Delete alert?',
+      message: 'This removes the alert from your dashboard. You can recreate it anytime.',
+      confirmLabel: 'Delete',
+      cancelLabel: 'Cancel',
+      variant: 'danger',
+      onConfirm: async () => {
+        let removedAlert: UserAlert | undefined;
+        setAlerts((prev) => {
+          removedAlert = prev.find((a) => a.id === alertId);
+          return prev.filter((a) => a.id !== alertId);
+        });
 
-    setAlerts(prev => prev.filter(a => a.id !== alertId));
-
-    try {
-      const serverUrl = process.env.NEXT_PUBLIC_SERVER_URL || 'https://stackpulse-b8fw.onrender.com';
-      await fetch(`${serverUrl}/api/users/${address}/alerts/${alertId}`, {
-        method: 'DELETE'
-      });
-    } catch (err) {
-      console.error('Error deleting alert:', err);
-    }
+        try {
+          const serverUrl = process.env.NEXT_PUBLIC_SERVER_URL || 'https://stackpulse-b8fw.onrender.com';
+          const res = await fetch(`${serverUrl}/api/users/${address}/alerts/${alertId}`, {
+            method: 'DELETE',
+          });
+          if (!res.ok) throw new Error('Delete failed');
+          toast.success('Alert deleted');
+        } catch (err) {
+          console.error('Error deleting alert:', err);
+          if (removedAlert) {
+            setAlerts((prev) => [removedAlert!, ...prev]);
+          }
+          toast.error('Delete failed', 'Please try again.');
+        }
+      },
+    });
   };
 
   // Not connected - show connect prompt
@@ -522,6 +541,7 @@ export default function DashboardPage() {
           </div>
         )}
       </div>
+      {ConfirmDialog}
     </main>
   );
 }
