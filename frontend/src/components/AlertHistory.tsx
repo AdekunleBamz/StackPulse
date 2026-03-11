@@ -137,16 +137,21 @@ export default function AlertHistory({ userAddress }: AlertHistoryProps) {
           </div>
           <div className="flex items-center gap-2">
             <button
+              type="button"
               onClick={() => setShowFilters(!showFilters)}
               className={`p-2 rounded-lg transition-all ${
                 showFilters ? 'bg-purple-600 text-white' : 'bg-gray-800 text-gray-400 hover:text-white'
               }`}
+              aria-label={showFilters ? 'Hide filters' : 'Show filters'}
+              title={showFilters ? 'Hide filters' : 'Show filters'}
             >
               <Filter className="w-5 h-5" />
             </button>
             <button
+              type="button"
               onClick={exportCSV}
               className="p-2 bg-gray-800 text-gray-400 hover:text-white rounded-lg transition-all"
+              aria-label="Export CSV"
               title="Export CSV"
             >
               <Download className="w-5 h-5" />
