@@ -382,25 +382,41 @@ export default function Pricing() {
   const saveChannelUpdate = async () => {
     if (!address || !editingChannel) return;
     
+    let value = tempValue.trim();
+    if (editingChannel === 'email' && value) {
+      const isValidEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+      if (!isValidEmail) {
+        toast.warning('Invalid email', 'Please enter a valid email address.');
+        return;
+      }
+    }
+
+    if (editingChannel === 'telegram' && value && !value.startsWith('@')) {
+      value = `@${value}`;
+      setTempValue(value);
+    }
+
     setIsSaving(true);
     try {
       // Update local state
-      if (editingChannel === 'email') setEmail(tempValue);
-      if (editingChannel === 'discord') setDiscord(tempValue);
-      if (editingChannel === 'telegram') setTelegram(tempValue);
+      if (editingChannel === 'email') setEmail(value);
+      if (editingChannel === 'discord') setDiscord(value);
+      if (editingChannel === 'telegram') setTelegram(value);
       
       // Save to server
       const serverUrl = process.env.NEXT_PUBLIC_SERVER_URL || 'https://stackpulse-b8fw.onrender.com';
-      await fetch(`${serverUrl}/api/users/${address}`, {
+      const res = await fetch(`${serverUrl}/api/users/${address}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          [editingChannel]: tempValue || undefined
+          [editingChannel]: value || undefined
         })
       });
+      if (!res.ok) throw new Error('Save failed');
       
       setEditingChannel(null);
       setTempValue('');
+      toast.success('Saved');
     } catch (error) {
       console.error('Failed to save channel:', error);
       toast.error('Save failed', 'Please try again.');
