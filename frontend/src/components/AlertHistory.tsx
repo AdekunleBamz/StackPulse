@@ -42,6 +42,7 @@ export default function AlertHistory({ userAddress }: AlertHistoryProps) {
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [totalItems, setTotalItems] = useState(0);
   const [filter, setFilter] = useState<number | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [showFilters, setShowFilters] = useState(false);
@@ -90,6 +91,7 @@ export default function AlertHistory({ userAddress }: AlertHistoryProps) {
         const paginated = filtered.slice(start, start + pageSize);
 
         setHistory(paginated);
+        setTotalItems(filtered.length);
         setTotalPages(Math.ceil(filtered.length / pageSize));
       } catch (error) {
         console.error('Error fetching history:', error);
@@ -310,20 +312,27 @@ export default function AlertHistory({ userAddress }: AlertHistoryProps) {
       {totalPages > 1 && (
         <div className="flex items-center justify-between px-6 py-4 border-t border-gray-800">
           <p className="text-gray-400 text-sm">
-            Page {page} of {totalPages}
+            Showing {Math.min((page - 1) * pageSize + 1, totalItems)}–
+            {Math.min(page * pageSize, totalItems)} of {totalItems}
           </p>
           <div className="flex items-center gap-2">
             <button
+              type="button"
               onClick={() => setPage(p => Math.max(1, p - 1))}
               disabled={page === 1}
               className="p-2 bg-gray-800 text-gray-400 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:text-white transition-all"
+              aria-label="Previous page"
+              title="Previous page"
             >
               <ChevronLeft className="w-5 h-5" />
             </button>
             <button
+              type="button"
               onClick={() => setPage(p => Math.min(totalPages, p + 1))}
               disabled={page === totalPages}
               className="p-2 bg-gray-800 text-gray-400 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:text-white transition-all"
+              aria-label="Next page"
+              title="Next page"
             >
               <ChevronRight className="w-5 h-5" />
             </button>
