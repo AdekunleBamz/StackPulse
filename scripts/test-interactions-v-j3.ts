@@ -1,5 +1,5 @@
-import { makeContractCall, broadcastTransaction, AnchorMode, PostConditionMode, uintCV } from '@stacks/transactions';
-import { generateSecretKey, generateWallet, getStxAddress, restoreWalletAccounts } from '@stacks/wallet-sdk';
+import { AnchorMode, makeContractCall, noneCV, stringAsciiCV, uintCV } from '@stacks/transactions';
+import { generateWallet } from '@stacks/wallet-sdk';
 import { StacksMainnet } from '@stacks/network';
 import * as fs from 'fs';
 
@@ -34,11 +34,11 @@ async function run() {
                 contractName: 'stackpulse-v-j3',
                 functionName: 'register-and-subscribe',
                 functionArgs: [
-                    import('@stacks/transactions').then(t => t.stringAsciiCV(`TestUser${i}`)),
-                    import('@stacks/transactions').then(t => t.stringAsciiCV(`test${i}@stackpulse.app`)),
-                    import('@stacks/transactions').then(t => t.uintCV(1)), // tier 1
-                    import('@stacks/transactions').then(t => t.uintCV(31))  // alerts mask
-                ] as any, // lazy evaluation bypassing async typing for testing mockup
+                    stringAsciiCV(`testuser${i}`),
+                    stringAsciiCV(`test${i}@stackpulse.app`),
+                    uintCV(1), // tier 1
+                    uintCV(31)  // alerts mask
+                ],
                 senderKey: privateKey,
                 network,
                 nonce: nonce++,
@@ -55,9 +55,9 @@ async function run() {
                 contractName: 'fee-vault-v-j3',
                 functionName: 'collect-subscription-fee',
                 functionArgs: [
-                    import('@stacks/transactions').then(t => t.uintCV(1)), // tier 1
-                    import('@stacks/transactions').then(t => t.noneCV())   // no referrer
-                ] as any,
+                    uintCV(1), // tier 1
+                    noneCV()   // no referrer
+                ],
                 senderKey: privateKey,
                 network,
                 nonce: nonce++,
@@ -67,7 +67,8 @@ async function run() {
             console.log(`      Payload ready for tx2.`);
 
         } catch (e) {
-            console.error(`   Failed setting up interactions for ${w.address}:`, e.message);
+            const message = e instanceof Error ? e.message : String(e);
+            console.error(`   Failed setting up interactions for ${w.address}:`, message);
         }
     }
 
