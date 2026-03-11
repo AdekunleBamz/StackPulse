@@ -5,6 +5,7 @@ import { Check, Wallet, Mail, MessageCircle, Send } from 'lucide-react';
 import { useEffect, useId, useState } from 'react';
 import { toast } from '@/components/Toast';
 import Button from '@/components/ui/Button';
+import Link from 'next/link';
 
 const tiers = [
   {
@@ -680,8 +681,14 @@ export default function Pricing() {
                     <div className="bg-gray-800/30 rounded-xl p-4 border border-gray-700">
                       <div className="text-2xl mb-2">2️⃣</div>
                       <h4 className="text-white font-semibold mb-1">Create Alerts</h4>
-                      <p className="text-gray-400 text-sm">Go to <a href="/dashboard" className="text-purple-400 hover:underline">Dashboard</a> to create custom blockchain alerts</p>
-                    </div>
+	                      <p className="text-gray-400 text-sm">
+	                        Go to{' '}
+	                        <Link href="/dashboard" className="text-purple-400 hover:underline">
+	                          Dashboard
+	                        </Link>{' '}
+	                        to create custom blockchain alerts
+	                      </p>
+	                    </div>
                     <div className="bg-gray-800/30 rounded-xl p-4 border border-gray-700">
                       <div className="text-2xl mb-2">3️⃣</div>
                       <h4 className="text-white font-semibold mb-1">
@@ -697,12 +704,12 @@ export default function Pricing() {
                   </div>
                   
                   <div className="mt-6 text-center">
-                    <a 
-                      href="/dashboard"
-                      className="inline-flex items-center gap-2 px-6 py-3 bg-purple-600 hover:bg-purple-500 text-white rounded-xl font-semibold transition-all cursor-pointer"
-                    >
-                      Go to Dashboard →
-                    </a>
+	                    <Link
+	                      href="/dashboard"
+	                      className="inline-flex items-center gap-2 px-6 py-3 bg-purple-600 hover:bg-purple-500 text-white rounded-xl font-semibold transition-all cursor-pointer"
+	                    >
+	                      Go to Dashboard →
+	                    </Link>
                   </div>
                 </div>
               </div>
