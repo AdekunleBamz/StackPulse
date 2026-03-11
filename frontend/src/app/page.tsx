@@ -80,17 +80,17 @@ export default function Home() {
       </section>
       
       {/* Features Section */}
-      <section id="features">
+      <section id="features" className="scroll-mt-24">
         <Features />
       </section>
       
       {/* Live Stats Section */}
-      <section id="stats">
+      <section id="stats" className="scroll-mt-24">
         <LiveStats />
       </section>
       
       {/* Pricing Section */}
-      <section id="pricing">
+      <section id="pricing" className="scroll-mt-24">
         <Pricing />
       </section>
       
