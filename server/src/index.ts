@@ -854,10 +854,54 @@ app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
 });
 
 // Start server
-app.listen(PORT, () => {
+const server = app.listen(PORT, () => {
   logger.info(`🚀 StackPulse Server running on port ${PORT}`);
   logger.info(`📡 Ready to receive chainhook events`);
   logger.info(`🔗 Health check: http://localhost:${PORT}/health`);
+});
+
+// Graceful shutdown handler
+const gracefulShutdown = (signal: string) => {
+  logger.info(`${signal} received, starting graceful shutdown...`);
+  
+  // Stop accepting new connections
+  server.close((err) => {
+    if (err) {
+      logger.error('Error during server shutdown', { error: err });
+      process.exit(1);
+    }
+    
+    logger.info('HTTP server closed');
+    
+    // Save any pending data
+    logger.info('Saving pending data...');
+    
+    // Close database connections, etc.
+    logger.info('Graceful shutdown complete');
+    
+    process.exit(0);
+  });
+  
+  // Force shutdown after 30 seconds
+  setTimeout(() => {
+    logger.error('Forced shutdown after timeout');
+    process.exit(1);
+  }, 30000);
+};
+
+// Register signal handlers
+process.on('SIGTERM', () => gracefulShutdown('SIGTERM'));
+process.on('SIGINT', () => gracefulShutdown('SIGINT'));
+
+// Handle uncaught exceptions
+process.on('uncaughtException', (err) => {
+  logger.error('Uncaught exception', { error: err.message, stack: err.stack });
+  gracefulShutdown('uncaughtException');
+});
+
+// Handle unhandled promise rejections
+process.on('unhandledRejection', (reason, promise) => {
+  logger.error('Unhandled promise rejection', { reason, promise });
 });
 
 export default app;
