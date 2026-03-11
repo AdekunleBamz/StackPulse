@@ -25,12 +25,12 @@ const DEPLOYER_ADDRESS = process.env.NEXT_PUBLIC_DEPLOYER_ADDRESS || '';
 
 // Alert types matching the contracts and chainhooks
 const alertTypes = [
-  { id: 1, name: 'Whale Transfers', icon: Wallet, description: 'Large STX transfers (>10,000 STX)', color: 'blue' },
-  { id: 2, name: 'Contract Deployments', icon: FileCode, description: 'New smart contract deployments', color: 'purple' },
-  { id: 3, name: 'NFT Mints', icon: Image, description: 'NFT collection mints', color: 'pink' },
-  { id: 4, name: 'Token Launches', icon: Coins, description: 'New SIP-010 token deployments', color: 'yellow' },
-  { id: 5, name: 'Large Swaps', icon: ArrowLeftRight, description: 'DEX swaps over threshold', color: 'green' },
-  { id: 6, name: 'Address Watch', icon: Activity, description: 'Monitor specific addresses', color: 'orange' },
+  { id: 1, name: 'Whale Transfers', icon: Wallet, description: 'Large STX transfers (>10,000 STX)', iconBgClass: 'bg-blue-500/20', iconClass: 'text-blue-400' },
+  { id: 2, name: 'Contract Deployments', icon: FileCode, description: 'New smart contract deployments', iconBgClass: 'bg-purple-500/20', iconClass: 'text-purple-400' },
+  { id: 3, name: 'NFT Mints', icon: Image, description: 'NFT collection mints', iconBgClass: 'bg-pink-500/20', iconClass: 'text-pink-400' },
+  { id: 4, name: 'Token Launches', icon: Coins, description: 'New SIP-010 token deployments', iconBgClass: 'bg-yellow-500/20', iconClass: 'text-yellow-300' },
+  { id: 5, name: 'Large Swaps', icon: ArrowLeftRight, description: 'DEX swaps over threshold', iconBgClass: 'bg-green-500/20', iconClass: 'text-green-400' },
+  { id: 6, name: 'Address Watch', icon: Activity, description: 'Monitor specific addresses', iconBgClass: 'bg-orange-500/20', iconClass: 'text-orange-300' },
 ];
 
 interface UserAlert {
@@ -370,15 +370,15 @@ export default function DashboardPage() {
             </button>
           </div>
           
-          <div className="grid md:grid-cols-3 gap-4">
-            {alertTypes.map((type) => (
-              <div key={type.id} className="bg-gray-800 rounded-xl p-6 border border-gray-700 hover:border-purple-500 transition-all">
-                <div className="flex items-center gap-3 mb-3">
-                  <div className={`w-10 h-10 rounded-lg flex items-center justify-center bg-${type.color}-500/20`}>
-                    <type.icon className={`w-5 h-5 text-${type.color}-400`} />
-                  </div>
-                  <h3 className="text-white font-semibold">{type.name}</h3>
-                </div>
+	          <div className="grid md:grid-cols-3 gap-4">
+	            {alertTypes.map((type) => (
+	              <div key={type.id} className="bg-gray-800 rounded-xl p-6 border border-gray-700 hover:border-purple-500 transition-all">
+	                <div className="flex items-center gap-3 mb-3">
+	                  <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${type.iconBgClass}`}>
+	                    <type.icon className={`w-5 h-5 ${type.iconClass}`} />
+	                  </div>
+	                  <h3 className="text-white font-semibold">{type.name}</h3>
+	                </div>
                 <p className="text-gray-400 text-sm mb-4">{type.description}</p>
                 <button
                   onClick={() => {
