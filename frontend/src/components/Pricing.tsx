@@ -4,6 +4,7 @@ import { useWallet } from '@/context/WalletContext';
 import { Check, Wallet, Mail, MessageCircle, Send } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { toast } from '@/components/Toast';
+import Button from '@/components/ui/Button';
 
 const tiers = [
   {
@@ -443,14 +444,15 @@ export default function Pricing() {
                       {isConnected ? `Connected: ${address?.slice(0, 8)}...${address?.slice(-6)}` : 'Connect your Stacks wallet'}
                     </p>
                   </div>
-                  {!isConnected && (
-                    <button
-                      onClick={connect}
-                      className="px-4 py-2 bg-purple-600 hover:bg-purple-500 text-white rounded-lg font-semibold transition-all cursor-pointer"
-                    >
-                      Connect
-                    </button>
-                  )}
+	                  {!isConnected && (
+	                    <Button
+	                      onClick={connect}
+	                      variant="primary"
+	                      size="sm"
+	                    >
+	                      Connect
+	                    </Button>
+	                  )}
                   {isConnected && <Check className="w-6 h-6 text-green-500" />}
                 </div>
 
@@ -524,13 +526,16 @@ export default function Pricing() {
                 </div>
 
                 {/* Register Button */}
-                <button
-                  onClick={() => handleRegister(0)}
-                  disabled={!isConnected || !username.trim() || isLoading}
-                  className="w-full py-4 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-500 hover:to-blue-500 disabled:from-gray-600 disabled:to-gray-600 text-white rounded-xl font-bold text-lg transition-all cursor-pointer transform hover:scale-[1.02] active:scale-[0.98] disabled:cursor-not-allowed"
-                >
-                  {isLoading ? 'Registering...' : 'Register Free on StackPulse'}
-                </button>
+	                <Button
+	                  onClick={() => handleRegister(0)}
+	                  disabled={!isConnected || !username.trim() || isLoading}
+	                  variant="primary"
+	                  size="lg"
+	                  className="w-full font-bold"
+	                  isLoading={isLoading}
+	                >
+	                  Register Free on StackPulse
+	                </Button>
               </div>
             ) : (
               /* Registered user - show notification settings */
