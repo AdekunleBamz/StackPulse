@@ -71,7 +71,7 @@ export default function RegisterPage() {
   };
 
   return (
-    <main className="min-h-screen bg-gray-950 flex items-center justify-center px-4">
+    <main id="main" className="min-h-screen bg-gray-950 flex items-center justify-center px-4">
       <div className="max-w-md w-full">
         {/* Back button */}
         <button
