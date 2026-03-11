@@ -172,8 +172,19 @@ export default function Pricing() {
       return;
     }
 
-    if (!username.trim()) {
+    const normalizedUsername = username.trim().toLowerCase();
+    if (!normalizedUsername) {
       toast.warning('Username required', 'Enter a username to continue.');
+      return;
+    }
+
+    if (normalizedUsername.length < 3 || normalizedUsername.length > 32) {
+      toast.warning('Invalid username', 'Username must be 3–32 characters.');
+      return;
+    }
+
+    if (!/^[a-z0-9_]+$/.test(normalizedUsername)) {
+      toast.warning('Invalid username', 'Use only letters, numbers, and underscores.');
       return;
     }
 
@@ -188,6 +199,7 @@ export default function Pricing() {
 
     setIsLoading(true);
     try {
+      setUsername(normalizedUsername);
       const { openContractCall } = await import('@stacks/connect');
       const { stringAsciiCV, uintCV } = await import('@stacks/transactions');
 
@@ -208,7 +220,7 @@ export default function Pricing() {
         contractName: 'stackpulse-v-j3',
         functionName: 'register-and-subscribe',
         functionArgs: [
-          stringAsciiCV(username),
+          stringAsciiCV(normalizedUsername),
           stringAsciiCV(email || ''),
           uintCV(selectedTier),
           uintCV(31) // Enable all alert types
@@ -225,7 +237,7 @@ export default function Pricing() {
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({
                 address: address,
-                username: username,
+                username: normalizedUsername,
                 email: email || undefined,
                 discord: discord || undefined,
                 telegram: telegram || undefined,
@@ -246,7 +258,7 @@ export default function Pricing() {
           if (address) {
             localStorage.setItem(`stackpulse_registered_${address}`, JSON.stringify({
               tier: selectedTier,
-              username: username,
+              username: normalizedUsername,
               timestamp: Date.now()
             }));
           }
