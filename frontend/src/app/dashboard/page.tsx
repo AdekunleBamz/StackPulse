@@ -232,22 +232,28 @@ export default function DashboardPage() {
 
   // Toggle alert on/off
   const toggleAlert = async (alertId: number) => {
+    const existing = alerts.find((a) => a.id === alertId);
+    const nextEnabled = !(existing?.enabled ?? false);
+
     // Update local state
     setAlerts(prev => prev.map(a => 
-      a.id === alertId ? { ...a, enabled: !a.enabled } : a
+      a.id === alertId ? { ...a, enabled: nextEnabled } : a
     ));
 
     // Update on server
     try {
       const serverUrl = process.env.NEXT_PUBLIC_SERVER_URL || 'https://stackpulse-b8fw.onrender.com';
-      const alert = alerts.find(a => a.id === alertId);
       await fetch(`${serverUrl}/api/users/${address}/alerts/${alertId}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ enabled: !alert?.enabled })
+        body: JSON.stringify({ enabled: nextEnabled })
       });
     } catch (err) {
       console.error('Error toggling alert:', err);
+      setAlerts((prev) =>
+        prev.map((a) => (a.id === alertId ? { ...a, enabled: existing?.enabled ?? a.enabled } : a))
+      );
+      toast.error('Update failed', 'Could not toggle alert. Please try again.');
     }
   };
 
@@ -480,24 +486,31 @@ export default function DashboardPage() {
                         </p>
                       </div>
                     </div>
-                    <div className="flex items-center gap-3">
-                      <button
-                        onClick={() => toggleAlert(alert.id)}
-                        className="p-2 hover:bg-gray-700 rounded-lg transition-all cursor-pointer"
-                      >
-                        {alert.enabled ? (
-                          <ToggleRight className="w-6 h-6 text-green-500" />
-                        ) : (
-                          <ToggleLeft className="w-6 h-6 text-gray-500" />
-                        )}
-                      </button>
-                      <button
-                        onClick={() => deleteAlert(alert.id)}
-                        className="p-2 hover:bg-red-500/20 rounded-lg transition-all cursor-pointer"
-                      >
-                        <Trash2 className="w-5 h-5 text-red-400" />
-                      </button>
-                    </div>
+	                    <div className="flex items-center gap-3">
+	                      <button
+	                        type="button"
+	                        onClick={() => toggleAlert(alert.id)}
+	                        className="p-2 hover:bg-gray-700 rounded-lg transition-all cursor-pointer focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400/90"
+	                        aria-pressed={alert.enabled}
+	                        aria-label={alert.enabled ? 'Disable alert' : 'Enable alert'}
+	                        title={alert.enabled ? 'Disable alert' : 'Enable alert'}
+	                      >
+	                        {alert.enabled ? (
+	                          <ToggleRight className="w-6 h-6 text-green-500" />
+	                        ) : (
+	                          <ToggleLeft className="w-6 h-6 text-gray-500" />
+	                        )}
+	                      </button>
+	                      <button
+	                        type="button"
+	                        onClick={() => deleteAlert(alert.id)}
+	                        className="p-2 hover:bg-red-500/20 rounded-lg transition-all cursor-pointer focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400/90"
+	                        aria-label="Delete alert"
+	                        title="Delete alert"
+	                      >
+	                        <Trash2 className="w-5 h-5 text-red-400" />
+	                      </button>
+	                    </div>
                   </div>
                 );
               })}
