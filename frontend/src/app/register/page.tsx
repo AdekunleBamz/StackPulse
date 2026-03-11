@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useWallet } from '@/context/WalletContext';
 import { useRouter } from 'next/navigation';
 import { toast } from '@/components/Toast';
+import TextField from '@/components/ui/TextField';
 
 const DEPLOYER_ADDRESS = process.env.NEXT_PUBLIC_DEPLOYER_ADDRESS || '';
 
@@ -12,12 +13,14 @@ export default function RegisterPage() {
   const [username, setUsername] = useState('');
   const [referrer, setReferrer] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState('');
+  const [usernameError, setUsernameError] = useState('');
+  const [submitError, setSubmitError] = useState('');
   const router = useRouter();
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError('');
+    setUsernameError('');
+    setSubmitError('');
 
     if (!isConnected) {
       connect();
@@ -25,13 +28,13 @@ export default function RegisterPage() {
     }
 
     if (!username || username.length < 3 || username.length > 32) {
-      setError('Username must be between 3 and 32 characters');
+      setUsernameError('Username must be between 3 and 32 characters.');
       return;
     }
 
     // Only allow alphanumeric and underscores
     if (!/^[a-zA-Z0-9_]+$/.test(username)) {
-      setError('Username can only contain letters, numbers, and underscores');
+      setUsernameError('Use only letters, numbers, and underscores.');
       return;
     }
 
@@ -66,7 +69,7 @@ export default function RegisterPage() {
     } catch (err) {
       console.error('Registration error:', err);
       toast.error('Registration failed', 'Please try again.');
-      setError('Failed to submit registration. Please try again.');
+      setSubmitError('Failed to submit registration. Please try again.');
     } finally {
       setIsLoading(false);
     }
@@ -122,41 +125,32 @@ export default function RegisterPage() {
 
           {/* Registration Form */}
           <form onSubmit={handleRegister} className="space-y-6">
-            <div>
-              <label htmlFor="username" className="block text-sm font-medium text-gray-300 mb-2">
-                Username *
-              </label>
-              <input
-                type="text"
-                id="username"
-                value={username}
-                onChange={(e) => setUsername(e.target.value.toLowerCase())}
-                placeholder="your_username"
-                maxLength={32}
-                className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-purple-500 transition-colors"
-                disabled={!isConnected}
-              />
-              <p className="mt-1 text-xs text-gray-500">3-32 characters, letters, numbers, underscores only</p>
-            </div>
+            <TextField
+              label="Username *"
+              value={username}
+              onChange={(e) => setUsername(e.target.value.toLowerCase())}
+              placeholder="your_username"
+              maxLength={32}
+              disabled={!isConnected}
+              error={usernameError || undefined}
+              hint="3–32 characters, letters/numbers/underscores only"
+              autoComplete="username"
+              spellCheck={false}
+            />
 
-            <div>
-              <label htmlFor="referrer" className="block text-sm font-medium text-gray-300 mb-2">
-                Referral Code (Optional)
-              </label>
-              <input
-                type="text"
-                id="referrer"
-                value={referrer}
-                onChange={(e) => setReferrer(e.target.value)}
-                placeholder="SP... (referrer's address)"
-                className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-purple-500 transition-colors"
-                disabled={!isConnected}
-              />
-            </div>
+            <TextField
+              label="Referral Code (Optional)"
+              value={referrer}
+              onChange={(e) => setReferrer(e.target.value)}
+              placeholder="SP... (referrer's address)"
+              disabled={!isConnected}
+              autoComplete="off"
+              spellCheck={false}
+            />
 
-            {error && (
+            {submitError && (
               <div className="p-3 bg-red-500/10 border border-red-500/20 rounded-lg">
-                <p className="text-red-400 text-sm">{error}</p>
+                <p className="text-red-400 text-sm">{submitError}</p>
               </div>
             )}
 
