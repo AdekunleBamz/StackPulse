@@ -3,11 +3,12 @@
 import ConnectWallet from './ConnectWallet';
 import Link from 'next/link';
 import { Menu, X } from 'lucide-react';
-import { useEffect, useId, useState } from 'react';
+import { useEffect, useId, useRef, useState } from 'react';
 
 export default function Header() {
   const [isOpen, setIsOpen] = useState(false);
   const mobileNavId = useId();
+  const mobileNavRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!isOpen) return;
@@ -25,6 +26,15 @@ export default function Header() {
     return () => {
       document.body.style.overflow = previousOverflow;
     };
+  }, [isOpen]);
+
+  useEffect(() => {
+    if (!isOpen) return;
+    const t = window.setTimeout(() => {
+      const firstFocusable = mobileNavRef.current?.querySelector<HTMLElement>('a, button, [tabindex]:not([tabindex="-1"])');
+      firstFocusable?.focus?.();
+    }, 0);
+    return () => window.clearTimeout(t);
   }, [isOpen]);
 
   return (
@@ -105,7 +115,13 @@ export default function Header() {
 
         {/* Mobile Navigation */}
         {isOpen && (
-          <div className="md:hidden pb-4" id={mobileNavId}>
+          <>
+            <div
+              className="md:hidden fixed inset-0 top-16 z-40 bg-black/40"
+              onClick={() => setIsOpen(false)}
+              aria-hidden="true"
+            />
+            <div ref={mobileNavRef} className="md:hidden pb-4 relative z-50" id={mobileNavId}>
             <nav className="mt-2 rounded-xl border border-gray-800 bg-gray-950/80 backdrop-blur-md p-2" aria-label="Mobile">
               <Link
                 href="/#features"
@@ -145,7 +161,8 @@ export default function Header() {
                 Docs
               </a>
             </nav>
-          </div>
+            </div>
+          </>
         )}
       </div>
     </header>
