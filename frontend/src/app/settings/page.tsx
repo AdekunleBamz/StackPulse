@@ -50,15 +50,21 @@ interface UserSettings {
 const ToggleSwitch = ({
   enabled,
   onChange,
+  label,
 }: {
   enabled: boolean;
   onChange: (value: boolean) => void;
+  label: string;
 }) => (
   <button
+    type="button"
     onClick={() => onChange(!enabled)}
     className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
       enabled ? 'bg-purple-600' : 'bg-gray-600'
-    }`}
+    } focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400/90`}
+    role="switch"
+    aria-checked={enabled}
+    aria-label={label}
   >
     <span
       className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
@@ -256,7 +262,7 @@ export default function SettingsPage() {
         </div>
       </header>
 
-      <main className="max-w-4xl mx-auto px-4 py-8 space-y-6">
+      <main id="main" className="max-w-4xl mx-auto px-4 py-8 space-y-6">
         {/* Profile Section */}
         <SettingsSection
           title="Profile"
@@ -314,6 +320,7 @@ export default function SettingsPage() {
               <ToggleSwitch
                 enabled={settings.notifications.email}
                 onChange={(v) => updateNotification('email', v)}
+                label="Email notifications"
               />
             </div>
             
@@ -328,6 +335,7 @@ export default function SettingsPage() {
               <ToggleSwitch
                 enabled={settings.notifications.discord}
                 onChange={(v) => updateNotification('discord', v)}
+                label="Discord notifications"
               />
             </div>
 
@@ -352,6 +360,7 @@ export default function SettingsPage() {
               <ToggleSwitch
                 enabled={settings.notifications.telegram}
                 onChange={(v) => updateNotification('telegram', v)}
+                label="Telegram notifications"
               />
             </div>
 
