@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useDebounce } from '@/hooks/useDebounce';
 import {
   History,
   Filter,
@@ -43,6 +44,7 @@ export default function AlertHistory({ userAddress }: AlertHistoryProps) {
   const [filter, setFilter] = useState<number | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [showFilters, setShowFilters] = useState(false);
+  const debouncedSearchQuery = useDebounce(searchQuery, 300);
 
   const pageSize = 10;
 
@@ -71,11 +73,11 @@ export default function AlertHistory({ userAddress }: AlertHistoryProps) {
         if (filter !== null) {
           filtered = filtered.filter(h => h.alertType === filter);
         }
-        if (searchQuery) {
+        if (debouncedSearchQuery) {
           filtered = filtered.filter(
             h =>
-              h.alertName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-              h.txHash.toLowerCase().includes(searchQuery.toLowerCase())
+              h.alertName.toLowerCase().includes(debouncedSearchQuery.toLowerCase()) ||
+              h.txHash.toLowerCase().includes(debouncedSearchQuery.toLowerCase())
           );
         }
 
@@ -96,7 +98,11 @@ export default function AlertHistory({ userAddress }: AlertHistoryProps) {
     };
 
     fetchHistory();
-  }, [page, filter, searchQuery, userAddress]);
+  }, [page, filter, debouncedSearchQuery, userAddress]);
+
+  useEffect(() => {
+    setPage(1);
+  }, [filter, debouncedSearchQuery]);
 
   const formatDate = (date: Date) => {
     return date.toLocaleDateString('en-US', {
