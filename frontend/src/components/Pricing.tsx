@@ -5,9 +5,6 @@ import { Check, Wallet, Mail, MessageCircle, Send } from 'lucide-react';
 import { useEffect, useId, useState } from 'react';
 import { toast } from '@/components/Toast';
 import Button from '@/components/ui/Button';
-import Link from 'next/link';
-import { useAccount } from '@/hooks/useAccount';
-import type { UserPreferences, ApiResponse } from '@/types/api';
 
 const tiers = [
   {
@@ -447,11 +444,31 @@ export default function Pricing() {
                       <button onClick={connect} className="text-purple-400 text-xs font-bold hover:underline">Connect Wallet →</button>
                     )}
                   </div>
-                  
-                  <div className={`p-4 rounded-2xl border transition-all ${username.length >= 3 ? 'bg-purple-500/5 border-purple-500/20' : 'bg-gray-800/40 border-gray-700/50 hover:border-gray-600'}`}>
-                    <div className="flex items-center gap-3 mb-1">
-                      <span className={`text-sm font-bold ${username.length >= 3 ? 'text-purple-400' : 'text-blue-400'}`}>2. Username</span>
-                    </div>
+                  <div className="flex-1">
+                    <h3 className="text-white font-semibold">1. Connect Wallet</h3>
+                    <p className="text-gray-400 text-sm">
+                      {isConnected ? `Connected: ${address?.slice(0, 8)}...${address?.slice(-6)}` : 'Connect your Stacks wallet'}
+                    </p>
+                  </div>
+	                  {!isConnected && (
+	                    <Button
+	                      onClick={connect}
+	                      variant="primary"
+	                      size="sm"
+	                    >
+	                      Connect
+	                    </Button>
+	                  )}
+                  {isConnected && <Check className="w-6 h-6 text-green-500" />}
+                </div>
+
+                {/* Step 2: Username */}
+                <div className="flex items-center gap-4 bg-gray-800/50 rounded-xl p-4">
+                  <div className="w-12 h-12 rounded-full bg-blue-600 flex items-center justify-center">
+                    <span className="text-white text-xl">@</span>
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="text-white font-semibold">2. Choose Username</h3>
                     <input
                       id="username"
                       type="text"
@@ -484,19 +501,16 @@ export default function Pricing() {
                 </div>
 
                 {/* Register Button */}
-                <Button
-                  onClick={() => handleRegister(0)}
-                  disabled={!isConnected || !username.trim() || isLoading}
-                  variant="primary"
-                  size="lg"
-                  className="w-full h-14 rounded-2xl font-black text-lg shadow-xl shadow-purple-600/20 hover:shadow-purple-600/30 active:scale-[0.98] transition-all"
-                  isLoading={isLoading}
-                >
-                  Create My Free Account
-                </Button>
-                <p className="text-center text-[10px] text-gray-500 font-medium">
-                  By registering, you agree to our Terms and receive basic monitoring features.
-                </p>
+	                <Button
+	                  onClick={() => handleRegister(0)}
+	                  disabled={!isConnected || !username.trim() || isLoading}
+	                  variant="primary"
+	                  size="lg"
+	                  className="w-full font-bold"
+	                  isLoading={isLoading}
+	                >
+	                  Register Free on StackPulse
+	                </Button>
               </div>
             ) : (
               /* Registered user - show notification settings */
