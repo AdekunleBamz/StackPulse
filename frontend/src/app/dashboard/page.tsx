@@ -5,6 +5,7 @@ import { useWallet } from '@/context/WalletContext';
 import { useRouter } from 'next/navigation';
 import { toast } from '@/components/Toast';
 import { useConfirmDialog } from '@/components/ConfirmDialog';
+import { NoAlertsState } from '@/components/EmptyState';
 import { 
   Bell, 
   Wallet, 
@@ -419,19 +420,11 @@ export default function DashboardPage() {
         <div>
           <h2 className="text-xl font-bold text-white mb-4">My Alerts</h2>
           
-          {alerts.length === 0 ? (
-            <div className="bg-gray-800 rounded-xl p-12 border border-gray-700 text-center">
-              <Bell className="w-12 h-12 text-gray-600 mx-auto mb-4" />
-              <h3 className="text-white font-semibold mb-2">No Alerts Yet</h3>
-              <p className="text-gray-400 mb-4">Create your first alert to start monitoring the blockchain</p>
-              <button
-                onClick={() => setShowCreateAlert(true)}
-                className="px-6 py-3 bg-purple-600 hover:bg-purple-500 text-white rounded-lg font-semibold transition-all cursor-pointer"
-              >
-                Create Your First Alert
-              </button>
-            </div>
-          ) : (
+	          {alerts.length === 0 ? (
+	            <div className="bg-gray-800 rounded-xl border border-gray-700">
+	              <NoAlertsState onCreateAlert={() => setShowCreateAlert(true)} />
+	            </div>
+	          ) : (
             <div className="space-y-3">
               {alerts.map((alert) => {
                 const alertType = alertTypes.find(t => t.id === alert.type);
