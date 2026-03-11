@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useDebounce } from '@/hooks/useDebounce';
+import { NoResultsState, NoTransactionsState } from '@/components/EmptyState';
 import {
   History,
   Filter,
@@ -253,8 +254,18 @@ export default function AlertHistory({ userAddress }: AlertHistoryProps) {
               ))
             ) : history.length === 0 ? (
               <tr>
-                <td colSpan={5} className="px-6 py-12 text-center text-gray-500">
-                  No alert history found
+                <td colSpan={5} className="px-6 py-12">
+                  {filter !== null || debouncedSearchQuery ? (
+                    <NoResultsState
+                      onClearFilter={() => {
+                        setFilter(null);
+                        setSearchQuery('');
+                        setShowFilters(false);
+                      }}
+                    />
+                  ) : (
+                    <NoTransactionsState />
+                  )}
                 </td>
               </tr>
             ) : (
