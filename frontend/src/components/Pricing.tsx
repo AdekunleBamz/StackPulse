@@ -509,7 +509,8 @@ export default function Pricing() {
 	                      maxLength={32}
 	                      autoComplete="username"
 	                      spellCheck={false}
-	                      className="mt-1 w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-white placeholder-gray-400 focus:outline-none focus:border-purple-500"
+	                      disabled={!isConnected}
+	                      className="mt-1 w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-white placeholder-gray-400 focus:outline-none focus:border-purple-500 disabled:opacity-60 disabled:cursor-not-allowed"
 	                    />
 	                    <p className="mt-1 text-xs text-gray-500">
 	                      3–32 characters, letters/numbers/underscores only
@@ -524,13 +525,14 @@ export default function Pricing() {
                   </div>
                   <div className="flex-1">
                     <h3 className="text-white font-semibold">Email <span className="text-gray-500 text-sm">(optional)</span></h3>
-                    <input
-                      type="email"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      placeholder="your@email.com"
-                      className="mt-1 w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-white placeholder-gray-400 focus:outline-none focus:border-purple-500"
-                    />
+	                    <input
+	                      type="email"
+	                      value={email}
+	                      onChange={(e) => setEmail(e.target.value)}
+	                      placeholder="your@email.com"
+	                      disabled={!isConnected}
+	                      className="mt-1 w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-white placeholder-gray-400 focus:outline-none focus:border-purple-500 disabled:opacity-60 disabled:cursor-not-allowed"
+	                    />
                   </div>
                 </div>
 
@@ -541,13 +543,14 @@ export default function Pricing() {
                   </div>
                   <div className="flex-1">
                     <h3 className="text-white font-semibold">Discord <span className="text-gray-500 text-sm">(optional)</span></h3>
-                    <input
-                      type="text"
-                      value={discord}
-                      onChange={(e) => setDiscord(e.target.value)}
-                      placeholder="username#1234"
-                      className="mt-1 w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-white placeholder-gray-400 focus:outline-none focus:border-purple-500"
-                    />
+	                    <input
+	                      type="text"
+	                      value={discord}
+	                      onChange={(e) => setDiscord(e.target.value)}
+	                      placeholder="username#1234"
+	                      disabled={!isConnected}
+	                      className="mt-1 w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-white placeholder-gray-400 focus:outline-none focus:border-purple-500 disabled:opacity-60 disabled:cursor-not-allowed"
+	                    />
                   </div>
                 </div>
 
@@ -558,13 +561,14 @@ export default function Pricing() {
                   </div>
                   <div className="flex-1">
                     <h3 className="text-white font-semibold">Telegram <span className="text-gray-500 text-sm">(optional)</span></h3>
-                    <input
-                      type="text"
-                      value={telegram}
-                      onChange={(e) => setTelegram(e.target.value)}
-                      placeholder="@username"
-                      className="mt-1 w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-white placeholder-gray-400 focus:outline-none focus:border-purple-500"
-                    />
+	                    <input
+	                      type="text"
+	                      value={telegram}
+	                      onChange={(e) => setTelegram(e.target.value)}
+	                      placeholder="@username"
+	                      disabled={!isConnected}
+	                      className="mt-1 w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-white placeholder-gray-400 focus:outline-none focus:border-purple-500 disabled:opacity-60 disabled:cursor-not-allowed"
+	                    />
                   </div>
                 </div>
 
