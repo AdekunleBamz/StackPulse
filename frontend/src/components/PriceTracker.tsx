@@ -99,7 +99,7 @@ export default function PriceTracker() {
         <button
           type="button"
           onClick={() => setRefreshKey((k) => k + 1)}
-          className="ml-auto text-sm text-purple-300 hover:text-purple-200 transition-colors"
+          className="ml-auto text-sm text-purple-300 hover:text-purple-200 transition-colors rounded-md focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400/90"
         >
           Retry
         </button>
