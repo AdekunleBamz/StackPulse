@@ -7,6 +7,7 @@ import { toast } from '@/components/Toast';
 import { useConfirmDialog } from '@/components/ConfirmDialog';
 import { NoAlertsState } from '@/components/EmptyState';
 import { DashboardSkeleton } from '@/components/LoadingSkeleton';
+import Button from '@/components/ui/Button';
 import { 
   Bell, 
   Wallet, 
@@ -293,12 +294,13 @@ export default function DashboardPage() {
           </div>
           <h1 className="text-3xl font-bold text-white mb-4">Connect Your Wallet</h1>
           <p className="text-gray-400 mb-8">Connect your Stacks wallet to access your dashboard</p>
-          <button
+          <Button
             onClick={connect}
-            className="px-8 py-4 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-500 hover:to-blue-500 text-white rounded-xl font-semibold transition-all cursor-pointer"
+            variant="primary"
+            size="lg"
           >
             Connect Wallet
-          </button>
+          </Button>
         </div>
       </main>
     );
@@ -332,12 +334,13 @@ export default function DashboardPage() {
           </div>
           <h1 className="text-3xl font-bold text-white mb-4">Register First</h1>
           <p className="text-gray-400 mb-8">You need to register on StackPulse before accessing the dashboard</p>
-          <button
+          <Button
             onClick={() => router.push('/#pricing')}
-            className="px-8 py-4 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-500 hover:to-blue-500 text-white rounded-xl font-semibold transition-all cursor-pointer"
+            variant="primary"
+            size="lg"
           >
             Register Now
-          </button>
+          </Button>
         </div>
       </main>
     );
