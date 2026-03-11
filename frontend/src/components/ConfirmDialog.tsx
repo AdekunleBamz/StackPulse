@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useId, useRef, useState } from 'react';
 
 interface ConfirmDialogProps {
   isOpen: boolean;
@@ -8,7 +8,7 @@ interface ConfirmDialogProps {
   message: string;
   confirmLabel?: string;
   cancelLabel?: string;
-  onConfirm: () => void;
+  onConfirm: () => void | Promise<void>;
   onCancel: () => void;
   variant?: 'danger' | 'warning' | 'info';
 }
@@ -24,8 +24,24 @@ export default function ConfirmDialog({
   variant = 'danger'
 }: ConfirmDialogProps) {
   const [isLoading, setIsLoading] = useState(false);
+  const titleId = useId();
+  const messageId = useId();
+  const cancelButtonRef = useRef<HTMLButtonElement>(null);
+  const previouslyFocusedRef = useRef<HTMLElement | null>(null);
 
   if (!isOpen) return null;
+
+  useEffect(() => {
+    previouslyFocusedRef.current = document.activeElement as HTMLElement | null;
+    cancelButtonRef.current?.focus();
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      previouslyFocusedRef.current?.focus?.();
+      previouslyFocusedRef.current = null;
+    };
+  }, []);
 
   const handleConfirm = async () => {
     setIsLoading(true);
@@ -57,15 +73,28 @@ export default function ConfirmDialog({
   const styles = variantStyles[variant];
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center p-4"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby={titleId}
+      aria-describedby={messageId}
+      onKeyDown={(e) => {
+        if (e.key === 'Escape') onCancel();
+      }}
+    >
       {/* Backdrop */}
       <div 
         className="absolute inset-0 bg-black/70 backdrop-blur-sm"
         onClick={onCancel}
+        aria-hidden="true"
       />
       
       {/* Dialog */}
-      <div className="relative bg-gray-800 rounded-xl p-6 max-w-md w-full border border-gray-700 shadow-2xl">
+      <div
+        className="relative bg-gray-800 rounded-xl p-6 max-w-md w-full border border-gray-700 shadow-2xl"
+        onClick={(e) => e.stopPropagation()}
+      >
         <div className="flex items-start gap-4">
           <div className={`flex-shrink-0 w-12 h-12 ${styles.bg} rounded-full flex items-center justify-center`}>
             <svg 
@@ -84,8 +113,12 @@ export default function ConfirmDialog({
           </div>
           
           <div className="flex-1">
-            <h3 className="text-xl font-bold text-white mb-2">{title}</h3>
-            <p className="text-gray-400">{message}</p>
+            <h3 id={titleId} className="text-xl font-bold text-white mb-2">
+              {title}
+            </h3>
+            <p id={messageId} className="text-gray-400">
+              {message}
+            </p>
           </div>
         </div>
         
@@ -93,6 +126,7 @@ export default function ConfirmDialog({
           <button
             onClick={onCancel}
             disabled={isLoading}
+            ref={cancelButtonRef}
             className="flex-1 px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg font-semibold transition-colors disabled:opacity-50"
           >
             {cancelLabel}
@@ -124,7 +158,7 @@ export function useConfirmDialog() {
     message: string;
     confirmLabel?: string;
     cancelLabel?: string;
-    onConfirm: () => void;
+    onConfirm: () => void | Promise<void>;
     variant?: 'danger' | 'warning' | 'info';
   } | null>(null);
 
@@ -133,16 +167,16 @@ export function useConfirmDialog() {
     message: string;
     confirmLabel?: string;
     cancelLabel?: string;
-    onConfirm: () => void;
+    onConfirm: () => void | Promise<void>;
     variant?: 'danger' | 'warning' | 'info';
   }) => {
     setConfig(params);
     setIsOpen(true);
   };
 
-  const handleConfirm = () => {
+  const handleConfirm = async () => {
     if (config?.onConfirm) {
-      config.onConfirm();
+      await config.onConfirm();
     }
     setIsOpen(false);
     setConfig(null);
