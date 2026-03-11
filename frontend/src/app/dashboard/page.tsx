@@ -350,12 +350,12 @@ export default function DashboardPage() {
     <main id="main" className="min-h-screen bg-gray-950 py-8 px-4">
       <div className="max-w-6xl mx-auto">
         {/* Header */}
-        <div className="flex items-center justify-between mb-8">
-          <div>
-            <h1 className="text-3xl font-bold text-white">Dashboard</h1>
-            <p className="text-gray-400">Welcome back, {userData.username || 'User'}</p>
-          </div>
-          <div className="flex items-center gap-4">
+	        <div className="flex items-center justify-between mb-8">
+	          <div>
+	            <h1 className="text-3xl font-bold text-white">Dashboard</h1>
+	            <p className="text-gray-400">Welcome back, {userData.username || 'User'}</p>
+	          </div>
+	          <div className="flex items-center gap-4">
             <div className="px-4 py-2 bg-gray-800 rounded-lg border border-gray-700">
               <span className="text-gray-400 text-sm">Plan: </span>
               <span className={`font-bold ${
@@ -365,15 +365,16 @@ export default function DashboardPage() {
               }`}>
                 {tierNames[userData.tier]}
               </span>
-            </div>
-            <button
-              onClick={() => router.push('/#pricing')}
-              className="px-4 py-2 bg-purple-600 hover:bg-purple-500 text-white rounded-lg font-semibold transition-all cursor-pointer"
-            >
-              {userData.tier === 0 ? 'Upgrade' : 'Manage Plan'}
-            </button>
-          </div>
-        </div>
+	            </div>
+	            <Button
+	              onClick={() => router.push('/#pricing')}
+	              variant="primary"
+	              size="md"
+	            >
+	              {userData.tier === 0 ? 'Upgrade' : 'Manage Plan'}
+	            </Button>
+	          </div>
+	        </div>
 
         {/* Stats Cards */}
         <div className="grid md:grid-cols-4 gap-4 mb-8">
@@ -412,19 +413,20 @@ export default function DashboardPage() {
         </div>
 
         {/* Alert Types Section */}
-        <div className="mb-8">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-xl font-bold text-white">Available Alert Types</h2>
-            <button
-              onClick={() => setShowCreateAlert(true)}
-              disabled={alerts.length >= maxAlerts[userData.tier]}
-              className="flex items-center gap-2 px-4 py-2 bg-purple-600 hover:bg-purple-500 disabled:bg-gray-600 text-white rounded-lg font-semibold transition-all cursor-pointer disabled:cursor-not-allowed"
-            >
-              <Plus className="w-4 h-4" />
-              Create Alert
-            </button>
-          </div>
-          
+	        <div className="mb-8">
+	          <div className="flex items-center justify-between mb-4">
+	            <h2 className="text-xl font-bold text-white">Available Alert Types</h2>
+	            <Button
+	              onClick={() => setShowCreateAlert(true)}
+	              disabled={alerts.length >= maxAlerts[userData.tier]}
+	              variant="primary"
+	              size="md"
+	              leftIcon={<Plus className="w-4 h-4" />}
+	            >
+	              Create Alert
+	            </Button>
+	          </div>
+	          
 	          <div className="grid md:grid-cols-3 gap-4">
 	            {alertTypes.map((type) => (
 	              <div key={type.id} className="bg-gray-800 rounded-xl p-6 border border-gray-700 hover:border-purple-500 transition-all">
@@ -435,21 +437,23 @@ export default function DashboardPage() {
 	                  <h3 className="text-white font-semibold">{type.name}</h3>
 	                </div>
                 <p className="text-gray-400 text-sm mb-4">{type.description}</p>
-                <button
-                  onClick={() => {
-                    setNewAlertType(type.id);
-                    setNewAlertName(type.name);
-                    setShowCreateAlert(true);
-                  }}
-                  disabled={alerts.length >= maxAlerts[userData.tier]}
-                  className="w-full py-2 bg-gray-700 hover:bg-gray-600 disabled:bg-gray-800 text-white rounded-lg text-sm font-semibold transition-all cursor-pointer disabled:cursor-not-allowed disabled:text-gray-500"
-                >
-                  {alerts.some(a => a.type === type.id) ? 'Add Another' : 'Enable'}
-                </button>
-              </div>
-            ))}
-          </div>
-        </div>
+	                <Button
+	                  onClick={() => {
+	                    setNewAlertType(type.id);
+	                    setNewAlertName(type.name);
+	                    setShowCreateAlert(true);
+	                  }}
+	                  disabled={alerts.length >= maxAlerts[userData.tier]}
+	                  variant="secondary"
+	                  size="sm"
+	                  className="w-full rounded-lg"
+	                >
+	                  {alerts.some(a => a.type === type.id) ? 'Add Another' : 'Enable'}
+	                </Button>
+	              </div>
+	            ))}
+	          </div>
+	        </div>
 
         {/* My Alerts Section */}
         <div>
