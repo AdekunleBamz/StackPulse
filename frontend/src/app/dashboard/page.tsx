@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useEffect, useId, useRef, useState } from 'react';
 import { useWallet } from '@/context/WalletContext';
 import { useRouter } from 'next/navigation';
 import { toast } from '@/components/Toast';
@@ -57,6 +57,9 @@ export default function DashboardPage() {
   const { isConnected, address, connect } = useWallet();
   const router = useRouter();
   const { confirm, ConfirmDialog } = useConfirmDialog();
+  const createAlertTitleId = useId();
+  const createAlertDescId = useId();
+  const createAlertSelectRef = useRef<HTMLSelectElement>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [userData, setUserData] = useState<UserData | null>(null);
   const [alerts, setAlerts] = useState<UserAlert[]>([]);
@@ -135,6 +138,28 @@ export default function DashboardPage() {
 
     loadUserData();
   }, [address]);
+
+  useEffect(() => {
+    if (!showCreateAlert) return;
+
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+
+    const previouslyFocused = document.activeElement as HTMLElement | null;
+    const t = window.setTimeout(() => createAlertSelectRef.current?.focus(), 0);
+
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setShowCreateAlert(false);
+    };
+    window.addEventListener('keydown', onKeyDown);
+
+    return () => {
+      window.clearTimeout(t);
+      window.removeEventListener('keydown', onKeyDown);
+      document.body.style.overflow = previousOverflow;
+      previouslyFocused?.focus?.();
+    };
+  }, [showCreateAlert]);
 
   // Create alert on-chain
   const handleCreateAlert = async () => {
@@ -475,14 +500,30 @@ export default function DashboardPage() {
 
         {/* Create Alert Modal */}
         {showCreateAlert && (
-          <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4">
-            <div className="bg-gray-800 rounded-2xl p-6 max-w-md w-full border border-purple-500/30">
-              <h3 className="text-xl font-bold text-white mb-6">Create New Alert</h3>
+          <div
+            className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4"
+            onClick={() => setShowCreateAlert(false)}
+          >
+            <div
+              className="bg-gray-800 rounded-2xl p-6 max-w-md w-full border border-purple-500/30"
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby={createAlertTitleId}
+              aria-describedby={createAlertDescId}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <h3 id={createAlertTitleId} className="text-xl font-bold text-white mb-2">
+                Create New Alert
+              </h3>
+              <p id={createAlertDescId} className="text-sm text-gray-400 mb-6">
+                Choose an alert type and set a threshold if needed.
+              </p>
               
               <div className="space-y-4">
                 <div>
                   <label className="block text-gray-400 text-sm mb-2">Alert Type</label>
                   <select
+                    ref={createAlertSelectRef}
                     value={newAlertType}
                     onChange={(e) => {
                       setNewAlertType(parseInt(e.target.value));
