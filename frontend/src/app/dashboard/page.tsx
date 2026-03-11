@@ -578,16 +578,19 @@ export default function DashboardPage() {
                   />
                 </div>
 
-                {(newAlertType === 1 || newAlertType === 5) && (
-                  <div>
-                    <label className="block text-gray-400 text-sm mb-2">Threshold (STX)</label>
-                    <input
-                      type="number"
-                      value={newAlertThreshold}
-                      onChange={(e) => setNewAlertThreshold(e.target.value)}
-                      placeholder="10000"
-                      className="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-3 text-white placeholder-gray-400 focus:outline-none focus:border-purple-500"
-                    />
+	                {(newAlertType === 1 || newAlertType === 5) && (
+	                  <div>
+	                    <label className="block text-gray-400 text-sm mb-2">Threshold (STX)</label>
+	                    <input
+	                      type="number"
+	                      min={1}
+	                      step={1}
+	                      inputMode="numeric"
+	                      value={newAlertThreshold}
+	                      onChange={(e) => setNewAlertThreshold(e.target.value)}
+	                      placeholder="10000"
+	                      className="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-3 text-white placeholder-gray-400 focus:outline-none focus:border-purple-500"
+	                    />
                     <p className="text-gray-500 text-xs mt-1">Alert when transfers exceed this amount</p>
                   </div>
                 )}
