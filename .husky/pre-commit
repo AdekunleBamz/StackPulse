@@ -1,0 +1,16 @@
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
+
+# Run TypeScript type checking
+echo "Running TypeScript type check..."
+cd server && npx tsc --noEmit || exit 1
+cd ../frontend && npx tsc --noEmit || exit 1
+cd ..
+
+# Run linting
+echo "Running lint..."
+cd server && npx eslint src --ext .ts || exit 1
+cd ../frontend && npx eslint src --ext .ts,.tsx || exit 1
+cd ..
+
+echo "Pre-commit checks passed!"
