@@ -1,6 +1,6 @@
 'use client';
 
-import { ReactNode, useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 interface ToastProps {
   id: string;
@@ -41,27 +41,74 @@ const toastStyles = {
 function Toast({ id, type, title, message, duration = 5000, onClose }: ToastProps) {
   const [isLeaving, setIsLeaving] = useState(false);
   const styles = toastStyles[type];
+  const remainingMsRef = useRef(duration);
+  const startTimeRef = useRef<number | null>(null);
+  const timerRef = useRef<number | null>(null);
+  const leavingTimerRef = useRef<number | null>(null);
+
+  const clearTimers = () => {
+    if (timerRef.current != null) window.clearTimeout(timerRef.current);
+    if (leavingTimerRef.current != null) window.clearTimeout(leavingTimerRef.current);
+    timerRef.current = null;
+    leavingTimerRef.current = null;
+    startTimeRef.current = null;
+  };
+
+  const scheduleDismiss = () => {
+    if (duration <= 0) return;
+    if (timerRef.current != null) window.clearTimeout(timerRef.current);
+
+    startTimeRef.current = Date.now();
+    timerRef.current = window.setTimeout(() => {
+      setIsLeaving(true);
+      leavingTimerRef.current = window.setTimeout(() => onClose(id), 300);
+    }, remainingMsRef.current);
+  };
 
   useEffect(() => {
-    if (duration > 0) {
-      const timer = setTimeout(() => {
-        setIsLeaving(true);
-        setTimeout(() => onClose(id), 300);
-      }, duration);
-      return () => clearTimeout(timer);
-    }
+    remainingMsRef.current = duration;
+    scheduleDismiss();
+    return () => clearTimers();
   }, [id, duration, onClose]);
 
   const handleClose = () => {
+    clearTimers();
     setIsLeaving(true);
-    setTimeout(() => onClose(id), 300);
+    leavingTimerRef.current = window.setTimeout(() => onClose(id), 300);
+  };
+
+  const pause = () => {
+    if (timerRef.current == null) return;
+    window.clearTimeout(timerRef.current);
+    timerRef.current = null;
+    if (startTimeRef.current != null) {
+      const elapsed = Date.now() - startTimeRef.current;
+      remainingMsRef.current = Math.max(0, remainingMsRef.current - elapsed);
+      startTimeRef.current = null;
+    }
+  };
+
+  const resume = () => {
+    if (duration <= 0) return;
+    if (isLeaving) return;
+    if (remainingMsRef.current <= 0) {
+      handleClose();
+      return;
+    }
+    scheduleDismiss();
   };
 
   return (
     <div
+      role={type === 'error' || type === 'warning' ? 'alert' : 'status'}
+      aria-atomic="true"
       className={`flex items-start gap-3 p-4 rounded-lg border backdrop-blur-sm shadow-lg transition-all duration-300 ${
         styles.bg
       } ${styles.border} ${isLeaving ? 'opacity-0 translate-x-full' : 'opacity-100 translate-x-0'}`}
+      onMouseEnter={pause}
+      onMouseLeave={resume}
+      onFocusCapture={pause}
+      onBlurCapture={resume}
     >
       <div
         className={`w-6 h-6 rounded-full flex items-center justify-center text-white text-sm font-bold ${styles.iconBg}`}
@@ -73,8 +120,10 @@ function Toast({ id, type, title, message, duration = 5000, onClose }: ToastProp
         {message && <p className="text-sm text-gray-300 mt-0.5">{message}</p>}
       </div>
       <button
+        type="button"
         onClick={handleClose}
-        className="text-gray-400 hover:text-white transition-colors"
+        className="text-gray-300/80 hover:text-white transition-colors rounded-md px-1 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400/90"
+        aria-label="Dismiss notification"
       >
         ✕
       </button>
@@ -165,7 +214,11 @@ export function ToastContainer({ position = 'top-right', maxToasts = 5 }: ToastC
   };
 
   return (
-    <div className={`fixed z-50 flex flex-col gap-2 w-96 max-w-[calc(100vw-2rem)] ${positionClasses[position]}`}>
+    <div
+      aria-live="polite"
+      aria-relevant="additions"
+      className={`fixed z-50 flex flex-col gap-2 w-96 max-w-[calc(100vw-2rem)] ${positionClasses[position]}`}
+    >
       {currentToasts.map((t) => (
         <Toast
           key={t.id}
