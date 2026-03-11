@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useWallet } from '@/context/WalletContext';
 import { useRouter } from 'next/navigation';
+import { toast } from '@/components/Toast';
 import { 
   Bell, 
   Wallet, 
@@ -169,9 +170,10 @@ export default function DashboardPage() {
             });
           } catch (err) {
             console.error('Error saving alert to server:', err);
+            toast.warning('Alert created', 'Saved on-chain but failed to sync to server.');
           }
 
-          alert(`Alert created! TX: ${data.txId}`);
+          toast.success('Alert created', `TX: ${data.txId}`);
           setShowCreateAlert(false);
           setNewAlertName('');
           setNewAlertThreshold('10000');
@@ -192,7 +194,7 @@ export default function DashboardPage() {
       });
     } catch (error) {
       console.error('Error creating alert:', error);
-      alert('Failed to create alert. Please try again.');
+      toast.error('Failed to create alert', 'Please try again.');
     } finally {
       setIsCreating(false);
     }
