@@ -51,16 +51,16 @@ export default function Header() {
           </Link>
 
           {/* Navigation */}
-          <nav className="hidden md:flex items-center space-x-8">
-            <a href="/#features" className="text-gray-300 hover:text-white transition-colors">
+          <nav className="hidden md:flex items-center space-x-8" aria-label="Primary">
+            <Link href="/#features" className="text-gray-300 hover:text-white transition-colors">
               Features
-            </a>
-            <a href="/#pricing" className="text-gray-300 hover:text-white transition-colors">
+            </Link>
+            <Link href="/#pricing" className="text-gray-300 hover:text-white transition-colors">
               Pricing
-            </a>
-            <a href="/#stats" className="text-gray-300 hover:text-white transition-colors">
+            </Link>
+            <Link href="/#stats" className="text-gray-300 hover:text-white transition-colors">
               Live Stats
-            </a>
+            </Link>
             <Link 
               href="/register"
               className="text-purple-400 hover:text-purple-300 transition-colors font-medium"
@@ -97,28 +97,28 @@ export default function Header() {
         {/* Mobile Navigation */}
         {isOpen && (
           <div className="md:hidden pb-4" id={mobileNavId}>
-            <nav className="mt-2 rounded-xl border border-gray-800 bg-gray-950/80 backdrop-blur-md p-2">
-              <a
+            <nav className="mt-2 rounded-xl border border-gray-800 bg-gray-950/80 backdrop-blur-md p-2" aria-label="Mobile">
+              <Link
                 href="/#features"
                 className="block rounded-lg px-3 py-2 text-gray-200 hover:bg-gray-900/60 transition-colors"
                 onClick={() => setIsOpen(false)}
               >
                 Features
-              </a>
-              <a
+              </Link>
+              <Link
                 href="/#pricing"
                 className="block rounded-lg px-3 py-2 text-gray-200 hover:bg-gray-900/60 transition-colors"
                 onClick={() => setIsOpen(false)}
               >
                 Pricing
-              </a>
-              <a
+              </Link>
+              <Link
                 href="/#stats"
                 className="block rounded-lg px-3 py-2 text-gray-200 hover:bg-gray-900/60 transition-colors"
                 onClick={() => setIsOpen(false)}
               >
                 Live Stats
-              </a>
+              </Link>
               <Link
                 href="/register"
                 className="block rounded-lg px-3 py-2 font-medium text-purple-300 hover:bg-gray-900/60 transition-colors"
