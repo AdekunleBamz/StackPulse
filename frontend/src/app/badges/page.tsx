@@ -138,85 +138,86 @@ export default function BadgesPage() {
             </div>
           </div>
         </div>
-      </header>
+	      </header>
 
-      {/* Hero */}
-      <section className="py-12 bg-gradient-to-b from-purple-900/20 to-transparent">
-        <div className="container mx-auto px-4 text-center">
-          <h2 className="text-4xl font-bold mb-4">
-            Collect NFT Badges
-          </h2>
-          <p className="text-gray-400 max-w-2xl mx-auto mb-8">
-            Earn unique SIP-009 NFT badges by using StackPulse. Each badge represents your achievements 
-            and contributions to the Stacks ecosystem. Display them proudly!
-          </p>
-          <div className="flex justify-center gap-4">
-            <a
-              href="https://explorer.hiro.so/address/SP5K2RHMSBH4PAP4PGX77MCVNK1ZEED07CWX9TJT.reputation-badges-v3?chain=mainnet"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-2 px-6 py-3 bg-purple-600 hover:bg-purple-500 rounded-lg font-medium transition-all"
-            >
-              View Contract
-              <ExternalLink className="w-4 h-4" />
-            </a>
-          </div>
-        </div>
-      </section>
+	      <main id="main">
+	        {/* Hero */}
+	        <section className="py-12 bg-gradient-to-b from-purple-900/20 to-transparent">
+	          <div className="container mx-auto px-4 text-center">
+	            <h2 className="text-4xl font-bold mb-4">
+	              Collect NFT Badges
+	            </h2>
+	            <p className="text-gray-400 max-w-2xl mx-auto mb-8">
+	              Earn unique SIP-009 NFT badges by using StackPulse. Each badge represents your achievements 
+	              and contributions to the Stacks ecosystem. Display them proudly!
+	            </p>
+	            <div className="flex justify-center gap-4">
+	              <a
+	                href="https://explorer.hiro.so/address/SP5K2RHMSBH4PAP4PGX77MCVNK1ZEED07CWX9TJT.reputation-badges-v3?chain=mainnet"
+	                target="_blank"
+	                rel="noopener noreferrer"
+	                className="flex items-center gap-2 px-6 py-3 bg-purple-600 hover:bg-purple-500 rounded-lg font-medium transition-all"
+	              >
+	                View Contract
+	                <ExternalLink className="w-4 h-4" />
+	              </a>
+	            </div>
+	          </div>
+	        </section>
 
-      {/* Stats */}
-      <section className="py-8 border-b border-gray-800">
-        <div className="container mx-auto px-4">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div className="bg-gray-900/50 border border-gray-800 rounded-xl p-4 text-center">
-              <div className="text-3xl font-bold text-white">{badgeDetails.length}</div>
-              <div className="text-gray-400 text-sm">Total Badges</div>
-            </div>
-            <div className="bg-gray-900/50 border border-gray-800 rounded-xl p-4 text-center">
-              <div className="text-3xl font-bold text-purple-400">{userBadges.length}</div>
-              <div className="text-gray-400 text-sm">Earned</div>
-            </div>
-            <div className="bg-gray-900/50 border border-gray-800 rounded-xl p-4 text-center">
-              <div className="text-3xl font-bold text-yellow-400">2</div>
-              <div className="text-gray-400 text-sm">Legendary</div>
-            </div>
-            <div className="bg-gray-900/50 border border-gray-800 rounded-xl p-4 text-center">
-              <div className="text-3xl font-bold text-green-400">150</div>
-              <div className="text-gray-400 text-sm">Total Supply</div>
-            </div>
-          </div>
-        </div>
-      </section>
+	        {/* Stats */}
+	        <section className="py-8 border-b border-gray-800">
+	          <div className="container mx-auto px-4">
+	            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+	              <div className="bg-gray-900/50 border border-gray-800 rounded-xl p-4 text-center">
+	                <div className="text-3xl font-bold text-white">{badgeDetails.length}</div>
+	                <div className="text-gray-400 text-sm">Total Badges</div>
+	              </div>
+	              <div className="bg-gray-900/50 border border-gray-800 rounded-xl p-4 text-center">
+	                <div className="text-3xl font-bold text-purple-400">{userBadges.length}</div>
+	                <div className="text-gray-400 text-sm">Earned</div>
+	              </div>
+	              <div className="bg-gray-900/50 border border-gray-800 rounded-xl p-4 text-center">
+	                <div className="text-3xl font-bold text-yellow-400">2</div>
+	                <div className="text-gray-400 text-sm">Legendary</div>
+	              </div>
+	              <div className="bg-gray-900/50 border border-gray-800 rounded-xl p-4 text-center">
+	                <div className="text-3xl font-bold text-green-400">150</div>
+	                <div className="text-gray-400 text-sm">Total Supply</div>
+	              </div>
+	            </div>
+	          </div>
+	        </section>
 
-      {/* Badge Showcase */}
-      <section className="py-8">
-        <div className="container mx-auto px-4">
-          <BadgeShowcase userBadges={userBadges} />
-        </div>
-      </section>
+	        {/* Badge Showcase */}
+	        <section className="py-8">
+	          <div className="container mx-auto px-4">
+	            <BadgeShowcase userBadges={userBadges} />
+	          </div>
+	        </section>
 
-      {/* Badge Details Section */}
-      <section className="py-12 bg-gray-900/30">
-        <div className="container mx-auto px-4">
-          <h3 className="text-2xl font-semibold mb-8">Badge Details</h3>
-          
-          <div className="grid gap-6">
-            {badgeDetails.map((badge) => {
-              const isEarned = userBadges.includes(badge.id);
-              const colors = rarityColors[badge.rarity as keyof typeof rarityColors];
-              
-              return (
-                <div
-                  key={badge.id}
-                  className={`bg-gray-900/50 border rounded-xl p-6 transition-all ${
-                    isEarned ? 'border-purple-500/50' : 'border-gray-800'
-                  }`}
-                >
-                  <div className="flex flex-col md:flex-row gap-6">
-                    {/* Badge Icon */}
-                    <div className={`w-24 h-24 rounded-xl flex items-center justify-center text-5xl bg-gradient-to-br ${colors.bg} bg-opacity-20 flex-shrink-0`}>
-                      {isEarned ? badge.icon : '🔒'}
-                    </div>
+	        {/* Badge Details Section */}
+	        <section className="py-12 bg-gray-900/30">
+	          <div className="container mx-auto px-4">
+	            <h3 className="text-2xl font-semibold mb-8">Badge Details</h3>
+	            
+	            <div className="grid gap-6">
+	              {badgeDetails.map((badge) => {
+	                const isEarned = userBadges.includes(badge.id);
+	                const colors = rarityColors[badge.rarity as keyof typeof rarityColors];
+	                
+	                return (
+	                  <div
+	                    key={badge.id}
+	                    className={`bg-gray-900/50 border rounded-xl p-6 transition-all ${
+	                      isEarned ? 'border-purple-500/50' : 'border-gray-800'
+	                    }`}
+	                  >
+	                    <div className="flex flex-col md:flex-row gap-6">
+	                      {/* Badge Icon */}
+	                      <div className={`w-24 h-24 rounded-xl flex items-center justify-center text-5xl bg-gradient-to-br ${colors.bg} bg-opacity-20 flex-shrink-0`}>
+	                        {isEarned ? badge.icon : '🔒'}
+	                      </div>
 
                     {/* Badge Info */}
                     <div className="flex-1">
@@ -275,21 +276,22 @@ export default function BadgesPage() {
         </div>
       </section>
 
-      {/* CTA */}
-      <section className="py-12">
-        <div className="container mx-auto px-4 text-center">
-          <h3 className="text-2xl font-semibold mb-4">Start Earning Badges</h3>
-          <p className="text-gray-400 mb-6">
-            Create alerts, monitor the blockchain, and unlock unique NFT badges
-          </p>
-          <Link
-            href="/register"
-            className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-500 hover:to-blue-500 rounded-lg font-medium transition-all"
-          >
-            Get Started Free
-          </Link>
-        </div>
-      </section>
-    </div>
-  );
-}
+	        {/* CTA */}
+	        <section className="py-12">
+	          <div className="container mx-auto px-4 text-center">
+	            <h3 className="text-2xl font-semibold mb-4">Start Earning Badges</h3>
+	            <p className="text-gray-400 mb-6">
+	              Create alerts, monitor the blockchain, and unlock unique NFT badges
+	            </p>
+	            <Link
+	              href="/register"
+	              className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-500 hover:to-blue-500 rounded-lg font-medium transition-all"
+	            >
+	              Get Started Free
+	            </Link>
+	          </div>
+	        </section>
+	      </main>
+	    </div>
+	  );
+	}
