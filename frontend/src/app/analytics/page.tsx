@@ -167,12 +167,14 @@ export default function AnalyticsPage() {
               {(['24h', '7d', '30d'] as const).map((range) => (
                 <button
                   key={range}
+                  type="button"
                   onClick={() => setTimeRange(range)}
+                  aria-pressed={timeRange === range}
                   className={`px-3 py-1 rounded-md text-sm transition-all ${
                     timeRange === range
                       ? 'bg-purple-600 text-white'
                       : 'text-gray-400 hover:text-white'
-                  }`}
+                  } focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400/90`}
                 >
                   {range}
                 </button>
