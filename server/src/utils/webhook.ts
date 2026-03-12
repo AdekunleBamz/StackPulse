@@ -35,9 +35,16 @@ export function verifySignature(
   secret: string
 ): boolean {
   const expectedSignature = generateSignature(payload, secret);
+  const providedSignature = Buffer.from(signature, 'utf8');
+  const expectedSignatureBuffer = Buffer.from(expectedSignature, 'utf8');
+
+  if (providedSignature.length !== expectedSignatureBuffer.length) {
+    return false;
+  }
+
   return crypto.timingSafeEqual(
-    Buffer.from(signature),
-    Buffer.from(expectedSignature)
+    providedSignature,
+    expectedSignatureBuffer
   );
 }
 
