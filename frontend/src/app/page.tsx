@@ -35,6 +35,27 @@ export default function Home() {
             Never miss a whale transfer, token launch, or NFT mint on Stacks. 
             Get instant notifications for on-chain events that matter to you.
           </p>
+
+          <div className="mb-10 flex flex-wrap items-center justify-center gap-3">
+            <a
+              href="#features"
+              className="rounded-full border border-gray-700 bg-gray-900/60 px-4 py-2 text-sm text-gray-200 hover:border-purple-500/50 hover:text-white transition-colors"
+            >
+              Explore Features
+            </a>
+            <a
+              href="#stats"
+              className="rounded-full border border-gray-700 bg-gray-900/60 px-4 py-2 text-sm text-gray-200 hover:border-purple-500/50 hover:text-white transition-colors"
+            >
+              View Live Stats
+            </a>
+            <a
+              href="#pricing"
+              className="rounded-full border border-gray-700 bg-gray-900/60 px-4 py-2 text-sm text-gray-200 hover:border-purple-500/50 hover:text-white transition-colors"
+            >
+              Compare Plans
+            </a>
+          </div>
           
           {/* CTA Buttons */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-16">
