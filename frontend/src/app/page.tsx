@@ -7,11 +7,11 @@ import LiveStats from '@/components/LiveStats';
 
 export default function Home() {
   return (
-    <main id="main" className="min-h-screen">
+    <main id="main" className="min-h-screen" tabIndex={-1} aria-labelledby="hero-title">
       <Header />
       
       {/* Hero Section */}
-      <section className="pt-32 pb-20 px-4 sm:px-6 lg:px-8">
+      <section className="pt-32 pb-20 px-4 sm:px-6 lg:px-8" aria-describedby="hero-subtitle">
         <div className="max-w-7xl mx-auto text-center">
           {/* Badge */}
           <div className="inline-flex items-center px-4 py-2 rounded-full bg-purple-500/10 border border-purple-500/20 mb-8">
@@ -20,7 +20,7 @@ export default function Home() {
           </div>
           
           {/* Main Heading */}
-          <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold mb-6">
+          <h1 id="hero-title" className="text-5xl sm:text-6xl lg:text-7xl font-bold mb-6">
             <span className="bg-gradient-to-r from-white via-purple-200 to-blue-200 bg-clip-text text-transparent">
               Real-time Blockchain
             </span>
@@ -31,7 +31,7 @@ export default function Home() {
           </h1>
           
           {/* Subtitle */}
-          <p className="text-xl text-gray-400 max-w-2xl mx-auto mb-10">
+          <p id="hero-subtitle" className="text-xl text-gray-400 max-w-2xl mx-auto mb-10">
             Never miss a whale transfer, token launch, or NFT mint on Stacks. 
             Get instant notifications for on-chain events that matter to you.
           </p>
@@ -58,7 +58,7 @@ export default function Home() {
           </div>
           
           {/* Stats Preview */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto" role="list" aria-label="Monitoring highlights">
             {[
               { label: 'Whale Transfers', value: '1,234+' },
               { label: 'NFT Mints', value: '5,678+' },
@@ -66,8 +66,9 @@ export default function Home() {
               { label: 'Active Alerts', value: '456' },
             ].map((stat, index) => (
               <div 
-                key={index}
+                key={stat.label}
                 className="bg-gray-900/50 border border-gray-800 rounded-xl p-6"
+                role="listitem"
               >
                 <div className="text-3xl font-bold bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">
                   {stat.value}
