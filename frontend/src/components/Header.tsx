@@ -14,6 +14,24 @@ export default function Header() {
     if (!isOpen) return;
     const onKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') setIsOpen(false);
+      if (e.key !== 'Tab') return;
+
+      const focusable = mobileNavRef.current?.querySelectorAll<HTMLElement>(
+        'a, button, [tabindex]:not([tabindex="-1"])'
+      );
+      if (!focusable || focusable.length === 0) return;
+
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      const active = document.activeElement as HTMLElement | null;
+
+      if (e.shiftKey && active === first) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && active === last) {
+        e.preventDefault();
+        first.focus();
+      }
     };
     window.addEventListener('keydown', onKeyDown);
     return () => window.removeEventListener('keydown', onKeyDown);
@@ -121,7 +139,14 @@ export default function Header() {
               onClick={() => setIsOpen(false)}
               aria-hidden="true"
             />
-            <div ref={mobileNavRef} className="md:hidden pb-4 relative z-50" id={mobileNavId}>
+            <div
+              ref={mobileNavRef}
+              className="md:hidden pb-4 relative z-50"
+              id={mobileNavId}
+              role="dialog"
+              aria-modal="true"
+              aria-label="Mobile navigation menu"
+            >
             <nav className="mt-2 rounded-xl border border-gray-800 bg-gray-950/80 backdrop-blur-md p-2" aria-label="Mobile">
               <Link
                 href="/#features"
