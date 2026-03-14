@@ -16,6 +16,13 @@ interface WebhookConfig {
   signatureHeader: string;
 }
 
+const MAX_WEBHOOKS_PER_USER = new Map<number, number>([
+  [0, 1],    // FREE
+  [1, 10],   // PRO
+  [2, 100],  // WHALE
+  [3, 1000]  // EXCHANGE
+]);
+
 /**
  * Generate HMAC signature for webhook payload
  */
