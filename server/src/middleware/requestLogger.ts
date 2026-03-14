@@ -5,6 +5,7 @@
 
 import { Request, Response, NextFunction } from 'express';
 import logger from '../utils/logger';
+import MetricsService from '../services/metrics';
 
 export interface RequestLogOptions {
   logBody?: boolean;
@@ -17,6 +18,12 @@ const defaultOptions: RequestLogOptions = {
   logHeaders: false,
   excludePaths: ['/health', '/health/ready', '/health/live']
 };
+
+function getLogLevel(statusCode: number): 'error' | 'warn' | 'info' {
+  if (statusCode >= 500) return 'error';
+  if (statusCode >= 400) return 'warn';
+  return 'info';
+}
 
 /**
  * Request logger middleware
@@ -48,9 +55,15 @@ export function requestLogger(options: RequestLogOptions = defaultOptions) {
     res.send = function (body: any) {
       const duration = Date.now() - startTime;
       
-      const level = res.statusCode >= 500 ? 'error' : res.statusCode >= 400 ? 'warn' : 'info';
+      const logLevel = getLogLevel(res.statusCode);
+
+      MetricsService.recordMetric('http_request_duration', duration, {
+        method: req.method,
+        path: req.baseUrl + req.path,
+        status: res.statusCode.toString()
+      });
       
-      logger.log(level, 'Request completed', {
+      logger.log(logLevel, 'Request completed', {
         requestId,
         method: req.method,
         path: req.path,
