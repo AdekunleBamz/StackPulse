@@ -1,6 +1,7 @@
 import { Router, Request, Response } from 'express';
 import os from 'os';
 import logger from '../utils/logger';
+import HealthService from '../services/health';
 
 const router = Router();
 
@@ -97,6 +98,15 @@ router.get('/full', (req: Request, res: Response) => {
   
   const statusCode = status === 'healthy' ? 200 : status === 'degraded' ? 200 : 503;
   res.status(statusCode).json(healthCheck);
+});
+
+/**
+ * GET /health/system
+ * Advanced system metrics from HealthService
+ */
+router.get('/system', (req: Request, res: Response) => {
+  const systemHealth = HealthService.getHealth();
+  res.json(systemHealth);
 });
 
 export default router;
