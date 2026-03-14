@@ -1,5 +1,6 @@
 import { Router, Request, Response } from 'express';
 import os from 'os';
+import logger from '../utils/logger';
 
 const router = Router();
 
@@ -34,6 +35,7 @@ router.get('/ready', (req: Request, res: Response) => {
   
   // Check if memory usage is too high
   if (heapUsedPercent > 90) {
+    logger.warn('Readiness check failed: high memory usage', { heapUsedPercent: heapUsedPercent.toFixed(2) });
     return res.status(503).json({
       status: 'not_ready',
       reason: 'high_memory_usage',
