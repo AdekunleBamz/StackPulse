@@ -89,10 +89,17 @@ export interface UpdateAlertRequest {
   enabled?: boolean;
 }
 
+/**
+ * Statistics overview for a user's alerts.
+ */
 export interface AlertStats {
+  /** Total number of alerts configured by the user */
   total: number;
+  /** Number of enabled/active alerts */
   active: number;
+  /** Total cumulative number of times all alerts have been triggered */
   totalTriggers: number;
+  /** Breakdown of alerts by their type */
   byType: Record<AlertType, number>;
 }
 
