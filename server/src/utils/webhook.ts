@@ -35,42 +35,51 @@ export function verifySignature(
   secret: string
 ): boolean {
   const expectedSignature = generateSignature(payload, secret);
+  const providedSignature = Buffer.from(signature, 'utf8');
+  const expectedSignatureBuffer = Buffer.from(expectedSignature, 'utf8');
+
+  if (providedSignature.length !== expectedSignatureBuffer.length) {
+    return false;
+  }
+
   return crypto.timingSafeEqual(
-    Buffer.from(signature),
-    Buffer.from(expectedSignature)
+    providedSignature,
+    expectedSignatureBuffer
   );
 }
 
 /**
  * Validate webhook payload structure
  */
-export function validateWebhookPayload(data: any): WebhookPayload | null {
-  if (!data) return null;
+export function validateWebhookPayload(data: any): { payload: WebhookPayload | null; error?: string } {
+  if (!data) return { payload: null, error: 'Empty payload' };
   
   const { event, data: payloadData, timestamp } = data;
   
   if (!event || typeof event !== 'string') {
-    return null;
+    return { payload: null, error: 'Missing or invalid event type' };
   }
   
   if (!payloadData) {
-    return null;
+    return { payload: null, error: 'Missing payload data' };
   }
   
   if (!timestamp || typeof timestamp !== 'number') {
-    return null;
+    return { payload: null, error: 'Missing or invalid timestamp' };
   }
   
   // Check if timestamp is within acceptable range (5 minutes)
   const now = Date.now();
   if (Math.abs(now - timestamp) > 300000) {
-    return null;
+    return { payload: null, error: 'Webhook timestamp expired' };
   }
   
   return {
-    event,
-    data: payloadData,
-    timestamp
+    payload: {
+      event,
+      data: payloadData,
+      timestamp
+    }
   };
 }
 
@@ -91,9 +100,9 @@ export function processWebhook(
   }
   
   // Validate payload
-  const payload = validateWebhookPayload(body);
+  const { payload, error } = validateWebhookPayload(body);
   if (!payload) {
-    return { valid: false, error: 'Invalid payload' };
+    return { valid: false, error: error || 'Invalid payload' };
   }
   
   return { valid: true, payload };
