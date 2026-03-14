@@ -123,7 +123,9 @@ export function truncateString(str: string, maxLength: number): string {
 }
 
 /**
- * Format file size
+ * Formats a byte value into a human-readable file size string.
+ * @param bytes - The number of bytes to format.
+ * @returns A formatted string with appropriate units (B, KB, MB, GB, TB).
  */
 export function formatFileSize(bytes: number): string {
   const units = ['B', 'KB', 'MB', 'GB', 'TB'];
