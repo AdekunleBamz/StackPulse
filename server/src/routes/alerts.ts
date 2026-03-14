@@ -2,6 +2,7 @@ import { Router, Request, Response } from 'express';
 import { validateRequest, schemas } from '../middleware/validation';
 import { asyncHandler } from '../middleware/errorHandler';
 import cache from '../services/cache';
+import logger from '../utils/logger';
 
 const router = Router();
 
@@ -207,6 +208,12 @@ router.post(
 
     alerts.set(alert.id, alert);
 
+    logger.info('Alert created', { 
+      address, 
+      alertId: alert.id, 
+      type: alertTypeNames[body.alertType] 
+    });
+
     // Invalidate cache
     cache.delete(`alerts:${address}`);
 
@@ -294,6 +301,8 @@ router.delete(
     }
 
     alerts.delete(id);
+
+    logger.info('Alert deleted', { address, alertId: id });
 
     // Invalidate cache
     cache.delete(`alerts:${address}`);
