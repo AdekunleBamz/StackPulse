@@ -98,7 +98,11 @@ export function formatDateTime(timestamp: number | Date): string {
 }
 
 /**
- * Truncate address for display
+ * Truncates a Stacks address for display.
+ * @param address - The full Stacks address.
+ * @param startChars - Number of characters to keep at the start (default: 6).
+ * @param endChars - Number of characters to keep at the end (default: 4).
+ * @returns A truncated address string (e.g., "SP123...4567").
  */
 export function truncateAddress(address: string, startChars: number = 6, endChars: number = 4): string {
   if (!address || address.length <= startChars + endChars) {
