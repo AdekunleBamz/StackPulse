@@ -20,6 +20,7 @@ interface EmailOptions {
   subject: string;
   body: string;
   html?: string;
+  priority?: 'low' | 'normal' | 'high';
 }
 
 class EmailService {
@@ -47,7 +48,8 @@ class EmailService {
         to: options.to,
         recipientCount,
         subject: options.subject,
-        hasHtml: !!options.html
+        hasHtml: !!options.html,
+        priority: options.priority || 'normal'
       });
       
       // In production, use nodemailer or similar
