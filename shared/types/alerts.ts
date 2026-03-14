@@ -57,19 +57,35 @@ export interface Alert {
   triggerCount: number;
 }
 
+/**
+ * Request payload for creating a new alert.
+ */
 export interface CreateAlertRequest {
+  /** Name of the alert */
   name: string;
+  /** Type of activity to monitor */
   alertType: AlertType;
+  /** Optional numerical threshold */
   threshold?: number;
+  /** Optional address to monitor */
   targetAddress?: string;
+  /** Optional webhook destination */
   webhookUrl?: string;
 }
 
+/**
+ * Request payload for updating an existing alert.
+ */
 export interface UpdateAlertRequest {
+  /** Updated name for the alert */
   name?: string;
+  /** Updated numerical threshold */
   threshold?: number;
+  /** Updated address to monitor */
   targetAddress?: string;
+  /** Updated webhook destination */
   webhookUrl?: string;
+  /** Updated enabled status */
   enabled?: boolean;
 }
 
