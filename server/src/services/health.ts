@@ -17,6 +17,9 @@ interface SystemHealth {
   cpu: {
     loadAvg: number[];
   };
+  components: {
+    [key: string]: { status: 'up' | 'down'; details?: any };
+  };
   timestamp: number;
 }
 
@@ -39,6 +42,11 @@ class HealthService {
       },
       cpu: {
         loadAvg: os.loadavg()
+      },
+      components: {
+        database: { status: 'up' },
+        cache: { status: 'up' },
+        notifications: { status: 'up' }
       },
       timestamp: Date.now()
     };
