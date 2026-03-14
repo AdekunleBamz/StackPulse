@@ -344,6 +344,8 @@ router.post(
     alert.enabled = !alert.enabled;
     alerts.set(id, alert);
 
+    logger.info('Alert toggled', { address, alertId: id, enabled: alert.enabled });
+
     // Invalidate cache
     cache.delete(`alerts:${address}`);
 
