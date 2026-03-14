@@ -107,4 +107,38 @@ router.patch('/:address', (req: Request, res: Response) => {
   });
 });
 
+/**
+ * POST /api/users/:address/upgrade
+ * Upgrade user tier
+ */
+router.post('/:address/upgrade', (req: Request, res: Response) => {
+  const { address } = req.params;
+  const { tier } = req.body;
+  const user = users.get(address);
+  
+  if (!user) {
+    return res.status(404).json({
+      success: false,
+      error: 'User not found'
+    });
+  }
+  
+  if (tier === undefined || tier < 0 || tier > 3) {
+    return res.status(400).json({
+      success: false,
+      error: 'Invalid tier specified'
+    });
+  }
+  
+  const updatedUser = { ...user, tier };
+  users.set(address, updatedUser);
+  
+  logger.info('User tier upgraded', { address, oldTier: user.tier, newTier: tier });
+  
+  res.json({
+    success: true,
+    user: updatedUser
+  });
+});
+
 export default router;
