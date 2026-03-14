@@ -115,12 +115,13 @@ class NotificationsService {
   /**
    * Send alert notification
    */
-  sendAlertNotification(userAddress: string, alertData: any): Notification {
+  sendAlertNotification(userAddress: string, alertData: any, priority: Notification['priority'] = 'high'): Notification {
     return this.createNotification(
       userAddress,
       'alert',
       'Alert Triggered',
-      `Your alert "${alertData.name}" has been triggered.`
+      `Your alert "${alertData.name}" has been triggered.`,
+      priority
     );
   }
 
