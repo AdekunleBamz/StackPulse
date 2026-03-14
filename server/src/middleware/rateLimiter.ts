@@ -102,6 +102,17 @@ export const apiLimiter = rateLimiter({
   maxRequests: 100
 });
 
+export const tieredApiLimiter = rateLimiter({
+  windowMs: 60000,
+  maxRequests: 100, // Default
+  maxRequestsGenerator: (req) => {
+    // In a real app, fetch tier from user store
+    const userTier = (req as any).user?.tier || 0;
+    const limits = [100, 1000, 5000, 20000]; // Defined earlier in tier.ts
+    return limits[userTier] || 100;
+  }
+});
+
 export const authLimiter = rateLimiter({
   windowMs: 900000, // 15 minutes
   maxRequests: 5
