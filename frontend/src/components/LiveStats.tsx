@@ -94,13 +94,17 @@ export default function LiveStats() {
   }
 
   return (
-    <section className="py-12 px-4 border-y border-gray-800 bg-gray-900/30">
+    <section 
+      className="py-12 px-4 border-y border-gray-800 bg-gray-900/30"
+      role="region"
+      aria-label="Blockchain Event Statistics"
+    >
       <div className="max-w-6xl mx-auto">
         <div className="flex items-center justify-center gap-3 mb-8">
-          <Activity className="w-5 h-5 text-green-500 animate-pulse" />
-          <span className="text-gray-400">Live Chainhook Events</span>
+          <Activity className="w-5 h-5 text-green-500 animate-pulse" aria-hidden="true" />
+          <span className="text-gray-400 font-medium tracking-wide uppercase text-xs">Live Chainhook Events</span>
           {lastUpdated && (
-            <span className="hidden sm:inline text-xs text-gray-500">
+            <span className="hidden sm:inline text-xs text-gray-500" aria-live="polite">
               Updated {lastUpdated.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
             </span>
           )}
