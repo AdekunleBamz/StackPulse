@@ -82,7 +82,9 @@ export function formatDate(timestamp: number | Date, options?: Intl.DateTimeForm
 }
 
 /**
- * Format date with time
+ * Formats a timestamp into a string with both date and time.
+ * @param timestamp - The timestamp as a number or Date object.
+ * @returns A locale-specific date and time string.
  */
 export function formatDateTime(timestamp: number | Date): string {
   const date = typeof timestamp === 'number' ? new Date(timestamp) : timestamp;
