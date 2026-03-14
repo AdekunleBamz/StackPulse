@@ -170,7 +170,10 @@ export function parseStxAmount(amount: string): number {
 }
 
 /**
- * Format wallet balance
+ * Formats a wallet balance with a fixed number of decimals.
+ * @param balance - The balance as a number or string.
+ * @param decimals - The number of decimals to display (default: 6).
+ * @returns A formatted balance string.
  */
 export function formatBalance(balance: number | string, decimals: number = 6): string {
   const bal = typeof balance === 'string' ? parseFloat(balance) : balance;
