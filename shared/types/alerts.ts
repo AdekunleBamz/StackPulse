@@ -29,17 +29,31 @@ export const AlertTypeIcons: Record<AlertType, string> = {
   [AlertType.AddressWatch]: '👁️',
 };
 
+/**
+ * Represents a configured alert in the system.
+ */
 export interface Alert {
+  /** Unique identifier for the alert */
   id: string;
+  /** ID of the user who owns this alert */
   userId: string;
+  /** Human-readable name for the alert */
   name: string;
+  /** The type of activity this alert monitors */
   alertType: AlertType;
+  /** Optional numerical threshold for triggering (e.g., amount in STX) */
   threshold?: number;
+  /** Optional Stacks address to monitor */
   targetAddress?: string;
+  /** URL to receive webhook notifications when triggered */
   webhookUrl?: string;
+  /** Whether the alert is currently active */
   enabled: boolean;
+  /** Timestamp when the alert was created */
   createdAt: number;
+  /** Timestamp when the alert was last triggered */
   lastTriggered?: number;
+  /** Total number of times this alert has been triggered */
   triggerCount: number;
 }
 
