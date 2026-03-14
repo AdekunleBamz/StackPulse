@@ -148,6 +148,34 @@ class NotificationsService {
       `Your subscription has been updated to ${tier}.`
     );
   }
+
+  /**
+   * Send notification with retry
+   */
+  async sendWithRetry(
+    userAddress: string,
+    type: Notification['type'],
+    title: string,
+    message: string,
+    priority: Notification['priority'] = 'normal',
+    retries: number = 3
+  ): Promise<Notification | null> {
+    let lastError: any;
+    
+    for (let i = 0; i < retries; i++) {
+      try {
+        // In a real app, this might involve an external push service
+        return this.createNotification(userAddress, type, title, message, priority);
+      } catch (err) {
+        lastError = err;
+        logger.warn(`Notification attempt ${i + 1} failed`, { userAddress, i, err });
+        await new Promise(resolve => setTimeout(resolve, 1000 * Math.pow(2, i))); // Exponential backoff
+      }
+    }
+    
+    logger.error('Failed to send notification after retries', { userAddress, retries, lastError });
+    return null;
+  }
 }
 
 export default new NotificationsService();
