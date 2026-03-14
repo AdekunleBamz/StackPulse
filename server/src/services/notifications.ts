@@ -176,6 +176,24 @@ class NotificationsService {
     logger.error('Failed to send notification after retries', { userAddress, retries, lastError });
     return null;
   }
+
+  /**
+   * Create notifications in batch
+   */
+  createNotificationsBatch(
+    batch: Array<{
+      userAddress: string;
+      type: Notification['type'];
+      title: string;
+      message: string;
+      priority?: Notification['priority'];
+    }>
+  ): Notification[] {
+    logger.info('Creating notifications batch', { count: batch.length });
+    return batch.map(item => 
+      this.createNotification(item.userAddress, item.type, item.title, item.message, item.priority)
+    );
+  }
 }
 
 export default new NotificationsService();
