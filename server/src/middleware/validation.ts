@@ -1,9 +1,24 @@
-/**
- * Validation Middleware
- * Request validation utilities
- */
-
 import { Request, Response, NextFunction } from 'express';
+import logger from '../utils/logger';
+
+/**
+ * Validate body payload size based on tier
+ */
+export function validatePayloadSize(req: Request, res: Response, next: NextFunction) {
+  const userTier = (req as any).user?.tier || 0;
+  const limits = [10240, 102400, 1048576, 10485760]; // 10K, 100K, 1M, 10M
+  const limit = limits[userTier] || 10240;
+  
+  const contentLength = parseInt(req.headers['content-length'] || '0');
+  if (contentLength > limit) {
+    logger.warn('Payload size limit exceeded', { userTier, limit, contentLength });
+    return res.status(413).json({
+      success: false,
+      error: `Payload too large for your tier. Limit: ${limit} bytes.`
+    });
+  }
+  next();
+}
 
 interface ValidationSchema {
   [key: string]: {
