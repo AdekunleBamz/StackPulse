@@ -103,20 +103,37 @@ export interface AlertStats {
   byType: Record<AlertType, number>;
 }
 
+/**
+ * Generic wrapper for paginated API responses.
+ */
 export interface PaginatedAlerts<T> {
+  /** Array of items for the current page */
   items: T[];
+  /** Pagination metadata */
   pagination: {
+    /** Current page number (1-indexed) */
     page: number;
+    /** Number of items per page */
     limit: number;
+    /** Total number of items across all pages */
     total: number;
+    /** Total number of pages */
     totalPages: number;
+    /** Whether a subsequent page exists */
     hasNext: boolean;
+    /** Whether a preceding page exists */
     hasPrev: boolean;
   };
 }
 
+/**
+ * Filter criteria for querying alerts.
+ */
 export type AlertFilter = {
+  /** Filter by a specific alert type */
   alertType?: AlertType;
+  /** Filter by enabled/disabled status */
   enabled?: boolean;
+  /** Search string for filtering by name or address */
   search?: string;
 };
