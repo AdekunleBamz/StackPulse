@@ -11,6 +11,7 @@ interface Notification {
   title: string;
   message: string;
   userAddress?: string;
+  priority: 'low' | 'normal' | 'high' | 'urgent';
   timestamp: number;
   read: boolean;
 }
@@ -27,7 +28,8 @@ class NotificationsService {
     userAddress: string,
     type: Notification['type'],
     title: string,
-    message: string
+    message: string,
+    priority: Notification['priority'] = 'normal'
   ): Notification {
     const notification: Notification = {
       id: Math.random().toString(36).substring(7),
@@ -35,6 +37,7 @@ class NotificationsService {
       title,
       message,
       userAddress,
+      priority,
       timestamp: Date.now(),
       read: false
     };
