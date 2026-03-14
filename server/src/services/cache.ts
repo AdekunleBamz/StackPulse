@@ -1,3 +1,4 @@
+import logger from '../utils/logger';
 /**
  * Cache Service
  * Simple in-memory caching
@@ -7,6 +8,8 @@ interface CacheEntry<T> {
   value: T;
   expiresAt: number;
 }
+
+const MAX_CACHE_SIZE = 10000;
 
 class CacheService {
   private cache: Map<string, CacheEntry<any>> = new Map();
@@ -23,6 +26,11 @@ class CacheService {
    * Set a value in cache
    */
   set<T>(key: string, value: T, ttlMs: number = 3600000): void {
+    if (this.cache.size >= MAX_CACHE_SIZE && !this.cache.has(key)) {
+      logger.warn('Maximum cache size reached, dropping new entry', { key });
+      return;
+    }
+    
     this.cache.set(key, {
       value,
       expiresAt: Date.now() + ttlMs
