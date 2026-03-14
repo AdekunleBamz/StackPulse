@@ -4,6 +4,7 @@
  */
 
 import { Request, Response, NextFunction } from 'express';
+import logger from '../utils/logger';
 
 // Simple in-memory rate limiter
 interface RateLimitEntry {
@@ -64,6 +65,14 @@ export function rateLimiter(options: RateLimitOptions = defaultOptions) {
     // Check if limit exceeded
     if (entry.count >= maxRequests) {
       const retryAfter = Math.ceil((entry.resetTime - now) / 1000);
+      
+      logger.warn('Rate limit exceeded', { 
+        key, 
+        path: req.path, 
+        requests: entry.count, 
+        retryAfter 
+      });
+
       res.setHeader('Retry-After', retryAfter.toString());
       return res.status(429).json({
         success: false,
