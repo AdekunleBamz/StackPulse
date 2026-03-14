@@ -132,13 +132,15 @@ function BadgeCard({ badge, onClick }: BadgeCardProps) {
   const isSoldOut = isLimited && badge.mintedCount >= badge.maxSupply;
 
   return (
-    <div
+    <button
+      type="button"
       onClick={onClick}
-      className={`relative p-4 rounded-xl border-2 transition-all cursor-pointer hover:scale-105 ${
+      className={`relative p-4 rounded-xl border-2 transition-all cursor-pointer hover:scale-105 text-left w-full ${
         badge.earned
           ? `bg-gradient-to-br ${rarityColors[badge.rarity]} bg-opacity-20 ${rarityBorders[badge.rarity]}`
           : 'bg-gray-800/50 border-gray-700 opacity-60 hover:opacity-80'
       }`}
+      aria-label={`Badge: ${badge.name}. ${badge.earned ? 'Earned' : 'Locked'}. ${badge.description}`}
     >
       {/* Rarity indicator */}
       <div
@@ -217,7 +219,11 @@ export default function BadgeShowcase({ userBadges = [] }: BadgeShowcaseProps) {
   const earnedCount = displayBadges.filter(b => b.earned).length;
 
   return (
-    <div className="bg-gray-900/50 border border-gray-800 rounded-2xl p-6">
+    <div 
+      className="bg-gray-900/50 border border-gray-800 rounded-2xl p-6"
+      role="region"
+      aria-label="Reputation Badges Collection"
+    >
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-3">
