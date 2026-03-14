@@ -10,6 +10,12 @@ interface CacheEntry<T> {
 }
 
 const MAX_CACHE_SIZE = 10000;
+const MAX_CACHE_SIZE_PER_USER = new Map<number, number>([
+  [0, 100],     // FREE
+  [1, 1000],    // PRO
+  [2, 10000],   // WHALE
+  [3, 100000]   // EXCHANGE
+]);
 
 class CacheService {
   private cache: Map<string, CacheEntry<any>> = new Map();
