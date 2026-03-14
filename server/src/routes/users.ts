@@ -1,4 +1,5 @@
 import { Router, Request, Response } from 'express';
+import logger from '../utils/logger';
 
 const router = Router();
 
@@ -70,6 +71,8 @@ router.post('/', (req: Request, res: Response) => {
   
   users.set(address, user);
   
+  logger.info('User registered', { address, displayName: user.displayName });
+  
   res.status(201).json({
     success: true,
     user
@@ -94,7 +97,9 @@ router.patch('/:address', (req: Request, res: Response) => {
   const updates = req.body;
   const updatedUser = { ...user, ...updates };
   users.set(address, updatedUser);
-  
+
+  logger.info('User updated', { address, updates: Object.keys(updates) });
+
   res.json({
     success: true,
     user: updatedUser
