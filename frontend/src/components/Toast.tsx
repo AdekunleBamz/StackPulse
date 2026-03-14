@@ -103,9 +103,9 @@ function Toast({ id, type, title, message, duration = 5000, onClose }: ToastProp
       role={type === 'error' || type === 'warning' ? 'alert' : 'status'}
       aria-live={type === 'error' || type === 'warning' ? 'assertive' : 'polite'}
       aria-atomic="true"
-      className={`flex items-start gap-3 p-4 rounded-lg border backdrop-blur-sm shadow-lg transition-all duration-300 ${
+      className={`flex items-start gap-3 p-4 rounded-lg border backdrop-blur-md shadow-2xl transition-all duration-300 ${
         styles.bg
-      } ${styles.border} ${isLeaving ? 'opacity-0 translate-x-full' : 'opacity-100 translate-x-0'}`}
+      } ${styles.border} ${isLeaving ? 'opacity-0 translate-x-full scale-95' : 'opacity-100 translate-x-0 scale-100'}`}
       onMouseEnter={pause}
       onMouseLeave={resume}
       onFocusCapture={pause}
