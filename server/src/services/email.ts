@@ -37,9 +37,12 @@ class EmailService {
     }
 
     try {
-      logger.info('Sending email', {
+      const recipientCount = Array.isArray(options.to) ? options.to.length : 1;
+      logger.info('Attempting to send email', {
         to: options.to,
-        subject: options.subject
+        recipientCount,
+        subject: options.subject,
+        hasHtml: !!options.html
       });
       
       // In production, use nodemailer or similar
