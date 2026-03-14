@@ -36,6 +36,11 @@ class EmailService {
       return false;
     }
 
+    if (!this.validateTemplate(options)) {
+      logger.error('Email template validation failed', { subject: options.subject });
+      return false;
+    }
+
     try {
       const recipientCount = Array.isArray(options.to) ? options.to.length : 1;
       logger.info('Attempting to send email', {
@@ -78,6 +83,13 @@ class EmailService {
         <p>Start creating alerts to monitor blockchain events.</p>
       `
     });
+  }
+
+  private validateTemplate(options: EmailOptions): boolean {
+    if (!options.to || (Array.isArray(options.to) && options.to.length === 0)) return false;
+    if (!options.subject || options.subject.length < 3) return false;
+    if (!options.body || options.body.length < 10) return false;
+    return true;
   }
 }
 
