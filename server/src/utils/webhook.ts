@@ -113,8 +113,11 @@ export function processWebhook(
  */
 export async function sendWebhook(
   url: string,
-  payload: WebhookPayload
+  payload: WebhookPayload,
+  rateLimit: number = 100 // Default rate limit
 ): Promise<boolean> {
+  // Simulating rate limit check
+  // In a real app, we'd use a Redis-based rate limiter
   const startTime = Date.now();
   
   try {
