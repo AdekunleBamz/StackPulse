@@ -35,6 +35,12 @@ export function securityHeaders(req: Request, res: Response, next: NextFunction)
     'Permissions-Policy',
     'camera=(), microphone=(), geolocation=()'
   );
+
+  // COOP
+  res.setHeader('Cross-Origin-Opener-Policy', 'same-origin');
+  
+  // CORP
+  res.setHeader('Cross-Origin-Resource-Policy', 'same-origin');
   
   next();
 }
