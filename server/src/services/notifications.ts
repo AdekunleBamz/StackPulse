@@ -1,3 +1,5 @@
+import logger from '../utils/logger';
+
 /**
  * Notifications Service
  * Handles sending notifications to users
@@ -12,6 +14,8 @@ interface Notification {
   timestamp: number;
   read: boolean;
 }
+
+const MAX_NOTIFICATIONS_PER_USER = 100;
 
 class NotificationsService {
   private notifications: Map<string, Notification[]> = new Map();
@@ -38,7 +42,14 @@ class NotificationsService {
     // Store notification
     const userNotifications = this.notifications.get(userAddress) || [];
     userNotifications.unshift(notification);
+    
+    // Enforce limit
+    if (userNotifications.length > MAX_NOTIFICATIONS_PER_USER) {
+      userNotifications.splice(MAX_NOTIFICATIONS_PER_USER);
+    }
+    
     this.notifications.set(userAddress, userNotifications);
+    logger.debug('Notification created', { userAddress, type, notificationId: notification.id });
 
     return notification;
   }
