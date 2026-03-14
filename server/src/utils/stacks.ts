@@ -4,6 +4,7 @@
  */
 
 import { API_URLS } from '@stackpulse/shared/constants';
+import logger from './logger';
 
 interface Transaction {
   tx_id: string;
@@ -38,7 +39,7 @@ export async function getTransaction(txId: string, network: 'mainnet' | 'testnet
     if (!response.ok) return null;
     return await response.json();
   } catch (error) {
-    console.error('Error fetching transaction:', error);
+    logger.error('Error fetching transaction', { txId, network, error });
     return null;
   }
 }
@@ -58,7 +59,7 @@ export async function getAccountBalance(address: string, network: 'mainnet' | 't
       stx: data.stx.balance || '0'
     };
   } catch (error) {
-    console.error('Error fetching account balance:', error);
+    logger.error('Error fetching account balance', { address, network, error });
     return null;
   }
 }
@@ -82,7 +83,7 @@ export async function getAccountTransactions(
     const data = await response.json();
     return data.results || [];
   } catch (error) {
-    console.error('Error fetching account transactions:', error);
+    logger.error('Error fetching account transactions', { address, network, error });
     return [];
   }
 }
@@ -104,7 +105,7 @@ export async function getContractSource(
     if (!response.ok) return null;
     return await response.json();
   } catch (error) {
-    console.error('Error fetching contract source:', error);
+    logger.error('Error fetching contract source', { contractAddress, contractName, network, error });
     return null;
   }
 }
@@ -120,7 +121,7 @@ export async function getBlock(blockHeight: number, network: 'mainnet' | 'testne
     if (!response.ok) return null;
     return await response.json();
   } catch (error) {
-    console.error('Error fetching block:', error);
+    logger.error('Error fetching block', { blockHeight, network, error });
     return null;
   }
 }
@@ -142,7 +143,7 @@ export async function getMempoolTransactions(
     const data = await response.json();
     return data.results || [];
   } catch (error) {
-    console.error('Error fetching mempool transactions:', error);
+    logger.error('Error fetching mempool transactions', { address, network, error });
     return [];
   }
 }
@@ -158,7 +159,7 @@ export async function getCoreApiInfo(network: 'mainnet' | 'testnet' = 'mainnet')
     if (!response.ok) return null;
     return await response.json();
   } catch (error) {
-    console.error('Error fetching core API info:', error);
+    logger.error('Error fetching core API info', { network, error });
     return null;
   }
 }
@@ -180,7 +181,7 @@ export async function getBlockTransactions(
     const data = await response.json();
     return data.results || [];
   } catch (error) {
-    console.error('Error fetching block transactions:', error);
+    logger.error('Error fetching block transactions', { blockHeight, network, error });
     return [];
   }
 }
