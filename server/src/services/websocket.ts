@@ -29,6 +29,8 @@ interface WSMessage {
 }
 
 const clients: Map<string, WSClient> = new Map();
+const MAX_CLIENTS = 1000;
+const MAX_SUBS_PER_CLIENT = 50;
 
 function getChannel(message: WSMessage): string | undefined {
   return message.channel || message.subscription;
@@ -79,6 +81,11 @@ export function initWebSocket(server: HTTPServer): WebSocketServer {
   });
 
   wss.on('connection', (ws: WebSocket, req: IncomingMessage) => {
+    if (clients.size >= MAX_CLIENTS) {
+      logger.warn('WS connection rejected: max clients reached');
+      ws.close(1013, 'Server at capacity');
+      return;
+    }
     const clientId = generateClientId();
     const client: WSClient = {
       id: clientId,
@@ -141,6 +148,12 @@ function handleMessage(client: WSClient, message: WSMessage): void {
     case 'subscribe': {
       const channel = getChannel(message);
       if (!channel) return;
+      
+      if (client.subscriptions.size >= MAX_SUBS_PER_CLIENT) {
+        socket.send(JSON.stringify({ type: 'error', data: { message: 'Max subscriptions reached' } }));
+        return;
+      }
+      
       client.subscriptions.add(channel);
       socket.send(
         JSON.stringify({
