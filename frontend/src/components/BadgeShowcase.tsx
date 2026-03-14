@@ -137,7 +137,7 @@ function BadgeCard({ badge, onClick }: BadgeCardProps) {
       onClick={onClick}
       className={`relative p-4 rounded-xl border-2 transition-all cursor-pointer hover:scale-105 text-left w-full ${
         badge.earned
-          ? `bg-gradient-to-br ${rarityColors[badge.rarity]} bg-opacity-20 ${rarityBorders[badge.rarity]}`
+          ? `bg-gradient-to-br ${rarityColors[badge.rarity]} bg-opacity-20 ${rarityBorders[badge.rarity]} hover:shadow-lg hover:border-white/20`
           : 'bg-gray-800/50 border-gray-700 opacity-60 hover:opacity-80'
       }`}
       aria-label={`Badge: ${badge.name}. ${badge.earned ? 'Earned' : 'Locked'}. ${badge.description}`}
