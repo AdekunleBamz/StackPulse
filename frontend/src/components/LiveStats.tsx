@@ -83,7 +83,7 @@ export default function LiveStats() {
                 setLoading(true);
                 setRefreshKey((k) => k + 1);
               }}
-              className="mt-4 inline-flex items-center justify-center px-4 py-2 bg-purple-600 hover:bg-purple-500 text-white rounded-lg font-semibold transition-all"
+              className="mt-4 inline-flex items-center justify-center px-4 py-2 bg-purple-600 hover:bg-purple-500 text-white rounded-lg font-semibold transition-all hover:scale-105 active:scale-95 shadow-lg shadow-purple-500/20"
             >
               Retry
             </button>
