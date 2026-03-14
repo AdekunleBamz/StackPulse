@@ -30,6 +30,7 @@ import {
   deleteUserPreferences,
   NotificationPayload
 } from './services/notifications';
+import { tieredApiLimiter } from './middleware/rateLimiter';
 
 // Load environment variables
 dotenv.config();
@@ -148,7 +149,7 @@ const processAsync = (handler: (payload: ChainhookPayload) => Promise<void>) => 
 };
 
 // 1. Whale Transfer Alert
-app.post('/api/v1/chainhooks/whale-transfer', authenticateWebhook, processAsync(async (payload) => {
+app.post('/api/v1/chainhooks/whale-transfer', tieredApiLimiter, authenticateWebhook, processAsync(async (payload) => {
   for (const block of payload.apply) {
     for (const tx of block.transactions) {
       const events = tx.metadata.receipt.events || [];
@@ -221,7 +222,7 @@ app.post('/api/v1/chainhooks/contract-deployed', authenticateWebhook, processAsy
 }));
 
 // 3. NFT Mint Tracker
-app.post('/api/v1/chainhooks/nft-mint', authenticateWebhook, processAsync(async (payload) => {
+app.post('/api/v1/chainhooks/nft-mint', tieredApiLimiter, authenticateWebhook, processAsync(async (payload) => {
   for (const block of payload.apply) {
     for (const tx of block.transactions) {
       const events = tx.metadata.receipt.events || [];
@@ -294,7 +295,7 @@ app.post('/api/v1/chainhooks/token-launch', authenticateWebhook, processAsync(as
 }));
 
 // 5. Large Swap Alert
-app.post('/api/v1/chainhooks/large-swap', authenticateWebhook, processAsync(async (payload) => {
+app.post('/api/v1/chainhooks/', tieredApiLimiter, authenticateWebhook, processAsync(async (payload) => {
   for (const block of payload.apply) {
     for (const tx of block.transactions) {
       const events = tx.metadata.receipt.events || [];
