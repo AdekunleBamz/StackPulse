@@ -151,12 +151,4 @@ export async function sendWebhook(
     return false;
   }
 }
-  
-  // Validate payload
-  const { payload, error } = validateWebhookPayload(body);
-  if (!payload) {
-    return { valid: false, error: error || 'Invalid payload' };
-  }
-  
-  return { valid: true, payload };
 }
