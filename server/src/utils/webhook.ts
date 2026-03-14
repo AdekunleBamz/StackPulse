@@ -107,3 +107,56 @@ export function processWebhook(
   
   return { valid: true, payload };
 }
+
+/**
+ * Send webhook notification
+ */
+export async function sendWebhook(
+  url: string,
+  payload: WebhookPayload
+): Promise<boolean> {
+  const startTime = Date.now();
+  
+  try {
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+
+    const duration = Date.now() - startTime;
+
+    if (!response.ok) {
+      logger.warn('Webhook delivery failed', { 
+        url, 
+        status: response.status, 
+        duration: `${duration}ms` 
+      });
+      return false;
+    }
+
+    logger.info('Webhook delivered successfully', { 
+      url, 
+      status: response.status, 
+      duration: `${duration}ms` 
+    });
+    return true;
+  } catch (error) {
+    const duration = Date.now() - startTime;
+    logger.error('Webhook delivery error', { 
+      url, 
+      error, 
+      duration: `${duration}ms` 
+    });
+    return false;
+  }
+}
+  
+  // Validate payload
+  const { payload, error } = validateWebhookPayload(body);
+  if (!payload) {
+    return { valid: false, error: error || 'Invalid payload' };
+  }
+  
+  return { valid: true, payload };
+}
