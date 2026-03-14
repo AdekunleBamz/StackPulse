@@ -48,7 +48,9 @@ export function requestLogger(options: RequestLogOptions = defaultOptions) {
     res.send = function (body: any) {
       const duration = Date.now() - startTime;
       
-      logger.info('Request completed', {
+      const level = res.statusCode >= 500 ? 'error' : res.statusCode >= 400 ? 'warn' : 'info';
+      
+      logger.log(level, 'Request completed', {
         requestId,
         method: req.method,
         path: req.path,
