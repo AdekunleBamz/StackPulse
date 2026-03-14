@@ -112,6 +112,7 @@ function Toast({ id, type, title, message, duration = 5000, onClose }: ToastProp
     >
       <div
         className={`w-6 h-6 rounded-full flex items-center justify-center text-white text-sm font-bold ${styles.iconBg}`}
+        aria-hidden="true"
       >
         {styles.icon}
       </div>
