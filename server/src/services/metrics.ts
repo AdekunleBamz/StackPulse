@@ -53,6 +53,16 @@ class MetricsService {
     const sum = values.reduce((acc, curr) => acc + curr.value, 0);
     return sum / values.length;
   }
+
+  /**
+   * Monitor performance and log warnings
+   */
+  monitorPerformance() {
+    const avgDuration = this.getAverage('http_request_duration');
+    if (avgDuration > 500) {
+      logger.warn('Performance degraded: high average request duration', { avgDuration: `${avgDuration.toFixed(2)}ms` });
+    }
+  }
 }
 
 export default new MetricsService();
