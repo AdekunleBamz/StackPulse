@@ -308,17 +308,17 @@ export default function BadgeShowcase({ userBadges = [] }: BadgeShowcaseProps) {
               <div className="text-7xl mb-4 filter drop-shadow-2xl">
                 {selectedBadge.earned ? selectedBadge.icon : '🔒'}
               </div>
-              <h3 className="text-2xl font-bold text-white mb-2">
+              <h3 className="text-3xl font-extrabold text-white mb-2 tracking-tight">
                 {selectedBadge.name}
               </h3>
               <div
-                className={`inline-block px-3 py-1 rounded-full text-sm font-medium bg-gradient-to-r ${
+                className={`inline-block px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-gradient-to-r ${
                   rarityColors[selectedBadge.rarity]
-                } mb-3`}
+                } mb-4 shadow-sm`}
               >
-                {selectedBadge.rarity.toUpperCase()}
+                {selectedBadge.rarity}
               </div>
-              <p className="text-gray-400">{selectedBadge.description}</p>
+              <p className="text-gray-300 leading-relaxed max-w-sm mx-auto">{selectedBadge.description}</p>
             </div>
 
             <div className="space-y-3 mb-6">
