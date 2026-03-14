@@ -181,7 +181,9 @@ export function formatBalance(balance: number | string, decimals: number = 6): s
 }
 
 /**
- * Format transaction ID
+ * Formats a transaction ID for display using truncation.
+ * @param txId - The full transaction ID string.
+ * @returns A truncated transaction ID string.
  */
 export function formatTxId(txId: string): string {
   return truncateAddress(txId, 8, 8);
