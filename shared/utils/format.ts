@@ -21,7 +21,9 @@ export function formatStxAmount(microStx: number | string): string {
 }
 
 /**
- * Format number with thousand separators
+ * Formats a number with thousand separators for better readability.
+ * @param num - The number or string representation to format.
+ * @returns A formatted string (e.g., "1,234.56").
  */
 export function formatNumber(num: number | string): string {
   const n = typeof num === 'string' ? parseFloat(num) : num;
@@ -29,14 +31,19 @@ export function formatNumber(num: number | string): string {
 }
 
 /**
- * Format percentage
+ * Formats a decimal value as a percentage string.
+ * @param value - The value to format.
+ * @param decimals - The number of decimal places to include (default: 2).
+ * @returns A formatted percentage string (e.g., "12.34%").
  */
 export function formatPercent(value: number, decimals: number = 2): string {
   return `${value.toFixed(decimals)}%`;
 }
 
 /**
- * Format timestamp to relative time
+ * Formats a timestamp as a relative time string (e.g., "5m ago").
+ * @param timestamp - The timestamp as a number or Date object.
+ * @returns A human-readable relative time string.
  */
 export function formatRelativeTime(timestamp: number | Date): string {
   const now = new Date().getTime();
@@ -60,7 +67,10 @@ export function formatRelativeTime(timestamp: number | Date): string {
 }
 
 /**
- * Format date to readable string
+ * Formats a timestamp into a readable date string.
+ * @param timestamp - The timestamp as a number or Date object.
+ * @param options - Optional Intl.DateTimeFormatOptions for customization.
+ * @returns A locale-specific date string.
  */
 export function formatDate(timestamp: number | Date, options?: Intl.DateTimeFormatOptions): string {
   const date = typeof timestamp === 'number' ? new Date(timestamp) : timestamp;
