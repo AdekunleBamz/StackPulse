@@ -67,6 +67,7 @@ export default function ConnectWallet() {
         size="md"
         aria-haspopup="menu"
         aria-expanded={showDropdown}
+        aria-label={`Wallet menu for address ${address}`}
       >
         <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
         <span className="font-mono text-sm">{truncateAddress(address!)}</span>
@@ -98,13 +99,14 @@ export default function ConnectWallet() {
           </div>
           <div className="p-3 border-b border-gray-700">
             <p className="text-xs text-gray-400">Network</p>
-            <div className="flex gap-2 mt-2">
+            <div className="flex gap-2 mt-2" role="none">
               <button
                 type="button"
                 onClick={() => {
                   switchNetwork('mainnet');
                   setShowDropdown(false);
                 }}
+                role="menuitem"
                 aria-pressed={network === 'mainnet'}
                 className={`px-3 py-1 rounded-lg text-xs font-medium transition-colors ${
                   network === 'mainnet'
@@ -120,6 +122,7 @@ export default function ConnectWallet() {
                   switchNetwork('testnet');
                   setShowDropdown(false);
                 }}
+                role="menuitem"
                 aria-pressed={network === 'testnet'}
                 className={`px-3 py-1 rounded-lg text-xs font-medium transition-colors ${
                   network === 'testnet'
