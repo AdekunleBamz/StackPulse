@@ -1,5 +1,6 @@
 import { Router, Request, Response } from 'express';
 import logger from '../utils/logger';
+import { UserTier } from '../services/tier';
 
 const router = Router();
 
@@ -64,7 +65,7 @@ router.post('/', (req: Request, res: Response) => {
   const user = {
     address,
     displayName: displayName || address.slice(0, 8),
-    tier: 0,
+    tier: UserTier.FREE,
     createdAt: Date.now(),
     alertCount: 0
   };
