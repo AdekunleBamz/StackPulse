@@ -26,7 +26,6 @@ import {
   deleteUserPreferences
 } from './services/notifications';
 import { tieredApiLimiter } from './middleware/rateLimiter';
-import requestLogger from './middleware/requestLogger';
 import db from './services/db';
 import { clearOldData } from './services/analytics';
 
@@ -953,6 +952,29 @@ app.get('/api/v1/users/:address/alerts', getUserAlertsHandler);
 app.get('/api/users/:address/alerts', getUserAlertsHandler);
 app.post('/api/v1/users/:address/alerts', createUserAlertHandler);
 app.post('/api/users/:address/alerts', createUserAlertHandler);
+
+/**
+ * System Maintenance Task
+ */
+async function runMaintenanceTask() {
+  logger.info('Starting system maintenance task');
+  try {
+    // 1. Cleanup old analytics
+    clearOldData(30);
+    
+    // 2. Perform database backup
+    db.backup();
+    
+    logger.info('System maintenance task completed successfully');
+  } catch (error) {
+    logger.error('System maintenance task failed', { error });
+  }
+}
+
+// Scheduled maintenance (every 24 hours)
+setInterval(runMaintenanceTask, 24 * 3600000);
+// Run once on startup
+runMaintenanceTask();
 
 /**
  * System Maintenance Task
