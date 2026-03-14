@@ -18,19 +18,47 @@ interface AnalyticsData {
   events: Map<string, EventCount>;
   hourly: Map<number, Map<string, number>>;
   daily: Map<number, Map<string, number>>;
+  userEventCounts: Map<string, number>;
 }
 
 // Memory safety limits
-const MAX_EVENT_TYPES = 1000;
+const MAX_EVENT_TYPES = 50;
 const MAX_HOURLY_ENTRIES = 24 * 7; // 1 week of hourly data
 const MAX_DAILY_ENTRIES = 365; // 1 year of daily data
+const MAX_EVENTS_PER_USER = new Map<number, number>([
+  [0, 1000],  // FREE
+  [1, 10000], // PRO
+  [2, 100000], // WHALE
+  [3, 1000000] // EXCHANGE
+]);
+
+// In-memory storage for analytics data
+const analytics: AnalyticsData = {
+  events: new Map(),
+  hourly: new Map(),
+  daily: new Map(),
+  userEventCounts: new Map(),
+};
 
 // Track an event
-export function trackEvent(eventType: string, metadata?: Record<string, any>): void {
+export function trackEvent(eventType: string, metadata?: Record<string, any>, userAddress?: string, tier: number = 0): void {
   if (analytics.events.size >= MAX_EVENT_TYPES && !analytics.events.has(eventType)) {
     logger.warn('Maximum event types reached, dropping new event type', { eventType });
     return;
   }
+
+  if (userAddress) {
+    const currentCount = analytics.userEventCounts.get(userAddress) || 0;
+    const limit = MAX_EVENTS_PER_USER.get(tier) || 1000;
+    
+    if (currentCount >= limit) {
+      logger.debug('User analytics limit reached', { userAddress, tier, limit, eventType });
+      return;
+    }
+    
+    analytics.userEventCounts.set(userAddress, currentCount + 1);
+  }
+
   const now = Date.now();
   const hour = Math.floor(now / 3600000);
   const day = Math.floor(now / 86400000);
