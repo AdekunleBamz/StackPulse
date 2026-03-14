@@ -13,10 +13,16 @@ interface MetricValue {
 
 class MetricsService {
   private metrics: Map<string, MetricValue[]> = new Map();
+  private errorCounts: Map<string, number> = new Map();
 
   /**
-   * Record a metric value
+   * Record an error metric
    */
+  recordError(type: string) {
+    const current = this.errorCounts.get(type) || 0;
+    this.errorCounts.set(type, current + 1);
+    logger.error(`Error recorded: ${type}`, { count: current + 1 });
+  }
   recordMetric(name: string, value: number, labels?: Record<string, string>) {
     const entry: MetricValue = {
       value,
