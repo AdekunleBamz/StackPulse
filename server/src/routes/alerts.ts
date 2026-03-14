@@ -3,6 +3,7 @@ import { validateBody, schemas } from '../middleware/validation';
 import { asyncHandler } from '../middleware/errorHandler';
 import cache from '../services/cache';
 import logger from '../utils/logger';
+import { getTierLimits, UserTier } from '../services/tier';
 
 const router = Router();
 
@@ -184,11 +185,15 @@ router.post(
     const existingCount = Array.from(alerts.values())
       .filter(a => a.userId === address).length;
 
-    // Check alert limits (simplified - should check tier)
-    if (existingCount >= 10) {
+    // Check alert limits based on user tier
+    // In a real app, we'd fetch the user's tier from the database
+    const userTier = (req as any).user?.tier || UserTier.FREE;
+    const limits = getTierLimits(userTier);
+
+    if (existingCount >= limits.maxAlerts) {
       return res.status(403).json({
         success: false,
-        error: 'Alert limit reached. Upgrade to create more alerts.',
+        error: `Alert limit reached for your tier (${limits.maxAlerts}). Upgrade to create more alerts.`,
       });
     }
 
