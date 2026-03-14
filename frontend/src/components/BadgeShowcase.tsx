@@ -261,7 +261,14 @@ export default function BadgeShowcase({ userBadges = [] }: BadgeShowcaseProps) {
           <span className="text-gray-400">Collection Progress</span>
           <span className="text-purple-400">{Math.round((earnedCount / badges.length) * 100)}%</span>
         </div>
-        <div className="h-2 bg-gray-800 rounded-full overflow-hidden">
+        <div 
+          className="h-2 bg-gray-800 rounded-full overflow-hidden"
+          role="progressbar"
+          aria-valuenow={Math.round((earnedCount / badges.length) * 100)}
+          aria-valuemin={0}
+          aria-valuemax={100}
+          aria-label="Badge collection progress"
+        >
           <div
             className="h-full bg-gradient-to-r from-purple-500 to-blue-500 transition-all duration-500"
             style={{ width: `${(earnedCount / badges.length) * 100}%` }}
