@@ -148,7 +148,7 @@ const processAsync = (handler: (payload: ChainhookPayload) => Promise<void>) => 
 };
 
 // 1. Whale Transfer Alert
-app.post('/api/chainhooks/whale-transfer', authenticateWebhook, processAsync(async (payload) => {
+app.post('/api/v1/chainhooks/whale-transfer', authenticateWebhook, processAsync(async (payload) => {
   for (const block of payload.apply) {
     for (const tx of block.transactions) {
       const events = tx.metadata.receipt.events || [];
@@ -187,7 +187,7 @@ app.post('/api/chainhooks/whale-transfer', authenticateWebhook, processAsync(asy
 }));
 
 // 2. New Contract Deployed
-app.post('/api/chainhooks/contract-deployed', authenticateWebhook, processAsync(async (payload) => {
+app.post('/api/v1/chainhooks/contract-deployed', authenticateWebhook, processAsync(async (payload) => {
   for (const block of payload.apply) {
     for (const tx of block.transactions) {
       const deploymentData = parseContractDeployment(tx);
@@ -221,7 +221,7 @@ app.post('/api/chainhooks/contract-deployed', authenticateWebhook, processAsync(
 }));
 
 // 3. NFT Mint Tracker
-app.post('/api/chainhooks/nft-mint', authenticateWebhook, processAsync(async (payload) => {
+app.post('/api/v1/chainhooks/nft-mint', authenticateWebhook, processAsync(async (payload) => {
   for (const block of payload.apply) {
     for (const tx of block.transactions) {
       const events = tx.metadata.receipt.events || [];
@@ -261,7 +261,7 @@ app.post('/api/chainhooks/nft-mint', authenticateWebhook, processAsync(async (pa
 }));
 
 // 4. Token Launch Detector
-app.post('/api/chainhooks/token-launch', authenticateWebhook, processAsync(async (payload) => {
+app.post('/api/v1/chainhooks/token-launch', authenticateWebhook, processAsync(async (payload) => {
   for (const block of payload.apply) {
     for (const tx of block.transactions) {
       if (tx.metadata.kind?.type === 'ContractDeployment') {
@@ -294,7 +294,7 @@ app.post('/api/chainhooks/token-launch', authenticateWebhook, processAsync(async
 }));
 
 // 5. Large Swap Alert
-app.post('/api/chainhooks/large-swap', authenticateWebhook, processAsync(async (payload) => {
+app.post('/api/v1/chainhooks/large-swap', authenticateWebhook, processAsync(async (payload) => {
   for (const block of payload.apply) {
     for (const tx of block.transactions) {
       const events = tx.metadata.receipt.events || [];
@@ -327,7 +327,7 @@ app.post('/api/chainhooks/large-swap', authenticateWebhook, processAsync(async (
 }));
 
 // 6. User Subscription Created
-app.post('/api/chainhooks/subscription-created', authenticateWebhook, processAsync(async (payload) => {
+app.post('/api/v1/chainhooks/subscription-created', authenticateWebhook, processAsync(async (payload) => {
   for (const block of payload.apply) {
     for (const tx of block.transactions) {
       const events = tx.metadata.receipt.events || [];
@@ -365,7 +365,7 @@ app.post('/api/chainhooks/subscription-created', authenticateWebhook, processAsy
 }));
 
 // 7. Alert Triggered
-app.post('/api/chainhooks/alert-triggered', authenticateWebhook, processAsync(async (payload) => {
+app.post('/api/v1/chainhooks/alert-triggered', authenticateWebhook, processAsync(async (payload) => {
   for (const block of payload.apply) {
     for (const tx of block.transactions) {
       const events = tx.metadata.receipt.events || [];
@@ -403,7 +403,7 @@ app.post('/api/chainhooks/alert-triggered', authenticateWebhook, processAsync(as
 }));
 
 // 8. Fee Collected
-app.post('/api/chainhooks/fee-collected', authenticateWebhook, processAsync(async (payload) => {
+app.post('/api/v1/chainhooks/fee-collected', authenticateWebhook, processAsync(async (payload) => {
   for (const block of payload.apply) {
     for (const tx of block.transactions) {
       const events = tx.metadata.receipt.events || [];
@@ -440,7 +440,7 @@ app.post('/api/chainhooks/fee-collected', authenticateWebhook, processAsync(asyn
 }));
 
 // 9. Badge Earned
-app.post('/api/chainhooks/badge-earned', authenticateWebhook, processAsync(async (payload) => {
+app.post('/api/v1/chainhooks/badge-earned', authenticateWebhook, processAsync(async (payload) => {
   for (const block of payload.apply) {
     for (const tx of block.transactions) {
       const events = tx.metadata.receipt.events || [];
@@ -482,7 +482,7 @@ app.post('/api/chainhooks/badge-earned', authenticateWebhook, processAsync(async
 // Additional endpoints for contract_call chainhooks
 
 // 10. New Subscription (contract_call: register-and-subscribe)
-app.post('/api/chainhooks/new-subscription', authenticateWebhook, processAsync(async (payload) => {
+app.post('/api/v1/chainhooks/new-subscription', authenticateWebhook, processAsync(async (payload) => {
   for (const block of payload.apply) {
     for (const tx of block.transactions) {
       logger.info('✨ New Subscription Call', {
@@ -511,7 +511,7 @@ app.post('/api/chainhooks/new-subscription', authenticateWebhook, processAsync(a
 }));
 
 // 11. Subscription Upgrade (contract_call: upgrade-subscription)
-app.post('/api/chainhooks/subscription-upgrade', authenticateWebhook, processAsync(async (payload) => {
+app.post('/api/v1/chainhooks/subscription-upgrade', authenticateWebhook, processAsync(async (payload) => {
   for (const block of payload.apply) {
     for (const tx of block.transactions) {
       logger.info('⬆️ Subscription Upgrade', {
@@ -538,7 +538,7 @@ app.post('/api/chainhooks/subscription-upgrade', authenticateWebhook, processAsy
 }));
 
 // 12. Alert Created (contract_call: create-alert)
-app.post('/api/chainhooks/alert-created', authenticateWebhook, processAsync(async (payload) => {
+app.post('/api/v1/chainhooks/alert-created', authenticateWebhook, processAsync(async (payload) => {
   for (const block of payload.apply) {
     for (const tx of block.transactions) {
       logger.info('🔔 Alert Created', {
@@ -578,17 +578,17 @@ app.get('/health', (req: Request, res: Response) => {
 });
 
 // Keep-alive ping endpoint (for cron services to prevent Render cold starts)
-app.get('/api/ping', (req: Request, res: Response) => {
+app.get('/api/v1/ping', (req: Request, res: Response) => {
   res.status(200).send('pong');
 });
 
 // HEAD request for lightweight keep-alive
-app.head('/api/ping', (req: Request, res: Response) => {
+app.head('/api/v1/ping', (req: Request, res: Response) => {
   res.status(200).end();
 });
 
 // Get event statistics
-app.get('/api/stats', (req: Request, res: Response) => {
+app.get('/api/v1/stats', (req: Request, res: Response) => {
   res.json({
     stats: eventStats,
     uptime: process.uptime(),
@@ -597,7 +597,7 @@ app.get('/api/stats', (req: Request, res: Response) => {
 });
 
 // Get chainhook status
-app.get('/api/chainhooks/status', (req: Request, res: Response) => {
+app.get('/api/v1/chainhooks/status', (req: Request, res: Response) => {
   res.json({
     registered: 9,
     active: 9,
@@ -620,7 +620,7 @@ app.get('/api/chainhooks/status', (req: Request, res: Response) => {
 // ============================================
 
 // Save user notification preferences
-app.post('/api/users', async (req: Request, res: Response) => {
+app.post('/api/v1/users', async (req: Request, res: Response) => {
   try {
     const { address, username, email, discord, telegram, enabledAlerts } = req.body;
     
@@ -757,7 +757,7 @@ const saveAlerts = (alerts: Map<string, any[]>) => {
 const userAlerts: Map<string, any[]> = loadAlerts();
 
 // Get user's alerts
-app.get('/api/users/:address/alerts', async (req: Request, res: Response) => {
+app.get('/api/v1/users/:address/alerts', async (req: Request, res: Response) => {
   try {
     const { address } = req.params;
     const alerts = userAlerts.get(address) || [];
@@ -769,7 +769,7 @@ app.get('/api/users/:address/alerts', async (req: Request, res: Response) => {
 });
 
 // Create new alert
-app.post('/api/users/:address/alerts', async (req: Request, res: Response) => {
+app.post('/api/v1/users/:address/alerts', async (req: Request, res: Response) => {
   try {
     const { address } = req.params;
     const { type, name, threshold, targetAddress, txId } = req.body;
