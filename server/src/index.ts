@@ -31,6 +31,8 @@ import {
   NotificationPayload
 } from './services/notifications';
 import { tieredApiLimiter } from './middleware/rateLimiter';
+import db from './services/db';
+import { clearOldData } from './services/analytics';
 
 // Load environment variables
 dotenv.config();
@@ -799,6 +801,29 @@ app.post('/api/v1/users/:address/alerts', async (req: Request, res: Response) =>
     res.status(500).json({ error: 'Failed to create alert' });
   }
 });
+
+/**
+ * System Maintenance Task
+ */
+async function runMaintenanceTask() {
+  logger.info('Starting system maintenance task');
+  try {
+    // 1. Cleanup old analytics
+    clearOldData(30);
+    
+    // 2. Perform database backup
+    db.backup();
+    
+    logger.info('System maintenance task completed successfully');
+  } catch (error) {
+    logger.error('System maintenance task failed', { error });
+  }
+}
+
+// Scheduled maintenance (every 24 hours)
+setInterval(runMaintenanceTask, 24 * 3600000);
+// Run once on startup
+runMaintenanceTask();
 
 // Update alert
 app.put('/api/users/:address/alerts/:alertId', async (req: Request, res: Response) => {
