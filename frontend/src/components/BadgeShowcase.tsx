@@ -243,7 +243,7 @@ export default function BadgeShowcase({ userBadges = [] }: BadgeShowcaseProps) {
               key={f}
               onClick={() => setFilter(f)}
               aria-current={filter === f ? 'true' : undefined}
-              className={`px-3 py-1 rounded-md text-sm capitalize transition-all ${
+              className={`px-3 py-1 rounded-md text-sm capitalize transition-all hover:scale-105 active:scale-95 ${
                 filter === f
                   ? 'bg-purple-600 text-white'
                   : 'text-gray-400 hover:text-white'
