@@ -224,8 +224,19 @@ export function clearOldData(maxAgeDays: number = 30): void {
       analytics.daily.delete(day);
     }
   }
+
+  // Monthly reset for user event counts if needed
+  // For now, just log the size
+  if (now % 2592000000 < 3600000) { // Approx once a month
+    logger.info('Resetting monthly user event counts', { count: analytics.userEventCounts.size });
+    analytics.userEventCounts.clear();
+  }
   
-  logger.info('Cleared old analytics data', { maxAgeDays });
+  logger.info('Cleared old analytics data', { 
+    maxAgeDays, 
+    hourlyRemaining: analytics.hourly.size,
+    dailyRemaining: analytics.daily.size 
+  });
 }
 
 // Initialize cleanup interval (every hour)
