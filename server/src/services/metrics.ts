@@ -17,26 +17,16 @@ const PERFORMANCE_WARN_THRESHOLD_MS = 500;
 class MetricsService {
   private metrics: Map<string, MetricValue[]> = new Map();
   private errorCounts: Map<string, number> = new Map();
-  private eventCounts: Map<string, number[]> = new Map();
 
   /**
    * Record an error metric
    */
-  recordError(type: string): void {
-    const current = this.errorCounts.get(type) ?? 0;
+  recordError(type: string) {
+    const current = this.errorCounts.get(type) || 0;
     this.errorCounts.set(type, current + 1);
     logger.error(`Error recorded: ${type}`, { count: current + 1 });
   }
-
-  /**
-   * Record a named metric value with optional labels
-   */
-  recordMetric(name: string, value: number, labels?: Record<string, string>): void {
-    if (!Number.isFinite(value)) {
-      logger.warn(`Skipping non-finite metric: ${name}`, { value, labels });
-      return;
-    }
-
+  recordMetric(name: string, value: number, labels?: Record<string, string>) {
     const entry: MetricValue = {
       value,
       timestamp: Date.now(),
