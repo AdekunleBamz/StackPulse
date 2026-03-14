@@ -134,6 +134,7 @@ export default function ConfirmDialog({
           <button
             onClick={handleConfirm}
             disabled={isLoading}
+            aria-busy={isLoading}
             className={`flex-1 px-4 py-2 ${styles.button} text-white rounded-lg font-semibold transition-colors disabled:opacity-50 flex items-center justify-center gap-2`}
           >
             {isLoading && (
