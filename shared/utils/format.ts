@@ -158,7 +158,9 @@ export function formatDuration(ms: number): string {
 }
 
 /**
- * Parse STX amount from display to microSTX
+ * Parses a display STX amount string into micro-STX.
+ * @param amount - The STX amount string (may contain commas/units).
+ * @returns The amount in micro-STX as a number.
  */
 export function parseStxAmount(amount: string): number {
   const cleaned = amount.replace(/[^\d.]/g, '');
