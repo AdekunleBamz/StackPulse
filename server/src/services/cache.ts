@@ -118,9 +118,35 @@ class CacheService {
    * Destroy cache service
    */
   destroy(): void {
-    clearInterval(this.cleanupInterval);
-    this.cache.clear();
+    if (this.cleanupInterval) { // Only clear if it was set
+      clearInterval(this.cleanupInterval);
+    }
+    logger.info('Cache cleared');
+  }
+
+  /**
+   * Cleanup expired items to prevent memory leaks
+   */
+  cleanupExpired() {
+    const now = Date.now();
+    let count = 0;
+    
+    for (const [key, entry] of this.cache.entries()) {
+      if (entry.expiresAt < now) {
+        this.cache.delete(key);
+        count++;
+      }
+    }
+    
+    if (count > 0) {
+      logger.info('Cleaned up expired cache items', { count });
+    }
   }
 }
 
-export default new CacheService();
+const cacheService = new CacheService();
+
+// Periodically cleanup expired items
+cacheService['cleanupInterval'] = setInterval(() => cacheService.cleanupExpired(), 600000); // Every 10 minutes
+
+export default cacheService;
