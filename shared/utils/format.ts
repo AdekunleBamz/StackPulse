@@ -112,7 +112,10 @@ export function truncateAddress(address: string, startChars: number = 6, endChar
 }
 
 /**
- * Truncate string with ellipsis
+ * Truncates a string to a maximum length and appends an ellipsis.
+ * @param str - The string to truncate.
+ * @param maxLength - The maximum length before truncation.
+ * @returns The truncated string with an ellipsis if it exceeded maxLength.
  */
 export function truncateString(str: string, maxLength: number): string {
   if (str.length <= maxLength) return str;
