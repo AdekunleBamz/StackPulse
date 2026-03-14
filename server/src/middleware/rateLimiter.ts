@@ -29,6 +29,7 @@ export interface RateLimitOptions {
   maxRequests: number;
   message?: string;
   keyGenerator?: (req: Request) => string;
+  maxRequestsGenerator?: (req: Request) => number;
 }
 
 const defaultOptions: RateLimitOptions = {
@@ -49,6 +50,7 @@ export function rateLimiter(options: RateLimitOptions = defaultOptions) {
   return (req: Request, res: Response, next: NextFunction) => {
     const key = keyGenerator!(req);
     const now = Date.now();
+    const effectiveMaxRequests = maxRequestsGenerator ? maxRequestsGenerator(req) : maxRequests;
 
     let entry = rateLimitStore.get(key);
 
@@ -63,7 +65,7 @@ export function rateLimiter(options: RateLimitOptions = defaultOptions) {
     }
 
     // Check if limit exceeded
-    if (entry.count >= maxRequests) {
+    if (entry.count >= effectiveMaxRequests) {
       const retryAfter = Math.ceil((entry.resetTime - now) / 1000);
       
       logger.warn('Rate limit exceeded', { 
@@ -86,8 +88,8 @@ export function rateLimiter(options: RateLimitOptions = defaultOptions) {
     rateLimitStore.set(key, entry);
 
     // Set rate limit headers
-    res.setHeader('X-RateLimit-Limit', maxRequests.toString());
-    res.setHeader('X-RateLimit-Remaining', (maxRequests - entry.count).toString());
+    res.setHeader('X-RateLimit-Limit', effectiveMaxRequests.toString());
+    res.setHeader('X-RateLimit-Remaining', (effectiveMaxRequests - entry.count).toString());
     res.setHeader('X-RateLimit-Reset', entry.resetTime.toString());
 
     next();
