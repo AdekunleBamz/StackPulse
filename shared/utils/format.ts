@@ -141,7 +141,9 @@ export function formatFileSize(bytes: number): string {
 }
 
 /**
- * Format duration in milliseconds to human readable
+ * Formats a duration in milliseconds into a human-readable string.
+ * @param ms - The duration in milliseconds.
+ * @returns A formatted string (e.g., "1d 2h", "5m 30s", or "10s").
  */
 export function formatDuration(ms: number): string {
   const seconds = Math.floor(ms / 1000);
