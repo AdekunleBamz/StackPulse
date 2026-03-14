@@ -129,9 +129,12 @@ export default function NetworkStatus({ refreshInterval = 30000 }: NetworkStatus
           >
             {refreshing ? 'Refreshing…' : 'Refresh'}
           </button>
-          <div className="flex items-center gap-2">
-            <span className={`w-2 h-2 rounded-full ${healthColor} animate-pulse`}></span>
-            <span className="text-sm text-gray-400">{healthText}</span>
+          <div className="flex items-center gap-2" aria-live="polite">
+            <span 
+              className={`w-2 h-2 rounded-full ${healthColor} animate-pulse`}
+              aria-hidden="true"
+            ></span>
+            <span className="text-sm text-gray-400 font-medium">{healthText}</span>
           </div>
         </div>
       </div>
