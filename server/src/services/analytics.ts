@@ -20,15 +20,17 @@ interface AnalyticsData {
   daily: Map<number, Map<string, number>>;
 }
 
-// In-memory analytics storage
-const analytics: AnalyticsData = {
-  events: new Map(),
-  hourly: new Map(),
-  daily: new Map()
-};
+// Memory safety limits
+const MAX_EVENT_TYPES = 1000;
+const MAX_HOURLY_ENTRIES = 24 * 7; // 1 week of hourly data
+const MAX_DAILY_ENTRIES = 365; // 1 year of daily data
 
 // Track an event
 export function trackEvent(eventType: string, metadata?: Record<string, any>): void {
+  if (analytics.events.size >= MAX_EVENT_TYPES && !analytics.events.has(eventType)) {
+    logger.warn('Maximum event types reached, dropping new event type', { eventType });
+    return;
+  }
   const now = Date.now();
   const hour = Math.floor(now / 3600000);
   const day = Math.floor(now / 86400000);
