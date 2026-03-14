@@ -1,6 +1,7 @@
 import { Router, Request, Response } from 'express';
 import logger from '../utils/logger';
 import { asyncHandler } from '../middleware/errorHandler';
+import { trackEvent } from '../services/analytics';
 
 const router = Router();
 
@@ -47,18 +48,21 @@ router.get('/summary', (req: Request, res: Response) => {
 });
 
 /**
- * GET /api/analytics/trends
- * Get analytics trends
+ * POST /api/analytics/track
+ * Track an analytics event
  */
-router.get('/trends', (req: Request, res: Response) => {
-  const { period = '7d' } = req.query;
+router.post('/track', (req: Request, res: Response) => {
+  const { eventType, metadata } = req.body;
+  const address = req.headers['x-user-address'] as string;
+  
+  // In a real app, fetch tier from user store
+  const tier = 0; // Default to FREE
+
+  trackEvent(eventType, metadata, address, tier);
   
   res.json({
     success: true,
-    trends: {
-      period,
-      data: []
-    }
+    message: 'Event tracked'
   });
 });
 
