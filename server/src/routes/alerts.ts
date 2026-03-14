@@ -1,5 +1,5 @@
 import { Router, Request, Response } from 'express';
-import { validateRequest, schemas } from '../middleware/validation';
+import { validateBody, schemas } from '../middleware/validation';
 import { asyncHandler } from '../middleware/errorHandler';
 import cache from '../services/cache';
 import logger from '../utils/logger';
@@ -168,7 +168,7 @@ router.get(
  */
 router.post(
   '/',
-  validateRequest(schemas.createAlert),
+  validateBody(schemas.createAlert),
   asyncHandler(async (req: Request, res: Response) => {
     const { address } = req.query;
     const body = req.body as CreateAlertRequest;
