@@ -1,16 +1,21 @@
 # Server Services
 
-Core business logic and external integrations for the StackPulse server.
+Business logic and infrastructure helpers used by the StackPulse backend.
 
-## Primary Services
+## Modules in this folder
 
-- `AlertService`: Logic for creating, updating, and triggering alerts.
-- `StacksService`: Integration with the Stacks blockchain (RPC, API).
-- `WebhookService`: Delivery and validation of alert notifications.
-- `CacheService`: Redis-backed caching for performance optimization.
+- `analytics.ts`: in-memory event counting, rollups, and cleanup helpers
+- `cache.ts`: cache storage and per-tier cache sizing
+- `db.ts`: server-side data access wrapper
+- `email.ts`: email delivery service
+- `health.ts`: process and dependency health summaries
+- `metrics.ts`: application metrics collection
+- `notifications.ts`: notification fan-out and user preference handling
+- `tier.ts`: user tier lookup, limits, and cache helpers
+- `websocket.ts`: live client connections, subscriptions, and broadcasts
 
-## Guidelines
+## Working rules
 
-- Services should be stateless whenever possible.
-- Use dependency injection for better testability.
-- Handle all external API failures gracefully with retries and logging.
+- Keep service APIs reusable from routes, background jobs, or tests.
+- Log external failures with enough context to debug them.
+- Document any tier-aware limits close to the code that enforces them.
