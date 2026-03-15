@@ -1,15 +1,22 @@
 # Frontend Hooks
 
-Custom React hooks for the StackPulse application.
+Custom React hooks for data fetching, browser state, and live updates.
 
-## Core Hooks
+## Hooks in this folder
 
-- `useAlerts`: Manage alert configuration and history.
-- `useStxBalance`: Real-time monitoring of Stacks wallet balances.
-- `useWebSocket`: Type-safe WebSocket integration for live updates.
+- `useAlerts.ts`: load, create, delete, and refresh user alerts
+- `useDebounce.ts`: debounce rapidly changing values
+- `useLocalStorage.ts`: state synchronized to `localStorage`
+- `useMediaQuery.ts`: responsive state helpers plus mobile/tablet/desktop shortcuts
+- `useUser.ts`: load and refresh user profile data
+- `useWebSocket.ts`: manage live socket connections and messages
 
-## Guidelines
+## Export note
 
-- Hooks should be focused on a single responsibility.
-- Implement proper cleanup in `useEffect` when necessary.
-- Provide comprehensive TypeScript interfaces for hook return values.
+`index.ts` currently re-exports `useLocalStorage`, `useMediaQuery`, and `useDebounce`. Import `useAlerts`, `useUser`, and `useWebSocket` directly until they are promoted to the shared hook surface.
+
+## Working rules
+
+- Keep hooks single-purpose.
+- Clean up timers, listeners, and socket connections.
+- Return stable, well-typed shapes so components stay simple.
