@@ -1,17 +1,18 @@
 # Server Middleware
 
-Express middleware for request processing, security, and logging.
+Express middleware used to protect, validate, and observe requests.
 
-## Core Middleware
+## Modules in this folder
 
-- `auth`: Verify JWT tokens and user sessions.
-- `logger`: Request/response logging for observability.
-- `error`: Centralized error handling and formatting.
-- `validator`: Zod-backed request payload validation.
-- `security`: Header hardening and CORS configuration.
+- `errorHandler.ts`: app errors, async wrappers, and not-found handling
+- `rateLimiter.ts`: generic, auth, webhook, and tier-aware request limiting
+- `requestLogger.ts`: structured request logging
+- `security.ts`: security headers, clickjacking protection, and CORS helpers
+- `timeout.ts`: request timeout wrapper
+- `validation.ts`: body, query, param, and payload-size validation helpers
 
-## Guidelines
+## Working rules
 
-- Keep middleware functions small and focused on one task.
-- Always call `next()` or send a response (never leave the request hanging).
-- Use `req.app.locals` or `req.user` for passing data between middleware.
+- Keep middleware focused on a single responsibility.
+- Always finish by sending a response or calling `next()`.
+- Keep business logic in routes or services rather than inside middleware.
