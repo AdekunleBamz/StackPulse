@@ -1,0 +1,48 @@
+# Workspace Guide
+
+StackPulse is organized as a small monorepo. Each top-level package owns a different part of the product.
+
+## Package map
+
+| Path | Purpose |
+|------|---------|
+| `package.json` | Root-level contract test and Clarinet helper scripts |
+| `contracts/` | Active and archived Clarity smart contracts |
+| `chainhooks/` | Hiro Chainhook manifest files for on-chain event ingestion |
+| `server/` | Express + TypeScript backend for chainhook ingestion, alerts, stats, and WebSocket delivery |
+| `frontend/` | Next.js app for the landing page, registration flow, dashboard, badges, history, and analytics |
+| `shared/` | Shared TypeScript constants, types, and formatting helpers |
+| `docs/` | Project docs for API, deployment, contracts, and workspace notes |
+| `deployments/` | Clarinet deployment plans for different contract release stages |
+
+## Common local workflow
+
+```bash
+# Install each package used in day-to-day development
+npm install
+npm --prefix server install
+npm --prefix frontend install
+npm --prefix shared install
+
+# Contract checks
+npm run clarinet:check
+npm test
+
+# App surfaces
+npm --prefix server run dev
+npm --prefix frontend run dev
+```
+
+## Source-of-truth files
+
+- Mounted backend endpoints: `server/src/index.ts`
+- Extracted backend route modules: `server/src/routes/`
+- Frontend pages: `frontend/src/app/`
+- Shared exports: `shared/constants/index.ts`, `shared/types/index.ts`, `shared/utils/index.ts`
+- Contract deployment plans: `deployments/`
+
+## When changing one package
+
+- Update nearby README files when behavior, commands, or file layout changes.
+- Keep chainhook manifest names aligned with the matching server handlers.
+- If a frontend page depends on shared constants or contract names, update both places in the same change.
