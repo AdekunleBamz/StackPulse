@@ -1,16 +1,15 @@
 # Server Utilities
 
-Common utility functions and helpers for the StackPulse server.
+Low-level helpers shared across the backend.
 
-## Utilities
+## Modules in this folder
 
-- `logger`: Winston-based logging utility.
-- `validation`: Helpers for complex validation logic.
-- `date`: Server-side date manipulation and formatting.
-- `crypto`: Cryptographic helpers for signature verification and hashing.
+- `logger.ts`: centralized Winston logger configuration
+- `stacks.ts`: Stacks API helpers plus event parsing utilities used by chainhook handlers
+- `webhook.ts`: webhook payload validation, signature generation, signature verification, and outbound delivery helpers
 
-## Guidelines
+## Working rules
 
-- Utilities should be pure functions whenever possible.
-- Include unit tests for all complex utility logic.
-- Avoid external dependencies in low-level utility functions.
+- Keep helpers narrowly scoped and easy to test.
+- Prefer pure functions unless a utility truly owns external I/O.
+- Update service docs if a utility becomes part of a public integration contract.
