@@ -1,17 +1,18 @@
-## Core Features
+# StackPulse
 
-- 🐋 **Whale Transfers**: Real-time monitoring of large STX movements.
-- 📜 **Contract Deployments**: Detection of new smart contracts.
-- 🎨 **NFT Mints**: Tracking of new digital assets.
+StackPulse is a Stacks monitoring workspace that combines Clarity contracts, Hiro Chainhook manifests, an Express ingestion server, a shared TypeScript package, and a Next.js frontend.
 
-## 🛡️ Backend Hardening (Milestone)
+## Workspace overview
 
-- **98 Signed Commits**: Professional history with SSH verified signatures.
-- **Tiered Access**: API Rate limiting, storage constraints, and priority messaging.
-- **Observability**: Structured winston logging and internal metrics service.
-- **Resilient Infrastructure**: Automated backups, cleanup tasks, and request timeouts.
+- `contracts/`: on-chain alerting, subscription, fee, and badge contracts
+- `chainhooks/`: event manifests for whale transfers, contract deployments, NFT mints, swaps, subscriptions, fees, and badges
+- `server/`: chainhook ingestion, user alert storage, health checks, metrics, notifications, and WebSocket delivery
+- `frontend/`: landing page, registration flow, dashboard, history, badges, and analytics pages
+- `shared/`: shared constants, types, and formatting helpers used across packages
 
-## Quick Start
+More detail lives in [docs/WORKSPACES.md](docs/WORKSPACES.md).
+
+## Quick start
 
 ```bash
 npm install
@@ -20,18 +21,28 @@ npm --prefix shared install
 npm --prefix frontend install
 ```
 
-## Common Commands
+## Common commands
 
 ```bash
-# Contract tests
+# Contract checks and tests
+npm run clarinet:check
 npm test
 
-# Contract checks
-npm run clarinet:check
-
-# API server
+# Backend
 npm --prefix server run dev
+npm --prefix server run build
 
 # Frontend
 npm --prefix frontend run dev
+npm --prefix frontend run lint
+
+# Shared package
+npm --prefix shared run build
 ```
+
+## Key docs
+
+- [docs/API.md](docs/API.md)
+- [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md)
+- [docs/CONTRACTS.md](docs/CONTRACTS.md)
+- [CONTRIBUTING.md](CONTRIBUTING.md)
