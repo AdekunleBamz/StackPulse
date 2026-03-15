@@ -1,80 +1,35 @@
 # StackPulse Smart Contracts
 
-This directory contains Clarity smart contracts for the StackPulse platform.
+This directory contains the current Clarity contract set plus earlier archived iterations.
 
-## Contracts
+## Active contracts
 
-### Alert Manager (alert-manager-v-j3.clar)
+- `stackpulse-v-j3.clar`: user registration, profile data, and subscription state
+- `alert-manager-v-j3.clar`: alert creation, toggling, limits, and trigger tracking
+- `fee-vault-v-j3.clar`: subscription fee collection and treasury flows
+- `reputation-badges-v-j3.clar`: badge and achievement logic
 
-Main contract for managing blockchain event alerts.
+## Archived contracts
 
-**Features:**
-- Create, update, delete alerts
-- Toggle alerts enabled/disabled
-- Track alert triggers
-- User tier-based limits
-- Admin moderation functions
+Older versions live in `contracts/archive/` and should only be changed when documenting or backtracking a deployment history.
 
-**Alert Types:**
-1. Whale Transfer - Large STX transfers
-2. Contract Deployment - New smart contracts
-3. NFT Mint - NFT minting events
-4. Token Launch - New token deployments
-5. Large Swap - DEX swaps above threshold
-6. Address Watch - Custom address monitoring
-
-### Fee Vault (fee-vault-v-j3.clar)
-
-Handles subscription fee payments and tracking.
-
-### Reputation Badges (reputation-badges-v-j3.clar)
-
-Manages user achievement badges based on activity.
-
-## Development
-
-### Requirements
-
-- Clarinet SDK
-- Node.js >= 18
-
-### Running Tests
+## Common commands
 
 ```bash
-clarinet test
-```
-
-### Check Contracts
-
-```bash
-clarinet check
-```
-
-### Console
-
-```bash
+npm run clarinet:check
+npm test
 clarinet console
 ```
 
-## Deployment
+## Deployment plans in this repo
 
-Contracts are deployed using deployment plans in `../deployments/`.
+Current and historical deployment plans live in `deployments/`, including:
 
-### Mainnet Deployment
+- `default.mainnet-plan.yaml`
+- `stackpulse-v2.mainnet-plan.yaml`
+- `v2-mainnet-plan.yaml`
+- `v-j3-mainnet-plan.yaml`
+- `v-j3-fix-plan.yaml`
+- `badges-v-j3.mainnet-plan.yaml`
 
-```bash
-clarinet deploy --mainnet --deployments-path deployments
-```
-
-### Testnet Deployment
-
-```bash
-clarinet deploy --testnet --deployments-path deployments
-```
-
-## Architecture
-
-The contracts follow a modular architecture:
-- Alert Manager handles alert CRUD
-- Fee Vault manages payments
-- Reputation Badges tracks achievements
+Use the plan that matches the contract version you are deploying and update `docs/DEPLOYMENT.md` when a new plan becomes the default.
