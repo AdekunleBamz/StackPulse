@@ -1,15 +1,20 @@
 # Frontend Components
 
-This directory contains the reusable React components for the StackPulse frontend.
+Reusable React components for the StackPulse frontend.
 
-## Structure
+## Major groups
 
-- `layout/`: Global layout components (Header, Footer, Navigation).
-- `ui/`: Core UI primitives (Buttons, Inputs, Modals, etc.).
-- `features/`: Complex components specific to application features (Alert cards, Transaction lists).
+- landing and marketing: `Header`, `Features`, `Pricing`, `LiveStats`
+- account and activity: `ConnectWallet`, `AlertHistory`, `BadgeShowcase`, `NotificationCenter`, `PriceTracker`
+- feedback and resilience: `Toast`, `LoadingSkeleton`, `EmptyState`, `ErrorBoundary`, `NetworkStatus`, `ConfirmDialog`
+- primitives: `ui/Button`, `ui/CopyButton`, `ui/TextField`
 
-## Best Practices
+## Export surface
 
-- Use TypeScript for all component props.
-- Follow the project's styling guidelines using vanilla CSS modules.
-- Ensure all interactive elements are accessible (aria-labels, focus states).
+`index.ts` re-exports the stable shared component set. Update it when a component becomes part of the package-level API.
+
+## Working rules
+
+- Keep props typed and focused.
+- Prefer composition over oversized components.
+- Preserve accessible labels, focus states, and keyboard behavior when editing interactive UI.
