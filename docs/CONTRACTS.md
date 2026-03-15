@@ -1,5 +1,16 @@
 # Smart Contract Documentation
 
+## Current repo note
+
+The active contract files in this repository are:
+
+- `contracts/stackpulse-v-j3.clar`
+- `contracts/alert-manager-v-j3.clar`
+- `contracts/fee-vault-v-j3.clar`
+- `contracts/reputation-badges-v-j3.clar`
+
+Earlier versions remain in `contracts/archive/`. When this document references older names or deployment eras, treat the files above as the current source of truth for ongoing maintenance work.
+
 ## Overview
 
 StackPulse consists of four main smart contracts deployed on the Stacks blockchain:
