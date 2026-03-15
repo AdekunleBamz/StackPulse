@@ -1,90 +1,43 @@
 # StackPulse Server
 
-Express.js API server for StackPulse blockchain alerting platform.
+TypeScript + Express backend for chainhook ingestion, alert persistence, metrics, health checks, and real-time notification delivery.
 
-## Features
-
-- RESTful API for alert management
-- WebSocket support for real-time notifications
-- Chainhook integration for blockchain event listening
-- Rate limiting and security middleware
-- Health check endpoints
-
-## Getting Started
-
-### Prerequisites
-
-- Node.js >= 18
-- npm or yarn
-
-### Installation
+## Commands
 
 ```bash
 npm install
+npm run dev
+npm run build
+npm start
+npm run register-hooks
 ```
 
-### Configuration
+## Main responsibilities
 
-Copy `.env.example` to `.env` and configure:
+- accept Hiro Chainhook payloads under `/api/v1/chainhooks/*`
+- store user preferences and alert metadata
+- expose health and stats endpoints for uptime checks
+- broadcast notifications over WebSocket and internal fan-out services
+
+## Environment highlights
 
 ```env
 PORT=3000
 NODE_ENV=development
-CHAINHOOKS_API_KEY=your_api_key
 CHAINHOOK_AUTH_TOKEN=your_webhook_secret
 DEPLOYER_ADDRESS=your_stacks_address
 LOG_LEVEL=info
+REDIS_URL=redis://optional
 ```
 
-### Development
+## Source of truth
 
-```bash
-npm run dev
-```
+`src/index.ts` is the current mounted server entrypoint. The files in `src/routes/` mirror route groups and are useful for modularization work, but they are not authoritative until they are wired into the live app.
 
-### Production
+## Nearby folders
 
-```bash
-npm run build
-npm start
-```
-
-## API Endpoints
-
-### Health
-
-- `GET /health` - Health check
-- `GET /health/ready` - Readiness check
-- `GET /health/live` - Liveness check
-
-### Alerts
-
-- `GET /api/alerts` - List alerts
-- `GET /api/alerts/:id` - Get alert
-- `POST /api/alerts` - Create alert
-- `PATCH /api/alerts/:id` - Update alert
-- `DELETE /api/alerts/:id` - Delete alert
-- `POST /api/alerts/:id/toggle` - Toggle alert
-
-### Analytics
-
-- `GET /api/analytics` - Get analytics data
-- `GET /api/analytics/summary` - Get analytics summary
-
-### Users
-
-- `GET /api/users` - List users
-- `GET /api/users/:address` - Get user
-
-### Metrics
-
-- `GET /api/metrics` - Server metrics
-- `GET /api/metrics/prometheus` - Prometheus format
-
-## WebSocket
-
-Connect to `/ws` for real-time notifications.
-
-## License
-
-MIT
+- `src/middleware/`: request guards, rate limiting, logging, validation, timeouts, and error handling
+- `src/services/`: analytics, cache, db, email, health, metrics, notifications, tier logic, and websocket delivery
+- `src/utils/`: logger, Stacks API helpers, and webhook signing utilities
+- `data/`: local persistence artifacts
+- `logs/`: runtime log output when enabled
