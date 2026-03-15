@@ -1,83 +1,35 @@
 # StackPulse Chainhooks
 
-This directory contains Hiro Chainhook configurations for monitoring Stacks blockchain events.
+This directory stores the Hiro Chainhook manifests used to forward Stacks activity into the StackPulse backend.
 
-## Chainhooks
+## Manifest inventory
 
-### 1. Whale Transfer (1-whale-transfer-alert.json)
+| File | Event family |
+|------|--------------|
+| `1-whale-transfer-alert.json` | Large STX transfers |
+| `2-new-contract-deployed.json` | New contract deployments |
+| `3-nft-mint-tracker.json` | NFT mint activity |
+| `4-token-launch-detector.json` | Token launch activity |
+| `5-large-swap-alert.json` | Large swap activity |
+| `6-user-subscription-created.json` | Subscription creation |
+| `7-alert-triggered.json` | Alert trigger events |
+| `8-fee-collected.json` | Fee collection |
+| `9-badge-earned.json` | Badge awards |
 
-Monitors large STX transfers exceeding a configurable threshold.
+## Working agreement
 
-**Use Case:** Alert when someone transfers large amounts of STX.
+- Keep manifest names aligned with the matching handlers in `server/src/index.ts`.
+- When a webhook target changes, update both the manifest and the backend route docs in `docs/API.md`.
+- Treat these JSON files as deployable assets, not generated output.
 
-### 2. Contract Deployed (2-new-contract-deployed.json)
+## Helpful scripts
 
-Monitors new smart contract deployments.
-
-**Use Case:** Track new DeFi protocols, NFTs, or other smart contracts.
-
-### 3. NFT Mint (3-nft-mint-tracker.json)
-
-Monitors NFT minting events.
-
-**Use Case:** Track popular NFT collections being minted.
-
-### 4. Token Launch (4-token-launch-detector.json)
-
-Monitors new token deployments.
-
-**Use Case:** Be the first to know about new token launches.
-
-### 5. Large Swap (5-large-swap-alert.json)
-
-Monitors large DEX swaps.
-
-**Use Case:** Track whale trading activity on DEXes.
-
-### 6. User Subscription (6-user-subscription-created.json)
-
-Monitors subscription creation events.
-
-**Use Case:** Track new premium users.
-
-### 7. Alert Triggered (7-alert-triggered.json)
-
-Monitors alert trigger events.
-
-**Use Case:** Track when alerts fire.
-
-### 8. Fee Collected (8-fee-collected.json)
-
-Monitors fee collection events.
-
-**Use Case:** Track revenue.
-
-### 9. Badge Earned (9-badge-earned.json)
-
-Monitors badge award events.
-
-**Use Case:** Track user achievements.
-
-## Configuration
-
-Each chainhook JSON file defines:
-- `chain`: The blockchain to monitor (Stacks)
-- `types`: Event types to filter
-- `constraints`: Additional filtering rules
-
-## Usage
-
-Deploy chainhooks to Hiro:
+The repo already contains helpers you can use while registering or checking hooks:
 
 ```bash
-# Install chainhook CLI
-cargo install chainhook
-
-# Deploy a chainhook
-chainhook deploy 1-whale-transfer-alert.json
+node scripts/check-chainhook-status.ts
+node scripts/register-chainhooks.ts
+node scripts/register-stackpulse-chainhooks-v-j3.ts
 ```
 
-## Requirements
-
-- Hiro API key
-- Chainhook CLI
+Adjust the runtime command to match your local toolchain if you run the TypeScript files directly.
