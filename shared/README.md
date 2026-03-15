@@ -1,40 +1,29 @@
 # StackPulse Shared
 
-Shared types, constants, and utilities for StackPulse frontend and server.
+Shared constants, types, and formatting helpers used by the frontend and server.
 
-## Contents
+## Package name
 
-### Types (`types/`)
+`@stackpulse/shared`
 
-- `alerts.ts` - Alert type definitions
-- `user.ts` - User type definitions
+## Exports
 
-### Constants (`constants/`)
+- `types/`: alert and user types
+- `constants/`: API URLs, contract names, rate limits, tiers, feature flags, and event constants
+- `utils/`: formatting helpers for amounts, dates, balances, durations, and IDs
 
-- `index.ts` - Application constants
-
-### Utils (`utils/`)
-
-- `format.ts` - Formatting utilities
-
-## Usage
-
-```typescript
-// Import types
-import { Alert, AlertType } from '@stackpulse/shared/types';
-
-// Import constants
-import { API_URLS, ALERT_TYPES } from '@stackpulse/shared/constants';
-
-// Import utilities
-import { formatStxAmount, truncateAddress } from '@stackpulse/shared/utils';
-```
-
-## Publishing
-
-To publish the shared package:
+## Common commands
 
 ```bash
-cd shared
-npm publish
+npm install
+npm run build
+npm test
+```
+
+## Example imports
+
+```typescript
+import { API_URLS, ALERT_TYPES, TIER_NAMES } from '@stackpulse/shared/constants';
+import { AlertType, UserTier } from '@stackpulse/shared/types';
+import { formatStxAmount, formatRelativeTime, truncateAddress } from '@stackpulse/shared/utils';
 ```
