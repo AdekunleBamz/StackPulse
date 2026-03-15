@@ -1,5 +1,43 @@
 # StackPulse API Documentation
 
+## Current mounted surface
+
+The live backend routes are currently defined in `server/src/index.ts`. The list below reflects the mounted paths in this repo today.
+
+### Health and status
+
+- `GET /health`
+- `GET /api/v1/ping`
+- `GET /api/v1/stats`
+- `GET /api/v1/chainhooks/status`
+
+### Users and alerts
+
+- `POST /api/v1/users`
+- `GET /api/users`
+- `GET /api/users/:address`
+- `DELETE /api/users/:address`
+- `GET /api/v1/users/:address/alerts`
+- `POST /api/v1/users/:address/alerts`
+- `DELETE /api/users/:address/alerts/:alertId`
+
+### Chainhook ingestion
+
+- `POST /api/v1/chainhooks/whale-transfer`
+- `POST /api/v1/chainhooks/contract-deployed`
+- `POST /api/v1/chainhooks/nft-mint`
+- `POST /api/v1/chainhooks/token-launch`
+- `POST /api/v1/chainhooks/`
+- `POST /api/v1/chainhooks/subscription-created`
+- `POST /api/v1/chainhooks/alert-triggered`
+- `POST /api/v1/chainhooks/fee-collected`
+- `POST /api/v1/chainhooks/badge-earned`
+- `POST /api/v1/chainhooks/new-subscription`
+- `POST /api/v1/chainhooks/subscription-upgrade`
+- `POST /api/v1/chainhooks/alert-created`
+
+The extracted router files under `server/src/routes/` are useful module references, but they are not the source of truth for mounted paths until they are wired into the server entrypoint.
+
 ## Base URLs
 
 - **Production**: `https://stackpulse-b8fw.onrender.com`
