@@ -49,21 +49,23 @@ export function formatRelativeTime(timestamp: number | Date): string {
   const now = new Date().getTime();
   const time = typeof timestamp === 'number' ? timestamp : timestamp.getTime();
   const diff = now - time;
+  const isFuture = diff < 0;
+  const absDiff = Math.abs(diff);
   
-  const seconds = Math.floor(diff / 1000);
+  const seconds = Math.floor(absDiff / 1000);
   const minutes = Math.floor(seconds / 60);
   const hours = Math.floor(minutes / 60);
   const days = Math.floor(hours / 24);
   const weeks = Math.floor(days / 7);
   const months = Math.floor(days / 30);
   
-  if (seconds < 60) return 'just now';
-  if (minutes < 60) return `${minutes}m ago`;
-  if (hours < 24) return `${hours}h ago`;
-  if (days < 7) return `${days}d ago`;
-  if (weeks < 4) return `${weeks}w ago`;
-  if (months < 12) return `${months}mo ago`;
-  return `${Math.floor(days / 365)}y ago`;
+  if (seconds < 60) return isFuture ? 'in a moment' : 'just now';
+  if (minutes < 60) return isFuture ? `in ${minutes}m` : `${minutes}m ago`;
+  if (hours < 24) return isFuture ? `in ${hours}h` : `${hours}h ago`;
+  if (days < 7) return isFuture ? `in ${days}d` : `${days}d ago`;
+  if (weeks < 4) return isFuture ? `in ${weeks}w` : `${weeks}w ago`;
+  if (months < 12) return isFuture ? `in ${months}mo` : `${months}mo ago`;
+  return isFuture ? `in ${Math.floor(days / 365)}y` : `${Math.floor(days / 365)}y ago`;
 }
 
 /**
