@@ -5,6 +5,7 @@
 
 import { Request, Response, NextFunction } from 'express';
 import logger from '../utils/logger';
+import MetricsService from '../services/metrics';
 
 export interface RequestLogOptions {
   logBody?: boolean;
@@ -30,7 +31,7 @@ export function requestLogger(options: RequestLogOptions = defaultOptions) {
       return next();
     }
 
-    const startTime = Date.now();
+    const startTime = process.hrtime();
     const requestId = Math.random().toString(36).substring(7);
 
     // Log request
@@ -46,11 +47,18 @@ export function requestLogger(options: RequestLogOptions = defaultOptions) {
     // Capture response
     const originalSend = res.send;
     res.send = function (body: any) {
-      const duration = Date.now() - startTime;
+      const diff = process.hrtime(startTime);
+      const duration = (diff[0] * 1e3 + diff[1] * 1e-6).toFixed(2);
       
-      const level = res.statusCode >= 500 ? 'error' : res.statusCode >= 400 ? 'warn' : 'info';
+      const logLevel = getLogLevel(res.statusCode);
       
-      logger.log(level, 'Request completed', {
+      MetricsService.recordMetric('http_request_duration', parseFloat(duration), {
+        method: req.method,
+        path: req.baseUrl + req.path,
+        status: res.statusCode.toString()
+      });
+
+      logger.log(logLevel, 'Request completed', {
         requestId,
         method: req.method,
         path: req.path,
