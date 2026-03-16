@@ -4,16 +4,17 @@ interface EmptyStateProps {
   icon: ComponentType<any>;
   title: string;
   description: string;
+  className?: string;
   action?: {
     label: string;
     onClick: () => void;
   };
 }
 
-export default function EmptyState({ icon: Icon, title, description, action }: EmptyStateProps) {
+export default function EmptyState({ icon: Icon, title, description, action, className = "" }: EmptyStateProps) {
   return (
     <div 
-      className="flex flex-col items-center justify-center py-16 px-4 text-center"
+      className={`flex flex-col items-center justify-center py-16 px-4 text-center ${className}`}
       role="status"
       aria-labelledby="empty-state-title"
     >
