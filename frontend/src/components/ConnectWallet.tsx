@@ -5,15 +5,13 @@ import { Wallet, LogOut, ChevronDown } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import Button from '@/components/ui/Button';
 import CopyButton from '@/components/ui/CopyButton';
+import { truncateAddress } from '@shared/utils/format';
 
 export default function ConnectWallet() {
   const { isConnected, address, network, connect, disconnect, switchNetwork } = useWallet();
   const [showDropdown, setShowDropdown] = useState(false);
   const wrapperRef = useRef<HTMLDivElement>(null);
 
-  const truncateAddress = (addr: string) => {
-    return `${addr.slice(0, 6)}...${addr.slice(-4)}`;
-  };
 
   useEffect(() => {
     if (!showDropdown) return;
@@ -48,6 +46,7 @@ export default function ConnectWallet() {
         variant="primary"
         size="lg"
         leftIcon={<Wallet className="w-5 h-5" />}
+        aria-label="Connect your Stacks wallet"
       >
         Connect Wallet
       </Button>
