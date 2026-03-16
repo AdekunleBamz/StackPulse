@@ -18,6 +18,15 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
       - name: Setup Clarinet
         uses: hirosystems/clarinet-action@v1
         with:
@@ -27,7 +36,7 @@ jobs:
         run: clarinet check
 
       - name: Run contract tests
-        run: clarinet test
+        run: npm test
 
       - name: Analyze contracts
         run: |
