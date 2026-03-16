@@ -31,6 +31,7 @@ import {
   NotificationPayload
 } from './services/notifications';
 import { tieredApiLimiter } from './middleware/rateLimiter';
+import requestLogger from './middleware/requestLogger';
 import db from './services/db';
 import { clearOldData } from './services/analytics';
 
@@ -63,6 +64,7 @@ const PORT = process.env.PORT || 3000;
 app.use(helmet());
 app.use(cors());
 app.use(express.json({ limit: '10mb' }));
+app.use(requestLogger());
 
 // Optional authentication middleware for chainhook endpoints
 // Note: Hiro Platform chainhooks don't always send auth headers, so we make this optional
