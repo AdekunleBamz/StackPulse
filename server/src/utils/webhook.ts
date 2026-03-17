@@ -4,6 +4,7 @@
  */
 
 import crypto from 'crypto';
+import logger from './logger';
 
 interface WebhookPayload {
   event: string;
@@ -160,5 +161,4 @@ export async function sendWebhook(
     });
     return false;
   }
-}
 }
