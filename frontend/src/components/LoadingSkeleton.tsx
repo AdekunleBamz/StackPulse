@@ -16,9 +16,9 @@ export default function LoadingSkeleton({
   variant = 'rectangular',
   width,
   height,
-  animation = 'pulse'
+  animation = 'wave'
 }: SkeletonProps) {
-  const baseClasses = 'bg-gray-700';
+  const baseClasses = animation === 'wave' ? '' : 'bg-gray-800';
   
   const variantClasses = {
     text: 'rounded',
@@ -28,7 +28,7 @@ export default function LoadingSkeleton({
   
   const animationClasses = {
     pulse: 'animate-pulse',
-    wave: 'animate-pulse',
+    wave: 'shimmer',
     none: ''
   };
   

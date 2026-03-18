@@ -17,6 +17,7 @@ export { default as NotificationCenter } from './NotificationCenter';
 export { default as PriceTracker } from './PriceTracker';
 export { default as Pricing } from './Pricing';
 export { default as Toast } from './Toast';
+export { default as Tooltip } from './ui/Tooltip';
 
 // Custom Components
 export { default as ErrorBoundary } from './ErrorBoundary';
