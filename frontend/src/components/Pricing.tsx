@@ -445,8 +445,12 @@ export default function Pricing() {
             
             <div className="text-center mb-10">
               {isRegistered && (
-                <div className="mb-4 inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-bold uppercase tracking-wider">
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                <div 
+                  className="mb-4 inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-bold uppercase tracking-wider"
+                  role="status"
+                  aria-label="Account is active"
+                >
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" aria-hidden="true" />
                   Account Active
                 </div>
               )}
@@ -487,7 +491,7 @@ export default function Pricing() {
                 <div className="grid md:grid-cols-2 gap-4">
                   <div className={`p-4 rounded-2xl border transition-all ${isConnected ? 'bg-emerald-500/5 border-emerald-500/20' : 'bg-gray-800/40 border-gray-700/50 hover:border-gray-600'}`}>
                     <div className="flex items-center gap-3 mb-1">
-                      <Wallet className={`w-4 h-4 ${isConnected ? 'text-emerald-400' : 'text-purple-400'}`} />
+                      <Wallet className={`w-4 h-4 ${isConnected ? 'text-emerald-400' : 'text-purple-400'}`} aria-hidden="true" />
                       <span className="text-white text-sm font-bold">1. Wallet</span>
                     </div>
                     {isConnected ? (
@@ -502,11 +506,13 @@ export default function Pricing() {
                       <span className={`text-sm font-bold ${username.length >= 3 ? 'text-purple-400' : 'text-blue-400'}`}>2. Username</span>
                     </div>
                     <input
+                      id="username"
                       type="text"
                       value={username}
                       onChange={(e) => setUsername(e.target.value.toLowerCase())}
                       placeholder="e.g. Satoshi"
                       className="w-full bg-transparent border-none p-0 text-white text-xs font-medium focus:ring-0 placeholder-gray-500"
+                      aria-label="Enter username"
                     />
                   </div>
                 </div>
@@ -516,13 +522,15 @@ export default function Pricing() {
                   <h4 className="text-[10px] font-black uppercase tracking-widest text-gray-500 text-center mb-1">Notification Channels (Optional)</h4>
                   <div className="grid gap-3">
                     <div className="relative group/input">
-                      <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500 transition-colors group-focus-within/input:text-purple-400" />
+                      <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500 transition-colors group-focus-within/input:text-purple-400" aria-hidden="true" />
                       <input
+                        id="email"
                         type="email"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         placeholder="Email for alerts"
                         className="w-full bg-gray-900/50 border border-gray-700/50 rounded-xl pl-10 pr-4 py-2 text-sm text-white focus:outline-none focus:border-purple-500/50 transition-all"
+                        aria-label="Email for notifications"
                       />
                     </div>
                   </div>
@@ -548,7 +556,7 @@ export default function Pricing() {
               <div className="max-w-2xl mx-auto">
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                   <div className="bg-gray-800/30 rounded-2xl p-4 text-center border border-emerald-500/20">
-                    <div className="w-10 h-10 bg-emerald-500/10 rounded-xl flex items-center justify-center mx-auto mb-3">
+                    <div className="w-10 h-10 bg-emerald-500/10 rounded-xl flex items-center justify-center mx-auto mb-3" aria-hidden="true">
                       <Wallet className="w-5 h-5 text-emerald-500" />
                     </div>
                     <p className="text-white text-xs font-bold mb-1">Wallet</p>
@@ -565,7 +573,7 @@ export default function Pricing() {
                       onClick={() => openEditChannel(chan.id as any)}
                       className="group bg-gray-800/30 rounded-2xl p-4 text-center border border-gray-700/50 hover:border-purple-500/30 hover:bg-gray-800/50 transition-all active:scale-95"
                     >
-                      <div className={`w-10 h-10 ${chan.value ? 'bg-emerald-500/10' : chan.color} rounded-xl flex items-center justify-center mx-auto mb-3 transition-colors`}>
+                      <div className={`w-10 h-10 ${chan.value ? 'bg-emerald-500/10' : chan.color} rounded-xl flex items-center justify-center mx-auto mb-3 transition-colors`} aria-hidden="true">
                         <chan.icon className={`w-5 h-5 ${chan.value ? 'text-emerald-500' : chan.iconColor}`} />
                       </div>
                       <p className="text-white text-xs font-bold mb-1">{chan.label}</p>
@@ -608,7 +616,7 @@ export default function Pricing() {
               onClick={(e) => e.stopPropagation()}
             >
               <div className="text-center mb-6">
-                <div className="w-16 h-16 bg-purple-500/10 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                <div className="w-16 h-16 bg-purple-500/10 rounded-2xl flex items-center justify-center mx-auto mb-4" aria-hidden="true">
                   {editingChannel === 'email' && <Mail className="w-8 h-8 text-purple-400" />}
                   {editingChannel === 'discord' && <MessageCircle className="w-8 h-8 text-purple-400" />}
                   {editingChannel === 'telegram' && <Send className="w-8 h-8 text-purple-400" />}
@@ -620,6 +628,7 @@ export default function Pricing() {
               </div>
 
               <input
+                id="edit-channel-input"
                 type={editingChannel === 'email' ? 'email' : 'text'}
                 value={tempValue}
                 onChange={(e) => setTempValue(e.target.value)}
@@ -630,6 +639,7 @@ export default function Pricing() {
                 }
                 className="w-full bg-gray-800 border border-gray-700 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-purple-500 mb-6 font-medium"
                 autoFocus
+                aria-label={`Enter your ${editingChannel}`}
               />
 
               <div className="grid grid-cols-2 gap-3">

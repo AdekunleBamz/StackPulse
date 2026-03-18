@@ -72,6 +72,8 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button(
         sizeClasses[size],
         className
       )}
+      aria-busy={isLoading}
+      aria-label={isLoading ? `Loading ${props['aria-label'] || ''}` : props['aria-label']}
       {...props}
     >
       {isLoading ? <Spinner /> : leftIcon}
