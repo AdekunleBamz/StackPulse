@@ -60,6 +60,9 @@ router.use((req: Request, res: Response, next) => {
   next();
 });
 
+// Apply route-level rate limiting for all metrics endpoints.
+router.use(metricsLimiter);
+
 /**
  * GET /api/metrics
  * Get server and system metrics
