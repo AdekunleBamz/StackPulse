@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useId } from 'react';
 
 interface TooltipProps {
   content: React.ReactNode;
@@ -17,6 +17,7 @@ export default function Tooltip({
 }: TooltipProps) {
   const [isVisible, setIsVisible] = useState(false);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const id = useId();
 
   const showTooltip = () => {
     timeoutRef.current = setTimeout(() => {
@@ -61,14 +62,17 @@ export default function Tooltip({
       onFocus={showTooltip}
       onBlur={hideTooltip}
     >
-      {children}
+      {React.cloneElement(children as React.ReactElement<any>, {
+        'aria-describedby': isVisible ? id : undefined,
+      })}
       {isVisible && (
         <div 
+          id={id}
           className={`absolute z-50 px-2 py-1 text-xs font-medium text-white bg-gray-800 rounded shadow-lg whitespace-nowrap pointer-events-none transition-opacity duration-200 ${positionClasses[position]}`}
           role="tooltip"
         >
           {content}
-          <div className={`absolute border-4 border-transparent ${arrowClasses[position]}`} />
+          <div className={`absolute border-4 border-transparent ${arrowClasses[position]}`} aria-hidden="true" />
         </div>
       )}
     </div>
