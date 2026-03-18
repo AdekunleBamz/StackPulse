@@ -431,399 +431,312 @@ export default function Pricing() {
     if (channel === 'email') setTempValue(email);
     if (channel === 'discord') setTempValue(discord);
     if (channel === 'telegram') setTempValue(telegram);
-  };
-
-  return (
-    <section className="py-20 px-4 bg-gray-900/50" id="pricing">
-      <div className="max-w-6xl mx-auto">
+  };  return (
+    <section className="py-24 px-4 bg-[#030712] relative overflow-hidden" id="pricing">
+      {/* Background glow */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-4xl h-96 bg-purple-500/5 blur-[120px] pointer-events-none" />
+      
+      <div className="max-w-6xl mx-auto relative z-10">
         {/* Registration Card - Always at top */}
-        <div className="mb-16">
-          <div className="bg-gradient-to-r from-purple-900/50 to-blue-900/50 rounded-2xl p-8 border border-purple-500/30">
-            <div className="text-center mb-8">
-              <h2 className="text-3xl font-bold text-white mb-2">
-                {isRegistered ? '✓ You\'re Registered!' : 'Get Started with StackPulse'}
+        <div className="mb-20">
+          <div className="bg-gradient-to-br from-gray-900/80 via-gray-900 to-indigo-950/20 rounded-3xl p-8 md:p-12 border border-gray-800 shadow-2xl backdrop-blur-xl relative overflow-hidden group">
+            {/* Subtle light streak */}
+            <div className="absolute -inset-x-full top-0 h-px bg-gradient-to-r from-transparent via-purple-500/50 to-transparent group-hover:inset-x-full transition-all duration-1000" />
+            
+            <div className="text-center mb-10">
+              {isRegistered && (
+                <div className="mb-4 inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-bold uppercase tracking-wider">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                  Account Active
+                </div>
+              )}
+              <h2 className="text-3xl md:text-4xl font-extrabold text-white mb-4 tracking-tight">
+                {isRegistered ? `Welcome, ${username}!` : 'Start Monitoring Stacks'}
               </h2>
-              <p className="text-gray-400">
+              <p className="text-gray-400 text-lg max-w-xl mx-auto leading-relaxed">
                 {isRegistered 
-                  ? 'Manage your notification channels and subscription below'
-                  : 'Connect your wallet and register to start receiving blockchain alerts'
+                  ? 'Manage your account, notification channels, and active subscription below.'
+                  : 'Connect your wallet and register a username to begin receiving real-time blockchain alerts.'
                 }
               </p>
               
               {/* Current Plan Badge - Show when registered */}
               {isRegistered && (
-                <div className="mt-4 inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gray-800 border border-gray-700">
-                  <span className="text-gray-400">Current Plan:</span>
-                  <span className={`font-bold ${
-                    currentTier === 0 ? 'text-gray-300' :
-                    currentTier === 1 ? 'text-blue-400' :
-                    currentTier === 2 ? 'text-purple-400' :
-                    'text-yellow-400'
+                <div className="mt-8 inline-flex items-center gap-3 px-5 py-2.5 rounded-2xl bg-gray-800/40 border border-gray-700/50 backdrop-blur-sm">
+                  <span className="text-gray-400 text-sm font-medium">Subscription:</span>
+                  <span className={`text-sm font-bold px-3 py-1 rounded-lg ${
+                    currentTier === 0 ? 'bg-gray-700 text-gray-300' :
+                    currentTier === 1 ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30' :
+                    currentTier === 2 ? 'bg-purple-500/20 text-purple-400 border border-purple-500/30' :
+                    'bg-amber-500/20 text-amber-400 border border-amber-500/30'
                   }`}>
                     {tierNames[currentTier] || 'Free'}
                   </span>
                   {currentTier === 0 && (
-                    <span className="text-xs text-gray-500 ml-2">• Upgrade for more features!</span>
+                    <Link href="#pricing-tiers" className="text-xs text-purple-400 hover:text-purple-300 font-bold ml-1 transition-colors">
+                      Upgrade Now →
+                    </Link>
                   )}
                 </div>
               )}
             </div>
 
             {!isRegistered ? (
-              <div className="max-w-2xl mx-auto space-y-6">
-                {/* Step 1: Connect Wallet */}
-                <div className="flex items-center gap-4 bg-gray-800/50 rounded-xl p-4">
-                  <div className={`w-12 h-12 rounded-full flex items-center justify-center ${isConnected ? 'bg-green-600' : 'bg-purple-600'}`}>
-                    <Wallet className="w-6 h-6 text-white" />
+              <div className="max-w-xl mx-auto space-y-4">
+                {/* Step 1: Wallet & Username Combined for cleaner look */}
+                <div className="grid md:grid-cols-2 gap-4">
+                  <div className={`p-4 rounded-2xl border transition-all ${isConnected ? 'bg-emerald-500/5 border-emerald-500/20' : 'bg-gray-800/40 border-gray-700/50 hover:border-gray-600'}`}>
+                    <div className="flex items-center gap-3 mb-1">
+                      <Wallet className={`w-4 h-4 ${isConnected ? 'text-emerald-400' : 'text-purple-400'}`} />
+                      <span className="text-white text-sm font-bold">1. Wallet</span>
+                    </div>
+                    {isConnected ? (
+                      <p className="text-emerald-400 text-xs font-mono font-medium truncate">{address?.slice(0, 10)}...{address?.slice(-6)}</p>
+                    ) : (
+                      <button onClick={connect} className="text-purple-400 text-xs font-bold hover:underline">Connect Wallet →</button>
+                    )}
                   </div>
-                  <div className="flex-1">
-                    <h3 className="text-white font-semibold">1. Connect Wallet</h3>
-                    <p className="text-gray-400 text-sm">
-                      {isConnected ? `Connected: ${address?.slice(0, 8)}...${address?.slice(-6)}` : 'Connect your Stacks wallet'}
-                    </p>
-                  </div>
-	                  {!isConnected && (
-	                    <Button
-	                      onClick={connect}
-	                      variant="primary"
-	                      size="sm"
-	                    >
-	                      Connect
-	                    </Button>
-	                  )}
-                  {isConnected && <Check className="w-6 h-6 text-green-500" />}
-                </div>
-
-                {/* Step 2: Username */}
-                <div className="flex items-center gap-4 bg-gray-800/50 rounded-xl p-4">
-                  <div className="w-12 h-12 rounded-full bg-blue-600 flex items-center justify-center">
-                    <span className="text-white text-xl">@</span>
-                  </div>
-	                  <div className="flex-1">
-	                    <h3 className="text-white font-semibold">2. Choose Username</h3>
-	                    <input
-	                      type="text"
-	                      value={username}
-	                      onChange={(e) => setUsername(e.target.value.toLowerCase())}
-	                      placeholder="Enter your username"
-	                      maxLength={32}
-	                      autoComplete="username"
-	                      spellCheck={false}
-	                      disabled={!isConnected}
-	                      className="mt-1 w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-white placeholder-gray-400 focus:outline-none focus:border-purple-500 disabled:opacity-60 disabled:cursor-not-allowed"
-	                    />
-	                    <p className="mt-1 text-xs text-gray-500">
-	                      3–32 characters, letters/numbers/underscores only
-	                    </p>
-	                  </div>
-	                </div>
-
-                {/* Optional: Email */}
-                <div className="flex items-center gap-4 bg-gray-800/50 rounded-xl p-4">
-                  <div className="w-12 h-12 rounded-full bg-gray-600 flex items-center justify-center">
-                    <Mail className="w-6 h-6 text-white" />
-                  </div>
-                  <div className="flex-1">
-                    <h3 className="text-white font-semibold">Email <span className="text-gray-500 text-sm">(optional)</span></h3>
-	                    <input
-	                      type="email"
-	                      value={email}
-	                      onChange={(e) => setEmail(e.target.value)}
-	                      placeholder="your@email.com"
-	                      disabled={!isConnected}
-	                      className="mt-1 w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-white placeholder-gray-400 focus:outline-none focus:border-purple-500 disabled:opacity-60 disabled:cursor-not-allowed"
-	                    />
+                  
+                  <div className={`p-4 rounded-2xl border transition-all ${username.length >= 3 ? 'bg-purple-500/5 border-purple-500/20' : 'bg-gray-800/40 border-gray-700/50 hover:border-gray-600'}`}>
+                    <div className="flex items-center gap-3 mb-1">
+                      <span className={`text-sm font-bold ${username.length >= 3 ? 'text-purple-400' : 'text-blue-400'}`}>2. Username</span>
+                    </div>
+                    <input
+                      type="text"
+                      value={username}
+                      onChange={(e) => setUsername(e.target.value.toLowerCase())}
+                      placeholder="e.g. Satoshi"
+                      className="w-full bg-transparent border-none p-0 text-white text-xs font-medium focus:ring-0 placeholder-gray-500"
+                    />
                   </div>
                 </div>
 
-                {/* Optional: Discord */}
-                <div className="flex items-center gap-4 bg-gray-800/50 rounded-xl p-4">
-                  <div className="w-12 h-12 rounded-full bg-indigo-600 flex items-center justify-center">
-                    <MessageCircle className="w-6 h-6 text-white" />
-                  </div>
-                  <div className="flex-1">
-                    <h3 className="text-white font-semibold">Discord <span className="text-gray-500 text-sm">(optional)</span></h3>
-	                    <input
-	                      type="text"
-	                      value={discord}
-	                      onChange={(e) => setDiscord(e.target.value)}
-	                      placeholder="username#1234"
-	                      disabled={!isConnected}
-	                      className="mt-1 w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-white placeholder-gray-400 focus:outline-none focus:border-purple-500 disabled:opacity-60 disabled:cursor-not-allowed"
-	                    />
-                  </div>
-                </div>
-
-                {/* Optional: Telegram */}
-                <div className="flex items-center gap-4 bg-gray-800/50 rounded-xl p-4">
-                  <div className="w-12 h-12 rounded-full bg-sky-500 flex items-center justify-center">
-                    <Send className="w-6 h-6 text-white" />
-                  </div>
-                  <div className="flex-1">
-                    <h3 className="text-white font-semibold">Telegram <span className="text-gray-500 text-sm">(optional)</span></h3>
-	                    <input
-	                      type="text"
-	                      value={telegram}
-	                      onChange={(e) => setTelegram(e.target.value)}
-	                      placeholder="@username"
-	                      disabled={!isConnected}
-	                      className="mt-1 w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-white placeholder-gray-400 focus:outline-none focus:border-purple-500 disabled:opacity-60 disabled:cursor-not-allowed"
-	                    />
+                {/* Optional Channels */}
+                <div className="p-5 rounded-2xl bg-gray-800/20 border border-gray-700/30 space-y-4">
+                  <h4 className="text-[10px] font-black uppercase tracking-widest text-gray-500 text-center mb-1">Notification Channels (Optional)</h4>
+                  <div className="grid gap-3">
+                    <div className="relative group/input">
+                      <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500 transition-colors group-focus-within/input:text-purple-400" />
+                      <input
+                        type="email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        placeholder="Email for alerts"
+                        className="w-full bg-gray-900/50 border border-gray-700/50 rounded-xl pl-10 pr-4 py-2 text-sm text-white focus:outline-none focus:border-purple-500/50 transition-all"
+                      />
+                    </div>
                   </div>
                 </div>
 
                 {/* Register Button */}
-	                <Button
-	                  onClick={() => handleRegister(0)}
-	                  disabled={!isConnected || !username.trim() || isLoading}
-	                  variant="primary"
-	                  size="lg"
-	                  className="w-full font-bold"
-	                  isLoading={isLoading}
-	                >
-	                  Register Free on StackPulse
-	                </Button>
+                <Button
+                  onClick={() => handleRegister(0)}
+                  disabled={!isConnected || !username.trim() || isLoading}
+                  variant="primary"
+                  size="lg"
+                  className="w-full h-14 rounded-2xl font-black text-lg shadow-xl shadow-purple-600/20 hover:shadow-purple-600/30 active:scale-[0.98] transition-all"
+                  isLoading={isLoading}
+                >
+                  Create My Free Account
+                </Button>
+                <p className="text-center text-[10px] text-gray-500 font-medium">
+                  By registering, you agree to our Terms and receive basic monitoring features.
+                </p>
               </div>
             ) : (
               /* Registered user - show notification settings */
               <div className="max-w-2xl mx-auto">
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                  <div className="bg-gray-800/50 rounded-xl p-4 text-center">
-                    <Wallet className="w-8 h-8 text-green-500 mx-auto mb-2" />
-                    <p className="text-white text-sm font-semibold">Wallet</p>
-                    <p className="text-green-400 text-xs">Connected</p>
+                  <div className="bg-gray-800/30 rounded-2xl p-4 text-center border border-emerald-500/20">
+                    <div className="w-10 h-10 bg-emerald-500/10 rounded-xl flex items-center justify-center mx-auto mb-3">
+                      <Wallet className="w-5 h-5 text-emerald-500" />
+                    </div>
+                    <p className="text-white text-xs font-bold mb-1">Wallet</p>
+                    <p className="text-emerald-400 text-[10px] font-mono">Connected</p>
                   </div>
-	                  <button
-	                    type="button"
-	                    onClick={() => openEditChannel('email')}
-	                    className="bg-gray-800/50 rounded-xl p-4 text-center cursor-pointer hover:bg-gray-700/50 hover:border-purple-500 border border-transparent transition-all transform hover:scale-105 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400/90"
-	                    aria-label="Edit email notification channel"
-	                  >
-	                    <Mail className={`w-8 h-8 mx-auto mb-2 ${email ? 'text-green-500' : 'text-gray-400'}`} />
-	                    <p className="text-white text-sm font-semibold">Email</p>
-	                    <p className={`text-xs ${email ? 'text-green-400' : 'text-gray-400'}`}>
-	                      {email ? email.slice(0, 15) + (email.length > 15 ? '...' : '') : 'Click to add'}
-	                    </p>
-	                  </button>
-	                  <button
-	                    type="button"
-	                    onClick={() => openEditChannel('discord')}
-	                    className="bg-gray-800/50 rounded-xl p-4 text-center cursor-pointer hover:bg-gray-700/50 hover:border-purple-500 border border-transparent transition-all transform hover:scale-105 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400/90"
-	                    aria-label="Edit Discord notification channel"
-	                  >
-	                    <MessageCircle className={`w-8 h-8 mx-auto mb-2 ${discord ? 'text-green-500' : 'text-gray-400'}`} />
-	                    <p className="text-white text-sm font-semibold">Discord</p>
-	                    <p className={`text-xs ${discord ? 'text-green-400' : 'text-gray-400'}`}>
-	                      {discord || 'Click to add'}
-	                    </p>
-	                  </button>
-	                  <button
-	                    type="button"
-	                    onClick={() => openEditChannel('telegram')}
-	                    className="bg-gray-800/50 rounded-xl p-4 text-center cursor-pointer hover:bg-gray-700/50 hover:border-purple-500 border border-transparent transition-all transform hover:scale-105 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400/90"
-	                    aria-label="Edit Telegram notification channel"
-	                  >
-	                    <Send className={`w-8 h-8 mx-auto mb-2 ${telegram ? 'text-green-500' : 'text-gray-400'}`} />
-	                    <p className="text-white text-sm font-semibold">Telegram</p>
-	                    <p className={`text-xs ${telegram ? 'text-green-400' : 'text-gray-400'}`}>
-	                      {telegram || 'Click to add'}
-	                    </p>
-	                  </button>
+                  {[
+                    { id: 'email', icon: Mail, value: email, label: 'Email', color: 'bg-blue-500/10', iconColor: 'text-blue-400' },
+                    { id: 'discord', icon: MessageCircle, value: discord, label: 'Discord', color: 'bg-indigo-500/10', iconColor: 'text-indigo-400' },
+                    { id: 'telegram', icon: Send, value: telegram, label: 'Telegram', color: 'bg-sky-500/10', iconColor: 'text-sky-400' },
+                  ].map((chan) => (
+                    <button
+                      key={chan.id}
+                      type="button"
+                      onClick={() => openEditChannel(chan.id as any)}
+                      className="group bg-gray-800/30 rounded-2xl p-4 text-center border border-gray-700/50 hover:border-purple-500/30 hover:bg-gray-800/50 transition-all active:scale-95"
+                    >
+                      <div className={`w-10 h-10 ${chan.value ? 'bg-emerald-500/10' : chan.color} rounded-xl flex items-center justify-center mx-auto mb-3 transition-colors`}>
+                        <chan.icon className={`w-5 h-5 ${chan.value ? 'text-emerald-500' : chan.iconColor}`} />
+                      </div>
+                      <p className="text-white text-xs font-bold mb-1">{chan.label}</p>
+                      <p className={`text-[10px] font-medium truncate ${chan.value ? 'text-emerald-400' : 'text-gray-500 italic'}`}>
+                        {chan.value ? (chan.value.slice(0, 12) + (chan.value.length > 12 ? '..' : '')) : 'Add now'}
+                      </p>
+                    </button>
+                  ))}
                 </div>
 
-                {/* Edit Channel Modal */}
-	                {editingChannel && (
-	                  <div
-	                    className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4"
-	                    onClick={() => {
-	                      setEditingChannel(null);
-	                      setTempValue('');
-	                    }}
-	                  >
-	                    <div
-	                      className="bg-gray-800 rounded-2xl p-6 max-w-md w-full border border-purple-500/30"
-	                      role="dialog"
-	                      aria-modal="true"
-	                      aria-labelledby={editChannelTitleId}
-	                      onClick={(e) => e.stopPropagation()}
-	                    >
-	                      <h3 id={editChannelTitleId} className="text-xl font-bold text-white mb-4">
-	                        {editingChannel === 'email' && '📧 Add Email'}
-	                        {editingChannel === 'discord' && '💬 Add Discord'}
-	                        {editingChannel === 'telegram' && '✈️ Add Telegram'}
-	                      </h3>
-	                      <input
-	                        type={editingChannel === 'email' ? 'email' : 'text'}
-	                        value={tempValue}
-	                        onChange={(e) => setTempValue(e.target.value)}
-	                        placeholder={
-	                          editingChannel === 'email' ? 'your@email.com' :
-	                          editingChannel === 'discord' ? 'username#1234' :
-	                          '@username'
-	                        }
-	                        aria-label={
-	                          editingChannel === 'email'
-	                            ? 'Email address'
-	                            : editingChannel === 'discord'
-	                              ? 'Discord username or webhook'
-	                              : 'Telegram username'
-	                        }
-	                        autoComplete={editingChannel === 'email' ? 'email' : 'off'}
-	                        className="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-3 text-white placeholder-gray-400 focus:outline-none focus:border-purple-500 mb-4"
-	                        autoFocus
-	                      />
-	                      <div className="flex gap-3">
-	                        <Button
-	                          onClick={() => {
-	                            setEditingChannel(null);
-	                            setTempValue('');
-	                          }}
-	                          variant="secondary"
-	                          className="flex-1"
-	                        >
-	                          Cancel
-	                        </Button>
-	                        <Button
-	                          onClick={saveChannelUpdate}
-	                          disabled={isSaving}
-	                          variant="primary"
-	                          className="flex-1"
-	                          isLoading={isSaving}
-	                        >
-	                          Save
-	                        </Button>
-	                      </div>
-                    </div>
-                  </div>
-                )}
-
-                {/* What's Next Section - Show after registration */}
-                <div className="mt-8 pt-8 border-t border-gray-700">
-                  <h3 className="text-xl font-bold text-white mb-4 text-center">🚀 What&apos;s Next?</h3>
-                  <div className="grid md:grid-cols-3 gap-4">
-                    <div className="bg-gray-800/30 rounded-xl p-4 border border-gray-700">
-                      <div className="text-2xl mb-2">1️⃣</div>
-                      <h4 className="text-white font-semibold mb-1">Set Up Notifications</h4>
-                      <p className="text-gray-400 text-sm">Add your email, Discord, or Telegram above to receive alerts</p>
-                    </div>
-                    <div className="bg-gray-800/30 rounded-xl p-4 border border-gray-700">
-                      <div className="text-2xl mb-2">2️⃣</div>
-                      <h4 className="text-white font-semibold mb-1">Create Alerts</h4>
-	                      <p className="text-gray-400 text-sm">
-	                        Go to{' '}
-	                        <Link href="/dashboard" className="text-purple-400 hover:underline">
-	                          Dashboard
-	                        </Link>{' '}
-	                        to create custom blockchain alerts
-	                      </p>
-	                    </div>
-                    <div className="bg-gray-800/30 rounded-xl p-4 border border-gray-700">
-                      <div className="text-2xl mb-2">3️⃣</div>
-                      <h4 className="text-white font-semibold mb-1">
-                        {currentTier === 0 ? 'Upgrade Plan' : 'Monitor Activity'}
-                      </h4>
-                      <p className="text-gray-400 text-sm">
-                        {currentTier === 0 
-                          ? 'Unlock more alerts and features with Pro or Premium'
-                          : 'View your alerts history and blockchain activity'
-                        }
-                      </p>
-                    </div>
-                  </div>
-                  
-                  <div className="mt-6 text-center">
-	                    <Link
-	                      href="/dashboard"
-	                      className="inline-flex items-center gap-2 px-6 py-3 bg-purple-600 hover:bg-purple-500 text-white rounded-xl font-semibold transition-all cursor-pointer"
-	                    >
-	                      Go to Dashboard →
-	                    </Link>
-                  </div>
+                {/* Dashboard Shortcut */}
+                <div className="mt-8 flex justify-center">
+                  <Link
+                    href="/dashboard"
+                    className="inline-flex items-center gap-2 px-8 py-3 bg-white text-gray-950 rounded-2xl font-black text-sm hover:bg-gray-200 transition-all shadow-xl shadow-white/5 group active:scale-95"
+                  >
+                    Go To Dashboard
+                    <span className="group-hover:translate-x-1 transition-transform">→</span>
+                  </Link>
                 </div>
               </div>
             )}
           </div>
         </div>
 
-        {/* Pricing Header */}
-        <div className="text-center mb-12">
-          <h2 className="text-4xl font-bold text-white mb-4">
-            {isRegistered && currentTier > 0 ? 'Your Subscription' : 'Choose Your Plan'}
-          </h2>
-          <p className="text-gray-400 text-lg">
-            {isRegistered 
-              ? currentTier === 0 
-                ? 'Upgrade to unlock more features'
-                : `You're on the ${tierNames[currentTier]} plan`
-              : 'Register above, then choose your plan'
-            }
-          </p>
-        </div>
-
-        {/* Pricing Tiers */}
-        <div className="grid md:grid-cols-3 gap-8">
-          {tiers.map((tier, index) => (
+        {/* Edit Channel Modal */}
+        {editingChannel && (
+          <div
+            className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-[100] p-4 animate-fade-in"
+            onClick={() => {
+              setEditingChannel(null);
+              setTempValue('');
+            }}
+          >
             <div
-              key={index}
-              className={`relative bg-gray-800 rounded-2xl p-8 border transition-all ${
-                tier.popular
-                  ? 'border-purple-500 shadow-lg shadow-purple-500/20'
-                  : tier.tier === currentTier && isRegistered
-                    ? 'border-green-500 shadow-lg shadow-green-500/20'
-                    : 'border-gray-700'
-              } ${!isRegistered ? 'opacity-60' : ''}`}
+              className="bg-gray-900 rounded-3xl p-8 max-w-md w-full border border-gray-800 shadow-2xl animate-zoom-in"
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby={editChannelTitleId}
+              onClick={(e) => e.stopPropagation()}
             >
-              {/* Current Plan Badge */}
-              {isRegistered && tier.tier === currentTier && (
-                <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-green-600 text-white text-sm font-semibold px-4 py-1 rounded-full">
-                  ✓ Current Plan
+              <div className="text-center mb-6">
+                <div className="w-16 h-16 bg-purple-500/10 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                  {editingChannel === 'email' && <Mail className="w-8 h-8 text-purple-400" />}
+                  {editingChannel === 'discord' && <MessageCircle className="w-8 h-8 text-purple-400" />}
+                  {editingChannel === 'telegram' && <Send className="w-8 h-8 text-purple-400" />}
                 </div>
-              )}
-              
-              {/* Popular Badge - only show if not current plan */}
-              {tier.popular && !(isRegistered && tier.tier === currentTier) && (
-                <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-gradient-to-r from-purple-600 to-blue-600 text-white text-sm font-semibold px-4 py-1 rounded-full">
-                  Most Popular
-                </div>
-              )}
-
-              <h3 className="text-2xl font-bold text-white mb-2">{tier.name}</h3>
-              <div className="mb-6">
-                <span className="text-5xl font-bold text-white">{tier.price}</span>
-                <span className="text-gray-400 ml-2">STX/month</span>
+                <h3 id={editChannelTitleId} className="text-2xl font-black text-white">
+                  Add {editingChannel.charAt(0).toUpperCase() + editingChannel.slice(1)}
+                </h3>
+                <p className="text-gray-400 text-sm mt-1">Enter your details to receive alerts</p>
               </div>
 
-              <ul className="space-y-3 mb-8">
-                {tier.features.map((feature, i) => (
-                  <li key={i} className="flex items-center gap-3 text-gray-300">
-                    <Check className="w-5 h-5 text-green-500 flex-shrink-0" />
-                    {feature}
-                  </li>
-                ))}
-              </ul>
-
-              <button
-                onClick={() => handleSubscribe(tier.tier)}
-                disabled={!isRegistered || (isRegistered && tier.tier === currentTier)}
-                className={`w-full py-3 rounded-xl font-semibold transition-all duration-200 cursor-pointer transform hover:scale-105 hover:-translate-y-1 active:scale-95 disabled:cursor-not-allowed disabled:transform-none ${
-                  isRegistered && tier.tier === currentTier
-                    ? 'bg-green-600/20 text-green-400 border border-green-500'
-                    : tier.popular
-                      ? 'bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-500 hover:to-blue-500 text-white shadow-lg hover:shadow-xl hover:shadow-purple-500/30 disabled:from-gray-600 disabled:to-gray-600'
-                      : 'bg-gray-700 hover:bg-gray-600 text-white border border-gray-600 hover:border-purple-500 hover:shadow-lg hover:shadow-purple-500/20 disabled:hover:bg-gray-700 disabled:hover:border-gray-600'
-                }`}
-              >
-                {isRegistered && tier.tier === currentTier 
-                  ? '✓ Active' 
-                  : isRegistered && tier.tier > currentTier 
-                    ? 'Upgrade' 
-                    : tier.tier === 0 
-                      ? 'Get Started Free'
-                      : 'Subscribe'
+              <input
+                type={editingChannel === 'email' ? 'email' : 'text'}
+                value={tempValue}
+                onChange={(e) => setTempValue(e.target.value)}
+                placeholder={
+                  editingChannel === 'email' ? 'your@email.com' :
+                  editingChannel === 'discord' ? 'username#1234' :
+                  '@username'
                 }
-              </button>
+                className="w-full bg-gray-800 border border-gray-700 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-purple-500 mb-6 font-medium"
+                autoFocus
+              />
+
+              <div className="grid grid-cols-2 gap-3">
+                <Button
+                  onClick={() => {
+                    setEditingChannel(null);
+                    setTempValue('');
+                  }}
+                  variant="ghost"
+                  className="rounded-xl font-bold"
+                >
+                  Cancel
+                </Button>
+                <Button
+                  onClick={saveChannelUpdate}
+                  disabled={isSaving}
+                  variant="primary"
+                  className="rounded-xl font-bold"
+                  isLoading={isSaving}
+                >
+                  Save Changes
+                </Button>
+              </div>
             </div>
-          ))}
+          </div>
+        )}
+
+        {/* Pricing Tiers Section */}
+        <div id="pricing-tiers" className="scroll-mt-24 mt-24">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-black text-white mb-4 tracking-tight">
+              Simple, Transparent Pricing
+            </h2>
+            <p className="text-gray-400 text-lg max-w-2xl mx-auto">
+              Upgrade your monitoring capabilities with our tailored plans. All plans include 24/7 uptime and global event detection.
+            </p>
+          </div>
+
+          <div className="grid lg:grid-cols-3 gap-8 items-stretch">
+            {tiers.map((tier, index) => (
+              <div
+                key={index}
+                className={`group relative flex flex-col bg-gray-900 border transition-all duration-500 rounded-[2.5rem] p-8 md:p-10 ${
+                  tier.popular
+                    ? 'border-purple-500/50 shadow-2xl shadow-purple-500/10 scale-105 z-10 bg-gradient-to-br from-gray-900 via-gray-900 to-purple-900/5'
+                    : tier.tier === currentTier && isRegistered
+                      ? 'border-emerald-500/50 shadow-xl shadow-emerald-500/5 bg-emerald-500/5'
+                      : 'border-gray-800/50 hover:border-gray-700 hover:bg-gray-800/40'
+                } ${!isRegistered ? 'opacity-70 blur-[1px]' : ''}`}
+              >
+                {/* Popular Badge */}
+                {tier.popular && (
+                  <div className="absolute -top-5 left-1/2 -translate-x-1/2 bg-gradient-to-r from-purple-600 to-indigo-600 text-white text-[10px] font-black uppercase tracking-[0.2em] px-5 py-2 rounded-full shadow-xl shadow-purple-600/30">
+                    Most Popular
+                  </div>
+                )}
+                
+                {/* Current Plan Badge */}
+                {isRegistered && tier.tier === currentTier && (
+                  <div className="absolute -top-5 left-1/2 -translate-x-1/2 bg-emerald-600 text-white text-[10px] font-black uppercase tracking-[0.2em] px-5 py-2 rounded-full shadow-lg shadow-emerald-600/20">
+                    ✓ Your Plan
+                  </div>
+                )}
+
+                <div className="mb-8">
+                  <h3 className="text-xl font-black text-white mb-2 uppercase tracking-wide opacity-80">{tier.name}</h3>
+                  <div className="flex items-baseline gap-1">
+                    <span className="text-5xl font-black text-white tracking-tighter">{tier.price}</span>
+                    <span className="text-gray-400 font-bold text-sm">STX/mo</span>
+                  </div>
+                </div>
+
+                <ul className="space-y-4 mb-10 flex-1">
+                  {tier.features.map((feature, i) => (
+                    <li key={i} className="flex items-start gap-3 text-gray-300 font-medium text-sm leading-tight">
+                      <div className={`mt-0.5 w-5 h-5 rounded-full flex items-center justify-center shrink-0 ${tier.popular ? 'bg-purple-500/10' : 'bg-gray-800'}`}>
+                        <Check className={`w-3 h-3 ${tier.popular ? 'text-purple-400' : 'text-emerald-500'}`} strokeWidth={3} />
+                      </div>
+                      {feature}
+                    </li>
+                  ))}
+                </ul>
+
+                <Button
+                  onClick={() => handleSubscribe(tier.tier)}
+                  disabled={!isRegistered || (isRegistered && tier.tier === currentTier)}
+                  variant={tier.popular ? 'primary' : 'secondary'}
+                  size="lg"
+                  className={`w-full h-12 rounded-2xl font-black transition-all ${
+                    tier.popular 
+                      ? 'shadow-lg shadow-purple-600/20 hover:shadow-purple-600/40' 
+                      : ''
+                  }`}
+                >
+                  {isRegistered && tier.tier === currentTier ? 'Active Plan' : tier.price === 0 ? 'Current Tier' : 'Upgrade Plan'}
+                </Button>
+              </div>
+            ))}
+          </div>
+
+          {!isRegistered && (
+            <div className="mt-12 text-center">
+              <p className="text-gray-500 text-sm font-medium">
+                Please register above to unlock subscription options.
+              </p>
+            </div>
+          )}
         </div>
       </div>
     </section>
