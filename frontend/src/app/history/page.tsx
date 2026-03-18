@@ -4,6 +4,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { ArrowLeft, History, Filter, Download, Search, ExternalLink } from 'lucide-react';
 import AlertHistory from '@/components/AlertHistory';
+import { Breadcrumbs } from '@/components';
 
 const alertTypeInfo = [
   { id: 1, name: 'Whale Transfer', icon: '🐋', color: 'blue' },
@@ -97,6 +98,9 @@ export default function HistoryPage() {
       </header>
 
       <main id="main">
+        <div className="container mx-auto px-4 pt-8 -mb-4">
+          <Breadcrumbs />
+        </div>
         {/* Stats */}
         <section className="py-8 border-b border-gray-800">
           <div className="container mx-auto px-4">

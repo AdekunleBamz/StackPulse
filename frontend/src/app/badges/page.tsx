@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { Award, ArrowLeft, Share2, Twitter, Download, Lock, Check, ExternalLink } from 'lucide-react';
 import BadgeShowcase from '@/components/BadgeShowcase';
 import { toast } from '@/components/Toast';
+import { Breadcrumbs } from '@/components';
 
 // Badge type definitions
 const badgeDetails = [
@@ -165,6 +166,9 @@ export default function BadgesPage() {
 	      </header>
 
 	      <main id="main">
+            <div className="container mx-auto px-4 pt-8 -mb-4">
+              <Breadcrumbs />
+            </div>
 	        {/* Hero */}
 	        <section className="py-12 bg-gradient-to-b from-purple-900/20 to-transparent">
 	          <div className="container mx-auto px-4 text-center">

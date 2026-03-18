@@ -20,6 +20,7 @@ export { default as Pricing } from './Pricing';
 export { default as ProgressBar } from './ui/ProgressBar';
 export { default as Toast } from './Toast';
 export { default as Tooltip } from './ui/Tooltip';
+export { default as Breadcrumbs } from './ui/Breadcrumbs';
 
 // Custom Components
 export { default as ErrorBoundary } from './ErrorBoundary';

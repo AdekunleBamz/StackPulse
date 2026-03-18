@@ -21,6 +21,7 @@ import {
 import CopyButton from '@/components/ui/CopyButton';
 import { toast } from '@/components/Toast';
 import { useConfirmDialog } from '@/components/ConfirmDialog';
+import { Breadcrumbs } from '@/components';
 
 interface UserSettings {
   notifications: {
@@ -232,16 +233,12 @@ export default function SettingsPage() {
       {/* Header */}
       <header className="border-b border-gray-800 bg-gray-900/50 backdrop-blur-sm sticky top-0 z-10">
         <div className="max-w-4xl mx-auto px-4 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <Link href="/" className="flex items-center gap-2">
-              <div className="w-8 h-8 bg-gradient-to-br from-purple-500 to-blue-500 rounded-lg flex items-center justify-center">
-                <Zap className="w-5 h-5 text-white" />
-              </div>
-              <span className="text-xl font-bold">StackPulse</span>
-            </Link>
-            <span className="text-gray-500">/</span>
-            <span className="text-gray-400">Settings</span>
-          </div>
+          <Link href="/" className="flex items-center gap-2">
+            <div className="w-8 h-8 bg-gradient-to-br from-purple-500 to-blue-500 rounded-lg flex items-center justify-center">
+              <Zap className="w-5 h-5 text-white" />
+            </div>
+            <span className="text-xl font-bold">StackPulse</span>
+          </Link>
           
           <button
             onClick={handleSave}
@@ -269,6 +266,7 @@ export default function SettingsPage() {
       </header>
 
       <main id="main" className="max-w-4xl mx-auto px-4 py-8 space-y-6">
+        <Breadcrumbs />
         {/* Profile Section */}
         <SettingsSection
           title="Profile"
