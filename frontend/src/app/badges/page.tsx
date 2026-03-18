@@ -1,11 +1,12 @@
 'use client';
 
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import Link from 'next/link';
 import { Award, ArrowLeft, Share2, Twitter, Download, Lock, Check, ExternalLink } from 'lucide-react';
 import BadgeShowcase from '@/components/BadgeShowcase';
 import { toast } from '@/components/Toast';
 import { Breadcrumbs } from '@/components';
+import { useWallet } from '@/context/WalletContext';
 
 // Badge type definitions
 const badgeDetails = [
@@ -110,9 +111,24 @@ const rarityColors = {
 
 export default function BadgesPage() {
   const [selectedBadge, setSelectedBadge] = useState<typeof badgeDetails[0] | null>(null);
+  const { address, isConnected } = useWallet();
 
-  // TODO: Get from wallet context
-  const userBadges = [2, 4]; // Example: user has badges 2 and 4
+  const userBadges = useMemo(() => {
+    if (!isConnected || !address) return [];
+    try {
+      const raw = localStorage.getItem(`stackpulse:badges:${address}`);
+      if (!raw) return [];
+      const parsed = JSON.parse(raw);
+      return Array.isArray(parsed) ? parsed.filter((id) => Number.isInteger(id)) : [];
+    } catch {
+      return [];
+    }
+  }, [address, isConnected]);
+
+  const legendaryEarnedCount = badgeDetails.filter(
+    (badge) => badge.rarity === 'legendary' && userBadges.includes(badge.id)
+  ).length;
+  const finiteSupplyTotal = badgeDetails.reduce((sum, badge) => sum + (badge.maxSupply || 0), 0);
 
   const shareCollection = async () => {
     try {
@@ -180,11 +196,11 @@ export default function BadgesPage() {
 	              and contributions to the Stacks ecosystem. Display them proudly!
 	            </p>
 	            <div className="flex justify-center gap-4">
-	            <a
-	              href="https://explorer.hiro.so/address/SP5K2RHMSBH4PAP4PGX77MCVNK1ZEED07CWX9TJT.reputation-badges-v3?chain=mainnet"
-	              target="_blank"
-	              rel="noopener noreferrer"
-	              className="flex items-center gap-2 px-6 py-3 bg-purple-600 hover:bg-purple-500 rounded-lg font-medium transition-all focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400/90"
+		            <a
+		              href="https://explorer.hiro.so/address/SP5K2RHMSBH4PAP4PGX77MCVNK1ZEED07CWX9TJT.reputation-badges-v-j3?chain=mainnet"
+		              target="_blank"
+		              rel="noopener noreferrer"
+		              className="flex items-center gap-2 px-6 py-3 bg-purple-600 hover:bg-purple-500 rounded-lg font-medium transition-all focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400/90"
 	              aria-label="View badges contract on Hiro Explorer"
 	            >
 	              View Contract
@@ -206,14 +222,14 @@ export default function BadgesPage() {
 	                <div className="text-3xl font-bold text-purple-400">{userBadges.length}</div>
 	                <div className="text-gray-400 text-sm">Earned</div>
 	              </div>
-	              <div className="bg-gray-900/50 border border-gray-800 rounded-xl p-4 text-center">
-	                <div className="text-3xl font-bold text-yellow-400">2</div>
-	                <div className="text-gray-400 text-sm">Legendary</div>
-	              </div>
-	              <div className="bg-gray-900/50 border border-gray-800 rounded-xl p-4 text-center">
-	                <div className="text-3xl font-bold text-green-400">150</div>
-	                <div className="text-gray-400 text-sm">Total Supply</div>
-	              </div>
+		              <div className="bg-gray-900/50 border border-gray-800 rounded-xl p-4 text-center">
+		                <div className="text-3xl font-bold text-yellow-400">{legendaryEarnedCount}</div>
+		                <div className="text-gray-400 text-sm">Legendary</div>
+		              </div>
+		              <div className="bg-gray-900/50 border border-gray-800 rounded-xl p-4 text-center">
+		                <div className="text-3xl font-bold text-green-400">{finiteSupplyTotal}</div>
+		                <div className="text-gray-400 text-sm">Total Supply</div>
+		              </div>
 	            </div>
 	          </div>
 	        </section>

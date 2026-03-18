@@ -66,25 +66,27 @@ app.use(cors());
 app.use(express.json({ limit: '10mb' }));
 app.use(requestLogger());
 
-// Optional authentication middleware for chainhook endpoints
-// Note: Hiro Platform chainhooks don't always send auth headers, so we make this optional
+// Authentication middleware for chainhook endpoints.
+// If CHAINHOOK_AUTH_TOKEN is configured, requests must provide a matching bearer token.
 const authenticateWebhook = (req: Request, res: Response, next: NextFunction) => {
   const authHeader = req.headers.authorization;
   const expectedToken = process.env.CHAINHOOK_AUTH_TOKEN;
   
-  // Skip auth check if no token configured or if request has valid token
-  if (!expectedToken || authHeader === `Bearer ${expectedToken}`) {
+  if (!expectedToken) {
     return next();
   }
-  
-  // Allow requests without auth header (Hiro Platform may not send one)
+
   if (!authHeader) {
-    return next();
+    logger.warn('Webhook request missing authorization header', { ip: req.ip });
+    return res.status(401).json({ error: 'Unauthorized' });
   }
-  
-  // Log mismatched auth but still allow (for debugging)
-  logger.debug('Webhook request with unknown auth', { ip: req.ip });
-  next();
+
+  if (authHeader !== `Bearer ${expectedToken}`) {
+    logger.warn('Webhook request with invalid authorization token', { ip: req.ip });
+    return res.status(401).json({ error: 'Unauthorized' });
+  }
+
+  return next();
 };
 
 // ============================================

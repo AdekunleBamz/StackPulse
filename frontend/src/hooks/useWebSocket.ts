@@ -46,11 +46,13 @@ export function useWebSocket(options: UseWebSocketOptions = {}): UseWebSocketRet
   const wsRef = useRef<WebSocket | null>(null);
   const reconnectAttemptsRef = useRef(0);
   const reconnectTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const manualDisconnectRef = useRef(false);
 
   const connect = useCallback(() => {
     if (wsRef.current?.readyState === WebSocket.OPEN) return;
     if (isConnecting) return;
 
+    manualDisconnectRef.current = false;
     setIsConnecting(true);
 
     try {
@@ -70,7 +72,7 @@ export function useWebSocket(options: UseWebSocketOptions = {}): UseWebSocketRet
         onClose?.(event);
 
         // Attempt to reconnect
-        if (reconnect && reconnectAttemptsRef.current < maxReconnectAttempts) {
+        if (!manualDisconnectRef.current && reconnect && reconnectAttemptsRef.current < maxReconnectAttempts) {
           reconnectTimeoutRef.current = setTimeout(() => {
             reconnectAttemptsRef.current++;
             connect();
@@ -98,14 +100,17 @@ export function useWebSocket(options: UseWebSocketOptions = {}): UseWebSocketRet
   }, [url, reconnect, reconnectInterval, maxReconnectAttempts, onOpen, onClose, onError, onMessage, isConnecting]);
 
   const disconnect = useCallback(() => {
+    manualDisconnectRef.current = true;
     if (reconnectTimeoutRef.current) {
       clearTimeout(reconnectTimeoutRef.current);
+      reconnectTimeoutRef.current = null;
     }
     if (wsRef.current) {
       wsRef.current.close();
       wsRef.current = null;
     }
     setIsConnected(false);
+    setIsConnecting(false);
   }, []);
 
   const send = useCallback((message: any) => {
@@ -127,10 +132,21 @@ export function useWebSocket(options: UseWebSocketOptions = {}): UseWebSocketRet
   }, [send]);
 
   const doReconnect = useCallback(() => {
-    disconnect();
+    manualDisconnectRef.current = true;
+    if (reconnectTimeoutRef.current) {
+      clearTimeout(reconnectTimeoutRef.current);
+      reconnectTimeoutRef.current = null;
+    }
+    if (wsRef.current) {
+      wsRef.current.close();
+      wsRef.current = null;
+    }
+    setIsConnected(false);
+    setIsConnecting(false);
     reconnectAttemptsRef.current = 0;
+    manualDisconnectRef.current = false;
     connect();
-  }, [disconnect, connect]);
+  }, [connect]);
 
   // Connect on mount
   useEffect(() => {
