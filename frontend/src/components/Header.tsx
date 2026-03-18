@@ -142,57 +142,59 @@ export default function Header() {
         {isOpen && (
           <>
             <div
-              className="md:hidden fixed inset-0 top-16 z-40 bg-black/40"
+              className="md:hidden fixed inset-0 top-16 z-40 bg-black/60 backdrop-blur-sm animate-fade-in"
               onClick={() => setIsOpen(false)}
               aria-hidden="true"
             />
             <div
               ref={mobileNavRef}
-              className="md:hidden pb-4 relative z-50"
+              className="md:hidden fixed top-16 left-0 right-0 z-50 bg-gray-950 border-b border-gray-800 shadow-2xl animate-slide-down"
               id={mobileNavId}
               role="dialog"
               aria-modal="true"
               aria-label="Mobile navigation menu"
             >
-            <nav className="mt-2 rounded-xl border border-gray-800 bg-gray-950/80 backdrop-blur-md p-2" aria-label="Mobile">
-              <Link
-                href="/#features"
-                className="block rounded-lg px-3 py-2 text-gray-200 hover:bg-gray-900/60 transition-colors"
-                onClick={() => setIsOpen(false)}
-              >
-                Features
-              </Link>
-              <Link
-                href="/#pricing"
-                className="block rounded-lg px-3 py-2 text-gray-200 hover:bg-gray-900/60 transition-colors"
-                onClick={() => setIsOpen(false)}
-              >
-                Pricing
-              </Link>
-              <Link
-                href="/#stats"
-                className="block rounded-lg px-3 py-2 text-gray-200 hover:bg-gray-900/60 transition-colors"
-                onClick={() => setIsOpen(false)}
-              >
-                Live Stats
-              </Link>
-              <Link
-                href="/register"
-                className="block rounded-lg px-3 py-2 font-medium text-purple-300 hover:bg-gray-900/60 transition-colors"
-                onClick={() => setIsOpen(false)}
-              >
-                Register
-              </Link>
-              <a
-                href="https://docs.hiro.so/stacks/chainhook"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="block rounded-lg px-3 py-2 text-gray-200 hover:bg-gray-900/60 transition-colors"
-                onClick={() => setIsOpen(false)}
-              >
-                Docs
-              </a>
-            </nav>
+              <nav className="px-4 py-6 space-y-2" aria-label="Mobile">
+                <Link
+                  href="/#features"
+                  className="block rounded-xl px-4 py-3 text-base font-semibold text-gray-200 hover:bg-gray-900 transition-colors"
+                  onClick={() => setIsOpen(false)}
+                >
+                  Features
+                </Link>
+                <Link
+                  href="/#pricing"
+                  className="block rounded-xl px-4 py-3 text-base font-semibold text-gray-200 hover:bg-gray-900 transition-colors"
+                  onClick={() => setIsOpen(false)}
+                >
+                  Pricing
+                </Link>
+                <Link
+                  href="/#stats"
+                  className="block rounded-xl px-4 py-3 text-base font-semibold text-gray-200 hover:bg-gray-900 transition-colors"
+                  onClick={() => setIsOpen(false)}
+                >
+                  Live Stats
+                </Link>
+                <div className="pt-2">
+                  <Link
+                    href="/register"
+                    className="block rounded-xl px-4 py-3 text-base font-bold text-center bg-purple-600 hover:bg-purple-500 text-white transition-all shadow-lg shadow-purple-500/20"
+                    onClick={() => setIsOpen(false)}
+                  >
+                    Get Started
+                  </Link>
+                </div>
+                <a
+                  href="https://docs.hiro.so/stacks/chainhook"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block rounded-xl px-4 py-3 text-base font-medium text-gray-400 hover:text-white transition-colors text-center"
+                  onClick={() => setIsOpen(false)}
+                >
+                  View Documentation
+                </a>
+              </nav>
             </div>
           </>
         )}
