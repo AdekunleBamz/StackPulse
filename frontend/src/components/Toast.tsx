@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
+import { CheckCircle, AlertCircle, Info, AlertTriangle, X } from 'lucide-react';
 
 interface ToastProps {
   id: string;
@@ -13,56 +14,74 @@ interface ToastProps {
 
 const toastStyles = {
   success: {
-    bg: 'bg-green-900/90',
-    border: 'border-green-500/50',
-    icon: '✓',
-    iconBg: 'bg-green-500',
+    bg: 'bg-emerald-900/80',
+    border: 'border-emerald-500/30',
+    icon: CheckCircle,
+    iconColor: 'text-emerald-400',
+    progress: 'bg-emerald-500',
   },
   error: {
-    bg: 'bg-red-900/90',
-    border: 'border-red-500/50',
-    icon: '✕',
-    iconBg: 'bg-red-500',
+    bg: 'bg-rose-900/80',
+    border: 'border-rose-500/30',
+    icon: AlertCircle,
+    iconColor: 'text-rose-400',
+    progress: 'bg-rose-500',
   },
   warning: {
-    bg: 'bg-yellow-900/90',
-    border: 'border-yellow-500/50',
-    icon: '!',
-    iconBg: 'bg-yellow-500',
+    bg: 'bg-amber-900/80',
+    border: 'border-amber-500/30',
+    icon: AlertTriangle,
+    iconColor: 'text-amber-400',
+    progress: 'bg-amber-500',
   },
   info: {
-    bg: 'bg-blue-900/90',
-    border: 'border-blue-500/50',
-    icon: 'i',
-    iconBg: 'bg-blue-500',
+    bg: 'bg-sky-900/80',
+    border: 'border-sky-500/30',
+    icon: Info,
+    iconColor: 'text-sky-400',
+    progress: 'bg-sky-500',
   },
 };
 
 function Toast({ id, type, title, message, duration = 5000, onClose }: ToastProps) {
   const [isLeaving, setIsLeaving] = useState(false);
+  const [progress, setProgress] = useState(100);
   const styles = toastStyles[type];
+  const Icon = styles.icon;
+  
   const remainingMsRef = useRef(duration);
   const startTimeRef = useRef<number | null>(null);
   const timerRef = useRef<number | null>(null);
   const leavingTimerRef = useRef<number | null>(null);
+  const progressIntervalRef = useRef<number | null>(null);
 
   const clearTimers = () => {
     if (timerRef.current != null) window.clearTimeout(timerRef.current);
     if (leavingTimerRef.current != null) window.clearTimeout(leavingTimerRef.current);
+    if (progressIntervalRef.current != null) window.clearInterval(progressIntervalRef.current);
     timerRef.current = null;
     leavingTimerRef.current = null;
+    progressIntervalRef.current = null;
     startTimeRef.current = null;
   };
 
   const scheduleDismiss = () => {
     if (duration <= 0) return;
-    if (timerRef.current != null) window.clearTimeout(timerRef.current);
+    clearTimers();
 
     startTimeRef.current = Date.now();
     timerRef.current = window.setTimeout(() => {
       setIsLeaving(true);
       leavingTimerRef.current = window.setTimeout(() => onClose(id), 300);
     }, remainingMsRef.current);
+
+    progressIntervalRef.current = window.setInterval(() => {
+      if (startTimeRef.current) {
+        const elapsed = Date.now() - startTimeRef.current;
+        const newProgress = Math.max(0, ((remainingMsRef.current - elapsed) / duration) * 100);
+        setProgress(newProgress);
+      }
+    }, 16);
   };
 
   useEffect(() => {
@@ -80,7 +99,10 @@ function Toast({ id, type, title, message, duration = 5000, onClose }: ToastProp
   const pause = () => {
     if (timerRef.current == null) return;
     window.clearTimeout(timerRef.current);
+    window.clearInterval(progressIntervalRef.current!);
     timerRef.current = null;
+    progressIntervalRef.current = null;
+    
     if (startTimeRef.current != null) {
       const elapsed = Date.now() - startTimeRef.current;
       remainingMsRef.current = Math.max(0, remainingMsRef.current - elapsed);
@@ -91,10 +113,6 @@ function Toast({ id, type, title, message, duration = 5000, onClose }: ToastProp
   const resume = () => {
     if (duration <= 0) return;
     if (isLeaving) return;
-    if (remainingMsRef.current <= 0) {
-      handleClose();
-      return;
-    }
     scheduleDismiss();
   };
 
@@ -103,32 +121,45 @@ function Toast({ id, type, title, message, duration = 5000, onClose }: ToastProp
       role={type === 'error' || type === 'warning' ? 'alert' : 'status'}
       aria-live={type === 'error' || type === 'warning' ? 'assertive' : 'polite'}
       aria-atomic="true"
-      className={`flex items-start gap-3 p-4 rounded-lg border backdrop-blur-md shadow-2xl transition-all duration-300 ${
+      className={`relative flex items-start gap-3 p-4 rounded-xl border backdrop-blur-md shadow-2xl transition-all duration-300 overflow-hidden ${
         styles.bg
-      } ${styles.border} ${isLeaving ? 'opacity-0 translate-x-full scale-95' : 'opacity-100 translate-x-0 scale-100'}`}
+      } ${styles.border} ${
+        isLeaving 
+          ? 'opacity-0 translate-x-10 scale-95 blur-sm' 
+          : 'opacity-100 translate-x-0 scale-100 animate-in fade-in slide-in-from-right-10 duration-500'
+      }`}
       onMouseEnter={pause}
       onMouseLeave={resume}
-      onFocusCapture={pause}
-      onBlurCapture={resume}
+      style={{
+        transitionProperty: 'all',
+        transitionTimingFunction: 'cubic-bezier(0.4, 0, 0.2, 1)'
+      }}
     >
-      <div
-        className={`w-6 h-6 rounded-full flex items-center justify-center text-white text-sm font-bold ${styles.iconBg}`}
-        aria-hidden="true"
-      >
-        {styles.icon}
-      </div>
+      <Icon className={`w-5 h-5 mt-0.5 ${styles.iconColor}`} strokeWidth={2.5} />
+      
       <div className="flex-1 min-w-0">
-        <h4 className="font-medium text-white">{title}</h4>
-        {message && <p className="text-sm text-gray-300 mt-0.5">{message}</p>}
+        <h4 className="font-bold text-white text-sm tracking-tight">{title}</h4>
+        {message && <p className="text-xs text-gray-300/90 mt-1 leading-relaxed">{message}</p>}
       </div>
+      
       <button
         type="button"
         onClick={handleClose}
-        className="text-gray-300/80 hover:text-white transition-colors rounded-md px-1 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400/90"
+        className="text-white/40 hover:text-white transition-colors rounded-lg p-1 -mr-1 hover:bg-white/10"
         aria-label="Dismiss notification"
       >
-        ✕
+        <X className="w-4 h-4" />
       </button>
+
+      {/* Progress bar */}
+      {duration > 0 && (
+        <div className="absolute bottom-0 left-0 h-1 w-full bg-white/10">
+          <div 
+            className={`h-full ${styles.progress} transition-all duration-100 linear`}
+            style={{ width: `${progress}%` }}
+          />
+        </div>
+      )}
     </div>
   );
 }
