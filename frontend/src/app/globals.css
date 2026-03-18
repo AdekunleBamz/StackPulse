@@ -14,6 +14,7 @@
   --animate-shimmer: shimmer 2s infinite linear;
   --animate-fade-in: fade-in 0.2s ease-out;
   --animate-zoom-in: zoom-in 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  --animate-slide-down: slide-down 0.3s ease-out;
 
   @keyframes shimmer {
     from {
@@ -32,6 +33,11 @@
   @keyframes zoom-in {
     from { transform: scale(0.95); opacity: 0; }
     to { transform: scale(1); opacity: 1; }
+  }
+
+  @keyframes slide-down {
+    from { transform: translateY(-10px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
   }
 }
 
