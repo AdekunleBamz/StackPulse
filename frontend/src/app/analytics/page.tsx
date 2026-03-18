@@ -18,6 +18,7 @@ import {
   Clock,
   Zap,
 } from 'lucide-react';
+import { Breadcrumbs } from '@/components';
 
 interface AnalyticsData {
   totalUsers: number;
@@ -198,6 +199,7 @@ export default function AnalyticsPage() {
         </header>
 
         <main id="main" className="max-w-7xl mx-auto px-4 py-8">
+          <Breadcrumbs />
           <div className="mb-8">
             <div className="h-9 w-64 bg-gray-800 rounded-lg animate-pulse mb-2" />
             <div className="h-4 w-80 bg-gray-800 rounded animate-pulse" />
@@ -244,6 +246,7 @@ export default function AnalyticsPage() {
         </header>
 
         <main id="main" className="max-w-7xl mx-auto px-4 py-8">
+          <Breadcrumbs />
           <ErrorState
             message={error}
             onRetry={() => {
@@ -301,6 +304,7 @@ export default function AnalyticsPage() {
       </header>
 
       <main id="main" className="max-w-7xl mx-auto px-4 py-8">
+        <Breadcrumbs />
         {/* Page Title */}
         <div className="mb-8">
           <h1 className="text-3xl font-bold">Analytics Dashboard</h1>

@@ -24,6 +24,7 @@ import {
   ToggleLeft,
   ToggleRight
 } from 'lucide-react';
+import { Breadcrumbs } from '@/components';
 
 const DEPLOYER_ADDRESS = process.env.NEXT_PUBLIC_DEPLOYER_ADDRESS || '';
 
@@ -355,6 +356,7 @@ export default function DashboardPage() {
   return (
     <main id="main" className="min-h-screen bg-gray-950 py-8 px-4">
       <div className="max-w-6xl mx-auto">
+        <Breadcrumbs />
         {/* Header */}
 	        <div className="flex items-center justify-between mb-8">
 	          <div>

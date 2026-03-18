@@ -5,6 +5,7 @@ import { useWallet } from '@/context/WalletContext';
 import { useRouter } from 'next/navigation';
 import { toast } from '@/components/Toast';
 import TextField from '@/components/ui/TextField';
+import { Breadcrumbs } from '@/components';
 
 const DEPLOYER_ADDRESS = process.env.NEXT_PUBLIC_DEPLOYER_ADDRESS || '';
 
@@ -88,6 +89,8 @@ export default function RegisterPage() {
           </svg>
           Back to Home
         </button>
+
+        <Breadcrumbs className="mb-8 w-full" />
 
         {/* Registration Card */}
         <div className="bg-gray-900 border border-gray-800 rounded-2xl p-8">
