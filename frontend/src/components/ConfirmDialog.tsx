@@ -85,14 +85,14 @@ export default function ConfirmDialog({
     >
       {/* Backdrop */}
       <div 
-        className="absolute inset-0 bg-black/70 backdrop-blur-sm"
+        className="absolute inset-0 bg-black/70 backdrop-blur-sm animate-fade-in"
         onClick={onCancel}
         aria-hidden="true"
       />
       
       {/* Dialog */}
       <div
-        className="relative bg-gray-800 rounded-xl p-6 max-w-md w-full border border-gray-700 shadow-2xl"
+        className="relative bg-gray-900 border border-gray-700 rounded-2xl p-6 max-w-md w-full shadow-2xl animate-zoom-in"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-start gap-4">
