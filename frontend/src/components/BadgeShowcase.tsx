@@ -109,10 +109,10 @@ const badges: Badge[] = [
 ];
 
 const rarityColors = {
-  common: 'from-gray-500 to-gray-600',
-  rare: 'from-blue-500 to-blue-600',
-  epic: 'from-purple-500 to-purple-600',
-  legendary: 'from-yellow-500 to-orange-500',
+  common: 'from-slate-500 to-slate-600',
+  rare: 'from-blue-500 to-indigo-600',
+  epic: 'from-purple-500 to-pink-600',
+  legendary: 'from-amber-400 to-orange-500',
 };
 
 const rarityBorders = {
@@ -164,24 +164,24 @@ function BadgeCard({ badge, onClick }: BadgeCardProps) {
 
       {/* Supply info */}
       <div className="flex items-center justify-between text-xs">
-        <span className="text-gray-500">
+        <span className="text-gray-500 font-medium">
           {isLimited ? (
-            <>
-              {badge.mintedCount}/{badge.maxSupply} minted
-            </>
+            <span className={isSoldOut ? 'text-red-400/80' : ''}>
+              {badge.mintedCount.toLocaleString()} / {badge.maxSupply.toLocaleString()} minted
+            </span>
           ) : (
-            <>{badge.mintedCount} minted</>
+            <>{badge.mintedCount.toLocaleString()} minted</>
           )}
         </span>
         {badge.earned ? (
-          <span className="flex items-center gap-1 text-green-400">
-            <Check className="w-3 h-3" />
+          <span className="flex items-center gap-1 text-emerald-400 font-bold">
+            <Check className="w-3.5 h-3.5 stroke-[3]" />
             Earned
           </span>
         ) : isSoldOut ? (
-          <span className="text-red-400">Sold out</span>
+          <span className="text-rose-400 font-medium">Sold out</span>
         ) : (
-          <span className="text-gray-500">Not earned</span>
+          <span className="text-gray-500/80">Locked</span>
         )}
       </div>
 
@@ -194,7 +194,7 @@ function BadgeCard({ badge, onClick }: BadgeCardProps) {
           />
         </div>
       )}
-    </div>
+    </button>
   );
 }
 
