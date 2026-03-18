@@ -2,6 +2,7 @@
 
 import { Activity, ExternalLink } from 'lucide-react';
 import { useEffect, useState } from 'react';
+import { StatsCardSkeleton } from './LoadingSkeleton';
 
 interface EventStats {
   whaleTransfers: number;
@@ -49,21 +50,22 @@ export default function LiveStats() {
   }, [refreshKey]);
 
   const statItems = stats ? [
-    { label: 'Whale Transfers', value: stats.whaleTransfers, color: 'text-blue-400' },
-    { label: 'Contracts Deployed', value: stats.contractDeployments, color: 'text-purple-400' },
-    { label: 'NFTs Minted', value: stats.nftMints, color: 'text-pink-400' },
-    { label: 'Token Launches', value: stats.tokenLaunches, color: 'text-yellow-400' },
-    { label: 'Large Swaps', value: stats.largeSwaps, color: 'text-green-400' },
-    { label: 'Alerts Triggered', value: stats.alertsTriggered, color: 'text-red-400' },
+    { label: 'Whale Transfers', value: stats.whaleTransfers, color: 'text-blue-400', glow: 'from-blue-400/20' },
+    { label: 'Contracts Deployed', value: stats.contractDeployments, color: 'text-purple-400', glow: 'from-purple-400/20' },
+    { label: 'NFTs Minted', value: stats.nftMints, color: 'text-pink-400', glow: 'from-pink-400/20' },
+    { label: 'Token Launches', value: stats.tokenLaunches, color: 'text-yellow-400', glow: 'from-yellow-400/20' },
+    { label: 'Large Swaps', value: stats.largeSwaps, color: 'text-green-400', glow: 'from-green-400/20' },
+    { label: 'Alerts Triggered', value: stats.alertsTriggered, color: 'text-red-400', glow: 'from-red-400/20' },
   ] : [];
 
   if (loading) {
     return (
-      <section className="py-12 px-4 border-y border-gray-800">
+      <section className="py-12 px-4 border-y border-gray-800 bg-gray-900/30">
         <div className="max-w-6xl mx-auto">
-          <div className="flex items-center justify-center gap-3 text-gray-400">
-            <Activity className="w-5 h-5 animate-pulse" />
-            <span>Loading live stats...</span>
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+            {Array.from({ length: 6 }).map((_, i) => (
+              <StatsCardSkeleton key={i} />
+            ))}
           </div>
         </div>
       </section>
@@ -74,16 +76,17 @@ export default function LiveStats() {
     return (
       <section className="py-12 px-4 border-y border-gray-800 bg-gray-900/30">
         <div className="max-w-6xl mx-auto">
-          <div className="bg-gray-900/50 border border-gray-800 rounded-xl p-6 text-center">
-            <p className="text-gray-300 font-medium">Live stats unavailable</p>
-            <p className="text-gray-500 text-sm mt-1">{error}</p>
+          <div className="bg-gray-800/30 border border-gray-700/50 rounded-2xl p-8 text-center backdrop-blur-sm">
+            <Activity className="w-10 h-10 text-gray-600 mx-auto mb-4" />
+            <h3 className="text-white font-bold text-lg">Live stats unavailable</h3>
+            <p className="text-gray-500 text-sm mt-2 max-w-xs mx-auto">{error}</p>
             <button
               type="button"
               onClick={() => {
                 setLoading(true);
                 setRefreshKey((k) => k + 1);
               }}
-              className="mt-4 inline-flex items-center justify-center px-4 py-2 bg-purple-600 hover:bg-purple-500 text-white rounded-lg font-semibold transition-all hover:scale-105 active:scale-95 shadow-lg shadow-purple-500/20"
+              className="mt-6 inline-flex items-center justify-center px-6 py-2 bg-gray-800 border border-gray-700 hover:bg-gray-700 text-white rounded-xl font-semibold transition-all hover:scale-105 active:scale-95 shadow-lg"
             >
               Retry
             </button>
@@ -101,22 +104,25 @@ export default function LiveStats() {
     >
       <div className="max-w-6xl mx-auto">
         <div className="flex items-center justify-center gap-3 mb-8">
-          <Activity className="w-5 h-5 text-green-500 animate-pulse" aria-hidden="true" />
-          <span className="text-gray-400 font-medium tracking-wide uppercase text-xs">Live Chainhook Events</span>
+          <div className="relative">
+            <Activity className="w-5 h-5 text-emerald-500" aria-hidden="true" />
+            <div className="absolute inset-0 bg-emerald-500/20 blur-sm rounded-full animate-pulse" />
+          </div>
+          <span className="text-gray-400 font-bold tracking-widest uppercase text-[10px]">Live Chainhook Events</span>
           {lastUpdated && (
-            <span className="hidden sm:inline text-xs text-gray-500" aria-live="polite">
-              Updated {lastUpdated.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+            <span className="hidden sm:inline text-[10px] text-gray-500 font-medium" aria-live="polite">
+              • UPDATED {lastUpdated.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
             </span>
           )}
           <a
             href={`${SERVER_URL}/health`}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-purple-400 hover:text-purple-300 transition-colors rounded-md focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400/90"
+            className="text-gray-500 hover:text-purple-400 transition-colors rounded-md focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400/90 ml-1"
             aria-label="Open server health endpoint"
             title="Open server health endpoint"
           >
-            <ExternalLink className="w-4 h-4" />
+            <ExternalLink className="w-3.5 h-3.5" />
           </a>
         </div>
 
@@ -124,12 +130,15 @@ export default function LiveStats() {
           {statItems.map((item, index) => (
             <div
               key={index}
-              className="bg-gray-800/50 rounded-xl p-4 text-center border border-gray-700"
+              className="group relative bg-gray-800/40 backdrop-blur-sm rounded-2xl p-5 text-center border border-gray-700/50 hover:border-gray-500/50 transition-all hover:scale-[1.03] hover:shadow-2xl hover:shadow-black/40 overflow-hidden"
             >
-              <div className={`text-3xl font-bold ${item.color}`}>
+              <div className={`text-3xl font-extrabold tracking-tight ${item.color} drop-shadow-sm group-hover:drop-shadow-md transition-all`}>
                 {item.value.toLocaleString()}
               </div>
-              <div className="text-gray-400 text-sm mt-1">{item.label}</div>
+              <div className="text-gray-400 text-[10px] font-bold uppercase tracking-wider mt-2 group-hover:text-gray-300 transition-colors">{item.label}</div>
+              
+              {/* Subtle background glow on hover */}
+              <div className={`absolute inset-0 opacity-0 group-hover:opacity-10 transition-opacity rounded-2xl bg-gradient-to-br ${item.glow} to-transparent pointer-events-none`} />
             </div>
           ))}
         </div>
