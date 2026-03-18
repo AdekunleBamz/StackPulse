@@ -16,6 +16,7 @@ export { default as NetworkStatus } from './NetworkStatus';
 export { default as NotificationCenter } from './NotificationCenter';
 export { default as PriceTracker } from './PriceTracker';
 export { default as Pricing } from './Pricing';
+export { default as ProgressBar } from './ui/ProgressBar';
 export { default as Toast } from './Toast';
 export { default as Tooltip } from './ui/Tooltip';
 
