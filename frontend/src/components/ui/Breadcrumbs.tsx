@@ -20,7 +20,7 @@ export default function Breadcrumbs({ className }: BreadcrumbsProps) {
   return (
     <nav 
       aria-label="Breadcrumb" 
-      className={cn("flex items-center px-4 py-2.5 mb-6 bg-gray-900/40 border border-white/5 rounded-2xl backdrop-blur-md w-fit shadow-xl shadow-black/20", className)}
+      className={cn("flex items-center px-4 py-2.5 mb-6 bg-gray-900/40 border border-white/5 rounded-2xl backdrop-blur-md w-fit shadow-xl shadow-black/20 animate-fade-in duration-500 hover:shadow-purple-500/10 transition-shadow", className)}
     >
       <ol className="flex items-center space-x-2">
         <li>
