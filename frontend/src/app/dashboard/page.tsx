@@ -9,7 +9,6 @@ import { NoAlertsState } from '@/components/EmptyState';
 import { DashboardSkeleton } from '@/components/LoadingSkeleton';
 import Button from '@/components/ui/Button';
 import { useAccount } from '@/hooks/useAccount';
-import { useSound } from '@/hooks/useSound';
 import { 
   Bell, 
   Wallet, 
@@ -25,9 +24,7 @@ import {
   Trash2,
   ToggleLeft,
   ToggleRight,
-  Loader2,
-  Volume2,
-  VolumeX
+  Loader2
 } from 'lucide-react';
 import { Breadcrumbs } from '@/components';
 
@@ -76,7 +73,6 @@ export default function DashboardPage() {
   const [alerts, setAlerts] = useState<DashboardAlert[]>([]);
   const [isDataLoading, setIsDataLoading] = useState(true);
   const [syncingAlertIds, setSyncingAlertIds] = useState<Set<number>>(new Set());
-  const { enabled: soundEnabled, toggle: toggleSound, playSound } = useSound();
   
   // Load alerts from server when address changes
   useEffect(() => {
@@ -169,7 +165,6 @@ export default function DashboardPage() {
           }
 
           toast.success('Alert created', `TX: ${data.txId}`);
-          playSound('success');
           setShowCreateAlert(false);
           setNewAlertName('');
           setNewAlertThreshold('10000');
@@ -191,19 +186,10 @@ export default function DashboardPage() {
           setIsCreating(false);
         }
       });
-    } catch (error: any) {
+    } catch (error) {
       console.error('Error creating alert:', error);
       toast.dismiss(toastId);
-      
-      const errorMessage = error.message || String(error);
-      if (errorMessage.includes('UserRejected')) {
-        toast.error('Transaction Cancelled', 'You rejected the request in your wallet.');
-      } else if (errorMessage.includes('InsufficientFunds')) {
-        toast.error('Insufficient Funds', 'You do not have enough STX to pay for the transaction fees.');
-      } else {
-        toast.error('Failed to Create Alert', 'An unexpected error occurred. Please try again.');
-      }
-      
+      toast.error('Failed to create alert', 'Please try again.');
       setIsCreating(false);
     } finally {
       // Note: setIsCreating(false) is handled in callbacks because openContractCall is async-finish
@@ -238,7 +224,6 @@ export default function DashboardPage() {
       if (!res.ok) throw new Error('Failed to update status');
       
       toast.success('Status Updated', `${existing?.name || 'Alert'} is now ${nextEnabled ? 'enabled' : 'disabled'}.`);
-      playSound('notification');
     } catch (err) {
       console.error('Error toggling alert:', err);
       // Revert optimism
@@ -382,13 +367,6 @@ export default function DashboardPage() {
 	            >
 	              {userData.tier === 0 ? 'Upgrade' : 'Manage Plan'}
 	            </Button>
-	            <button
-	              onClick={toggleSound}
-	              className="p-2.5 bg-gray-800 hover:bg-gray-700 rounded-xl border border-gray-700 transition-all"
-	              title={soundEnabled ? 'Mute sounds' : 'Unmute sounds'}
-	            >
-	              {soundEnabled ? <Volume2 className="w-5 h-5 text-purple-400" /> : <VolumeX className="w-5 h-5 text-gray-500" />}
-	            </button>
 	          </div>
 	        </div>
 
