@@ -22,8 +22,10 @@ import {
   Award,
   Trash2,
   ToggleLeft,
-  ToggleRight
+  ToggleRight,
+  Search
 } from 'lucide-react';
+import { useDebounce } from '@/hooks/useDebounce';
 import { Breadcrumbs } from '@/components';
 
 const DEPLOYER_ADDRESS = process.env.NEXT_PUBLIC_DEPLOYER_ADDRESS || '';
@@ -61,13 +63,13 @@ export default function DashboardPage() {
   const { confirm, ConfirmDialog } = useConfirmDialog();
   const createAlertTitleId = useId();
   const createAlertDescId = useId();
-  const modalRef = useRef<HTMLDivElement>(null);
   const createAlertSelectRef = useRef<HTMLSelectElement>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [userData, setUserData] = useState<UserData | null>(null);
   const [alerts, setAlerts] = useState<UserAlert[]>([]);
   const [showCreateAlert, setShowCreateAlert] = useState(false);
-  const [showWhalesOnly, setShowWhalesOnly] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const debouncedSearchQuery = useDebounce(searchQuery, 300);
   const [newAlertType, setNewAlertType] = useState(1);
   const [newAlertName, setNewAlertName] = useState('');
   const [newAlertThreshold, setNewAlertThreshold] = useState('10000');
@@ -154,24 +156,6 @@ export default function DashboardPage() {
 
     const onKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') setShowCreateAlert(false);
-      if (e.key !== 'Tab') return;
-
-      const focusable = modalRef.current?.querySelectorAll<HTMLElement>(
-        'a, button, input, select, textarea, [tabindex]:not([tabindex="-1"])'
-      );
-      if (!focusable || focusable.length === 0) return;
-
-      const first = focusable[0];
-      const last = focusable[focusable.length - 1];
-      const active = document.activeElement as HTMLElement | null;
-
-      if (e.shiftKey && active === first) {
-        e.preventDefault();
-        last.focus();
-      } else if (!e.shiftKey && active === last) {
-        e.preventDefault();
-        first.focus();
-      }
     };
     window.addEventListener('keydown', onKeyDown);
 
@@ -418,58 +402,50 @@ export default function DashboardPage() {
 	        </div>
 
         {/* Stats Cards */}
-        <div className="grid md:grid-cols-4 gap-4 mb-8" role="region" aria-label="Quick Statistics">
+        <div className="grid md:grid-cols-4 gap-4 mb-8">
           <div 
             className="bg-gray-800 rounded-xl p-6 border border-gray-700 animate-fade-in hover:-translate-y-1 hover:shadow-lg hover:shadow-purple-500/10 transition-all"
             style={{ animationDelay: '0ms', animationFillMode: 'both' }}
-            role="status"
-            aria-label={`${alerts.filter(a => a.enabled).length} Active Alerts`}
           >
-            <div className="flex items-center gap-3 mb-2" aria-hidden="true">
+            <div className="flex items-center gap-3 mb-2">
               <Bell className="w-5 h-5 text-purple-400" />
               <span className="text-gray-400">Active Alerts</span>
             </div>
             <p className="text-3xl font-bold text-white">{alerts.filter(a => a.enabled).length}</p>
-            <p className="text-sm text-gray-400">of {maxAlerts[userData.tier]} max</p>
+            <p className="text-sm text-gray-500">of {maxAlerts[userData.tier]} max</p>
           </div>
           <div 
             className="bg-gray-800 rounded-xl p-6 border border-gray-700 animate-fade-in hover:-translate-y-1 hover:shadow-lg hover:shadow-purple-500/10 transition-all"
             style={{ animationDelay: '100ms', animationFillMode: 'both' }}
-            role="status"
-            aria-label={`${alerts.reduce((sum, a) => sum + a.triggerCount, 0)} Total Triggers Today`}
           >
-            <div className="flex items-center gap-3 mb-2" aria-hidden="true">
+            <div className="flex items-center gap-3 mb-2">
               <Zap className="w-5 h-5 text-yellow-400" />
               <span className="text-gray-400">Triggers Today</span>
             </div>
             <p className="text-3xl font-bold text-white">{alerts.reduce((sum, a) => sum + a.triggerCount, 0)}</p>
-            <p className="text-sm text-gray-400">notifications sent</p>
+            <p className="text-sm text-gray-500">notifications sent</p>
           </div>
           <div 
             className="bg-gray-800 rounded-xl p-6 border border-gray-700 animate-fade-in hover:-translate-y-1 hover:shadow-lg hover:shadow-purple-500/10 transition-all"
             style={{ animationDelay: '200ms', animationFillMode: 'both' }}
-            role="status"
-            aria-label={`${new Set(alerts.map(a => a.type)).size} Alert Types Monitored`}
           >
-            <div className="flex items-center gap-3 mb-2" aria-hidden="true">
+            <div className="flex items-center gap-3 mb-2">
               <Activity className="w-5 h-5 text-green-400" />
               <span className="text-gray-400">Alert Types</span>
             </div>
             <p className="text-3xl font-bold text-white">{new Set(alerts.map(a => a.type)).size}</p>
-            <p className="text-sm text-gray-400">categories monitored</p>
+            <p className="text-sm text-gray-500">categories monitored</p>
           </div>
           <div 
             className="bg-gray-800 rounded-xl p-6 border border-gray-700 animate-fade-in hover:-translate-y-1 hover:shadow-lg hover:shadow-purple-500/10 transition-all"
             style={{ animationDelay: '300ms', animationFillMode: 'both' }}
-            role="status"
-            aria-label="0 Badges Earned"
           >
-            <div className="flex items-center gap-3 mb-2" aria-hidden="true">
+            <div className="flex items-center gap-3 mb-2">
               <Award className="w-5 h-5 text-blue-400" />
               <span className="text-gray-400">Badges Earned</span>
             </div>
             <p className="text-3xl font-bold text-white">0</p>
-            <p className="text-sm text-gray-400">reputation NFTs</p>
+            <p className="text-sm text-gray-500">reputation NFTs</p>
           </div>
         </div>
 
@@ -526,33 +502,46 @@ export default function DashboardPage() {
 	          </div>
 	        </div>
 
-        {/* My Alerts Section */}
         <div>
-          <h2 className="text-xl font-bold text-white mb-4">My Alerts</h2>
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4 gap-4">
+            <h2 className="text-xl font-bold text-white">My Alerts</h2>
+            <div className="relative w-full sm:w-64">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
+              <input
+                type="text"
+                placeholder="Search alerts..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full bg-gray-800 border border-gray-700 rounded-xl pl-9 pr-4 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-purple-500/50 transition-all"
+                aria-label="Search alerts"
+              />
+            </div>
+          </div>
           
 	          {alerts.length === 0 ? (
 	            <div className="bg-gray-800 rounded-xl border border-gray-700">
 	              <NoAlertsState onCreateAlert={() => setShowCreateAlert(true)} />
 	            </div>
 	          ) : (
-            <div className="space-y-3" role="list">
-              {alerts.map((alert, index) => {
+            <div className="space-y-3">
+              {alerts.filter(a => 
+                a.name.toLowerCase().includes(debouncedSearchQuery.toLowerCase()) ||
+                alertTypes.find(t => t.id === a.type)?.description?.toLowerCase().includes(debouncedSearchQuery.toLowerCase())
+              ).map((alert, index) => {
                 const alertType = alertTypes.find(t => t.id === alert.type);
                 return (
                   <div 
                     key={alert.id} 
                     className="bg-gray-800 rounded-xl p-4 border border-gray-700 flex items-center justify-between animate-slide-up hover:border-purple-500/50 transition-colors"
                     style={{ animationDelay: `${index * 100}ms`, animationFillMode: 'both' }}
-                    role="listitem"
-                    aria-label={`Alert: ${alert.name}, ${alert.enabled ? 'Enabled' : 'Disabled'}`}
                   >
                     <div className="flex items-center gap-4">
                       <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${alert.enabled ? 'bg-purple-500/20' : 'bg-gray-700'}`}>
                         {alertType && <alertType.icon className={`w-5 h-5 ${alert.enabled ? 'text-purple-400' : 'text-gray-500'}`} />}
                       </div>
                       <div>
-                        <h4 className={`font-semibold ${alert.enabled ? 'text-white' : 'text-gray-400'}`}>{alert.name}</h4>
-                        <p className="text-gray-400 text-sm">
+                        <h4 className={`font-semibold ${alert.enabled ? 'text-white' : 'text-gray-500'}`}>{alert.name}</h4>
+                        <p className="text-gray-500 text-sm">
                           {alertType?.description} • {alert.triggerCount} triggers
                         </p>
                       </div>
@@ -596,7 +585,6 @@ export default function DashboardPage() {
             onClick={() => setShowCreateAlert(false)}
           >
             <div
-              ref={modalRef}
               className="bg-gray-800 rounded-2xl p-6 max-w-md w-full border border-purple-500/30 shadow-2xl shadow-purple-900/40 animate-zoom-in"
               role="dialog"
               aria-modal="true"
