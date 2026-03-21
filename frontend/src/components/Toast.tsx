@@ -145,7 +145,7 @@ function Toast({ id, type, title, message, duration = 5000, onClose }: ToastProp
       <button
         type="button"
         onClick={handleClose}
-        className="text-white/40 hover:text-white transition-colors rounded-lg p-1 -mr-1 hover:bg-white/10"
+        className="text-white/30 hover:text-white transition-all duration-300 rounded-xl p-2 -mr-1.5 hover:bg-white/10 active:scale-90"
         aria-label="Dismiss notification"
       >
         <X className="w-4 h-4" />
@@ -153,9 +153,9 @@ function Toast({ id, type, title, message, duration = 5000, onClose }: ToastProp
 
       {/* Progress bar */}
       {duration > 0 && (
-        <div className="absolute bottom-0 left-0 h-1 w-full bg-white/10">
+        <div className="absolute bottom-0 left-0 h-1 w-full bg-white/5">
           <div 
-            className={`h-full ${styles.progress} transition-all duration-100 linear`}
+            className={`h-full ${styles.progress} transition-all duration-100 linear shadow-[0_0_10px_rgba(255,255,255,0.2)]`}
             style={{ width: `${progress}%` }}
           />
         </div>
