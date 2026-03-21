@@ -74,11 +74,11 @@ export default function Header() {
             aria-label="StackPulse Home"
           >
             <div 
-              className="w-9 h-9 bg-gradient-to-br from-purple-500 via-purple-600 to-blue-600 rounded-xl flex items-center justify-center shadow-lg shadow-purple-500/10 group-hover/logo:scale-110 group-hover/logo:shadow-purple-500/30 transition-all duration-300"
+              className="w-9 h-9 bg-gradient-to-br from-purple-500 via-purple-600 to-blue-600 rounded-xl flex items-center justify-center shadow-lg shadow-purple-500/10 group-hover/logo:scale-125 group-hover/logo:shadow-purple-500/40 transition-all duration-300"
               aria-hidden="true"
             >
               <svg 
-                className="w-5 h-5 text-white transform group-hover/logo:rotate-12 transition-transform" 
+                className="w-5 h-5 text-white transform group-hover/logo:rotate-[15deg] transition-transform duration-300" 
                 fill="none" 
                 stroke="currentColor" 
                 viewBox="0 0 24 24"
