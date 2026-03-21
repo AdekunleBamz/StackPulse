@@ -126,18 +126,18 @@ export default function Footer() {
         </div>
 
         {/* Bottom Bar */}
-        <div className="pt-8 border-t border-gray-900 flex flex-col md:flex-row justify-between items-center gap-4">
-          <p className="text-gray-500 text-xs">
+        <div className="pt-8 border-t border-white/[0.03] flex flex-col md:flex-row justify-between items-center gap-6">
+          <p className="text-gray-600 text-[11px] font-medium tracking-tight">
             © {new Date().getFullYear()} StackPulse Labs. All rights reserved.
           </p>
-          <div className="flex items-center gap-6">
-            <span className="flex items-center gap-2 text-[10px] font-bold text-gray-500 uppercase tracking-widest">
-              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+          <div className="flex items-center gap-8">
+            <span className="flex items-center gap-2.5 text-[10px] font-bold text-gray-500 uppercase tracking-[0.2em]">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)] animate-pulse" />
               Mainnet Live
             </span>
-            <div className="h-4 w-px bg-gray-800 hidden md:block" />
-            <p className="text-gray-500 text-[10px] font-medium">
-              Built with ❤ for the Stacks Community
+            <div className="h-4 w-px bg-gray-900 hidden md:block opacity-50" />
+            <p className="text-gray-600 text-[10px] font-bold uppercase tracking-widest">
+              Built with <span className="text-purple-500/80">❤</span> for Stacks
             </p>
           </div>
         </div>
