@@ -137,17 +137,17 @@ export default function Home() {
       <Hero />
       
       {/* Features Section */}
-      <section id="features" className="scroll-mt-24 py-32">
+      <section id="features" className="scroll-mt-32 py-32">
         <Features />
       </section>
       
       {/* Live Stats Section */}
-      <section id="stats" className="scroll-mt-24 py-32">
+      <section id="stats" className="scroll-mt-32 py-32">
         <LiveStats />
       </section>
       
       {/* Pricing Section */}
-      <section id="pricing" className="scroll-mt-24 py-32">
+      <section id="pricing" className="scroll-mt-32 py-32">
         <Pricing />
       </section>
       
