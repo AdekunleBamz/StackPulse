@@ -171,21 +171,23 @@ export default function RegisterPage() {
               spellCheck={false}
             />
 
-            {submitError && (
-              <div className="p-3 bg-red-500/10 border border-red-500/20 rounded-lg">
-                <p className="text-red-400 text-sm">{submitError}</p>
-              </div>
-            )}
-
-            <button
-              type="submit"
-              disabled={!isConnected || isLoading || !username}
-              className={`w-full py-4 rounded-xl font-semibold transition-all duration-200 cursor-pointer transform hover:scale-105 active:scale-95 ${
-                isConnected && username
-                  ? 'bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-500 hover:to-blue-500 text-white shadow-lg hover:shadow-xl hover:shadow-purple-500/30'
-                  : 'bg-gray-700 text-gray-400 cursor-not-allowed'
-              }`}
-            >
+            <div className="space-y-4">
+              {submitError && (
+                <div className="p-4 bg-red-500/5 border border-red-500/10 rounded-2xl flex items-center gap-3 animate-in fade-in slide-in-from-top-2">
+                  <div className="shrink-0 w-1.5 h-1.5 rounded-full bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.5)]" />
+                  <p className="text-red-400 text-[11px] font-bold uppercase tracking-wider">{submitError}</p>
+                </div>
+              )}
+ 
+              <button
+                type="submit"
+                disabled={!isConnected || isLoading || !username}
+                className={`w-full py-4.5 rounded-2xl font-bold transition-all duration-300 cursor-pointer transform hover:scale-[1.02] active:scale-95 ${
+                  isConnected && username
+                    ? 'bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white shadow-xl shadow-purple-500/20'
+                    : 'bg-gray-800 text-gray-500 cursor-not-allowed border border-white/5'
+                }`}
+              >
               {isLoading ? (
                 <span className="flex items-center justify-center gap-2">
                   <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24">
@@ -198,6 +200,7 @@ export default function RegisterPage() {
                 'Register Account'
               )}
             </button>
+            </div>
           </form>
 
           {/* Info */}
