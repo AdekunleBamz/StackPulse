@@ -46,12 +46,12 @@ export default function Footer() {
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8 mb-12">
           {/* Brand Column */}
           <div className="col-span-2 lg:col-span-2 pr-8">
-            <Link href="/" className="flex items-center space-x-3 mb-10 group/footer-logo">
-              <div className="w-11 h-11 bg-gradient-to-br from-purple-500 via-indigo-600 to-indigo-800 rounded-2xl flex items-center justify-center shadow-[0_10px_30px_-5px_rgba(168,85,247,0.3)] group-hover/footer-logo:scale-105 group-hover/footer-logo:rotate-3 transition-all duration-500 relative overflow-hidden">
+            <Link href="/" className="flex items-center space-x-3.5 mb-10 group/footer-logo">
+              <div className="w-12 h-12 bg-gradient-to-br from-purple-500 via-indigo-600 to-indigo-800 rounded-2xl flex items-center justify-center shadow-[0_15px_35px_-5px_rgba(168,85,247,0.35)] group-hover/footer-logo:scale-110 group-hover/footer-logo:rotate-6 transition-all duration-500 relative overflow-hidden ring-1 ring-white/10">
                 <div className="absolute inset-0 bg-white/20 opacity-0 group-hover/footer-logo:opacity-100 transition-opacity" />
                 <Zap className="w-6 h-6 text-white relative z-10" fill="white" />
               </div>
-              <span className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white via-white to-gray-500 tracking-tight">
+              <span className="text-2xl font-black bg-clip-text text-transparent bg-gradient-to-r from-white via-indigo-100 to-gray-500 tracking-tight">
                 StackPulse
               </span>
             </Link>
