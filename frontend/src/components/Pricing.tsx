@@ -718,10 +718,13 @@ export default function Pricing() {
                 )}
 
                 <div className="mb-10">
-                  <h3 className="text-2xl font-bold text-white mb-3 tracking-tight shadow-sm">{tier.name}</h3>
+                  <h3 className="text-xl font-black text-white mb-2 tracking-tighter uppercase opacity-50">{tier.name}</h3>
                   <div className="flex items-baseline gap-1.5">
-                    <span className="text-6xl font-black text-white tracking-tighter drop-shadow-2xl">{tier.price}</span>
-                    <span className="text-gray-400 font-bold text-sm tracking-wide">STX<span className="text-gray-500 font-medium ml-1">/mo</span></span>
+                    <span className="text-6xl sm:text-7xl font-black text-white tracking-tighter drop-shadow-2xl">{tier.price}</span>
+                    <div className="flex flex-col mb-1 ml-1">
+                      <span className="text-gray-400 font-black text-xs tracking-[0.2em]">STX</span>
+                      <span className="text-gray-600 font-bold text-[10px] uppercase tracking-widest">/ Month</span>
+                    </div>
                   </div>
                 </div>
 
