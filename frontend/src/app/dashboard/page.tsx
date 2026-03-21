@@ -80,6 +80,7 @@ export default function DashboardPage() {
   const [isDataLoading, setIsDataLoading] = useState(true);
   const [syncingAlertIds, setSyncingAlertIds] = useState<Set<number>>(new Set());
   const [history, setHistory] = useState<AlertHistoryItem[]>([]);
+  const [visibleHistoryLimit, setVisibleHistoryLimit] = useState(5);
   const { enabled: soundEnabled, toggle: toggleSound, playSound } = useSound();
   const { permission: notifyPermission, requestPermission, sendNotification } = useNotifications();
   
@@ -613,7 +614,7 @@ export default function DashboardPage() {
             </div>
           ) : (
             <div className="space-y-4">
-              {history.map((item, idx) => (
+              {history.slice(0, visibleHistoryLimit).map((item, idx) => (
                 <div 
                   key={item.id} 
                   className="bg-gray-800/30 rounded-xl p-4 border border-gray-700/30 flex items-center justify-between group hover:border-purple-500/20 transition-all"
@@ -638,6 +639,17 @@ export default function DashboardPage() {
                   )}
                 </div>
               ))}
+              
+              {history.length > visibleHistoryLimit && (
+                <div className="pt-2 flex justify-center">
+                  <button
+                    onClick={() => setVisibleHistoryLimit(prev => prev + 10)}
+                    className="px-6 py-2 bg-gray-800/50 hover:bg-gray-800 rounded-xl border border-gray-700/50 text-gray-400 text-xs font-bold transition-all hover:text-purple-400 active:scale-95"
+                  >
+                    Load More Activity
+                  </button>
+                </div>
+              )}
             </div>
           )}
         </div>
