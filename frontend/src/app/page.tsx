@@ -83,7 +83,7 @@ const Hero = memo(() => (
       <div className="flex flex-col sm:flex-row gap-5 justify-center mb-20">
         <a 
           href="#pricing" 
-          className="px-10 py-4 h-14 bg-gradient-to-r from-purple-600 via-indigo-600 to-indigo-700 rounded-2xl font-black text-white hover:from-purple-500 hover:to-indigo-600 transition-all duration-500 shadow-[0_10px_40px_-10px_rgba(168,85,247,0.4)] hover:shadow-[0_20px_60px_-10px_rgba(168,85,247,0.5)] transform hover:-translate-y-1 active:scale-95 inline-flex items-center justify-center min-w-[200px] outline-none focus-visible:ring-2 focus-visible:ring-purple-500/50 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-950"
+          className="px-10 py-4 h-14 bg-gradient-to-r from-purple-600 via-indigo-600 to-indigo-700 rounded-2xl font-bold text-white hover:from-purple-500 hover:to-indigo-600 transition-all duration-500 shadow-[0_10px_40px_-10px_rgba(168,85,247,0.4)] hover:shadow-[0_20px_60px_-10px_rgba(168,85,247,0.5)] transform hover:-translate-y-1 active:scale-95 inline-flex items-center justify-center min-w-[200px]"
         >
           Start Monitoring
         </a>
@@ -91,7 +91,7 @@ const Hero = memo(() => (
           href="https://github.com/AdekunleBamz/StackPulse" 
           target="_blank"
           rel="noopener noreferrer"
-          className="px-10 py-4 h-14 bg-white/5 border border-white/10 rounded-2xl font-bold text-white hover:bg-white/10 hover:border-white/20 transition-all duration-500 flex items-center justify-center gap-3 transform hover:-translate-y-1 active:scale-95 min-w-[200px] outline-none focus-visible:ring-2 focus-visible:ring-white/20"
+          className="px-10 py-4 h-14 bg-white/5 border border-white/10 rounded-2xl font-bold text-white hover:bg-white/10 hover:border-white/20 transition-all duration-500 flex items-center justify-center gap-3 transform hover:-translate-y-1 active:scale-95 min-w-[200px]"
           aria-label="View StackPulse repository on GitHub"
         >
           <svg className="w-6 h-6 opacity-80" fill="currentColor" viewBox="0 0 24 24">
@@ -102,22 +102,22 @@ const Hero = memo(() => (
       </div>
       
       {/* Stats Preview */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6 max-w-4xl mx-auto" role="list" aria-label="Monitoring highlights">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto" role="list" aria-label="Monitoring highlights">
         {[
           { label: 'Whale Transfers', value: '1,234+' },
           { label: 'NFT Mints', value: '5,678+' },
           { label: 'Token Launches', value: '89+' },
           { label: 'Active Alerts', value: '456' },
-        ].map((stat) => (
+        ].map((stat, index) => (
           <div 
             key={stat.label}
-            className="bg-gray-900/40 border border-white/5 rounded-2xl p-4 lg:p-6 transition-colors hover:border-purple-500/20 group/stat"
+            className="bg-gray-900/50 border border-gray-800 rounded-xl p-6"
             role="listitem"
           >
-            <div className="text-2xl lg:text-3xl font-black bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent group-hover:scale-105 transition-transform duration-300">
+            <div className="text-3xl font-bold bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">
               {stat.value}
             </div>
-            <div className="text-[12px] font-bold text-gray-500 uppercase tracking-wider mt-1.5">{stat.label}</div>
+            <div className="text-sm text-gray-400 mt-1">{stat.label}</div>
           </div>
         ))}
       </div>
@@ -132,8 +132,8 @@ export default function Home() {
       <Header />
       <Hero />
       
-      {/* Principal Product Features */}
-      <section id="features" className="scroll-mt-32 py-32" aria-label="Product Features">
+      {/* Features Section */}
+      <section id="features" className="scroll-mt-24 py-32">
         <Features />
       </section>
       
