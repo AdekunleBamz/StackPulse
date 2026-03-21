@@ -123,6 +123,7 @@ export default function Header() {
             <Link 
               href="/register"
               className="text-purple-400 hover:text-purple-300 transition-colors font-medium"
+              aria-current={pathname === '/register' ? 'page' : undefined}
             >
               Register
             </Link>
