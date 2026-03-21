@@ -81,7 +81,10 @@ export default function Footer() {
             <ul className="space-y-4">
               {footerLinks.product.map((link) => (
                 <li key={link.label}>
-                  <Link href={link.href} className="text-gray-400/80 hover:text-indigo-400 transition-all duration-300 text-sm font-medium hover:translate-x-1.5 inline-block">
+                  <Link 
+                    href={link.href} 
+                    className="text-gray-400/80 hover:text-indigo-400 transition-all duration-300 text-sm font-medium hover:translate-x-1.5 inline-block px-2 py-1 rounded-lg outline-none focus-visible:ring-2 focus-visible:ring-purple-500/50 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-950 -ml-2"
+                  >
                     {link.label}
                   </Link>
                 </li>
@@ -96,7 +99,7 @@ export default function Footer() {
                 <li key={link.label}>
                   <a 
                     href={link.href} 
-                    className="text-gray-400/80 hover:text-indigo-400 transition-all duration-300 text-sm font-medium hover:translate-x-1.5 flex items-center gap-1 group/flink"
+                    className="text-gray-400/80 hover:text-indigo-400 transition-all duration-300 text-sm font-medium hover:translate-x-1.5 flex items-center gap-1 group/flink px-2 py-1 rounded-lg outline-none focus-visible:ring-2 focus-visible:ring-purple-500/50 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-950 -ml-2 w-fit"
                     target={link.href.startsWith('http') ? '_blank' : undefined}
                     rel={link.href.startsWith('http') ? 'noopener noreferrer' : undefined}
                   >
@@ -118,7 +121,10 @@ export default function Footer() {
             <ul className="space-y-4">
               {footerLinks.legal.map((link) => (
                 <li key={link.label}>
-                  <Link href={link.href} className="text-gray-400/80 hover:text-indigo-400 transition-all duration-300 text-sm font-medium hover:translate-x-1.5 inline-block">
+                  <Link 
+                    href={link.href} 
+                    className="text-gray-400/80 hover:text-indigo-400 transition-all duration-300 text-sm font-medium hover:translate-x-1.5 inline-block px-2 py-1 rounded-lg outline-none focus-visible:ring-2 focus-visible:ring-purple-500/50 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-950 -ml-2"
+                  >
                     {link.label}
                   </Link>
                 </li>
