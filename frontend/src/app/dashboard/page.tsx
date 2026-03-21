@@ -22,10 +22,8 @@ import {
   Award,
   Trash2,
   ToggleLeft,
-  ToggleRight,
-  Search
+  ToggleRight
 } from 'lucide-react';
-import { useDebounce } from '@/hooks/useDebounce';
 import { Breadcrumbs } from '@/components';
 
 const DEPLOYER_ADDRESS = process.env.NEXT_PUBLIC_DEPLOYER_ADDRESS || '';
@@ -40,28 +38,24 @@ const alertTypes = [
   { id: 6, name: 'Address Watch', icon: Activity, description: 'Monitor specific addresses', iconBgClass: 'bg-orange-500/20', iconClass: 'text-orange-300' },
 ];
 
-export interface DashboardAlert {
-  id: number;
-  type: number;
+export interface BaseAlert {
+  id: string | number;
   name: string;
   enabled: boolean;
-  threshold?: number;
-  targetAddress?: string;
   triggerCount: number;
   createdAt?: string;
 }
 
-export interface AlertHistoryItem {
-  id: string;
-  alertId: number;
-  type: number;
-  message: string;
-  timestamp: string;
-  txId?: string;
-  data?: any;
-}
+export interface WhaleAlert extends BaseAlert { type: 1; threshold: number; }
+export interface ContractAlert extends BaseAlert { type: 2; }
+export interface NFTAlert extends BaseAlert { type: 3; }
+export interface TokenAlert extends BaseAlert { type: 4; }
+export interface SwapAlert extends BaseAlert { type: 5; threshold: number; }
+export interface WatchAlert extends BaseAlert { type: 6; targetAddress: string; }
 
-interface UserData {
+export type DashboardAlert = WhaleAlert | ContractAlert | NFTAlert | TokenAlert | SwapAlert | WatchAlert;
+
+export interface UserAccountData {
   username: string;
   tier: number;
   alertsEnabled: number;
@@ -76,11 +70,9 @@ export default function DashboardPage() {
   const createAlertDescId = useId();
   const createAlertSelectRef = useRef<HTMLSelectElement>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [userData, setUserData] = useState<UserData | null>(null);
-  const [alerts, setAlerts] = useState<UserAlert[]>([]);
+  const [userData, setUserData] = useState<UserAccountData | null>(null);
+  const [alerts, setAlerts] = useState<DashboardAlert[]>([]);
   const [showCreateAlert, setShowCreateAlert] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
-  const debouncedSearchQuery = useDebounce(searchQuery, 300);
   const [newAlertType, setNewAlertType] = useState(1);
   const [newAlertName, setNewAlertName] = useState('');
   const [newAlertThreshold, setNewAlertThreshold] = useState('10000');
@@ -513,21 +505,9 @@ export default function DashboardPage() {
 	          </div>
 	        </div>
 
+        {/* My Alerts Section */}
         <div>
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4 gap-4">
-            <h2 className="text-xl font-bold text-white">My Alerts</h2>
-            <div className="relative w-full sm:w-64">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
-              <input
-                type="text"
-                placeholder="Search alerts..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full bg-gray-800 border border-gray-700 rounded-xl pl-9 pr-4 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-purple-500/50 transition-all"
-                aria-label="Search alerts"
-              />
-            </div>
-          </div>
+          <h2 className="text-xl font-bold text-white mb-4">My Alerts</h2>
           
 	          {alerts.length === 0 ? (
 	            <div className="bg-gray-800 rounded-xl border border-gray-700">
@@ -535,10 +515,7 @@ export default function DashboardPage() {
 	            </div>
 	          ) : (
             <div className="space-y-3">
-              {alerts.filter(a => 
-                a.name.toLowerCase().includes(debouncedSearchQuery.toLowerCase()) ||
-                alertTypes.find(t => t.id === a.type)?.description?.toLowerCase().includes(debouncedSearchQuery.toLowerCase())
-              ).map((alert, index) => {
+              {alerts.map((alert, index) => {
                 const alertType = alertTypes.find(t => t.id === alert.type);
                 return (
                   <div 
