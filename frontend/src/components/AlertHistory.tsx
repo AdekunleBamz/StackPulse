@@ -188,11 +188,12 @@ export default function AlertHistory({ userAddress }: AlertHistoryProps) {
           <div className="mt-4 flex flex-wrap gap-2">
             <button
               onClick={() => setFilter(null)}
-              className={`px-3 py-1.5 rounded-lg text-sm transition-all ${
+              className={`px-3 py-1.5 rounded-lg text-sm transition-all focus:outline-none focus:ring-2 focus:ring-purple-500/50 ${
                 filter === null
                   ? 'bg-purple-600 text-white'
                   : 'bg-gray-800 text-gray-400 hover:text-white'
               }`}
+              aria-pressed={filter === null}
             >
               All Types
             </button>
@@ -200,13 +201,14 @@ export default function AlertHistory({ userAddress }: AlertHistoryProps) {
               <button
                 key={type}
                 onClick={() => setFilter(parseInt(type))}
-                className={`px-3 py-1.5 rounded-lg text-sm flex items-center gap-1.5 transition-all ${
+                className={`px-3 py-1.5 rounded-lg text-sm flex items-center gap-1.5 transition-all focus:outline-none focus:ring-2 focus:ring-purple-500/50 ${
                   filter === parseInt(type)
                     ? 'bg-purple-600 text-white'
                     : 'bg-gray-800 text-gray-400 hover:text-white'
                 }`}
+                aria-pressed={filter === parseInt(type)}
               >
-                <span>{info.icon}</span>
+                <span aria-hidden="true">{info.icon}</span>
                 <span>{info.name}</span>
               </button>
             ))}
