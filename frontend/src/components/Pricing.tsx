@@ -2,10 +2,13 @@
 
 import { useWallet } from '@/context/WalletContext';
 import { Check, Wallet, Mail, MessageCircle, Send } from 'lucide-react';
-import { useEffect, useId, useState } from 'react';
+import { useEffect, useId, useState, memo } from 'react';
 import { toast } from '@/components/Toast';
 import Button from '@/components/ui/Button';
 import Link from 'next/link';
+import type { NotificationPreference, ChannelAction } from '@/types/settings';
+import { useAccount } from '@/hooks/useAccount';
+import type { UserPreferences, ApiResponse } from '@/types/api';
 
 const tiers = [
   {
@@ -52,123 +55,68 @@ const tiers = [
 const DEPLOYER_ADDRESS = process.env.NEXT_PUBLIC_DEPLOYER_ADDRESS || '';
 
 export default function Pricing() {
-  const { isConnected, connect, address } = useWallet();
+  const { 
+    address, 
+    isConnected, 
+    connect, 
+    isRegistered, 
+    userData, 
+    isLoading: isAccountLoading,
+    refresh: refreshAccount 
+  } = useAccount();
+  
   const editChannelTitleId = useId();
-  const [isRegistered, setIsRegistered] = useState(false);
-  const [currentTier, setCurrentTier] = useState(0);
-  const [subscriptionEnds, setSubscriptionEnds] = useState(0);
-  const [isLoading, setIsLoading] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [subscribingTier, setSubscribingTier] = useState<number | null>(null);
   const [username, setUsername] = useState('');
-  const [email, setEmail] = useState('');
-  const [discord, setDiscord] = useState('');
-  const [telegram, setTelegram] = useState('');
-  const [editingChannel, setEditingChannel] = useState<'email' | 'discord' | 'telegram' | null>(null);
+  const [email, setEmail] = useState<string>('');
+  const [discord, setDiscord] = useState<string>('');
+  const [telegram, setTelegram] = useState<string>('');
+  const [editingChannel, setEditingChannel] = useState<ChannelAction | null>(null);
   const [tempValue, setTempValue] = useState('');
+  const [isDataLoading, setIsDataLoading] = useState(false);
 
   const tierNames = ['Free', 'Basic', 'Pro', 'Premium'];
   const tierColors = ['gray', 'blue', 'purple', 'yellow'];
 
-  // Check registration status when wallet connects
+  // Sync state with userData from hook
   useEffect(() => {
-    const checkRegistration = async () => {
-      if (!address) return;
-      
-      // First check localStorage for cached registration (faster UX)
-      const cachedReg = localStorage.getItem(`stackpulse_registered_${address}`);
-      if (cachedReg) {
-        const cached = JSON.parse(cachedReg);
-        setIsRegistered(true);
-        setCurrentTier(cached.tier || 0);
-        setUsername(cached.username || '');
-      }
-      
-      // Always check contract for latest data
-      if (!DEPLOYER_ADDRESS) {
-        console.warn('DEPLOYER_ADDRESS not set!');
-        return;
-      }
-      
+    if (userData) {
+      setUsername(userData.username || '');
+    }
+  }, [userData]);
+
+  // Fetch preferences from server if registered
+  useEffect(() => {
+    const fetchPrefs = async () => {
+      if (!isRegistered || !address) return;
+      setIsDataLoading(true);
       try {
-        const { principalCV, cvToHex, hexToCV, cvToValue } = await import('@stacks/transactions');
-        
-        console.log('Checking registration for:', address);
-        console.log('Using contract:', DEPLOYER_ADDRESS);
-        
-        // Use V3 contract
-        const response = await fetch(
-          `https://api.mainnet.hiro.so/v2/contracts/call-read/${DEPLOYER_ADDRESS}/stackpulse-v-j3/get-user`,
-          {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              sender: address,
-              arguments: [cvToHex(principalCV(address))]
-            })
-          }
-        );
-        
-        const data = await response.json();
-        console.log('Contract response:', data);
-        
-        // If result is not 0x09 (none), user is registered
-        const registered = data.result && data.result !== '0x09';
-        setIsRegistered(registered);
-        
-        // Parse user data to get tier
-        if (registered && data.result) {
-          try {
-            const cv = hexToCV(data.result);
-            const userData = cvToValue(cv);
-            console.log('Parsed user data:', userData);
-            if (userData && userData.value) {
-              const tier = Number(userData.value.tier?.value || 0);
-              const uname = userData.value.username?.value || '';
-              setCurrentTier(tier);
-              setSubscriptionEnds(Number(userData.value['subscription-ends']?.value || 0));
-              setUsername(uname);
-              
-              // Cache registration status for faster future loads
-              localStorage.setItem(`stackpulse_registered_${address}`, JSON.stringify({
-                tier,
-                username: uname,
-                timestamp: Date.now()
-              }));
-            }
-          } catch (parseErr) {
-            console.error('Error parsing user data:', parseErr);
-          }
-        } else {
-          // Not registered - clear any cached data
-          localStorage.removeItem(`stackpulse_registered_${address}`);
-        }
-        
-        // If registered, fetch saved notification preferences from server
-        if (registered) {
-          try {
-            const serverUrl = process.env.NEXT_PUBLIC_SERVER_URL || 'https://stackpulse-b8fw.onrender.com';
-            const prefsResponse = await fetch(`${serverUrl}/api/users/${address}`);
-            if (prefsResponse.ok) {
-              const prefsData = await prefsResponse.json();
-              if (prefsData.user) {
-                setEmail(prefsData.user.email || '');
-                setDiscord(prefsData.user.discord || '');
-                setTelegram(prefsData.user.telegram || '');
-                if (prefsData.user.username) setUsername(prefsData.user.username);
-              }
-            }
-          } catch (err) {
-            console.error('Failed to fetch user preferences:', err);
+        const serverUrl = process.env.NEXT_PUBLIC_SERVER_URL || 'https://stackpulse-b8fw.onrender.com';
+        const prefsResponse = await fetch(`${serverUrl}/api/users/${address}`);
+        if (prefsResponse.ok) {
+          const prefsData: ApiResponse<UserPreferences> = await prefsResponse.json();
+          const user = prefsData.user || prefsData.data;
+          if (user) {
+            setEmail(user.email || '');
+            setDiscord(user.discord || '');
+            setTelegram(user.telegram || '');
+            if (user.username) setUsername(user.username);
           }
         }
-      } catch (error) {
-        console.error('Error checking registration:', error);
+      } catch (err) {
+        console.error('Failed to fetch user preferences:', err);
+      } finally {
+        setIsDataLoading(false);
       }
     };
 
-    checkRegistration();
-  }, [address]);
+    fetchPrefs();
+  }, [isRegistered, address]);
+
+  const isLoading = isAccountLoading || isDataLoading;
+  const currentTier = userData?.tier || 0;
+  const subscriptionEnds = userData?.subscriptionEnds || 0;
 
   useEffect(() => {
     if (!editingChannel) return;
@@ -693,71 +641,15 @@ export default function Pricing() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-y-16 md:gap-8 lg:gap-8 items-stretch">
             {tiers.map((tier, index) => (
-              <div
+              <PricingCard
                 key={index}
-                className={`group relative flex flex-col backdrop-blur-xl transition-all duration-300 rounded-[2rem] p-8 sm:p-12 hover:-translate-y-3 hover:ring-1 ${
-                  tier.popular
-                    ? 'border-2 border-purple-500/50 shadow-[0_20px_50px_-20px_rgba(168,85,247,0.15)] scale-[1.02] hover:scale-[1.05] z-10 bg-gradient-to-br from-gray-900/80 via-gray-900/40 to-purple-900/20 hover:shadow-[0_30px_70px_-15px_rgba(168,85,247,0.4)] hover:border-purple-400 hover:ring-purple-500/30'
-                    : tier.tier === currentTier && isRegistered
-                      ? 'bg-emerald-500/[0.03] border border-emerald-500/40 shadow-xl shadow-emerald-500/5 hover:scale-[1.03] hover:border-emerald-500/60 hover:shadow-[0_30px_60px_-15px_rgba(16,185,129,0.2)] hover:ring-emerald-500/30'
-                      : 'bg-white/[0.03] border border-white/5 hover:border-white/20 hover:bg-white/[0.05] hover:scale-[1.03] hover:shadow-[0_30px_60px_-15px_rgba(0,0,0,0.6)] hover:ring-white/10'
-                } ${!isRegistered ? 'opacity-75 blur-[0.3px]' : ''}`}
-              >
-                {/* Popular Badge */}
-                {tier.popular && (
-                  <div className="absolute -top-5 left-1/2 -translate-x-1/2 bg-gradient-to-r from-purple-600 to-indigo-600 text-white text-[10px] font-black uppercase tracking-[0.25em] px-6 py-2.5 rounded-full shadow-[0_10px_20px_-5px_rgba(168,85,247,0.5)] z-20">
-                    Most Popular
-                  </div>
-                )}
-                
-                {/* Current Plan Badge */}
-                {isRegistered && tier.tier === currentTier && (
-                  <div className="absolute -top-5 left-1/2 -translate-x-1/2 bg-emerald-600 text-white text-[10px] font-black uppercase tracking-[0.25em] px-6 py-2.5 rounded-full shadow-[0_10px_20px_-5px_rgba(16,185,129,0.3)] z-20">
-                    ✓ Your Plan
-                  </div>
-                )}
-
-                <div className="mb-12">
-                  <h3 className="text-xl font-black text-white mb-2 tracking-tighter uppercase opacity-50">{tier.name}</h3>
-                  <div className="flex items-baseline gap-1.5">
-                    <span className="text-6xl sm:text-7xl font-black text-white tracking-tighter drop-shadow-2xl">{tier.price}</span>
-                    <div className="flex flex-col mb-1 ml-1">
-                      <span className="text-gray-400 font-black text-xs tracking-[0.2em]">STX</span>
-                      <span className="text-gray-500/40 font-bold text-[10px] uppercase tracking-widest">/ Month</span>
-                    </div>
-                  </div>
-                </div>
-
-                <ul className="space-y-5 mb-14 flex-1">
-                  {tier.features.map((feature, i) => (
-                    <li key={i} className="group/feature flex items-start gap-4 text-gray-400 font-medium text-[13px] leading-relaxed transition-colors hover:text-white">
-                      <div className={`mt-0.5 w-5 h-5 rounded-full flex items-center justify-center shrink-0 transition-all duration-300 group-hover/feature:scale-110 ${
-                        tier.popular 
-                          ? 'bg-purple-500/20 text-purple-400 shadow-[0_0_10px_rgba(168,85,247,0.2)]' 
-                          : 'bg-emerald-500/10 text-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.1)]'
-                      }`}>
-                        <Check className="w-3 h-3" strokeWidth={4} />
-                      </div>
-                      <span className="group-hover/feature:translate-x-0.5 transition-transform duration-300">{feature}</span>
-                    </li>
-                  ))}
-                </ul>
-
-                <Button
-                  onClick={() => handleSubscribe(tier.tier)}
-                  disabled={!isRegistered || (isRegistered && tier.tier === currentTier) || isLoading}
-                  variant={tier.popular ? 'primary' : 'secondary'}
-                  size="lg"
-                  className={`w-full h-13 rounded-2xl font-black transition-all duration-300 transform active:scale-[0.97] ${
-                    tier.popular 
-                      ? 'shadow-xl shadow-purple-600/20 hover:shadow-purple-600/50 hover:scale-[1.02]' 
-                      : 'border border-white/5 hover:border-white/20 hover:bg-white/5'
-                  }`}
-                  isLoading={subscribingTier === tier.tier}
-                >
-                  {isRegistered && tier.tier === currentTier ? 'Active Plan' : tier.price === 0 ? 'Current Tier' : 'Upgrade Plan'}
-                </Button>
-              </div>
+                tier={tier}
+                isRegistered={isRegistered}
+                currentTier={currentTier}
+                subscribingTier={subscribingTier}
+                isLoading={isLoading}
+                handleSubscribe={handleSubscribe}
+              />
             ))}
           </div>
 
