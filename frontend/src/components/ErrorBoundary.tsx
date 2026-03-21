@@ -48,7 +48,7 @@ export default class ErrorBoundary extends Component<Props, State> {
             aria-live="assertive"
           >
             <div className="text-center">
-              <div className="w-16 h-16 bg-red-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
+              <div className="w-16 h-16 bg-red-500/20 rounded-full flex items-center justify-center mx-auto mb-4" aria-hidden="true">
                 <svg 
                   className="w-8 h-8 text-red-500" 
                   fill="none" 
