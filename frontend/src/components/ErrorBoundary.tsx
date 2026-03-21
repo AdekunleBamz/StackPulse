@@ -70,8 +70,9 @@ export default class ErrorBoundary extends Component<Props, State> {
               </p>
 
               {this.state.error && (
-                <div className="bg-gray-900 rounded-lg p-3 mb-6 text-left">
-                  <p className="text-red-400 text-sm font-mono">
+                <div className="bg-gray-950/80 rounded-2xl p-4 mb-8 text-left border border-red-500/10 shadow-inner">
+                  <p className="text-red-400 font-mono text-xs leading-relaxed break-all">
+                    <span className="text-red-500/50 mr-2">#</span>
                     {this.state.error.message}
                   </p>
                 </div>
