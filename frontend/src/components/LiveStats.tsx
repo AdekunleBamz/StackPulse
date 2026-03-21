@@ -4,8 +4,7 @@ import { Activity, ExternalLink } from 'lucide-react';
 import { useEffect, useState, memo } from 'react';
 import { StatsCardSkeleton } from './LoadingSkeleton';
 import type { EventStats } from '@/types/api';
-
-
+import { formatNumber } from '@/lib/format';
 
 const SERVER_URL = process.env.NEXT_PUBLIC_SERVER_URL || 'https://stackpulse-b8fw.onrender.com';
 
@@ -133,7 +132,7 @@ const LiveStats = memo(() => {
               className="group relative bg-white/[0.03] border border-white/5 rounded-2xl p-6 text-center hover:bg-white/[0.06] hover:border-white/10 transition-all duration-500 hover:-translate-y-1.5 hover:shadow-[0_20px_40px_-15px_rgba(0,0,0,0.5)] overflow-hidden"
             >
               <div className={`text-3xl font-black tracking-tighter ${item.color} mb-1 group-hover:scale-110 transition-transform duration-500 relative z-10`}>
-                {item.value.toLocaleString()}
+                {formatNumber(item.value)}
               </div>
               <div className="text-gray-400 text-[10px] font-bold uppercase tracking-widest mt-2 group-hover:text-gray-200 transition-colors relative z-10">{item.label}</div>
               
