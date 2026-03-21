@@ -1,11 +1,11 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import { CheckCircle, AlertCircle, Info, AlertTriangle, X } from 'lucide-react';
+import { CheckCircle, AlertCircle, Info, AlertTriangle, X, Loader2 } from 'lucide-react';
 
 interface ToastProps {
   id: string;
-  type: 'success' | 'error' | 'warning' | 'info';
+  type: 'success' | 'error' | 'warning' | 'info' | 'loading';
   title: string;
   message?: string;
   duration?: number;
@@ -40,6 +40,13 @@ const toastStyles = {
     icon: Info,
     iconColor: 'text-sky-400',
     progress: 'bg-gradient-to-r from-sky-600 to-sky-400',
+  },
+  loading: {
+    bg: 'bg-purple-950/60',
+    border: 'border-purple-500/20',
+    icon: Loader2,
+    iconColor: 'text-purple-400 animate-spin',
+    progress: 'bg-gradient-to-r from-purple-600 to-purple-400',
   },
 };
 
@@ -166,7 +173,7 @@ function Toast({ id, type, title, message, duration = 5000, onClose }: ToastProp
 
 interface ToastData {
   id: string;
-  type: 'success' | 'error' | 'warning' | 'info';
+  type: 'success' | 'error' | 'warning' | 'info' | 'loading';
   title: string;
   message?: string;
   duration?: number;
@@ -202,6 +209,12 @@ export const toast = {
   info: (title: string, message?: string, duration?: number) => {
     const id = `toast-${Date.now()}-${Math.random().toString(36).slice(2, 11)}`;
     toasts = [...toasts, { id, type: 'info', title, message, duration }];
+    notifyListeners();
+    return id;
+  },
+  loading: (title: string, message?: string, duration?: number) => {
+    const id = `toast-${Date.now()}-${Math.random().toString(36).slice(2, 11)}`;
+    toasts = [...toasts, { id, type: 'loading', title, message, duration }];
     notifyListeners();
     return id;
   },
