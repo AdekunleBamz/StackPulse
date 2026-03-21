@@ -171,10 +171,11 @@ export default function Header() {
               aria-modal="true"
               aria-label="Mobile navigation menu"
             >
-              <nav className="px-4 py-6 space-y-2" aria-label="Mobile">
+              <nav className="px-4 py-6 space-y-2" aria-label="Mobile Navigation">
                 <Link
                   href="/#features"
                   className="block rounded-xl px-4 py-3 text-base font-semibold text-gray-200 hover:bg-gray-900 transition-colors"
+                  aria-current={pathname === '/#features' ? 'page' : undefined}
                   onClick={() => setIsOpen(false)}
                 >
                   Features
@@ -182,6 +183,7 @@ export default function Header() {
                 <Link
                   href="/#pricing"
                   className="block rounded-xl px-4 py-3 text-base font-semibold text-gray-200 hover:bg-gray-900 transition-colors"
+                  aria-current={pathname === '/#pricing' ? 'page' : undefined}
                   onClick={() => setIsOpen(false)}
                 >
                   Pricing
@@ -189,6 +191,7 @@ export default function Header() {
                 <Link
                   href="/#stats"
                   className="block rounded-xl px-4 py-3 text-base font-semibold text-gray-200 hover:bg-gray-900 transition-colors"
+                  aria-current={pathname === '/#stats' ? 'page' : undefined}
                   onClick={() => setIsOpen(false)}
                 >
                   Live Stats
@@ -197,6 +200,7 @@ export default function Header() {
                   <Link
                     href="/register"
                     className="block rounded-xl px-4 py-3 text-base font-bold text-center bg-purple-600 hover:bg-purple-500 text-white transition-all shadow-lg shadow-purple-500/20"
+                    aria-current={pathname === '/register' ? 'page' : undefined}
                     onClick={() => setIsOpen(false)}
                   >
                     Get Started
@@ -210,6 +214,7 @@ export default function Header() {
                   onClick={() => setIsOpen(false)}
                 >
                   View Documentation
+                  <span className="sr-only">(opens in new tab)</span>
                 </a>
               </nav>
             </div>
