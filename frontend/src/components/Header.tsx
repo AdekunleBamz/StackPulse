@@ -113,7 +113,11 @@ export default function Header() {
             >
               Pricing
             </Link>
-            <Link href="/#stats" className="text-gray-300 hover:text-white transition-colors">
+            <Link 
+              href="/#stats" 
+              className="text-gray-300 hover:text-white transition-colors"
+              aria-current={pathname === '/#stats' ? 'page' : undefined}
+            >
               Live Stats
             </Link>
             <Link 
