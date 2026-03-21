@@ -6,8 +6,14 @@ import { useRouter } from 'next/navigation';
 import { toast } from '@/components/Toast';
 import { useConfirmDialog } from '@/components/ConfirmDialog';
 import { NoAlertsState } from '@/components/EmptyState';
-import { DashboardSkeleton } from '@/components/LoadingSkeleton';
+import  DashboardSkeleton,
+  StatsCardSkeleton,
+  HistorySkeleton
+} from '@/components/LoadingSkeleton';
 import Button from '@/components/ui/Button';
+import { useAccount } from '@/hooks/useAccount';
+import { useSound } from '@/hooks/useSound';
+import { useNotifications } from '@/hooks/useNotifications';
 import { 
   Bell, 
   Wallet, 
@@ -22,7 +28,12 @@ import {
   Award,
   Trash2,
   ToggleLeft,
-  ToggleRight
+  ToggleRight,
+  Loader2,
+  Volume2,
+  VolumeX,
+  Monitor,
+  MonitorOff
 } from 'lucide-react';
 import { Breadcrumbs } from '@/components';
 
@@ -38,11 +49,9 @@ const alertTypes = [
   { id: 6, name: 'Address Watch', icon: Activity, description: 'Monitor specific addresses', iconBgClass: 'bg-orange-500/20', iconClass: 'text-orange-300' },
 ];
 
-export type AlertCategoryId = 1 | 2 | 3 | 4 | 5 | 6;
-
 export interface DashboardAlert {
-  id: string | number;
-  type: AlertCategoryId;
+  id: number;
+  type: number;
   name: string;
   enabled: boolean;
   threshold?: number;
@@ -51,7 +60,17 @@ export interface DashboardAlert {
   createdAt?: string;
 }
 
-export interface UserAccountData {
+export interface AlertHistoryItem {
+  id: string;
+  alertId: number;
+  type: number;
+  message: string;
+  timestamp: string;
+  txId?: string;
+  data?: any;
+}
+
+interface UserData {
   username: string;
   tier: number;
   alertsEnabled: number;
@@ -59,90 +78,38 @@ export interface UserAccountData {
 }
 
 export default function DashboardPage() {
-  const { isConnected, address, connect } = useWallet();
-  const router = useRouter();
-  const { confirm, ConfirmDialog } = useConfirmDialog();
-  const createAlertTitleId = useId();
-  const createAlertDescId = useId();
-  const createAlertSelectRef = useRef<HTMLSelectElement>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [userData, setUserData] = useState<UserAccountData | null>(null);
+  const { address, isConnected, connect, isRegistered, userData, isLoading: isAccountLoading } = useAccount();
   const [alerts, setAlerts] = useState<DashboardAlert[]>([]);
-  const [showCreateAlert, setShowCreateAlert] = useState(false);
-  const [newAlertType, setNewAlertType] = useState<AlertCategoryId>(1);
-  const [newAlertName, setNewAlertName] = useState('');
-  const [newAlertThreshold, setNewAlertThreshold] = useState('10000');
-  const [isCreating, setIsCreating] = useState(false);
-
-  const tierNames = ['Free', 'Basic', 'Pro', 'Premium'];
-  const maxAlerts = [3, 10, 25, 999];
-
-  // Check user registration and load data
+  const [isDataLoading, setIsDataLoading] = useState(true);
+  const [syncingAlertIds, setSyncingAlertIds] = useState<Set<number>>(new Set());
+  const [history, setHistory] = useState<AlertHistoryItem[]>([]);
+  const { enabled: soundEnabled, toggle: toggleSound, playSound } = useSound();
+  const { permission: notifyPermission, requestPermission, sendNotification } = useNotifications();
+  
+  // Load alerts from server when address changes
   useEffect(() => {
-    const loadUserData = async () => {
-      if (!address || !DEPLOYER_ADDRESS) {
-        setIsLoading(false);
-        return;
-      }
-
+    const loadAlerts = async () => {
+      if (!address) return;
       try {
-        const { principalCV, cvToHex, hexToCV, cvToValue } = await import('@stacks/transactions');
-
-        // Check V3 contract for user data
-        const response = await fetch(
-          `https://api.mainnet.hiro.so/v2/contracts/call-read/${DEPLOYER_ADDRESS}/stackpulse-v-j3/get-user`,
-          {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              sender: address,
-              arguments: [cvToHex(principalCV(address))]
-            })
-          }
-        );
-
-        const data = await response.json();
-        
-        if (data.result && data.result !== '0x09') {
-          try {
-            const cv = hexToCV(data.result);
-            const parsed = cvToValue(cv);
-            if (parsed && parsed.value) {
-              setUserData({
-                username: parsed.value.username?.value || '',
-                tier: Number(parsed.value.tier?.value || 0),
-                alertsEnabled: Number(parsed.value['alerts-enabled']?.value || 0),
-                subscriptionEnds: Number(parsed.value['subscription-ends']?.value || 0)
-              });
-            }
-          } catch (parseErr) {
-            console.error('Error parsing user data:', parseErr);
+        const serverUrl = process.env.NEXT_PUBLIC_SERVER_URL || 'https://stackpulse-b8fw.onrender.com';
+        const alertsResponse = await fetch(`${serverUrl}/api/users/${address}/alerts`);
+        if (alertsResponse.ok) {
+          const alertsData = await alertsResponse.json();
+          if (alertsData.alerts) {
+            setAlerts(alertsData.alerts);
           }
         }
-
-        // Load alerts from server
-        try {
-          const serverUrl = process.env.NEXT_PUBLIC_SERVER_URL || 'https://stackpulse-b8fw.onrender.com';
-          const alertsResponse = await fetch(`${serverUrl}/api/users/${address}/alerts`);
-          if (alertsResponse.ok) {
-            const alertsData = await alertsResponse.json();
-            if (alertsData.alerts) {
-              setAlerts(alertsData.alerts);
-            }
-          }
-        } catch (err) {
-          console.error('Error loading alerts:', err);
-        }
-
-      } catch (error) {
-        console.error('Error loading user data:', error);
+      } catch (err) {
+        console.error('Error loading alerts:', err);
       } finally {
-        setIsLoading(false);
+        setIsDataLoading(false);
       }
     };
 
-    loadUserData();
+    loadAlerts();
   }, [address]);
+
+  const isLoading = isAccountLoading || (isConnected && isDataLoading);
 
   useEffect(() => {
     if (!showCreateAlert) return;
@@ -210,6 +177,8 @@ export default function DashboardPage() {
           }
 
           toast.success('Alert created', `TX: ${data.txId}`);
+          playSound('success');
+          sendNotification('Alert Created', { body: `Alert "${newAlertName || alertTypes[newAlertType - 1].name}" is now active.` });
           setShowCreateAlert(false);
           setNewAlertName('');
           setNewAlertThreshold('10000');
@@ -231,10 +200,19 @@ export default function DashboardPage() {
           setIsCreating(false);
         }
       });
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error creating alert:', error);
       toast.dismiss(toastId);
-      toast.error('Failed to create alert', 'Please try again.');
+      
+      const errorMessage = error.message || String(error);
+      if (errorMessage.includes('UserRejected')) {
+        toast.error('Transaction Cancelled', 'You rejected the request in your wallet.');
+      } else if (errorMessage.includes('InsufficientFunds')) {
+        toast.error('Insufficient Funds', 'You do not have enough STX to pay for the transaction fees.');
+      } else {
+        toast.error('Failed to Create Alert', 'An unexpected error occurred. Please try again.');
+      }
+      
       setIsCreating(false);
     } finally {
       // Note: setIsCreating(false) is handled in callbacks because openContractCall is async-finish
@@ -243,31 +221,48 @@ export default function DashboardPage() {
 
   // Toggle alert on/off
   const toggleAlert = async (alertId: number) => {
+    if (syncingAlertIds.has(alertId)) return;
+    
     const existing = alerts.find((a) => a.id === alertId);
     const nextEnabled = !(existing?.enabled ?? false);
-    const toastId = toast.loading('Syncing', `Updating ${existing?.name || 'alert'}...`);
-
-    // Update local state
+    
+    setSyncingAlertIds(prev => new Set(prev).add(alertId));
+    
+    // Update local state (optimistic)
     setAlerts(prev => prev.map(a => 
       a.id === alertId ? { ...a, enabled: nextEnabled } : a
     ));
+    
+    // Toast for feedback
+    const toastId = toast.loading('Syncing', `Updating ${existing?.name || 'alert'} status...`);
 
-    // Update on server
     try {
       const serverUrl = process.env.NEXT_PUBLIC_SERVER_URL || 'https://stackpulse-b8fw.onrender.com';
-      await fetch(`${serverUrl}/api/users/${address}/alerts/${alertId}`, {
+      const res = await fetch(`${serverUrl}/api/users/${address}/alerts/${alertId}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ enabled: nextEnabled })
       });
-      toast.dismiss(toastId);
+      
+      if (!res.ok) throw new Error('Failed to update status');
+      
+      toast.success('Status Updated', `${existing?.name || 'Alert'} is now ${nextEnabled ? 'enabled' : 'disabled'}.`);
+      playSound('notification');
+      sendNotification('Status Updated', { body: `${existing?.name || 'Alert'} is now ${nextEnabled ? 'enabled' : 'disabled'}.` });
     } catch (err) {
       console.error('Error toggling alert:', err);
-      toast.dismiss(toastId);
+      // Revert optimism
       setAlerts((prev) =>
-        prev.map((a) => (a.id === alertId ? { ...a, enabled: existing?.enabled ?? a.enabled } : a))
+        prev.map((a) => (a.id === alertId ? { ...a, enabled: !nextEnabled } : a))
       );
-      toast.error('Update failed', 'Could not toggle alert. Please try again.');
+      toast.error('Sync Failed', 'Could not update alert status. Please try again.');
+    } finally {
+      toast.dismiss(toastId);
+      setSyncingAlertIds(prev => {
+        const next = new Set(prev);
+        next.delete(alertId);
+        return next;
+      });
     }
   };
 
@@ -303,6 +298,21 @@ export default function DashboardPage() {
           }
           toast.error('Delete failed', 'Please try again.');
         }
+      },
+    });
+  };
+
+  // Clear activity history
+  const clearHistory = () => {
+    confirm({
+      title: 'Clear activity history?',
+      message: 'This will permanently remove all past alert logs from your dashboard.',
+      confirmLabel: 'Clear All',
+      cancelLabel: 'Cancel',
+      variant: 'danger',
+      onConfirm: () => {
+        setHistory([]);
+        toast.success('Activity history cleared');
       },
     });
   };
@@ -397,6 +407,20 @@ export default function DashboardPage() {
 	            >
 	              {userData.tier === 0 ? 'Upgrade' : 'Manage Plan'}
 	            </Button>
+	            <button
+	              onClick={toggleSound}
+	              className="p-2.5 bg-gray-800 hover:bg-gray-700 rounded-xl border border-gray-700 transition-all text-purple-400"
+	              title={soundEnabled ? 'Mute sounds' : 'Unmute sounds'}
+	            >
+	              {soundEnabled ? <Volume2 className="w-5 h-5" /> : <VolumeX className="w-5 h-5 text-gray-500" />}
+	            </button>
+	            <button
+	              onClick={requestPermission}
+	              className={`p-2.5 bg-gray-800 hover:bg-gray-700 rounded-xl border border-gray-700 transition-all ${notifyPermission === 'granted' ? 'text-blue-400' : 'text-gray-500'}`}
+	              title={notifyPermission === 'granted' ? 'Notifications enabled' : 'Enable desktop notifications'}
+	            >
+	              {notifyPermission === 'granted' ? <Monitor className="w-5 h-5" /> : <MonitorOff className="w-5 h-5" />}
+	            </button>
 	          </div>
 	        </div>
 
@@ -539,7 +563,9 @@ export default function DashboardPage() {
 	                        aria-label={alert.enabled ? 'Disable alert' : 'Enable alert'}
 	                        title={alert.enabled ? 'Disable alert' : 'Enable alert'}
 	                      >
-	                        {alert.enabled ? (
+	                        {syncingAlertIds.has(alert.id) ? (
+	                          <Loader2 className="w-6 h-6 animate-spin text-purple-500" />
+	                        ) : alert.enabled ? (
 	                          <ToggleRight className="w-6 h-6 text-green-500" />
 	                        ) : (
 	                          <ToggleLeft className="w-6 h-6 text-gray-500" />
@@ -558,6 +584,69 @@ export default function DashboardPage() {
                   </div>
                 );
               })}
+            </div>
+          )}
+        </div>
+
+        {/* Recent Activity Section */}
+        <div className="mt-12 mb-8">
+          <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center gap-3">
+              <Activity className="w-6 h-6 text-purple-400" />
+              <h2 className="text-xl font-bold text-white">Recent Activity</h2>
+            </div>
+            {history.length > 0 && (
+              <button
+                onClick={clearHistory}
+                className="text-xs text-gray-500 hover:text-red-400 transition-colors flex items-center gap-1"
+              >
+                <Trash2 className="w-3 h-3" />
+                Clear History
+              </button>
+            )}
+          </div>
+
+          {isDataLoading ? (
+            <HistorySkeleton />
+          ) : history.length === 0 ? (
+            <div className="bg-gray-900/40 rounded-2xl border border-gray-800/50 p-12 text-center">
+              <div className="w-16 h-16 bg-gray-800/30 rounded-2xl flex items-center justify-center mx-auto mb-4 opacity-40">
+                <Activity className="w-8 h-8 text-gray-500" />
+              </div>
+              <p className="text-gray-500 font-medium">No recent activity detected.</p>
+              <p className="text-gray-600 text-xs mt-1">Alert triggers will appear here in real-time.</p>
+            </div>
+          ) : (
+            <div className="space-y-4">
+              {history.map((item, idx) => (
+                <div 
+                  key={item.id} 
+                  className={`bg-gray-800/30 rounded-xl p-4 border ${
+                    idx === 0 
+                      ? 'border-purple-500/50 shadow-[0_0_20px_rgba(168,85,247,0.1)] ring-1 ring-purple-500/20' 
+                      : 'border-gray-700/30'
+                  } flex items-center justify-between group hover:border-purple-500/20 transition-all text-left animate-in fade-in slide-in-from-top-4 duration-700`}
+                  style={{ animationDelay: `${idx * 40}ms`, animationFillMode: 'both' }}
+                >
+                  <div className="flex items-center gap-4">
+                    <div className={`w-2 h-2 rounded-full ${idx === 0 ? 'bg-purple-400 animate-pulse' : 'bg-gray-600'} shadow-[0_0_8px_rgba(168,85,247,0.4)]`} />
+                    <div>
+                      <p className={`text-sm font-medium ${idx === 0 ? 'text-white' : 'text-gray-300'}`}>{item.message}</p>
+                      <p className="text-gray-500 text-[10px] mt-0.5 font-mono">{new Date(item.timestamp).toLocaleTimeString()}</p>
+                    </div>
+                  </div>
+                  {item.txId && (
+                    <a 
+                      href={`https://explorer.hiro.so/txid/${item.txId}?chain=mainnet`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-[10px] font-bold text-purple-400 hover:text-purple-300 opacity-0 group-hover:opacity-100 transition-opacity"
+                    >
+                      View Transaction →
+                    </a>
+                  )}
+                </div>
+              ))}
             </div>
           )}
         </div>
