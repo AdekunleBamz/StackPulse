@@ -1,5 +1,4 @@
-'use client';
-
+import { memo } from 'react';
 import Link from 'next/link';
 import { Twitter, Github, Linkedin, Mail, ExternalLink, Zap } from 'lucide-react';
 
@@ -36,7 +35,7 @@ const socialLinks = [
   { icon: Mail, href: 'mailto:support@stackpulse.io', label: 'Email' },
 ];
 
-export default function Footer() {
+const Footer = memo(() => {
   return (
     <footer className="relative bg-gray-950 border-t border-white/[0.02] pt-24 pb-20 sm:pt-20 sm:pb-10 px-4 sm:px-6 lg:px-8 mt-12 overflow-hidden" aria-labelledby="footer-heading">
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-4xl h-px bg-gradient-to-r from-transparent via-purple-500/20 to-transparent" />
@@ -46,7 +45,7 @@ export default function Footer() {
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-x-8 gap-y-12 mb-20">
           {/* Brand Column */}
           <div className="sm:col-span-2 lg:col-span-2 sm:pr-8">
-            <Link href="/" className="flex items-center space-x-3.5 mb-10 group/footer-logo">
+            <Link href="/" className="flex items-center space-x-3.5 mb-10 group/footer-logo" prefetch={true}>
               <div className="w-12 h-12 bg-gradient-to-br from-purple-500 via-indigo-600 to-indigo-800 rounded-2xl flex items-center justify-center shadow-[0_15px_35px_-5px_rgba(168,85,247,0.35)] group-hover/footer-logo:scale-110 group-hover/footer-logo:rotate-6 transition-all duration-500 relative overflow-hidden ring-1 ring-white/10">
                 <div className="absolute inset-0 bg-white/20 opacity-0 group-hover/footer-logo:opacity-100 transition-opacity" />
                 <Zap className="w-6 h-6 text-white relative z-10" fill="white" />
@@ -83,6 +82,7 @@ export default function Footer() {
                 <li key={link.label}>
                   <Link 
                     href={link.href} 
+                    prefetch={true}
                     className="text-gray-400 hover:text-white transition-all duration-300 text-[13px] font-semibold hover:translate-x-1 px-2 py-1 rounded-lg outline-none focus-visible:ring-2 focus-visible:ring-purple-500/50 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-950 -ml-2"
                   >
                     {link.label}
@@ -123,6 +123,7 @@ export default function Footer() {
                 <li key={link.label}>
                   <Link 
                     href={link.href} 
+                    prefetch={true}
                     className="text-gray-400 hover:text-white transition-all duration-300 text-[13px] font-semibold hover:translate-x-1 px-2 py-1 rounded-lg outline-none focus-visible:ring-2 focus-visible:ring-purple-500/50 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-950 -ml-2"
                   >
                     {link.label}
@@ -157,4 +158,8 @@ export default function Footer() {
       </div>
     </footer>
   );
-}
+});
+
+Footer.displayName = 'Footer';
+
+export default Footer;
