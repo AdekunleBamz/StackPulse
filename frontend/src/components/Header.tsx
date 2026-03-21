@@ -200,7 +200,7 @@ export default function Header() {
             />
             <div
               ref={mobileNavRef}
-              className="md:hidden fixed top-16 left-0 right-0 z-50 bg-gray-950/90 backdrop-blur-xl border-b border-white/10 shadow-2xl shadow-purple-500/10 animate-slide-down"
+              className="md:hidden fixed top-16 left-0 right-0 z-50 bg-gray-950/90 backdrop-blur-2xl border-b border-white/10 shadow-2xl shadow-purple-500/10 animate-slide-down"
               id={mobileNavId}
               role="dialog"
               aria-modal="true"
