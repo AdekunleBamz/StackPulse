@@ -91,10 +91,12 @@ export default function ConnectWallet() {
               href={explorerUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="mt-2 inline-flex text-xs text-purple-300 hover:text-purple-200 transition-colors"
+              className="mt-2 inline-flex text-xs text-purple-300 hover:text-purple-200 transition-colors focus:outline-none focus:underline"
               role="menuitem"
+              aria-label={`View address ${address} on Stacks Explorer (opens in new tab)`}
             >
               View on explorer
+              <span className="sr-only">(opens in new tab)</span>
             </a>
           </div>
           <div className="p-3 border-b border-gray-700">
