@@ -64,10 +64,10 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button(
       type={type}
       disabled={isDisabled}
       className={cn(
-        'inline-flex items-center justify-center gap-2 font-semibold transition-all duration-200',
-        'focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400/90',
+        'inline-flex items-center justify-center gap-2 font-semibold transition-all duration-300 ease-out',
+        'focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-purple-500',
         'disabled:opacity-60 disabled:cursor-not-allowed',
-        'active:scale-[0.98]',
+        'hover:-translate-y-0.5 active:scale-[0.97] active:translate-y-0',
         variantClasses[variant],
         sizeClasses[size],
         className
