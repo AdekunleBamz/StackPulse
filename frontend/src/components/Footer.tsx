@@ -46,7 +46,7 @@ export default function Footer() {
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8 mb-12">
           {/* Brand Column */}
           <div className="col-span-2 lg:col-span-2 pr-8">
-            <Link href="/" className="flex items-center space-x-2.5 mb-8 group/footer-logo">
+            <Link href="/" className="flex items-center space-x-2.5 mb-10 group/footer-logo">
               <div className="w-11 h-11 bg-gradient-to-br from-purple-500 via-purple-600 to-indigo-700 rounded-xl flex items-center justify-center shadow-lg shadow-purple-500/20 group-hover/footer-logo:scale-110 transition-transform duration-300">
                 <Zap className="w-6 h-6 text-white" fill="white" />
               </div>
@@ -54,7 +54,7 @@ export default function Footer() {
                 StackPulse
               </span>
             </Link>
-            <p className="text-gray-500 text-sm leading-relaxed max-w-sm font-medium">
+            <p className="text-gray-400/90 text-[13px] leading-[1.8] max-w-sm font-medium">
               Real-time blockchain monitoring and alerting platform for the Stacks ecosystem. 
               Get instant notifications for whale transfers, contract deployments, and NFT mints.
             </p>
