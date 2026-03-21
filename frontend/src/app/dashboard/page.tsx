@@ -186,10 +186,19 @@ export default function DashboardPage() {
           setIsCreating(false);
         }
       });
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error creating alert:', error);
       toast.dismiss(toastId);
-      toast.error('Failed to create alert', 'Please try again.');
+      
+      const errorMessage = error.message || String(error);
+      if (errorMessage.includes('UserRejected')) {
+        toast.error('Transaction Cancelled', 'You rejected the request in your wallet.');
+      } else if (errorMessage.includes('InsufficientFunds')) {
+        toast.error('Insufficient Funds', 'You do not have enough STX to pay for the transaction fees.');
+      } else {
+        toast.error('Failed to Create Alert', 'An unexpected error occurred. Please try again.');
+      }
+      
       setIsCreating(false);
     } finally {
       // Note: setIsCreating(false) is handled in callbacks because openContractCall is async-finish
