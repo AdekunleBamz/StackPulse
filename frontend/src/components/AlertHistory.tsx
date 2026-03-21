@@ -148,22 +148,23 @@ export default function AlertHistory({ userAddress }: AlertHistoryProps) {
             <button
               type="button"
               onClick={() => setShowFilters(!showFilters)}
-              className={`p-2 rounded-lg transition-all ${
+              className={`p-2 rounded-lg transition-all focus:outline-none focus:ring-2 focus:ring-purple-500/50 ${
                 showFilters ? 'bg-purple-600 text-white' : 'bg-gray-800 text-gray-400 hover:text-white'
               }`}
               aria-label={showFilters ? 'Hide filters' : 'Show filters'}
+              aria-pressed={showFilters}
               title={showFilters ? 'Hide filters' : 'Show filters'}
             >
-              <Filter className="w-5 h-5" />
+              <Filter className="w-5 h-5" aria-hidden="true" />
             </button>
             <button
               type="button"
               onClick={exportCSV}
-              className="p-2 bg-gray-800 text-gray-400 hover:text-white rounded-lg transition-all"
-              aria-label="Export CSV"
+              className="p-2 bg-gray-800 text-gray-400 hover:text-white rounded-lg transition-all focus:outline-none focus:ring-2 focus:ring-purple-500/50"
+              aria-label="Export history to CSV"
               title="Export CSV"
             >
-              <Download className="w-5 h-5" />
+              <Download className="w-5 h-5" aria-hidden="true" />
             </button>
           </div>
         </div>
