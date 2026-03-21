@@ -141,7 +141,7 @@ export default function Header() {
           <div className="flex items-center gap-3">
             <button
               type="button"
-              className="md:hidden inline-flex items-center justify-center w-10 h-10 rounded-lg border border-gray-800 bg-gray-900/40 text-gray-200 hover:bg-gray-900 transition-colors"
+              className="md:hidden inline-flex items-center justify-center w-10 h-10 rounded-lg border border-gray-800 bg-gray-900/40 text-gray-200 hover:bg-gray-900 transition-colors focus:outline-none focus:ring-2 focus:ring-purple-500"
               aria-expanded={isOpen}
               aria-controls={mobileNavId}
               aria-label={isOpen ? 'Close menu' : 'Open menu'}
