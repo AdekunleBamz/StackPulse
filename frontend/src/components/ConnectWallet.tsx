@@ -66,11 +66,12 @@ export default function ConnectWallet() {
         size="md"
         aria-haspopup="menu"
         aria-expanded={showDropdown}
-        aria-label={`Wallet menu for address ${address}`}
+        aria-label={`Wallet menu for address ${truncateAddress(address!)}`}
+        className="focus:ring-2 focus:ring-purple-500/50"
       >
-        <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
+        <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" aria-hidden="true" />
         <span className="font-mono text-sm">{truncateAddress(address!)}</span>
-        <ChevronDown className="w-4 h-4" />
+        <ChevronDown className="w-4 h-4" aria-hidden="true" />
       </Button>
 
       {showDropdown && (
