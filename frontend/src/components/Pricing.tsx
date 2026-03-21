@@ -717,11 +717,11 @@ export default function Pricing() {
                   </div>
                 )}
 
-                <div className="mb-8">
-                  <h3 className="text-xl font-black text-white mb-2 uppercase tracking-wide opacity-80">{tier.name}</h3>
-                  <div className="flex items-baseline gap-1">
-                    <span className="text-5xl font-black text-white tracking-tighter">{tier.price}</span>
-                    <span className="text-gray-400 font-bold text-sm">STX/mo</span>
+                <div className="mb-10">
+                  <h3 className="text-2xl font-bold text-white mb-3 tracking-tight shadow-sm">{tier.name}</h3>
+                  <div className="flex items-baseline gap-1.5">
+                    <span className="text-6xl font-black text-white tracking-tighter drop-shadow-2xl">{tier.price}</span>
+                    <span className="text-gray-400 font-bold text-sm tracking-wide">STX<span className="text-gray-500 font-medium ml-1">/mo</span></span>
                   </div>
                 </div>
 
