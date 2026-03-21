@@ -725,11 +725,11 @@ export default function Pricing() {
                   </div>
                 </div>
 
-                <ul className="space-y-4 mb-10 flex-1">
+                <ul className="space-y-5 mb-12 flex-1">
                   {tier.features.map((feature, i) => (
-                    <li key={i} className="flex items-start gap-3 text-gray-300 font-medium text-sm leading-tight">
-                      <div className={`mt-0.5 w-5 h-5 rounded-full flex items-center justify-center shrink-0 ${tier.popular ? 'bg-purple-500/10' : 'bg-gray-800'}`}>
-                        <Check className={`w-3 h-3 ${tier.popular ? 'text-purple-400' : 'text-emerald-500'}`} strokeWidth={3} />
+                    <li key={i} className="group/feature flex items-start gap-3 text-gray-300 font-medium text-[13px] leading-relaxed transition-colors hover:text-white">
+                      <div className={`mt-0.5 w-5 h-5 rounded-full flex items-center justify-center shrink-0 transition-transform duration-300 group-hover/feature:scale-110 ${tier.popular ? 'bg-purple-500/20 shadow-[0_0_10px_rgba(168,85,247,0.2)]' : 'bg-white/5'}`}>
+                        <Check className={`w-3 h-3 ${tier.popular ? 'text-purple-400' : 'text-emerald-500 text-opacity-80'}`} strokeWidth={3.5} />
                       </div>
                       {feature}
                     </li>
