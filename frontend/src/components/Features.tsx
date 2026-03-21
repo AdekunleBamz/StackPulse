@@ -47,10 +47,10 @@ export default function Features() {
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(99,102,241,0.05),transparent_70%)] pointer-events-none" />
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-24">
-          <h2 className="text-4xl sm:text-5xl lg:text-6xl font-black mb-6 tracking-tight text-white drop-shadow-sm">
-            Powerful Blockchain <span className="bg-gradient-to-r from-purple-400 to-indigo-400 bg-clip-text text-transparent">Monitoring</span>
+          <h2 className="text-4xl sm:text-5xl lg:text-7xl font-black mb-8 tracking-tighter text-white drop-shadow-md leading-[1.1]">
+            Powerful Blockchain <span className="bg-gradient-to-r from-purple-400 via-indigo-400 to-blue-400 bg-clip-text text-transparent">Monitoring</span>
           </h2>
-          <p className="text-gray-400 text-lg sm:text-xl max-w-2xl mx-auto font-medium leading-relaxed">
+          <p className="text-gray-400 text-lg sm:text-2xl max-w-3xl mx-auto font-medium leading-relaxed opacity-90">
             Stay ahead of the market with real-time alerts powered by Hiro Chainhooks
           </p>
         </div>
