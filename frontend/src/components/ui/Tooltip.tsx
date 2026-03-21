@@ -69,8 +69,7 @@ export default function Tooltip({
         <div 
           id={id}
           className={cn(
-            'absolute z-50 px-3 py-1.5 text-xs font-semibold text-white bg-gray-900/95 backdrop-blur-md rounded-lg shadow-xl border border-gray-700/50 whitespace-nowrap pointer-events-none',
-            'animate-in fade-in zoom-in-95 duration-200 ease-out',
+            'absolute z-50 w-max max-w-xs px-3 py-2 text-sm font-medium text-white bg-gray-900/95 backdrop-blur-xl border border-white/10 rounded-xl shadow-xl shadow-black/50 animate-zoom-in',
             positionClasses[position]
           )}
           role="tooltip"
