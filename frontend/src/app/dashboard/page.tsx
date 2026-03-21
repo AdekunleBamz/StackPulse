@@ -398,12 +398,14 @@ export default function DashboardPage() {
 	        </div>
 
         {/* Stats Cards */}
-        <div className="grid md:grid-cols-4 gap-4 mb-8">
+        <div className="grid md:grid-cols-4 gap-4 mb-8" role="region" aria-label="Quick Statistics">
           <div 
             className="bg-gray-800 rounded-xl p-6 border border-gray-700 animate-fade-in hover:-translate-y-1 hover:shadow-lg hover:shadow-purple-500/10 transition-all"
             style={{ animationDelay: '0ms', animationFillMode: 'both' }}
+            role="status"
+            aria-label={`${alerts.filter(a => a.enabled).length} Active Alerts`}
           >
-            <div className="flex items-center gap-3 mb-2">
+            <div className="flex items-center gap-3 mb-2" aria-hidden="true">
               <Bell className="w-5 h-5 text-purple-400" />
               <span className="text-gray-400">Active Alerts</span>
             </div>
@@ -413,8 +415,10 @@ export default function DashboardPage() {
           <div 
             className="bg-gray-800 rounded-xl p-6 border border-gray-700 animate-fade-in hover:-translate-y-1 hover:shadow-lg hover:shadow-purple-500/10 transition-all"
             style={{ animationDelay: '100ms', animationFillMode: 'both' }}
+            role="status"
+            aria-label={`${alerts.reduce((sum, a) => sum + a.triggerCount, 0)} Total Triggers Today`}
           >
-            <div className="flex items-center gap-3 mb-2">
+            <div className="flex items-center gap-3 mb-2" aria-hidden="true">
               <Zap className="w-5 h-5 text-yellow-400" />
               <span className="text-gray-400">Triggers Today</span>
             </div>
@@ -424,8 +428,10 @@ export default function DashboardPage() {
           <div 
             className="bg-gray-800 rounded-xl p-6 border border-gray-700 animate-fade-in hover:-translate-y-1 hover:shadow-lg hover:shadow-purple-500/10 transition-all"
             style={{ animationDelay: '200ms', animationFillMode: 'both' }}
+            role="status"
+            aria-label={`${new Set(alerts.map(a => a.type)).size} Alert Types Monitored`}
           >
-            <div className="flex items-center gap-3 mb-2">
+            <div className="flex items-center gap-3 mb-2" aria-hidden="true">
               <Activity className="w-5 h-5 text-green-400" />
               <span className="text-gray-400">Alert Types</span>
             </div>
@@ -435,8 +441,10 @@ export default function DashboardPage() {
           <div 
             className="bg-gray-800 rounded-xl p-6 border border-gray-700 animate-fade-in hover:-translate-y-1 hover:shadow-lg hover:shadow-purple-500/10 transition-all"
             style={{ animationDelay: '300ms', animationFillMode: 'both' }}
+            role="status"
+            aria-label="0 Badges Earned"
           >
-            <div className="flex items-center gap-3 mb-2">
+            <div className="flex items-center gap-3 mb-2" aria-hidden="true">
               <Award className="w-5 h-5 text-blue-400" />
               <span className="text-gray-400">Badges Earned</span>
             </div>
@@ -507,7 +515,7 @@ export default function DashboardPage() {
 	              <NoAlertsState onCreateAlert={() => setShowCreateAlert(true)} />
 	            </div>
 	          ) : (
-            <div className="space-y-3">
+            <div className="space-y-3" role="list">
               {alerts.map((alert, index) => {
                 const alertType = alertTypes.find(t => t.id === alert.type);
                 return (
@@ -515,6 +523,8 @@ export default function DashboardPage() {
                     key={alert.id} 
                     className="bg-gray-800 rounded-xl p-4 border border-gray-700 flex items-center justify-between animate-slide-up hover:border-purple-500/50 transition-colors"
                     style={{ animationDelay: `${index * 100}ms`, animationFillMode: 'both' }}
+                    role="listitem"
+                    aria-label={`Alert: ${alert.name}, ${alert.enabled ? 'Enabled' : 'Disabled'}`}
                   >
                     <div className="flex items-center gap-4">
                       <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${alert.enabled ? 'bg-purple-500/20' : 'bg-gray-700'}`}>
