@@ -695,7 +695,7 @@ export default function Pricing() {
             {tiers.map((tier, index) => (
               <div
                 key={index}
-                className={`group relative flex flex-col backdrop-blur-xl transition-all duration-300 rounded-[2rem] p-8 md:p-10 hover:-translate-y-3 hover:ring-1 ${
+                className={`group relative flex flex-col backdrop-blur-xl transition-all duration-300 rounded-[2rem] p-8 sm:p-12 hover:-translate-y-3 hover:ring-1 ${
                   tier.popular
                     ? 'border-2 border-purple-500/50 shadow-[0_20px_50px_-20px_rgba(168,85,247,0.15)] scale-[1.02] hover:scale-[1.05] z-10 bg-gradient-to-br from-gray-900/80 via-gray-900/40 to-purple-900/20 hover:shadow-[0_30px_70px_-15px_rgba(168,85,247,0.4)] hover:border-purple-400 hover:ring-purple-500/30'
                     : tier.tier === currentTier && isRegistered
