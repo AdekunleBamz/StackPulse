@@ -42,6 +42,7 @@ export default function RegisterPage() {
 
     setIsLoading(true);
     setLoadingStep('Preparing...');
+    const toastId = toast.loading('Registering', 'Preparing registration transaction...');
  
     try {
       setLoadingStep('Connecting...');
@@ -63,23 +64,27 @@ export default function RegisterPage() {
         onFinish: (data: { txId: string }) => {
           setLoadingStep('Success!');
           console.log('Registration submitted:', data.txId);
+          toast.dismiss(toastId);
           toast.success('Registration submitted', `TX: ${data.txId}`);
           // Redirect to pricing after a delay
           setTimeout(() => router.push('/#pricing'), 2000);
         },
         onCancel: () => {
           console.log('Registration cancelled');
+          toast.dismiss(toastId);
           setIsLoading(false);
           setLoadingStep('');
         },
       });
     } catch (err) {
       console.error('Registration error:', err);
+      toast.dismiss(toastId);
       toast.error('Registration failed', 'Please try again.');
       setSubmitError('Failed to submit registration. Please try again.');
       setLoadingStep('');
-    } finally {
       setIsLoading(false);
+    } finally {
+      // Note: loading state handled in callbacks
     }
   };
 
