@@ -1,19 +1,29 @@
 # StackPulse
 
-StackPulse is a Stacks monitoring workspace that combines Clarity contracts, Hiro Chainhook manifests, an Express ingestion server, a shared TypeScript package, and a Next.js frontend.
+StackPulse is a premium Stacks monitoring workspace that combines Clarity contracts, Hiro Chainhook manifests, an Express ingestion server, and a Next.js frontend to provide real-time blockchain insights.
 
-## Workspace overview
+## Workspace Overview
 
-- `contracts/`: on-chain alerting, subscription, fee, and badge contracts
-- `chainhooks/`: event manifests for whale transfers, contract deployments, NFT mints, swaps, subscriptions, fees, and badges
-- `server/`: chainhook ingestion, user alert storage, health checks, metrics, notifications, and WebSocket delivery
-- `frontend/`: landing page, registration flow, dashboard, history, badges, and analytics pages
-- `shared/`: shared constants, types, and formatting helpers used across packages
+- `contracts/`: On-chain alerting, subscription, fee, and badge Clarity contracts.
+- `chainhooks/`: Event manifests for whale transfers, contract deployments, NFT mints, swaps, and more.
+- `server/`: Chainhook ingestion, health checks, metrics, notifications, and WebSocket delivery.
+- `frontend/`: Real-time dashboard, registration flow, alert history, and analytics.
+- `shared/`: Shared TypeScript constants, types, and formatting helpers.
 
-More detail lives in [docs/WORKSPACES.md](docs/WORKSPACES.md).
+## Technical Architecture
 
-## Quick start
+StackPulse follows a reactive, event-driven architecture designed for high-performance blockchain monitoring:
 
+1.  **On-Chain Events**: Transactions occur on the Stacks blockchain (whale transfers, contract deploys, etc.).
+2.  **Hiro Chainhooks**: Custom manifests detect these events and POST JSON payloads to our ingestion server.
+3.  **Ingestion Server**: Acts as the brain, receiving hooks, validating signatures, and storing relevant data.
+4.  **Real-time Alerts**: The server triggers user-defined alerts and sends immediate notifications via WebSockets.
+5.  **Frontend Dashboard**: A premium Next.js interface for managing alerts and visualizing trends.
+
+## Development Workflow
+
+### 1. Installation
+Install dependencies for all workspace components:
 ```bash
 npm install
 npm --prefix server install
@@ -21,28 +31,36 @@ npm --prefix shared install
 npm --prefix frontend install
 ```
 
-## Common commands
-
+### 2. Environment Configuration
+Create a `.env` file in the root:
 ```bash
-# Contract checks and tests
-npm run clarinet:check
-npm test
-
-# Backend
-npm --prefix server run dev
-npm --prefix server run build
-
-# Frontend
-npm --prefix frontend run dev
-npm --prefix frontend run lint
-
-# Shared package
-npm --prefix shared run build
+cp .env.example .env
 ```
 
-## Key docs
+### 3. Local Development
+Start the full stack for development:
+```bash
+# Backend server
+npm --prefix server run dev
 
-- [docs/API.md](docs/API.md)
-- [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md)
-- [docs/CONTRACTS.md](docs/CONTRACTS.md)
-- [CONTRIBUTING.md](CONTRIBUTING.md)
+# Frontend application
+npm --prefix frontend run dev
+```
+
+### 4. Testing & Verification
+```bash
+# Run all tests
+npm test
+
+# Lint frontend
+npm --prefix frontend run lint
+```
+
+## Documentation
+
+- [docs/WORKSPACES.md](docs/WORKSPACES.md) - Project structure details
+- [docs/API.md](docs/API.md) - API endpoints and payloads
+- [docs/CONTRACTS.md](docs/CONTRACTS.md) - Clarity contract documentation
+- [CONTRIBUTING.md](CONTRIBUTING.md) - Contribution guidelines
+- [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) - Community standards
+- [SECURITY.md](SECURITY.md) - Security Policy
