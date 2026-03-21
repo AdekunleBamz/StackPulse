@@ -20,9 +20,11 @@ export default function TextField({ label, hint, error, className, id, ...props 
         id={inputId}
         aria-invalid={!!error}
         className={cn(
-          'w-full px-4 py-3 bg-gray-800 border rounded-xl text-white placeholder-gray-500',
-          'focus:outline-none transition-colors',
-          error ? 'border-red-500/40 focus:border-red-400' : 'border-gray-700 focus:border-purple-500',
+          'w-full px-4 py-3 bg-gray-900 border rounded-xl text-white placeholder-gray-500',
+          'focus:outline-none focus:ring-2 transition-all duration-200',
+          error 
+            ? 'border-red-500/40 focus:border-red-500 focus:ring-red-500/20' 
+            : 'border-gray-800 focus:border-purple-500 focus:ring-purple-500/20',
           className
         )}
         {...props}
