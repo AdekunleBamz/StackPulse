@@ -134,7 +134,6 @@ export default function LiveStats() {
           >
             <ExternalLink className="w-3.5 h-3.5" />
           </a>
-        </div>
 
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
           {statItems.map((item, index) => (
