@@ -99,7 +99,11 @@ export default function Header() {
 
           {/* Navigation */}
           <nav className="hidden md:flex items-center space-x-8" aria-label="Primary">
-            <Link href="/#features" className="text-gray-300 hover:text-white transition-colors">
+            <Link 
+              href="/#features" 
+              className="text-gray-300 hover:text-white transition-colors"
+              aria-current={pathname === '/#features' ? 'page' : undefined}
+            >
               Features
             </Link>
             <Link href="/#pricing" className="text-gray-300 hover:text-white transition-colors">
