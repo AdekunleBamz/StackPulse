@@ -745,10 +745,10 @@ export default function Pricing() {
                   disabled={!isRegistered || (isRegistered && tier.tier === currentTier) || isLoading}
                   variant={tier.popular ? 'primary' : 'secondary'}
                   size="lg"
-                  className={`w-full h-13 rounded-2xl font-bold transition-all duration-300 transform active:scale-[0.97] ${
+                  className={`w-full h-13 rounded-2xl font-black transition-all duration-300 transform active:scale-[0.97] ${
                     tier.popular 
-                      ? 'shadow-lg shadow-purple-600/20 hover:shadow-purple-600/40' 
-                      : 'border border-white/5 hover:border-white/10'
+                      ? 'shadow-xl shadow-purple-600/20 hover:shadow-purple-600/50 hover:scale-[1.02]' 
+                      : 'border border-white/5 hover:border-white/20 hover:bg-white/5'
                   }`}
                   isLoading={subscribingTier === tier.tier}
                 >
