@@ -1,7 +1,7 @@
 'use client';
 
 import { Activity, ExternalLink } from 'lucide-react';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState, memo } from 'react';
 import { StatsCardSkeleton } from './LoadingSkeleton';
 import { apiUrl } from '@/lib/env';
 import logger from '@/lib/logger';
@@ -26,7 +26,7 @@ interface StatsResponse {
   [key: string]: any;
 }
 
-export default function LiveStats() {
+const LiveStats = memo(() => {
   const [stats, setStats] = useState<EventStats | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -181,4 +181,8 @@ export default function LiveStats() {
       </div>
     </section>
   );
-}
+});
+
+LiveStats.displayName = 'LiveStats';
+
+export default LiveStats;
