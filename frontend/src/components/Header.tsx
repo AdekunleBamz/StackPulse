@@ -131,9 +131,10 @@ export default function Header() {
               href="https://docs.hiro.so/stacks/chainhook" 
               target="_blank" 
               rel="noopener noreferrer"
-              className="text-gray-300 hover:text-white transition-colors"
+              className="text-gray-300 hover:text-white transition-colors flex items-center gap-1"
             >
               Docs
+              <span className="sr-only">(opens in new tab)</span>
             </a>
           </nav>
 
