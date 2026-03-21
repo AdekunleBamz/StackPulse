@@ -89,7 +89,7 @@ export function NoTransactionsState() {
   );
 }
 
-export function NoResultsState({ onClearFilter }: { onClearFilter?: () => void }) {
+export function NoResultsState({ onClearFilter, className }: { onClearFilter?: () => void; className?: string }) {
   return (
     <EmptyState
       icon={Search}
@@ -99,11 +99,12 @@ export function NoResultsState({ onClearFilter }: { onClearFilter?: () => void }
         label: 'Clear Filters',
         onClick: onClearFilter
       } : undefined}
+      className={className}
     />
   );
 }
 
-export function ErrorState({ message, onRetry }: { message?: string; onRetry?: () => void }) {
+export function ErrorState({ message, onRetry, className }: { message?: string; onRetry?: () => void; className?: string }) {
   return (
     <EmptyState
       icon={AlertTriangle}
@@ -113,6 +114,7 @@ export function ErrorState({ message, onRetry }: { message?: string; onRetry?: (
         label: 'Try Again',
         onClick: onRetry
       } : undefined}
+      className={className}
     />
   );
 }
