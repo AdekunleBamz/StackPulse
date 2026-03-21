@@ -52,12 +52,12 @@ export default function Home() {
           </div>
           
           {/* Main Heading */}
-          <h1 id="hero-title" className="text-5xl sm:text-6xl lg:text-7xl font-bold mb-6">
-            <span className="bg-gradient-to-r from-white via-purple-200 to-blue-200 bg-clip-text text-transparent">
+          <h1 id="hero-title" className="text-6xl sm:text-7xl lg:text-8xl font-black mb-8 leading-[1.1] tracking-tight">
+            <span className="bg-gradient-to-b from-white via-white to-gray-400 bg-clip-text text-transparent drop-shadow-sm">
               Real-time Blockchain
             </span>
             <br />
-            <span className="bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-purple-400 via-indigo-400 to-blue-400 bg-clip-text text-transparent drop-shadow-[0_0_15px_rgba(168,85,247,0.3)]">
               Alerts & Monitoring
             </span>
           </h1>
