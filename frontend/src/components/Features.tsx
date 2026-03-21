@@ -64,7 +64,7 @@ export default function Features() {
               tabIndex={0}
             >
               <div
-                className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${feature.color} flex items-center justify-center mb-5 sm:mb-6 group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 shadow-xl shadow-black/30 relative ring-1 ring-white/20`}
+                className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${feature.color} flex items-center justify-center mb-5 sm:mb-6 group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 shadow-xl shadow-black/30 relative ring-1 ring-white/20 group-hover:ring-white/50`}
               >
                 <div className="absolute inset-0 bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity rounded-2xl animate-pulse" />
                 <feature.icon className="w-6 h-6 text-white relative z-10" />
