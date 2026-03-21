@@ -69,15 +69,17 @@ export default function Pricing() {
     refresh: refreshAccount 
   } = useAccount();
   
-  const editChannelTitleId = useId();
   const [isSaving, setIsSaving] = useState(false);
   const [subscribingTier, setSubscribingTier] = useState<number | null>(null);
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState<string>('');
   const [discord, setDiscord] = useState<string>('');
   const [telegram, setTelegram] = useState<string>('');
-  const [editingChannel, setEditingChannel] = useState<ChannelAction | null>(null);
+  const [showEditChannel, setShowEditChannel] = useState(false);
+  const [editingChannel, setEditingChannel] = useState<'email' | 'discord' | 'telegram' | null>(null);
   const [tempValue, setTempValue] = useState('');
+  const [showPreview, setShowPreview] = useState(false);
+  const editChannelTitleId = useId();
   const [isDataLoading, setIsDataLoading] = useState(false);
 
   const tierNames = ['Free', 'Basic', 'Pro', 'Premium'];
@@ -556,8 +558,15 @@ export default function Pricing() {
                   ))}
                 </div>
 
-                {/* Dashboard Shortcut */}
-                <div className="mt-8 flex justify-center">
+                {/* Dashboard Shortcut & Preview */}
+                <div className="mt-8 flex flex-col md:flex-row items-center justify-center gap-4">
+                  <button
+                    onClick={() => setShowPreview(true)}
+                    className="inline-flex items-center gap-2 px-6 py-3 bg-gray-800 text-purple-400 border border-purple-500/20 rounded-2xl font-bold text-sm hover:bg-gray-700 transition-all active:scale-95"
+                  >
+                    <Activity className="w-4 h-4" />
+                    Preview Alerts
+                  </button>
                   <Link
                     href="/dashboard"
                     className="inline-flex items-center gap-2 px-8 py-3 bg-white text-gray-950 rounded-2xl font-black text-sm hover:bg-gray-200 transition-all shadow-xl shadow-white/5 group active:scale-95"
@@ -570,6 +579,92 @@ export default function Pricing() {
             )}
           </div>
         </div>
+
+        {/* Global Notification Preview Modal */}
+        {showPreview && (
+          <div 
+            className="fixed inset-0 bg-black/80 backdrop-blur-xl flex items-center justify-center z-[110] p-4 animate-in fade-in zoom-in duration-300"
+            onClick={() => setShowPreview(false)}
+          >
+            <div 
+              className="bg-gray-900 border border-white/10 rounded-[2.5rem] max-w-2xl w-full p-8 md:p-12 shadow-[0_0_100px_rgba(168,85,247,0.15)] relative overflow-hidden"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="flex items-center justify-between mb-8">
+                <div>
+                  <h3 className="text-3xl font-black text-white">Alert Preview</h3>
+                  <p className="text-gray-400 font-medium">How your notifications will appear</p>
+                </div>
+                <button onClick={() => setShowPreview(false)} className="p-2 hover:bg-white/5 rounded-full transition-colors">
+                  <X className="w-6 h-6 text-gray-500" />
+                </button>
+              </div>
+
+              <div className="space-y-6">
+                {/* Discord Mockup */}
+                <div className="bg-[#313338] rounded-xl p-4 border-l-4 border-[#5865F2] shadow-lg animate-in slide-in-from-left duration-500">
+                  <div className="flex items-start gap-3">
+                    <div className="w-10 h-10 bg-[#5865F2] rounded-full flex items-center justify-center flex-shrink-0">
+                      <Zap className="w-6 h-6 text-white" />
+                    </div>
+                    <div>
+                      <div className="flex items-center gap-2 mb-1">
+                        <span className="text-white font-bold text-sm">StackPulse BOT</span>
+                        <span className="bg-[#5865F2] text-[10px] text-white px-1 rounded uppercase font-bold">Bot</span>
+                        <span className="text-gray-400 text-xs">Today at 1:42 PM</span>
+                      </div>
+                      <div className="text-[#DBDEE1] text-sm leading-relaxed">
+                        <strong className="block text-white text-base mb-1">🚨 Whale Transfer Detected!</strong>
+                        Address <code className="bg-black/20 px-1 rounded text-purple-400">SP3E...VY3B</code> transferred 
+                        <strong className="text-emerald-400"> 25,000 STX</strong> to Bitrue.
+                        <div className="mt-3 py-2 px-3 bg-black/20 rounded-lg border border-white/5 text-xs text-blue-400 font-mono">
+                          TX: 0x4f12...a9c3
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Telegram Mockup */}
+                <div className="bg-[#242F3D] rounded-xl p-4 shadow-lg animate-in slide-in-from-right duration-500 delay-100">
+                  <div className="flex items-center gap-3 mb-2">
+                    <div className="w-8 h-8 bg-[#3390EC] rounded-full flex items-center justify-center font-bold text-white text-xs">SP</div>
+                    <span className="text-white font-bold text-sm">StackPulse Alerts</span>
+                  </div>
+                  <div className="text-[#E7E9ED] text-sm whitespace-pre-wrap">
+                    🔥 <strong className="text-white font-extrabold uppercase tracking-tight">Contract Deployment</strong>{'\n'}
+                    {'\n'}
+                    New contract <code className="text-blue-400">alex-dao-v3</code> was deployed by <code className="text-blue-400">SP2Z...</code>
+                    {'\n'}
+                    {'\n'}
+                    <span className="text-gray-400 italic">View on Stacks Explorer →</span>
+                  </div>
+                </div>
+
+                {/* Email Mockup */}
+                <div className="bg-white rounded-xl p-4 shadow-lg text-gray-900 animate-in slide-in-from-bottom duration-500 delay-200">
+                  <div className="border-b pb-2 mb-3 flex items-center justify-between">
+                    <span className="bg-purple-100 text-purple-700 text-[10px] font-black px-2 py-0.5 rounded tracking-tighter">StackPulse Security</span>
+                    <span className="text-[10px] text-gray-400">1:45 PM</span>
+                  </div>
+                  <h4 className="font-bold text-base mb-1">Daily Summary: {alertsEnabled} Actives</h4>
+                  <p className="text-xs text-gray-600 leading-relaxed italic">
+                    You had 12 triggers today. The largest was a 50k STX swap on ALEX DEX.
+                  </p>
+                </div>
+              </div>
+              
+              <div className="mt-10 pt-6 border-t border-white/5 flex justify-center">
+                <button 
+                  onClick={() => setShowPreview(false)}
+                  className="px-10 py-3 bg-purple-600 text-white rounded-2xl font-black text-sm hover:bg-purple-500 transition-all active:scale-95"
+                >
+                  Got It, Thanks!
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Edit Channel Modal */}
         {editingChannel && (
