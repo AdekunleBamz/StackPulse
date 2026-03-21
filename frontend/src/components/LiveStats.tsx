@@ -1,7 +1,7 @@
 'use client';
 
 import { Activity, ExternalLink } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, memo } from 'react';
 import { StatsCardSkeleton } from './LoadingSkeleton';
 
 interface EventStats {
@@ -18,7 +18,7 @@ interface EventStats {
 
 const SERVER_URL = process.env.NEXT_PUBLIC_SERVER_URL || 'https://stackpulse-b8fw.onrender.com';
 
-export default function LiveStats() {
+const LiveStats = memo(() => {
   const [stats, setStats] = useState<EventStats | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -154,4 +154,8 @@ export default function LiveStats() {
       </div>
     </section>
   );
-}
+});
+
+LiveStats.displayName = 'LiveStats';
+
+export default LiveStats;
