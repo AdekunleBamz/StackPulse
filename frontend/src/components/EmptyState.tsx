@@ -18,6 +18,8 @@ export default function EmptyState({ icon: Icon, title, description, action, cla
       className={`flex flex-col items-center justify-center py-16 px-4 text-center animate-in fade-in zoom-in duration-500 ${className}`}
       role="status"
       aria-labelledby="empty-state-title"
+      aria-describedby="empty-state-description"
+      aria-live="polite"
     >
       <div 
         className="w-20 h-20 bg-gray-800/50 rounded-full flex items-center justify-center mb-6 shadow-inner border border-gray-700/50"
@@ -27,7 +29,7 @@ export default function EmptyState({ icon: Icon, title, description, action, cla
       </div>
       
       <h3 id="empty-state-title" className="text-xl font-bold text-white mb-2 tracking-tight">{title}</h3>
-      <p className="text-gray-400 max-w-md mb-8 leading-relaxed">{description}</p>
+      <p id="empty-state-description" className="text-gray-400 max-w-md mb-8 leading-relaxed">{description}</p>
       
       {action && (
         <button
