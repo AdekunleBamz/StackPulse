@@ -553,7 +553,7 @@ export default function DashboardPage() {
             onClick={() => setShowCreateAlert(false)}
           >
             <div
-              className="bg-gray-800 rounded-2xl p-6 max-w-md w-full border border-purple-500/30"
+              className="bg-gray-800 rounded-2xl p-6 max-w-md w-full border border-purple-500/30 shadow-2xl shadow-purple-900/40 animate-zoom-in"
               role="dialog"
               aria-modal="true"
               aria-labelledby={createAlertTitleId}
