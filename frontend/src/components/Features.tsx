@@ -70,7 +70,7 @@ export default function Features() {
               <h3 className="text-lg sm:text-xl font-black text-white mb-2 sm:mb-3 group-hover:text-purple-300 transition-colors tracking-tighter">
                 {feature.title}
               </h3>
-              <p className="text-gray-400 leading-relaxed font-medium text-sm sm:text-base">
+              <p className="text-gray-400/90 leading-relaxed font-medium text-sm sm:text-base max-w-[280px]">
                 {feature.description}
               </p>
               
