@@ -67,7 +67,7 @@ export default function Features() {
                 <div className="absolute inset-0 bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity rounded-2xl animate-pulse" />
                 <feature.icon className="w-6 h-6 text-white relative z-10" />
               </div>
-              <h3 className="text-lg sm:text-xl font-black text-white mb-2 sm:mb-3 group-hover:text-purple-400 transition-colors tracking-tight">
+              <h3 className="text-lg sm:text-xl font-black text-white mb-2 sm:mb-3 group-hover:text-purple-300 transition-colors tracking-tighter">
                 {feature.title}
               </h3>
               <p className="text-gray-400 leading-relaxed font-medium text-sm sm:text-base">
