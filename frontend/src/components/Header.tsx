@@ -178,7 +178,7 @@ export default function Header() {
               <nav className="px-4 py-6 space-y-2" aria-label="Mobile Navigation">
                 <Link
                   href="/#features"
-                  className="block rounded-2xl px-5 py-3.5 text-base font-bold text-gray-400 hover:bg-white/10 hover:text-white transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-purple-500/50 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-950 active:scale-[0.98] aria-[current=page]:bg-white/10 aria-[current=page]:text-white animate-slide-down [animation-delay:100ms] fill-mode-backwards"
+                  className="block rounded-2xl px-5 py-3.5 text-base font-bold text-gray-400 hover:bg-white/10 hover:text-white transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-purple-500/50 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-950 active:scale-[0.98] aria-[current=page]:bg-white/10 aria-[current=page]:text-white animate-slide-down animate-stagger-1 fill-mode-backwards"
                   aria-current={pathname === '/#features' ? 'page' : undefined}
                   onClick={() => setIsOpen(false)}
                 >
@@ -186,7 +186,7 @@ export default function Header() {
                 </Link>
                 <Link
                   href="/#pricing"
-                  className="block rounded-2xl px-5 py-3.5 text-base font-bold text-gray-400 hover:bg-white/10 hover:text-white transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-purple-500/50 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-950 active:scale-[0.98] aria-[current=page]:bg-white/10 aria-[current=page]:text-white animate-slide-down [animation-delay:150ms] fill-mode-backwards"
+                  className="block rounded-2xl px-5 py-3.5 text-base font-bold text-gray-400 hover:bg-white/10 hover:text-white transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-purple-500/50 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-950 active:scale-[0.98] aria-[current=page]:bg-white/10 aria-[current=page]:text-white animate-slide-down animate-stagger-2 fill-mode-backwards"
                   aria-current={pathname === '/#pricing' ? 'page' : undefined}
                   onClick={() => setIsOpen(false)}
                 >
@@ -194,13 +194,13 @@ export default function Header() {
                 </Link>
                 <Link
                   href="/#stats"
-                  className="block rounded-2xl px-5 py-3.5 text-base font-bold text-gray-400 hover:bg-white/10 hover:text-white transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-purple-500/50 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-950 active:scale-[0.98] aria-[current=page]:bg-white/10 aria-[current=page]:text-white animate-slide-down [animation-delay:200ms] fill-mode-backwards"
+                  className="block rounded-2xl px-5 py-3.5 text-base font-bold text-gray-400 hover:bg-white/10 hover:text-white transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-purple-500/50 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-950 active:scale-[0.98] aria-[current=page]:bg-white/10 aria-[current=page]:text-white animate-slide-down animate-stagger-3 fill-mode-backwards"
                   aria-current={pathname === '/#stats' ? 'page' : undefined}
                   onClick={() => setIsOpen(false)}
                 >
                   Live Stats
                 </Link>
-                <div className="pt-4 px-2 animate-slide-down [animation-delay:250ms] fill-mode-backwards">
+                <div className="pt-4 px-2 animate-slide-down animate-stagger-4 fill-mode-backwards">
                   <Link
                     href="/register"
                     className="flex items-center justify-center h-14 rounded-2xl bg-gradient-to-r from-purple-600 via-indigo-600 to-indigo-700 text-base font-black text-white transition-all shadow-[0_10px_30px_-5px_rgba(168,85,247,0.4)] active:scale-95 outline-none focus-visible:ring-2 focus-visible:ring-purple-500/50 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-950 tracking-tight"
@@ -214,7 +214,7 @@ export default function Header() {
                   href="https://docs.hiro.so/stacks/chainhook"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="mt-2 flex items-center justify-center h-14 rounded-2xl bg-white/5 border border-white/5 text-base font-bold text-gray-400 hover:bg-white/10 hover:text-white transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-purple-500/50 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-950 active:scale-[0.98] animate-slide-down [animation-delay:300ms] fill-mode-backwards"
+                  className="mt-2 flex items-center justify-center h-14 rounded-2xl bg-white/5 border border-white/5 text-base font-bold text-gray-400 hover:bg-white/10 hover:text-white transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-purple-500/50 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-950 active:scale-[0.98] animate-slide-down animate-stagger-5 fill-mode-backwards"
                   onClick={() => setIsOpen(false)}
                 >
                   View Documentation
