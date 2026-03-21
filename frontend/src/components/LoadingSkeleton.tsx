@@ -48,22 +48,22 @@ export default function LoadingSkeleton({
 // Predefined skeleton layouts for common use cases
 export function AlertCardSkeleton() {
   return (
-    <div className="bg-gray-800 rounded-xl p-4 border border-gray-700">
-      <div className="flex items-center justify-between mb-3">
-        <LoadingSkeleton width={120} height={20} />
-        <LoadingSkeleton width={60} height={24} variant="circular" />
+    <div className="bg-gray-950/40 backdrop-blur-md rounded-2xl p-5 border border-white/5 shadow-xl shadow-black/20">
+      <div className="flex items-center justify-between mb-4">
+        <LoadingSkeleton width={140} height={24} />
+        <LoadingSkeleton width={64} height={24} variant="circular" />
       </div>
-      <LoadingSkeleton height={16} className="mb-2" />
-      <LoadingSkeleton width="60%" height={14} />
+      <LoadingSkeleton height={18} className="mb-3" />
+      <LoadingSkeleton width="70%" height={16} />
     </div>
   );
 }
 
 export function StatsCardSkeleton() {
   return (
-    <div className="bg-gray-900/50 border border-gray-800 rounded-xl p-6">
-      <LoadingSkeleton width={100} height={14} className="mb-2" />
-      <LoadingSkeleton width={80} height={36} />
+    <div className="bg-gray-950/40 backdrop-blur-md border border-white/5 rounded-2xl p-6 shadow-xl shadow-black/20">
+      <LoadingSkeleton width={110} height={14} className="mb-3 opacity-60" />
+      <LoadingSkeleton width={90} height={40} />
     </div>
   );
 }
