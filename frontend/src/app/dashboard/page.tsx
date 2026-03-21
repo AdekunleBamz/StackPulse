@@ -38,17 +38,24 @@ const alertTypes = [
   { id: 6, name: 'Address Watch', icon: Activity, description: 'Monitor specific addresses', iconBgClass: 'bg-orange-500/20', iconClass: 'text-orange-300' },
 ];
 
-interface UserAlert {
-  id: number;
-  type: number;
+export interface BaseAlert {
+  id: string | number;
   name: string;
   enabled: boolean;
-  threshold?: number;
-  targetAddress?: string;
   triggerCount: number;
+  createdAt?: string;
 }
 
-interface UserData {
+export interface WhaleAlert extends BaseAlert { type: 1; threshold: number; }
+export interface ContractAlert extends BaseAlert { type: 2; }
+export interface NFTAlert extends BaseAlert { type: 3; }
+export interface TokenAlert extends BaseAlert { type: 4; }
+export interface SwapAlert extends BaseAlert { type: 5; threshold: number; }
+export interface WatchAlert extends BaseAlert { type: 6; targetAddress: string; }
+
+export type DashboardAlert = WhaleAlert | ContractAlert | NFTAlert | TokenAlert | SwapAlert | WatchAlert;
+
+export interface UserAccountData {
   username: string;
   tier: number;
   alertsEnabled: number;
@@ -63,8 +70,8 @@ export default function DashboardPage() {
   const createAlertDescId = useId();
   const createAlertSelectRef = useRef<HTMLSelectElement>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [userData, setUserData] = useState<UserData | null>(null);
-  const [alerts, setAlerts] = useState<UserAlert[]>([]);
+  const [userData, setUserData] = useState<UserAccountData | null>(null);
+  const [alerts, setAlerts] = useState<DashboardAlert[]>([]);
   const [showCreateAlert, setShowCreateAlert] = useState(false);
   const [newAlertType, setNewAlertType] = useState(1);
   const [newAlertName, setNewAlertName] = useState('');
