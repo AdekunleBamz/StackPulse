@@ -127,19 +127,22 @@ export default function Footer() {
         </div>
 
         {/* Bottom Bar */}
-        <div className="pt-8 border-t border-white/[0.03] flex flex-col md:flex-row justify-between items-center gap-6">
-          <p className="text-gray-600 text-[11px] font-medium tracking-tight">
-            © {new Date().getFullYear()} StackPulse Labs. All rights reserved.
-          </p>
-          <div className="flex items-center gap-8">
-            <span className="flex items-center gap-2.5 text-[10px] font-bold text-gray-500 uppercase tracking-[0.2em]">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)] animate-pulse" />
-              Mainnet Live
-            </span>
-            <div className="h-4 w-px bg-gray-900 hidden md:block opacity-50" />
-            <p className="text-gray-600 text-[10px] font-bold uppercase tracking-widest">
-              Built with <span className="text-purple-500/80">❤</span> for Stacks
+        <div className="pt-10 border-t border-white/[0.03] flex flex-col md:flex-row justify-between items-center gap-8">
+          <div className="flex flex-col items-center md:items-start gap-1">
+            <p className="text-gray-400 text-[11px] font-bold tracking-tight">
+              © {new Date().getFullYear()} StackPulse Labs.
             </p>
+            <p className="text-gray-600 text-[10px] font-medium">
+              Made with passion for the Stacks ecosystem.
+            </p>
+          </div>
+          <div className="flex items-center gap-8">
+            <div className="flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-emerald-500/5 border border-emerald-500/10 shadow-inner">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.4)] animate-pulse" />
+              <span className="text-[10px] font-black text-emerald-500/90 uppercase tracking-[0.2em]">
+                Mainnet Live
+              </span>
+            </div>
           </div>
         </div>
       </div>
