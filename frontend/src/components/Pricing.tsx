@@ -727,11 +727,15 @@ export default function Pricing() {
 
                 <ul className="space-y-5 mb-12 flex-1">
                   {tier.features.map((feature, i) => (
-                    <li key={i} className="group/feature flex items-start gap-3 text-gray-300 font-medium text-[13px] leading-relaxed transition-colors hover:text-white">
-                      <div className={`mt-0.5 w-5 h-5 rounded-full flex items-center justify-center shrink-0 transition-transform duration-300 group-hover/feature:scale-110 ${tier.popular ? 'bg-purple-500/20 shadow-[0_0_10px_rgba(168,85,247,0.2)]' : 'bg-white/5'}`}>
-                        <Check className={`w-3 h-3 ${tier.popular ? 'text-purple-400' : 'text-emerald-500 text-opacity-80'}`} strokeWidth={3.5} />
+                    <li key={i} className="group/feature flex items-start gap-4 text-gray-400 font-medium text-[13px] leading-relaxed transition-colors hover:text-white">
+                      <div className={`mt-0.5 w-5 h-5 rounded-full flex items-center justify-center shrink-0 transition-all duration-300 group-hover/feature:scale-110 ${
+                        tier.popular 
+                          ? 'bg-purple-500/20 text-purple-400 shadow-[0_0_10px_rgba(168,85,247,0.2)]' 
+                          : 'bg-emerald-500/10 text-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.1)]'
+                      }`}>
+                        <Check className="w-3 h-3" strokeWidth={4} />
                       </div>
-                      {feature}
+                      <span className="group-hover/feature:translate-x-0.5 transition-transform duration-300">{feature}</span>
                     </li>
                   ))}
                 </ul>
