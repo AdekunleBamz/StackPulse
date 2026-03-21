@@ -68,11 +68,15 @@ export default function Tooltip({
       {isVisible && (
         <div 
           id={id}
-          className={`absolute z-50 px-2 py-1 text-xs font-medium text-white bg-gray-800 rounded shadow-lg whitespace-nowrap pointer-events-none transition-opacity duration-200 ${positionClasses[position]}`}
+          className={cn(
+            'absolute z-50 px-3 py-1.5 text-xs font-semibold text-white bg-gray-900/95 backdrop-blur-md rounded-lg shadow-xl border border-gray-700/50 whitespace-nowrap pointer-events-none',
+            'animate-in fade-in zoom-in-95 duration-200 ease-out',
+            positionClasses[position]
+          )}
           role="tooltip"
         >
           {content}
-          <div className={`absolute border-4 border-transparent ${arrowClasses[position]}`} aria-hidden="true" />
+          <div className={cn('absolute border-4 border-transparent', arrowClasses[position])} aria-hidden="true" />
         </div>
       )}
     </div>
