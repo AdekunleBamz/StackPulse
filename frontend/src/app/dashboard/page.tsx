@@ -577,7 +577,7 @@ export default function DashboardPage() {
                       setNewAlertType(parseInt(e.target.value));
                       setNewAlertName(alertTypes[parseInt(e.target.value) - 1].name);
                     }}
-                    className="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-purple-500"
+                    className="w-full bg-gray-700/50 border border-gray-600 rounded-lg px-4 py-3 text-white transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500/50 focus:shadow-[0_0_15px_-3px_rgba(168,85,247,0.4)]"
                   >
                     {alertTypes.map((type) => (
                       <option key={type.id} value={type.id}>{type.name}</option>
@@ -592,7 +592,7 @@ export default function DashboardPage() {
                     value={newAlertName}
                     onChange={(e) => setNewAlertName(e.target.value)}
                     placeholder="My Whale Alert"
-                    className="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-3 text-white placeholder-gray-400 focus:outline-none focus:border-purple-500"
+                    className="w-full bg-gray-700/50 border border-gray-600 rounded-lg px-4 py-3 text-white placeholder-gray-400 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500/50 focus:shadow-[0_0_15px_-3px_rgba(168,85,247,0.4)]"
                   />
                 </div>
 
@@ -607,7 +607,7 @@ export default function DashboardPage() {
 	                      value={newAlertThreshold}
 	                      onChange={(e) => setNewAlertThreshold(e.target.value)}
 	                      placeholder="10000"
-	                      className="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-3 text-white placeholder-gray-400 focus:outline-none focus:border-purple-500"
+	                      className="w-full bg-gray-700/50 border border-gray-600 rounded-lg px-4 py-3 text-white placeholder-gray-400 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500/50 focus:shadow-[0_0_15px_-3px_rgba(168,85,247,0.4)]"
 	                    />
                     <p className="text-gray-500 text-xs mt-1">Alert when transfers exceed this amount</p>
                   </div>
