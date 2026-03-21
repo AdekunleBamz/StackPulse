@@ -77,10 +77,10 @@ export default class ErrorBoundary extends Component<Props, State> {
                 </div>
               )}
               
-              <div className="flex gap-3 justify-center">
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <button
                   onClick={this.handleRetry}
-                  className="px-6 py-2 bg-purple-600 hover:bg-purple-500 text-white rounded-lg font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 focus:ring-offset-gray-800"
+                  className="px-8 py-3 bg-purple-600 hover:bg-purple-500 text-white rounded-2xl font-bold transition-all duration-300 hover:scale-105 active:scale-95 shadow-lg shadow-purple-500/25 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 focus:ring-offset-gray-900"
                   aria-label="Reload the application"
                 >
                   Try Again
@@ -88,7 +88,7 @@ export default class ErrorBoundary extends Component<Props, State> {
                 
                 <a
                   href="/"
-                  className="px-6 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 focus:ring-offset-gray-800"
+                  className="px-8 py-3 bg-white/5 hover:bg-white/10 text-white rounded-2xl font-bold transition-all duration-300 hover:scale-105 active:scale-95 border border-white/5 focus:outline-none focus:ring-2 focus:ring-white/20 focus:ring-offset-2 focus:ring-offset-gray-900"
                   aria-label="Go back to home page"
                 >
                   Go Home
