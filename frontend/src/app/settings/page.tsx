@@ -102,6 +102,8 @@ const SettingsSection = ({
   </div>
 );
 
+import { ErrorState } from '@/components/EmptyState';
+
 export default function SettingsPage() {
   const { isConnected, address, disconnect } = useWallet();
   const { confirm, ConfirmDialog } = useConfirmDialog();
@@ -133,40 +135,52 @@ export default function SettingsPage() {
   });
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const loadSettings = async () => {
+    if (!address) {
+      setIsLoading(false);
+      return;
+    }
+    
+    setIsLoading(true);
+    setError(null);
+    try {
+      const serverUrl = process.env.NEXT_PUBLIC_SERVER_URL || 'https://stackpulse-b8fw.onrender.com';
+      const response = await fetch(`${serverUrl}/api/users/${address}`);
+      if (response.ok) {
+        const data = await response.json();
+        if (data.data) {
+          setSettings(prev => ({
+            ...prev,
+            profile: {
+              username: data.data.username || '',
+              email: data.data.email || '',
+              discord: data.data.discord || '',
+              telegram: data.data.telegram || '',
+            },
+          }));
+        }
+      } else {
+        throw new Error('Failed to load settings');
+      }
+    } catch (err) {
+      console.error('Error loading settings:', err);
+      setError('Failed to load your profile settings. Please check your connection and try again.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   useEffect(() => {
-    // Load settings from server
-    const loadSettings = async () => {
-      if (!address) return;
-      
-      try {
-        const serverUrl = process.env.NEXT_PUBLIC_SERVER_URL || 'https://stackpulse-b8fw.onrender.com';
-        const response = await fetch(`${serverUrl}/api/users/${address}`);
-        if (response.ok) {
-          const data = await response.json();
-          if (data.data) {
-            setSettings(prev => ({
-              ...prev,
-              profile: {
-                username: data.data.username || '',
-                email: data.data.email || '',
-                discord: data.data.discord || '',
-                telegram: data.data.telegram || '',
-              },
-            }));
-          }
-        }
-      } catch (error) {
-        console.error('Error loading settings:', error);
-      }
-    };
-
     loadSettings();
   }, [address]);
 
   const handleSave = async () => {
     if (!address) return;
     
+    const toastId = toast.loading('Saving Settings', 'Updating your profile preferences...');
     setSaving(true);
     try {
       const serverUrl = process.env.NEXT_PUBLIC_SERVER_URL || 'https://stackpulse-b8fw.onrender.com';
@@ -180,12 +194,14 @@ export default function SettingsPage() {
             .map(([type]) => type),
         }),
       });
+      toast.dismiss(toastId);
       if (!res.ok) throw new Error('Save failed');
       setSaved(true);
       toast.success('Settings saved');
       setTimeout(() => setSaved(false), 3000);
-    } catch (error) {
-      console.error('Error saving settings:', error);
+    } catch (err) {
+      console.error('Error saving settings:', err);
+      toast.dismiss(toastId);
       toast.error('Save failed', 'Please try again.');
     } finally {
       setSaving(false);
@@ -215,15 +231,43 @@ export default function SettingsPage() {
 
   if (!isConnected) {
     return (
-      <main id="main" className="min-h-screen bg-gray-950 flex items-center justify-center">
-        <div className="text-center">
-          <Settings className="w-16 h-16 text-gray-600 mx-auto mb-4" />
-          <h2 className="text-2xl font-bold text-white mb-2">Connect Wallet</h2>
-          <p className="text-gray-400 mb-4">Please connect your wallet to access settings</p>
-          <Link href="/" className="text-purple-400 hover:text-purple-300">
+      <main id="main" className="min-h-screen bg-gray-950 flex items-center justify-center p-4">
+        <div className="text-center max-w-sm">
+          <Settings className="w-16 h-16 text-gray-700 mx-auto mb-6" />
+          <h2 className="text-2xl font-bold text-white mb-3">Connect Wallet</h2>
+          <p className="text-gray-400 mb-8">Please connect your wallet to manage your account settings and notification preferences.</p>
+          <Link href="/" className="inline-flex items-center gap-2 text-purple-400 hover:text-purple-300 font-medium transition-colors">
             Go to Home
+            <ChevronRight className="w-4 h-4" />
           </Link>
         </div>
+      </main>
+    );
+  }
+
+  if (isLoading) {
+    return (
+      <main id="main" className="min-h-screen bg-gray-950 py-12 px-4">
+        <div className="max-w-4xl mx-auto space-y-8">
+          <div className="h-10 w-48 bg-gray-800 rounded-lg animate-pulse" />
+          <div className="grid gap-6">
+            {[1, 2, 3].map(i => (
+              <div key={i} className="h-64 bg-gray-900 border border-gray-800 rounded-2xl animate-pulse" />
+            ))}
+          </div>
+        </div>
+      </main>
+    );
+  }
+
+  if (error) {
+    return (
+      <main id="main" className="min-h-screen bg-gray-950 flex items-center justify-center p-4">
+        <ErrorState 
+          message={error} 
+          onRetry={loadSettings}
+          className="max-w-md bg-gray-900 border border-gray-800 p-8 rounded-3xl"
+        />
       </main>
     );
   }
