@@ -62,12 +62,12 @@ export default function Footer() {
                 <a
                   key={social.label}
                   href={social.href}
-                  className="w-10 h-10 rounded-full bg-gray-900 border border-gray-800 flex items-center justify-center text-gray-400 hover:text-white hover:border-gray-600 hover:bg-gray-800 transition-all focus:outline-none focus:ring-2 focus:ring-purple-500/50"
+                  className="w-10 h-10 rounded-xl bg-gray-900 border border-gray-800 flex items-center justify-center text-gray-500 hover:text-white hover:border-purple-500/50 hover:bg-gray-800 hover:shadow-[0_0_15px_rgba(168,85,247,0.15)] transition-all duration-300 hover:-translate-y-1 active:scale-95 focus:outline-none focus:ring-2 focus:ring-purple-500/50"
                   aria-label={social.label}
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  <social.icon className="w-5 h-5" />
+                  <social.icon className="w-5 h-5 stroke-[1.5]" />
                 </a>
               ))}
             </div>
