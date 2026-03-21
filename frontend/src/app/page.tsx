@@ -1,10 +1,27 @@
 'use client';
 
 import Header from '@/components/Header';
-import Features from '@/components/Features';
-import Pricing from '@/components/Pricing';
-import LiveStats from '@/components/LiveStats';
-import Footer from '@/components/Footer';
+import dynamic from 'next/dynamic';
+
+const Features = dynamic(() => import('@/components/Features'), {
+  loading: () => <div className="min-h-[400px] animate-pulse bg-gray-950/50" />,
+  ssr: false
+});
+
+const Pricing = dynamic(() => import('@/components/Pricing'), {
+  loading: () => <div className="min-h-[600px] animate-pulse bg-gray-950/50" />,
+  ssr: false
+});
+
+const LiveStats = dynamic(() => import('@/components/LiveStats'), {
+  loading: () => <div className="min-h-[400px] animate-pulse bg-gray-950/50" />,
+  ssr: false
+});
+
+const Footer = dynamic(() => import('@/components/Footer'), {
+  loading: () => <div className="h-64 animate-pulse bg-gray-950/50" />,
+  ssr: false
+});
 
 export default function Home() {
   return (
