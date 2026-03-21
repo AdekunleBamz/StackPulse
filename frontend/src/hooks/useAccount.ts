@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useWallet } from '@/context/WalletContext';
+import { toast } from '@/components/Toast';
 import type { UserAccountData } from '@/app/dashboard/page';
 
 const DEPLOYER_ADDRESS = process.env.NEXT_PUBLIC_DEPLOYER_ADDRESS || '';
@@ -10,10 +11,15 @@ export function useAccount() {
   const [userData, setUserData] = useState<UserAccountData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  const checkRegistration = useCallback(async () => {
+  const checkRegistration = useCallback(async (isManual = false) => {
     if (!address || !DEPLOYER_ADDRESS) {
       setIsLoading(false);
       return;
+    }
+
+    let toastId;
+    if (isManual) {
+      toastId = toast.loading('Syncing Account', 'Fetching latest data from Stacks...');
     }
 
     try {
@@ -55,21 +61,27 @@ export function useAccount() {
       } else {
         localStorage.removeItem(`stackpulse_registered_${address}`);
       }
+      
+      if (isManual) {
+        toast.success('Sync Complete', 'Account data updated.');
+      }
     } catch (error) {
       console.error('Error checking account:', error);
+      if (isManual) {
+        toast.error('Sync Failed', 'Could not refresh account data.');
+      }
     } finally {
       setIsLoading(false);
+      if (toastId) toast.dismiss(toastId);
     }
   }, [address]);
 
   useEffect(() => {
-    // Try to load from cache first
     if (address) {
       const cached = localStorage.getItem(`stackpulse_registered_${address}`);
       if (cached) {
         const parsed = JSON.parse(cached);
         setIsRegistered(true);
-        // We don't have full userData in cache yet, but we can populate what we have
         setUserData(prev => ({
           username: parsed.username || '',
           tier: parsed.tier || 0,
@@ -79,7 +91,7 @@ export function useAccount() {
       }
     }
     
-    checkRegistration();
+    checkRegistration(false);
   }, [address, checkRegistration]);
 
   return {
@@ -89,6 +101,6 @@ export function useAccount() {
     isRegistered,
     userData,
     isLoading,
-    refresh: checkRegistration
+    refresh: () => checkRegistration(true)
   };
 }
