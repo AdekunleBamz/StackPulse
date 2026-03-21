@@ -23,7 +23,8 @@ import {
   Award,
   Trash2,
   ToggleLeft,
-  ToggleRight
+  ToggleRight,
+  Loader2
 } from 'lucide-react';
 import { Breadcrumbs } from '@/components';
 
@@ -71,6 +72,7 @@ export default function DashboardPage() {
   const { address, isConnected, connect, isRegistered, userData, isLoading: isAccountLoading } = useAccount();
   const [alerts, setAlerts] = useState<DashboardAlert[]>([]);
   const [isDataLoading, setIsDataLoading] = useState(true);
+  const [syncingAlertIds, setSyncingAlertIds] = useState<Set<number>>(new Set());
   
   // Load alerts from server when address changes
   useEffect(() => {
@@ -196,31 +198,46 @@ export default function DashboardPage() {
 
   // Toggle alert on/off
   const toggleAlert = async (alertId: number) => {
+    if (syncingAlertIds.has(alertId)) return;
+    
     const existing = alerts.find((a) => a.id === alertId);
     const nextEnabled = !(existing?.enabled ?? false);
-    const toastId = toast.loading('Syncing', `Updating ${existing?.name || 'alert'}...`);
-
-    // Update local state
+    
+    setSyncingAlertIds(prev => new Set(prev).add(alertId));
+    
+    // Update local state (optimistic)
     setAlerts(prev => prev.map(a => 
       a.id === alertId ? { ...a, enabled: nextEnabled } : a
     ));
+    
+    // Toast for feedback
+    const toastId = toast.loading('Syncing', `Updating ${existing?.name || 'alert'} status...`);
 
-    // Update on server
     try {
       const serverUrl = process.env.NEXT_PUBLIC_SERVER_URL || 'https://stackpulse-b8fw.onrender.com';
-      await fetch(`${serverUrl}/api/users/${address}/alerts/${alertId}`, {
+      const res = await fetch(`${serverUrl}/api/users/${address}/alerts/${alertId}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ enabled: nextEnabled })
       });
-      toast.dismiss(toastId);
+      
+      if (!res.ok) throw new Error('Failed to update status');
+      
+      toast.success('Status Updated', `${existing?.name || 'Alert'} is now ${nextEnabled ? 'enabled' : 'disabled'}.`);
     } catch (err) {
       console.error('Error toggling alert:', err);
-      toast.dismiss(toastId);
+      // Revert optimism
       setAlerts((prev) =>
-        prev.map((a) => (a.id === alertId ? { ...a, enabled: existing?.enabled ?? a.enabled } : a))
+        prev.map((a) => (a.id === alertId ? { ...a, enabled: !nextEnabled } : a))
       );
-      toast.error('Update failed', 'Could not toggle alert. Please try again.');
+      toast.error('Sync Failed', 'Could not update alert status. Please try again.');
+    } finally {
+      toast.dismiss(toastId);
+      setSyncingAlertIds(prev => {
+        const next = new Set(prev);
+        next.delete(alertId);
+        return next;
+      });
     }
   };
 
@@ -492,7 +509,9 @@ export default function DashboardPage() {
 	                        aria-label={alert.enabled ? 'Disable alert' : 'Enable alert'}
 	                        title={alert.enabled ? 'Disable alert' : 'Enable alert'}
 	                      >
-	                        {alert.enabled ? (
+	                        {syncingAlertIds.has(alert.id) ? (
+	                          <Loader2 className="w-6 h-6 animate-spin text-purple-500" />
+	                        ) : alert.enabled ? (
 	                          <ToggleRight className="w-6 h-6 text-green-500" />
 	                        ) : (
 	                          <ToggleLeft className="w-6 h-6 text-gray-500" />
