@@ -3,18 +3,9 @@
 import { Activity, ExternalLink } from 'lucide-react';
 import { useEffect, useState, memo } from 'react';
 import { StatsCardSkeleton } from './LoadingSkeleton';
+import type { EventStats } from '@/types/api';
 
-interface EventStats {
-  whaleTransfers: number;
-  contractDeployments: number;
-  nftMints: number;
-  tokenLaunches: number;
-  largeSwaps: number;
-  subscriptions: number;
-  alertsTriggered: number;
-  feesCollected: number;
-  badgesEarned: number;
-}
+
 
 const SERVER_URL = process.env.NEXT_PUBLIC_SERVER_URL || 'https://stackpulse-b8fw.onrender.com';
 
