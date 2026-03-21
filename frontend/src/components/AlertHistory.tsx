@@ -148,14 +148,14 @@ export default function AlertHistory({ userAddress }: AlertHistoryProps) {
             <button
               type="button"
               onClick={() => setShowFilters(!showFilters)}
-              className={`p-2 rounded-lg transition-all focus:outline-none focus:ring-2 focus:ring-purple-500/50 ${
-                showFilters ? 'bg-purple-600 text-white' : 'bg-gray-800 text-gray-400 hover:text-white'
+              className={`p-2 rounded-lg transition-all duration-300 hover:scale-110 active:scale-90 focus:outline-none focus:ring-2 focus:ring-purple-500/50 ${
+                showFilters ? 'bg-purple-600 text-white shadow-[0_0_15px_rgba(147,51,234,0.4)]' : 'bg-gray-800 text-gray-400 hover:text-white'
               }`}
               aria-label={showFilters ? 'Hide filters' : 'Show filters'}
               aria-pressed={showFilters}
               title={showFilters ? 'Hide filters' : 'Show filters'}
             >
-              <Filter className="w-5 h-5" aria-hidden="true" />
+              <Filter className={`w-5 h-5 transition-transform duration-300 ${showFilters ? 'rotate-180' : ''}`} aria-hidden="true" />
             </button>
             <button
               type="button"
