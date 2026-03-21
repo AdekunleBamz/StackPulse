@@ -106,7 +106,11 @@ export default function Header() {
             >
               Features
             </Link>
-            <Link href="/#pricing" className="text-gray-300 hover:text-white transition-colors">
+            <Link 
+              href="/#pricing" 
+              className="text-gray-300 hover:text-white transition-colors"
+              aria-current={pathname === '/#pricing' ? 'page' : undefined}
+            >
               Pricing
             </Link>
             <Link href="/#stats" className="text-gray-300 hover:text-white transition-colors">
