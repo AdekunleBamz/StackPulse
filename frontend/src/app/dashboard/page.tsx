@@ -6,7 +6,10 @@ import { useRouter } from 'next/navigation';
 import { toast } from '@/components/Toast';
 import { useConfirmDialog } from '@/components/ConfirmDialog';
 import { NoAlertsState } from '@/components/EmptyState';
-import { DashboardSkeleton } from '@/components/LoadingSkeleton';
+import  DashboardSkeleton,
+  StatsCardSkeleton,
+  HistorySkeleton
+} from '@/components/LoadingSkeleton';
 import Button from '@/components/ui/Button';
 import { useAccount } from '@/hooks/useAccount';
 import { useSound } from '@/hooks/useSound';
@@ -604,7 +607,9 @@ export default function DashboardPage() {
             )}
           </div>
 
-          {history.length === 0 ? (
+          {isDataLoading ? (
+            <HistorySkeleton />
+          ) : history.length === 0 ? (
             <div className="bg-gray-900/40 rounded-2xl border border-gray-800/50 p-12 text-center">
               <div className="w-16 h-16 bg-gray-800/30 rounded-2xl flex items-center justify-center mx-auto mb-4 opacity-40">
                 <Activity className="w-8 h-8 text-gray-500" />
@@ -617,7 +622,7 @@ export default function DashboardPage() {
               {history.slice(0, visibleHistoryLimit).map((item, idx) => (
                 <div 
                   key={item.id} 
-                  className="bg-gray-800/30 rounded-xl p-4 border border-gray-700/30 flex items-center justify-between group hover:border-purple-500/20 transition-all"
+                  className="bg-gray-800/30 rounded-xl p-4 border border-gray-700/30 flex items-center justify-between group hover:border-purple-500/20 transition-all text-left"
                   style={{ animationDelay: `${idx * 50}ms`, animationFillMode: 'both' }}
                 >
                   <div className="flex items-center gap-4">
