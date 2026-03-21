@@ -210,7 +210,7 @@ export default function Header() {
                   href="https://docs.hiro.so/stacks/chainhook"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="block rounded-xl px-4 py-3 text-base font-medium text-gray-500 hover:text-gray-300 transition-all text-center focus:outline-none focus-visible:ring-2 focus-visible:ring-purple-500/50 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-950"
+                  className="mt-2 flex items-center justify-center h-14 rounded-2xl bg-white/5 border border-white/5 text-base font-bold text-gray-400 hover:bg-white/10 hover:text-white transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-purple-500/50 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-950 active:scale-[0.98]"
                   onClick={() => setIsOpen(false)}
                 >
                   View Documentation
