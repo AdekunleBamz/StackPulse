@@ -163,7 +163,7 @@ export default function Header() {
         {isOpen && (
           <>
             <div
-              className="md:hidden fixed inset-0 top-16 z-40 bg-black/60 backdrop-blur-sm animate-fade-in"
+              className="md:hidden fixed inset-0 top-16 z-40 bg-black/60 backdrop-blur-sm animate-fade-in duration-500 ease-out"
               onClick={() => setIsOpen(false)}
               aria-hidden="true"
             />
