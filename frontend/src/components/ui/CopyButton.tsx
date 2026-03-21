@@ -39,15 +39,29 @@ export default function CopyButton({
       type="button"
       onClick={onCopy}
       className={cn(
-        'inline-flex items-center justify-center rounded-lg border border-gray-700 bg-gray-800/60',
-        'h-9 w-9 text-gray-200 hover:bg-gray-700 transition-colors',
-        'focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400/90',
+        'inline-flex items-center justify-center rounded-lg border border-gray-700 bg-gray-900/40 backdrop-blur-sm',
+        'h-9 w-9 text-gray-400 hover:bg-gray-800 hover:text-white transition-all duration-200',
+        'focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-purple-500',
+        copied ? 'scale-110 border-green-500/50 bg-green-500/5' : 'active:scale-95',
         className
       )}
       aria-label={copied ? copiedLabel : label}
       title={copied ? copiedLabel : label}
     >
-      {copied ? <Check className="h-4 w-4 text-green-400" /> : <Copy className="h-4 w-4" />}
+      <div className="relative h-4 w-4">
+        <Check 
+          className={cn(
+            "absolute inset-0 h-4 w-4 text-green-400 transition-all duration-300 transform",
+            copied ? "opacity-100 scale-100 rotate-0" : "opacity-0 scale-50 -rotate-45"
+          )} 
+        />
+        <Copy 
+          className={cn(
+            "absolute inset-0 h-4 w-4 transition-all duration-300 transform",
+            copied ? "opacity-0 scale-50 rotate-45" : "opacity-100 scale-100 rotate-0"
+          )} 
+        />
+      </div>
     </button>
   );
 }
