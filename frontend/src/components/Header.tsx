@@ -141,13 +141,13 @@ export default function Header() {
           <div className="flex items-center gap-3">
             <button
               type="button"
-              className="md:hidden inline-flex items-center justify-center w-10 h-10 rounded-lg border border-gray-800 bg-gray-900/40 text-gray-200 hover:bg-gray-900 transition-colors focus:outline-none focus:ring-2 focus:ring-purple-500"
+              className="md:hidden inline-flex items-center justify-center w-10 h-10 rounded-xl border border-white/5 bg-white/5 text-gray-200 hover:bg-white/10 transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-purple-500/50 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-950"
               aria-expanded={isOpen}
               aria-controls={mobileNavId}
-              aria-label={isOpen ? 'Close menu' : 'Open menu'}
+              aria-label={isOpen ? 'Close mobile menu' : 'Open mobile menu'}
               onClick={() => setIsOpen((v) => !v)}
             >
-              {isOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+              {isOpen ? <X className="w-5 h-5 transition-transform duration-300 rotate-0" /> : <Menu className="w-5 h-5 transition-transform duration-300 rotate-0" />}
             </button>
 
             {/* Wallet Connection */}
@@ -174,7 +174,7 @@ export default function Header() {
               <nav className="px-4 py-6 space-y-2" aria-label="Mobile Navigation">
                 <Link
                   href="/#features"
-                  className="block rounded-xl px-4 py-3 text-base font-semibold text-gray-200 hover:bg-gray-900 transition-colors"
+                  className="block rounded-xl px-4 py-3 text-base font-semibold text-gray-300 hover:bg-white/5 hover:text-white transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-purple-500/50 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-950"
                   aria-current={pathname === '/#features' ? 'page' : undefined}
                   onClick={() => setIsOpen(false)}
                 >
@@ -182,7 +182,7 @@ export default function Header() {
                 </Link>
                 <Link
                   href="/#pricing"
-                  className="block rounded-xl px-4 py-3 text-base font-semibold text-gray-200 hover:bg-gray-900 transition-colors"
+                  className="block rounded-xl px-4 py-3 text-base font-semibold text-gray-300 hover:bg-white/5 hover:text-white transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-purple-500/50 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-950"
                   aria-current={pathname === '/#pricing' ? 'page' : undefined}
                   onClick={() => setIsOpen(false)}
                 >
@@ -190,16 +190,16 @@ export default function Header() {
                 </Link>
                 <Link
                   href="/#stats"
-                  className="block rounded-xl px-4 py-3 text-base font-semibold text-gray-200 hover:bg-gray-900 transition-colors"
+                  className="block rounded-xl px-4 py-3 text-base font-semibold text-gray-300 hover:bg-white/5 hover:text-white transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-purple-500/50 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-950"
                   aria-current={pathname === '/#stats' ? 'page' : undefined}
                   onClick={() => setIsOpen(false)}
                 >
                   Live Stats
                 </Link>
-                <div className="pt-2">
+                <div className="pt-2 px-1">
                   <Link
                     href="/register"
-                    className="block rounded-xl px-4 py-3 text-base font-bold text-center bg-purple-600 hover:bg-purple-500 text-white transition-all shadow-lg shadow-purple-500/20"
+                    className="block rounded-xl px-4 py-3.5 text-base font-bold text-center bg-purple-600 hover:bg-purple-500 text-white transition-all shadow-lg shadow-purple-500/25 focus:outline-none focus-visible:ring-2 focus-visible:ring-purple-500/50 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-950"
                     aria-current={pathname === '/register' ? 'page' : undefined}
                     onClick={() => setIsOpen(false)}
                   >
@@ -210,7 +210,7 @@ export default function Header() {
                   href="https://docs.hiro.so/stacks/chainhook"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="block rounded-xl px-4 py-3 text-base font-medium text-gray-400 hover:text-white transition-colors text-center"
+                  className="block rounded-xl px-4 py-3 text-base font-medium text-gray-500 hover:text-gray-300 transition-all text-center focus:outline-none focus-visible:ring-2 focus-visible:ring-purple-500/50 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-950"
                   onClick={() => setIsOpen(false)}
                 >
                   View Documentation
