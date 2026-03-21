@@ -717,7 +717,7 @@ export default function Pricing() {
                   </div>
                 )}
 
-                <div className="mb-10">
+                <div className="mb-12">
                   <h3 className="text-xl font-black text-white mb-2 tracking-tighter uppercase opacity-50">{tier.name}</h3>
                   <div className="flex items-baseline gap-1.5">
                     <span className="text-6xl sm:text-7xl font-black text-white tracking-tighter drop-shadow-2xl">{tier.price}</span>
@@ -728,7 +728,7 @@ export default function Pricing() {
                   </div>
                 </div>
 
-                <ul className="space-y-5 mb-12 flex-1">
+                <ul className="space-y-5 mb-14 flex-1">
                   {tier.features.map((feature, i) => (
                     <li key={i} className="group/feature flex items-start gap-4 text-gray-400 font-medium text-[13px] leading-relaxed transition-colors hover:text-white">
                       <div className={`mt-0.5 w-5 h-5 rounded-full flex items-center justify-center shrink-0 transition-all duration-300 group-hover/feature:scale-110 ${
