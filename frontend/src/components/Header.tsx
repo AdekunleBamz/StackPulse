@@ -151,7 +151,7 @@ export default function Header() {
               aria-label={isOpen ? 'Close mobile menu' : 'Open mobile menu'}
               onClick={() => setIsOpen((v) => !v)}
             >
-              {isOpen ? <X className="w-5 h-5 transition-transform duration-300 rotate-0" /> : <Menu className="w-5 h-5 transition-transform duration-300 rotate-0" />}
+              {isOpen ? <X className="w-5 h-5 transition-transform duration-300 rotate-90" /> : <Menu className="w-5 h-5 transition-transform duration-300 rotate-0" />}
             </button>
 
             {/* Wallet Connection */}
