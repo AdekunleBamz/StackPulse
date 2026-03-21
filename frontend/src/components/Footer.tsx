@@ -126,14 +126,13 @@ export default function Footer() {
           </nav>
         </div>
 
-        {/* Bottom Bar */}
         <div className="pt-10 border-t border-white/[0.03] flex flex-col md:flex-row justify-between items-center gap-8">
-          <div className="flex flex-col items-center md:items-start gap-1">
+          <div className="flex flex-col items-center md:items-start gap-1.5">
             <p className="text-gray-400 text-[11px] font-bold tracking-tight">
-              © {new Date().getFullYear()} StackPulse Labs.
+              © {new Date().getFullYear()} StackPulse Labs. <span className="text-gray-600 font-medium ml-1">All Rights Reserved.</span>
             </p>
-            <p className="text-gray-600 text-[10px] font-medium">
-              Made with passion for the Stacks ecosystem.
+            <p className="text-gray-500/80 text-[10px] font-medium tracking-wide">
+              Crafted with <span className="text-purple-500/60 transition-colors hover:text-purple-500 cursor-default">♥</span> for the Stacks Network.
             </p>
           </div>
           <div className="flex items-center gap-8">
