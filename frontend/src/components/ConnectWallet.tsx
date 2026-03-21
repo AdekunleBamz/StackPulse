@@ -110,7 +110,8 @@ export default function ConnectWallet() {
                 }}
                 role="menuitem"
                 aria-pressed={network === 'mainnet'}
-                className={`px-3 py-1 rounded-lg text-xs font-medium transition-colors ${
+                aria-label="Switch to Mainnet"
+                className={`px-3 py-1 rounded-lg text-xs font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-purple-500/50 ${
                   network === 'mainnet'
                     ? 'bg-purple-600 text-white'
                     : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
@@ -126,7 +127,8 @@ export default function ConnectWallet() {
                 }}
                 role="menuitem"
                 aria-pressed={network === 'testnet'}
-                className={`px-3 py-1 rounded-lg text-xs font-medium transition-colors ${
+                aria-label="Switch to Testnet"
+                className={`px-3 py-1 rounded-lg text-xs font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-purple-500/50 ${
                   network === 'testnet'
                     ? 'bg-purple-600 text-white'
                     : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
