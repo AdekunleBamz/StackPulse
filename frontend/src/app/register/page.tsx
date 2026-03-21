@@ -89,11 +89,13 @@ export default function RegisterPage() {
         {/* Back button */}
         <button
           onClick={() => router.push('/')}
-          className="mb-8 text-gray-400 hover:text-white transition-colors flex items-center gap-2"
+          className="group mb-10 text-gray-500 hover:text-white transition-all flex items-center gap-2.5 font-bold text-sm uppercase tracking-widest"
         >
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-          </svg>
+          <div className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center group-hover:bg-white/10 transition-colors">
+            <svg className="w-4 h-4 group-hover:-translate-x-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15 19l-7-7 7-7" />
+            </svg>
+          </div>
           Back to Home
         </button>
 
@@ -104,14 +106,14 @@ export default function RegisterPage() {
           <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-purple-500/40 to-transparent" />
           
           {/* Header */}
-          <div className="text-center mb-8">
-            <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-blue-500 rounded-xl flex items-center justify-center mx-auto mb-4">
-              <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+          <div className="text-center mb-10">
+            <div className="w-20 h-20 bg-gradient-to-br from-purple-500 via-purple-600 to-blue-700 rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-xl shadow-purple-500/20 rotate-3 hover:rotate-0 transition-transform duration-500">
+              <svg className="w-10 h-10 text-white fill-white/20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
               </svg>
             </div>
-            <h1 className="text-2xl font-bold text-white mb-2">Create Your Account</h1>
-            <p className="text-gray-400">Register to start monitoring the Stacks blockchain</p>
+            <h1 className="text-3xl font-bold text-white mb-3 tracking-tight">Create Account</h1>
+            <p className="text-gray-400 font-medium leading-relaxed">Join the next generation of Stacks monitoring</p>
           </div>
 
           {/* Wallet Status */}
