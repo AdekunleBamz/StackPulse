@@ -8,8 +8,7 @@ import { useConfirmDialog } from '@/components/ConfirmDialog';
 import { NoAlertsState } from '@/components/EmptyState';
 import { DashboardSkeleton } from '@/components/LoadingSkeleton';
 import Button from '@/components/ui/Button';
-import { apiUrl, DEPLOYER_ADDRESS } from '@/lib/env';
-import logger from '@/lib/logger';
+import { useAccount } from '@/hooks/useAccount';
 import { 
   Bell, 
   Wallet, 
@@ -55,89 +54,34 @@ interface UserData {
 }
 
 export default function DashboardPage() {
-  const { isConnected, address, connect } = useWallet();
-  const router = useRouter();
-  const { confirm, ConfirmDialog } = useConfirmDialog();
-  const createAlertTitleId = useId();
-  const createAlertDescId = useId();
-  const createAlertSelectRef = useRef<HTMLSelectElement>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [userData, setUserData] = useState<UserData | null>(null);
-  const [alerts, setAlerts] = useState<UserAlert[]>([]);
-  const [showCreateAlert, setShowCreateAlert] = useState(false);
-  const [newAlertType, setNewAlertType] = useState(1);
-  const [newAlertName, setNewAlertName] = useState('');
-  const [newAlertThreshold, setNewAlertThreshold] = useState('10000');
-  const [isCreating, setIsCreating] = useState(false);
-
-  const tierNames = ['Free', 'Basic', 'Pro', 'Premium'];
-  const maxAlerts = [3, 10, 25, 999];
-
-  // Check user registration and load data
+  const { address, isConnected, connect, isRegistered, userData, isLoading: isAccountLoading } = useAccount();
+  const [alerts, setAlerts] = useState<DashboardAlert[]>([]);
+  const [isDataLoading, setIsDataLoading] = useState(true);
+  
+  // Load alerts from server when address changes
   useEffect(() => {
-    const loadUserData = async () => {
-      if (!address || !DEPLOYER_ADDRESS) {
-        setIsLoading(false);
-        return;
-      }
-
+    const loadAlerts = async () => {
+      if (!address) return;
       try {
-        const { principalCV, cvToHex, hexToCV, cvToValue } = await import('@stacks/transactions');
-
-        // Check V3 contract for user data
-        const response = await fetch(
-          `https://api.mainnet.hiro.so/v2/contracts/call-read/${DEPLOYER_ADDRESS}/stackpulse-v-j4/get-user`,
-          {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              sender: address,
-              arguments: [cvToHex(principalCV(address))]
-            })
-          }
-        );
-
-        const data = await response.json();
-        
-        if (data.result && data.result !== '0x09') {
-          try {
-            const cv = hexToCV(data.result);
-            const parsed = cvToValue(cv);
-            if (parsed && parsed.value) {
-              setUserData({
-                username: parsed.value.username?.value || '',
-                tier: Number(parsed.value.tier?.value || 0),
-                alertsEnabled: Number(parsed.value['alerts-enabled']?.value || 0),
-                subscriptionEnds: Number(parsed.value['subscription-ends']?.value || 0)
-              });
-            }
-          } catch (parseErr) {
-            logger.error('Error parsing user data:', parseErr);
+        const serverUrl = process.env.NEXT_PUBLIC_SERVER_URL || 'https://stackpulse-b8fw.onrender.com';
+        const alertsResponse = await fetch(`${serverUrl}/api/users/${address}/alerts`);
+        if (alertsResponse.ok) {
+          const alertsData = await alertsResponse.json();
+          if (alertsData.alerts) {
+            setAlerts(alertsData.alerts);
           }
         }
-
-        // Load alerts from server
-        try {
-          const alertsResponse = await fetch(apiUrl(`/api/users/${address}/alerts`));
-          if (alertsResponse.ok) {
-            const alertsData = await alertsResponse.json();
-            if (alertsData.alerts) {
-              setAlerts(alertsData.alerts);
-            }
-          }
-        } catch (err) {
-          logger.error('Error loading alerts:', err);
-        }
-
-      } catch (error) {
-        logger.error('Error loading user data:', error);
+      } catch (err) {
+        console.error('Error loading alerts:', err);
       } finally {
-        setIsLoading(false);
+        setIsDataLoading(false);
       }
     };
 
-    loadUserData();
+    loadAlerts();
   }, [address]);
+
+  const isLoading = isAccountLoading || (isConnected && isDataLoading);
 
   useEffect(() => {
     if (!showCreateAlert) return;
