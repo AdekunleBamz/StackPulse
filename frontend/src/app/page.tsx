@@ -68,22 +68,22 @@ export default function Home() {
             Get instant notifications for on-chain events that matter to you.
           </p>
 
-          <div className="mb-10 flex flex-wrap items-center justify-center gap-3">
+          <div className="mb-12 flex flex-wrap items-center justify-center gap-4">
             <a
               href="#features"
-              className="rounded-full border border-gray-700 bg-gray-900/60 px-4 py-2 text-sm text-gray-200 hover:border-purple-500/50 hover:text-white transition-colors"
+              className="rounded-full border border-white/5 bg-white/5 backdrop-blur-md px-5 py-2.5 text-sm font-bold text-gray-400 hover:border-purple-500/30 hover:text-white hover:bg-white/10 transition-all duration-300 transform active:scale-95"
             >
               Explore Features
             </a>
             <a
               href="#stats"
-              className="rounded-full border border-gray-700 bg-gray-900/60 px-4 py-2 text-sm text-gray-200 hover:border-purple-500/50 hover:text-white transition-colors"
+              className="rounded-full border border-white/5 bg-white/5 backdrop-blur-md px-5 py-2.5 text-sm font-bold text-gray-400 hover:border-purple-500/30 hover:text-white hover:bg-white/10 transition-all duration-300 transform active:scale-95"
             >
               View Live Stats
             </a>
             <a
               href="#pricing"
-              className="rounded-full border border-gray-700 bg-gray-900/60 px-4 py-2 text-sm text-gray-200 hover:border-purple-500/50 hover:text-white transition-colors"
+              className="rounded-full border border-white/5 bg-white/5 backdrop-blur-md px-5 py-2.5 text-sm font-bold text-gray-400 hover:border-purple-500/30 hover:text-white hover:bg-white/10 transition-all duration-300 transform active:scale-95"
             >
               Compare Plans
             </a>
