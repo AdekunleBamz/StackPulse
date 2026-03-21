@@ -10,6 +10,9 @@ export interface TextFieldProps extends React.InputHTMLAttributes<HTMLInputEleme
 
 export default function TextField({ label, hint, error, className, id, ...props }: TextFieldProps) {
   const inputId = id || props.name || label.toLowerCase().replace(/\s+/g, '-');
+  const errorId = `${inputId}-error`;
+  const hintId = `${inputId}-hint`;
+  const descriptionId = error ? errorId : hint ? hintId : undefined;
 
   return (
     <div className="space-y-1">
@@ -19,6 +22,7 @@ export default function TextField({ label, hint, error, className, id, ...props 
       <input
         id={inputId}
         aria-invalid={!!error}
+        aria-describedby={descriptionId}
           className={cn(
             "flex h-12 w-full rounded-xl border bg-gray-900/50 px-4 py-2 text-sm text-gray-100 transition-all duration-300",
             "border-gray-700/50 backdrop-blur-sm",
@@ -32,9 +36,9 @@ export default function TextField({ label, hint, error, className, id, ...props 
         {...props}
       />
       {error ? (
-        <p className="text-xs text-red-500/90 font-medium px-1 leading-tight">{error}</p>
+        <p id={errorId} className="text-xs text-red-500/90 font-medium px-1 leading-tight">{error}</p>
       ) : hint ? (
-        <p className="text-xs text-gray-500 px-1 leading-tight italic">{hint}</p>
+        <p id={hintId} className="text-xs text-gray-500 px-1 leading-tight italic">{hint}</p>
       ) : null}
     </div>
   );
