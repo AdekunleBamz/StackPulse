@@ -1,7 +1,7 @@
 import * as fs from 'fs';
 
 async function run() {
-    const data = JSON.parse(fs.readFileSync('/Users/apple/aegis-vault/scripts/test-wallets.json', 'utf8'));
+    const data = JSON.parse(fs.readFileSync('./scripts/test-wallets.json', 'utf8'));
     const wallets = data.wallets.slice(0, 25);
 
     console.log(`\n===========================================`);

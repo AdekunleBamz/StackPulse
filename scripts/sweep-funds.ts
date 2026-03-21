@@ -15,7 +15,7 @@ async function generateAccountKey(mnemonic: string) {
 const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
 async function run() {
-    const data = JSON.parse(fs.readFileSync('/Users/apple/aegis-vault/scripts/test-wallets.json', 'utf8'));
+    const data = JSON.parse(fs.readFileSync('./scripts/test-wallets.json', 'utf8'));
     const wallets = data.wallets.slice(0, 25);
 
     console.log(`\n===========================================`);
