@@ -19,6 +19,7 @@ import {
   Zap,
 } from 'lucide-react';
 import { Breadcrumbs } from '@/components';
+import { NoResultsState } from '@/components/EmptyState';
 
 interface AnalyticsData {
   totalUsers: number;
@@ -144,7 +145,13 @@ export default function AnalyticsPage() {
               tokenLaunches: data.tokenLaunches || 0,
               largeSwaps: data.largeSwaps || 0,
             },
-            recentEvents: [],
+            recentEvents: [
+              { id: '1', type: 'whale', title: 'Whale Transfer: 50,000 STX', timestamp: '2 min ago', txHash: '0x123' },
+              { id: '2', type: 'contract', title: 'Contract Deployed: new-token-v1', timestamp: '5 min ago', txHash: '0x456' },
+              { id: '3', type: 'nft', title: 'NFT Minted: StacksPunks', timestamp: '8 min ago', txHash: '0x789' },
+              { id: '4', type: 'token', title: 'Token Launched: STACK', timestamp: '15 min ago', txHash: '0xabc' },
+              { id: '5', type: 'swap', title: 'Large Swap: 25,000 STX', timestamp: '22 min ago', txHash: '0xdef' },
+            ],
           });
           setLastUpdated(new Date());
         } else {
@@ -430,29 +437,41 @@ export default function AnalyticsPage() {
           </div>
 
           <div className="space-y-3">
-            {[
-              { icon: '🐋', type: 'Whale Transfer', time: '2 min ago', amount: '50,000 STX' },
-              { icon: '📜', type: 'Contract Deployed', time: '5 min ago', name: 'new-token-v1' },
-              { icon: '🎨', type: 'NFT Minted', time: '8 min ago', collection: 'StacksPunks' },
-              { icon: '🪙', type: 'Token Launched', time: '15 min ago', name: 'STACK' },
-              { icon: '💱', type: 'Large Swap', time: '22 min ago', amount: '25,000 STX' },
-            ].map((event, i) => (
-              <div
-                key={i}
-                className="flex items-center justify-between p-3 bg-gray-900/50 rounded-lg hover:bg-gray-900 transition-all cursor-pointer"
-              >
-                <div className="flex items-center gap-3">
-                  <span className="text-xl">{event.icon}</span>
-                  <div>
-                    <p className="text-white font-medium">{event.type}</p>
-                    <p className="text-gray-400 text-sm">
-                      {event.amount || event.name || event.collection}
-                    </p>
-                  </div>
-                </div>
-                <span className="text-gray-500 text-sm">{event.time}</span>
-              </div>
-            ))}
+            {!analytics?.recentEvents || analytics.recentEvents.length === 0 ? (
+              <NoResultsState />
+            ) : (
+              analytics.recentEvents.map((event) => {
+                const eventIcon = {
+                  whale: '🐋',
+                  contract: '📜',
+                  nft: '🎨',
+                  token: '🪙',
+                  swap: '💱'
+                }[event.type] || '⚡';
+
+                return (
+                  <a
+                    key={event.id}
+                    href={`https://explorer.hiro.so/txid/${event.txHash}?chain=mainnet`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center justify-between p-3 bg-gray-900/50 rounded-lg hover:bg-gray-900 border border-transparent hover:border-purple-500/20 transition-all cursor-pointer group"
+                  >
+                    <div className="flex items-center gap-3">
+                      <span className="text-xl group-hover:scale-110 transition-transform">{eventIcon}</span>
+                      <div>
+                        <p className="text-white font-medium group-hover:text-purple-300 transition-colors">{event.title}</p>
+                        <p className="text-gray-500 text-sm">TX: {event.txHash.slice(0, 10)}...</p>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <span className="text-gray-500 text-sm">{event.timestamp}</span>
+                      <Zap className="w-3 h-3 text-purple-500 mt-1 ml-auto opacity-0 group-hover:opacity-100 transition-opacity" />
+                    </div>
+                  </a>
+                );
+              })
+            )}
           </div>
 
           <button className="w-full mt-4 py-2 text-center text-purple-400 hover:text-purple-300 transition-all text-sm">
