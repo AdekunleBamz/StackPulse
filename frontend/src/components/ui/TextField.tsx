@@ -13,7 +13,7 @@ export default function TextField({ label, hint, error, className, id, ...props 
 
   return (
     <div className="space-y-1">
-      <label htmlFor={inputId} className="block text-sm font-medium text-gray-300">
+      <label htmlFor={inputId} className="block text-sm font-semibold text-gray-400 tracking-tight">
         {label}
       </label>
       <input
@@ -30,9 +30,9 @@ export default function TextField({ label, hint, error, className, id, ...props 
         {...props}
       />
       {error ? (
-        <p className="text-xs text-red-400">{error}</p>
+        <p className="text-xs text-red-500/90 font-medium px-1 leading-tight">{error}</p>
       ) : hint ? (
-        <p className="text-xs text-gray-500">{hint}</p>
+        <p className="text-xs text-gray-500 px-1 leading-tight italic">{hint}</p>
       ) : null}
     </div>
   );
