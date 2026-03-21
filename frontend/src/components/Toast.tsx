@@ -14,32 +14,32 @@ interface ToastProps {
 
 const toastStyles = {
   success: {
-    bg: 'bg-emerald-900/80',
-    border: 'border-emerald-500/30',
+    bg: 'bg-emerald-950/60',
+    border: 'border-emerald-500/20',
     icon: CheckCircle,
     iconColor: 'text-emerald-400',
-    progress: 'bg-emerald-500',
+    progress: 'bg-gradient-to-r from-emerald-600 to-emerald-400',
   },
   error: {
-    bg: 'bg-rose-900/80',
-    border: 'border-rose-500/30',
+    bg: 'bg-rose-950/60',
+    border: 'border-rose-500/20',
     icon: AlertCircle,
     iconColor: 'text-rose-400',
-    progress: 'bg-rose-500',
+    progress: 'bg-gradient-to-r from-rose-600 to-rose-400',
   },
   warning: {
-    bg: 'bg-amber-900/80',
-    border: 'border-amber-500/30',
+    bg: 'bg-amber-950/60',
+    border: 'border-amber-500/20',
     icon: AlertTriangle,
     iconColor: 'text-amber-400',
-    progress: 'bg-amber-500',
+    progress: 'bg-gradient-to-r from-amber-600 to-amber-400',
   },
   info: {
-    bg: 'bg-sky-900/80',
-    border: 'border-sky-500/30',
+    bg: 'bg-sky-950/60',
+    border: 'border-sky-500/20',
     icon: Info,
     iconColor: 'text-sky-400',
-    progress: 'bg-sky-500',
+    progress: 'bg-gradient-to-r from-sky-600 to-sky-400',
   },
 };
 
