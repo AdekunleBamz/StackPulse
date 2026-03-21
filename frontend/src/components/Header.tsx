@@ -70,15 +70,15 @@ export default function Header() {
           {/* Logo */}
           <Link 
             href="/" 
-            className="flex items-center space-x-2"
+            className="flex items-center space-x-2 group/logo outline-none focus-visible:ring-2 focus-visible:ring-purple-500/50 focus-visible:ring-offset-4 focus-visible:ring-offset-gray-950 rounded-xl transition-all"
             aria-label="StackPulse Home"
           >
             <div 
-              className="w-8 h-8 bg-gradient-to-br from-purple-500 to-blue-500 rounded-lg flex items-center justify-center"
+              className="w-9 h-9 bg-gradient-to-br from-purple-500 via-purple-600 to-blue-600 rounded-xl flex items-center justify-center shadow-lg shadow-purple-500/10 group-hover/logo:scale-110 group-hover/logo:shadow-purple-500/30 transition-all duration-300"
               aria-hidden="true"
             >
               <svg 
-                className="w-5 h-5 text-white" 
+                className="w-5 h-5 text-white transform group-hover/logo:rotate-12 transition-transform" 
                 fill="none" 
                 stroke="currentColor" 
                 viewBox="0 0 24 24"
@@ -87,12 +87,12 @@ export default function Header() {
                 <path 
                   strokeLinecap="round" 
                   strokeLinejoin="round" 
-                  strokeWidth={2} 
+                  strokeWidth={2.5} 
                   d="M13 10V3L4 14h7v7l9-11h-7z" 
                 />
               </svg>
             </div>
-            <span className="text-xl font-bold bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">
+            <span className="text-xl font-black bg-gradient-to-r from-white via-purple-200 to-blue-200 bg-clip-text text-transparent tracking-tight">
               StackPulse
             </span>
           </Link>
