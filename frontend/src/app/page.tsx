@@ -102,7 +102,7 @@ const Hero = memo(() => (
       </div>
       
       {/* Stats Preview */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto" role="list" aria-label="Monitoring highlights">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6 max-w-4xl mx-auto" role="list" aria-label="Monitoring highlights">
         {[
           { label: 'Whale Transfers', value: '1,234+' },
           { label: 'NFT Mints', value: '5,678+' },
@@ -111,13 +111,13 @@ const Hero = memo(() => (
         ].map((stat, index) => (
           <div 
             key={stat.label}
-            className="bg-gray-900/50 border border-gray-800 rounded-xl p-6"
+            className="bg-gray-900/40 border border-white/5 rounded-2xl p-4 lg:p-6 transition-colors hover:border-purple-500/20 group/stat"
             role="listitem"
           >
-            <div className="text-3xl font-bold bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">
+            <div className="text-2xl lg:text-3xl font-black bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent group-hover:scale-105 transition-transform duration-300">
               {stat.value}
             </div>
-            <div className="text-sm text-gray-400 mt-1">{stat.label}</div>
+            <div className="text-[12px] font-bold text-gray-500 uppercase tracking-wider mt-1.5">{stat.label}</div>
           </div>
         ))}
       </div>
