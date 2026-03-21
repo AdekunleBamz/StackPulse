@@ -18,7 +18,7 @@ import * as fs from 'fs';
 const network = new StacksMainnet();
 const DEPLOYER_ADDRESS = 'SP5K2RHMSBH4PAP4PGX77MCVNK1ZEED07CWX9TJT';
 const HIRO_API_ORIGIN = 'https://api.mainnet.hiro.so';
-const DEFAULT_WALLETS_PATH = '/Users/apple/aegis-vault/scripts/test-wallets.json';
+const DEFAULT_WALLETS_PATH = './scripts/test-wallets.json';
 
 const ansi = {
   green: (s: string) => `\x1b[32m${s}\x1b[0m`,

@@ -1,4 +1,5 @@
-import { makeSTXTokenTransfer, broadcastTransaction, AnchorMode, PostConditionMode } from '@stacks/transactions';
+import { makeSTXTokenTransfer, broadcastTransaction, AnchorMode, PostConditionMode, getAddressFromPrivateKey, TransactionVersion } from '@stacks/transactions';
+import { generateSecretKey, generateWallet } from '@stacks/wallet-sdk';
 import { StacksMainnet } from '@stacks/network';
 import * as fs from 'fs';
 
@@ -8,10 +9,28 @@ const AMOUNT_MICRO_STX = 38000; // 0.038 STX
 async function run() {
     const walletsPath = './scripts/test-wallets.json';
     if (!fs.existsSync(walletsPath)) {
-        console.error(`Error: Wallets file not found at ${walletsPath}`);
-        console.log("Please create a 'test-wallets.json' file in the scripts directory with the following structure:");
-        console.log(JSON.stringify({ wallets: [{ address: "ST...", privateKey: "..." }] }, null, 2));
-        process.exit(1);
+        console.log(`Wallets file not found at ${walletsPath}. Generating new test wallets...`);
+        const wallets = [];
+        for (let i = 0; i < 25; i++) {
+            const secretKey = generateSecretKey(256);
+            const wallet = await generateWallet({ secretKey, password: 'password' });
+            const account = wallet.accounts[0];
+            const privateKey = account.stxPrivateKey;
+            const address = getAddressFromPrivateKey(privateKey, TransactionVersion.Mainnet);
+            
+            wallets.push({
+                address,
+                privateKey,
+                mnemonic: secretKey
+            });
+        }
+        
+        fs.writeFileSync(walletsPath, JSON.stringify({ wallets }, null, 2));
+        console.log(`✅ Generated 25 test wallets and saved to ${walletsPath}`);
+        console.log(`\n⚠️  ACTION REQUIRED: Wallet 1 (${wallets[0].address}) will be used to fund the other wallets.`);
+        console.log(`Please send some STX (e.g. 2 STX) to: ${wallets[0].address}`);
+        console.log(`Once funded, run this script again to distribute funds to the remaining 24 test wallets.\n`);
+        process.exit(0);
     }
 
     const data = JSON.parse(fs.readFileSync(walletsPath, 'utf8'));
