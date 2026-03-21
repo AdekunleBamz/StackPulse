@@ -40,6 +40,7 @@ interface AlertHistoryProps {
 export default function AlertHistory({ userAddress }: AlertHistoryProps) {
   const [history, setHistory] = useState<AlertHistoryEntry[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [totalItems, setTotalItems] = useState(0);
@@ -50,56 +51,58 @@ export default function AlertHistory({ userAddress }: AlertHistoryProps) {
 
   const pageSize = 10;
 
-  useEffect(() => {
-    const fetchHistory = async () => {
-      setLoading(true);
-      try {
-        // Simulated data - replace with actual API call
-        const mockHistory: AlertHistoryEntry[] = Array.from({ length: 50 }, (_, i) => ({
-          id: `hist-${i}`,
-          alertId: Math.floor(Math.random() * 10) + 1,
-          alertName: `Alert #${Math.floor(Math.random() * 10) + 1}`,
-          alertType: Math.floor(Math.random() * 6) + 1,
-          triggeredAt: new Date(Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000),
-          txHash: `0x${Array.from({ length: 64 }, () => Math.floor(Math.random() * 16).toString(16)).join('')}`,
-          blockHeight: 5400000 + Math.floor(Math.random() * 10000),
-          data: {
-            amount: Math.floor(Math.random() * 100000),
-            sender: 'SP1A2B3C...',
-            recipient: 'SP4D5E6F...',
-          },
-        }));
+  const fetchHistory = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      // Simulated data - replace with actual API call
+      const mockHistory: AlertHistoryEntry[] = Array.from({ length: 50 }, (_, i) => ({
+        id: `hist-${i}`,
+        alertId: Math.floor(Math.random() * 10) + 1,
+        alertName: `Alert #${Math.floor(Math.random() * 10) + 1}`,
+        alertType: Math.floor(Math.random() * 6) + 1,
+        triggeredAt: new Date(Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000),
+        txHash: `0x${Array.from({ length: 64 }, () => Math.floor(Math.random() * 16).toString(16)).join('')}`,
+        blockHeight: 5400000 + Math.floor(Math.random() * 10000),
+        data: {
+          amount: Math.floor(Math.random() * 100000),
+          sender: 'SP1A2B3C...',
+          recipient: 'SP4D5E6F...',
+        },
+      }));
 
-        // Apply filters
-        let filtered = mockHistory;
-        if (filter !== null) {
-          filtered = filtered.filter(h => h.alertType === filter);
-        }
-        if (debouncedSearchQuery) {
-          filtered = filtered.filter(
-            h =>
-              h.alertName.toLowerCase().includes(debouncedSearchQuery.toLowerCase()) ||
-              h.txHash.toLowerCase().includes(debouncedSearchQuery.toLowerCase())
-          );
-        }
-
-        // Sort by date
-        filtered.sort((a, b) => b.triggeredAt.getTime() - a.triggeredAt.getTime());
-
-        // Paginate
-        const start = (page - 1) * pageSize;
-        const paginated = filtered.slice(start, start + pageSize);
-
-        setHistory(paginated);
-        setTotalItems(filtered.length);
-        setTotalPages(Math.ceil(filtered.length / pageSize));
-      } catch (error) {
-        console.error('Error fetching history:', error);
-      } finally {
-        setLoading(false);
+      // Apply filters
+      let filtered = mockHistory;
+      if (filter !== null) {
+        filtered = filtered.filter(h => h.alertType === filter);
       }
-    };
+      if (debouncedSearchQuery) {
+        filtered = filtered.filter(
+          h =>
+            h.alertName.toLowerCase().includes(debouncedSearchQuery.toLowerCase()) ||
+            h.txHash.toLowerCase().includes(debouncedSearchQuery.toLowerCase())
+        );
+      }
 
+      // Sort by date
+      filtered.sort((a, b) => b.triggeredAt.getTime() - a.triggeredAt.getTime());
+
+      // Paginate
+      const start = (page - 1) * pageSize;
+      const paginated = filtered.slice(start, start + pageSize);
+
+      setHistory(paginated);
+      setTotalItems(filtered.length);
+      setTotalPages(Math.ceil(filtered.length / pageSize));
+    } catch (err) {
+      console.error('Error fetching history:', err);
+      setError('Failed to load alert history. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
     fetchHistory();
   }, [page, filter, debouncedSearchQuery, userAddress]);
 
@@ -259,6 +262,12 @@ export default function AlertHistory({ userAddress }: AlertHistoryProps) {
                   </td>
                 </tr>
               ))
+            ) : error ? (
+              <tr>
+                <td colSpan={5} className="px-6 py-12">
+                  <ErrorState message={error} onRetry={fetchHistory} />
+                </td>
+              </tr>
             ) : history.length === 0 ? (
               <tr>
                 <td colSpan={5} className="px-6 py-12">
