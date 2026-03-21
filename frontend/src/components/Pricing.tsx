@@ -2,11 +2,12 @@
 
 import { useWallet } from '@/context/WalletContext';
 import { Check, Wallet, Mail, MessageCircle, Send } from 'lucide-react';
-import { useEffect, useId, useState, memo } from 'react';
+import { useEffect, useId, useState } from 'react';
 import { toast } from '@/components/Toast';
 import Button from '@/components/ui/Button';
 import Link from 'next/link';
 import type { UserPreferences, ApiResponse } from '@/types/api';
+import { ERROR_MESSAGES } from '@/constants/errors';
 
 const tiers = [
   {
@@ -52,7 +53,7 @@ const tiers = [
 
 const DEPLOYER_ADDRESS = process.env.NEXT_PUBLIC_DEPLOYER_ADDRESS || '';
 
-const Pricing = memo(() => {
+export default function Pricing() {
   const { isConnected, connect, address } = useWallet();
   const editChannelTitleId = useId();
   const [isRegistered, setIsRegistered] = useState(false);
@@ -151,7 +152,7 @@ const Pricing = memo(() => {
             const serverUrl = process.env.NEXT_PUBLIC_SERVER_URL || 'https://stackpulse-b8fw.onrender.com';
             const prefsResponse = await fetch(`${serverUrl}/api/users/${address}`);
             if (prefsResponse.ok) {
-              const prefsData: ApiResponse<UserPreferences> = await prefsResponse.json();
+              const prefsData = await prefsResponse.json();
               if (prefsData.user) {
                 setEmail(prefsData.user.email || '');
                 setDiscord(prefsData.user.discord || '');
@@ -199,17 +200,12 @@ const Pricing = memo(() => {
 
     const normalizedUsername = username.trim().toLowerCase();
     if (!normalizedUsername) {
-      toast.warning('Username required', 'Enter a username to continue.');
+      toast.warning(ERROR_MESSAGES.REGISTRATION_REQUIRED.title, ERROR_MESSAGES.REGISTRATION_REQUIRED.message);
       return;
     }
 
-    if (normalizedUsername.length < 3 || normalizedUsername.length > 32) {
-      toast.warning('Invalid username', 'Username must be 3–32 characters.');
-      return;
-    }
-
-    if (!/^[a-z0-9_]+$/.test(normalizedUsername)) {
-      toast.warning('Invalid username', 'Use only letters, numbers, and underscores.');
+    if (normalizedUsername.length < 3 || normalizedUsername.length > 32 || !/^[a-z0-9_]+$/.test(normalizedUsername)) {
+      toast.warning(ERROR_MESSAGES.INVALID_USERNAME.title, ERROR_MESSAGES.INVALID_USERNAME.message);
       return;
     }
 
@@ -297,7 +293,7 @@ const Pricing = memo(() => {
       });
     } catch (error) {
       console.error('Registration error:', error);
-      toast.error('Registration failed', 'Please try again.');
+      toast.error(ERROR_MESSAGES.CONTRACT_ERROR.title, ERROR_MESSAGES.CONTRACT_ERROR.message);
       setSubscribingTier(null);
     } finally {
       setIsLoading(false);
@@ -394,7 +390,7 @@ const Pricing = memo(() => {
     if (editingChannel === 'email' && value) {
       const isValidEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
       if (!isValidEmail) {
-        toast.warning('Invalid email', 'Please enter a valid email address.');
+        toast.warning(ERROR_MESSAGES.INVALID_EMAIL.title, ERROR_MESSAGES.INVALID_EMAIL.message);
         return;
       }
     }
@@ -773,8 +769,4 @@ const Pricing = memo(() => {
       </div>
     </section>
   );
-});
-
-Pricing.displayName = 'Pricing';
-
-export default Pricing;
+}
