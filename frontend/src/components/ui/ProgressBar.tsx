@@ -46,8 +46,8 @@ export default function ProgressBar({
       <div className={`w-full ${sizeClasses[size]} bg-gray-800 rounded-full overflow-hidden shadow-inner border border-gray-700/30`}>
         <div
           className={`${sizeClasses[size]} ${colorClasses[color]} rounded-full ${
-            animate ? 'transition-all duration-700 ease-in-out' : ''
-          } relative overflow-hidden shadow-[0_0_15px_-3px_rgba(0,0,0,0.1)] active:shadow-purple-500/50`}
+            animate ? 'transition-all duration-1000 ease-[cubic-bezier(0.65,0,0.35,1)]' : ''
+          } relative overflow-hidden shadow-[0_0_20px_-3px_rgba(168,85,247,0.4)]`}
           style={{ width: `${clampedProgress}%` }}
           role="progressbar"
           aria-valuenow={clampedProgress}
