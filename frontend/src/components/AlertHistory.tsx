@@ -300,7 +300,8 @@ export default function AlertHistory({ userAddress }: AlertHistoryProps) {
                       title="View on explorer"
                     >
                       {entry.txHash.slice(0, 8)}...{entry.txHash.slice(-6)}
-                      <ExternalLink className="w-3 h-3" />
+                      <ExternalLink className="w-3 h-3" aria-hidden="true" />
+                      <span className="sr-only">(opens in new tab)</span>
                     </a>
                   </td>
                 </tr>
