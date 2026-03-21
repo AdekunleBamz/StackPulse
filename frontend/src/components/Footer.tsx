@@ -133,8 +133,8 @@ export default function Footer() {
           </nav>
         </div>
 
-        <div className="pt-10 border-t border-white/[0.03] flex flex-col md:flex-row justify-between items-center gap-8">
-          <div className="flex flex-col items-center md:items-start gap-1.5">
+        <div className="pt-10 border-t border-white/[0.03] flex flex-col md:flex-row justify-between items-center gap-6">
+          <div className="flex flex-col items-center md:items-start gap-2 text-center md:text-left">
             <p className="text-gray-400 text-[11px] font-bold tracking-tight">
               © {new Date().getFullYear()} StackPulse Labs. <span className="text-gray-600 font-medium ml-1">All Rights Reserved.</span>
             </p>
@@ -142,10 +142,13 @@ export default function Footer() {
               Crafted with <span className="text-purple-500/60 transition-colors hover:text-purple-500 cursor-default">♥</span> for the Stacks Network.
             </p>
           </div>
-          <div className="flex items-center gap-8">
-            <div className="flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-emerald-500/5 border border-emerald-500/10 shadow-inner">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.4)] animate-pulse" />
-              <span className="text-[10px] font-black text-emerald-500/90 uppercase tracking-[0.2em]">
+          <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2.5 px-3.5 py-1.5 rounded-full bg-emerald-500/[0.03] border border-emerald-500/10 shadow-[inset_0_1px_1px_rgba(255,255,255,0.02)]">
+              <div className="relative flex h-1.5 w-1.5">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.4)]"></span>
+              </div>
+              <span className="text-[10px] font-black text-emerald-500/90 uppercase tracking-[0.25em]">
                 Mainnet Live
               </span>
             </div>
