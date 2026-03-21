@@ -101,28 +101,28 @@ export default function Header() {
           <nav className="hidden md:flex items-center space-x-8" aria-label="Primary">
             <Link 
               href="/#features" 
-              className="text-sm font-semibold text-gray-400 hover:text-white transition-all px-3 py-1.5 rounded-lg outline-none focus-visible:ring-2 focus-visible:ring-purple-500/50 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-950 hover:bg-white/5"
+              className="text-sm font-semibold text-gray-400 hover:text-white transition-all px-3 py-1.5 rounded-lg outline-none focus-visible:ring-2 focus-visible:ring-purple-500/50 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-950 hover:bg-white/5 aria-[current=page]:bg-white/10 aria-[current=page]:text-white aria-[current=page]:shadow-sm"
               aria-current={pathname === '/#features' ? 'page' : undefined}
             >
               Features
             </Link>
             <Link 
               href="/#pricing" 
-              className="text-sm font-semibold text-gray-400 hover:text-white transition-all px-3 py-1.5 rounded-lg outline-none focus-visible:ring-2 focus-visible:ring-purple-500/50 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-950 hover:bg-white/5"
+              className="text-sm font-semibold text-gray-400 hover:text-white transition-all px-3 py-1.5 rounded-lg outline-none focus-visible:ring-2 focus-visible:ring-purple-500/50 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-950 hover:bg-white/5 aria-[current=page]:bg-white/10 aria-[current=page]:text-white aria-[current=page]:shadow-sm"
               aria-current={pathname === '/#pricing' ? 'page' : undefined}
             >
               Pricing
             </Link>
             <Link 
               href="/#stats" 
-              className="text-sm font-semibold text-gray-400 hover:text-white transition-all px-3 py-1.5 rounded-xl outline-none focus-visible:ring-2 focus-visible:ring-purple-500/50 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-950 hover:bg-white/5"
+              className="text-sm font-semibold text-gray-400 hover:text-white transition-all px-3 py-1.5 rounded-xl outline-none focus-visible:ring-2 focus-visible:ring-purple-500/50 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-950 hover:bg-white/5 aria-[current=page]:bg-white/10 aria-[current=page]:text-white aria-[current=page]:shadow-sm"
               aria-current={pathname === '/#stats' ? 'page' : undefined}
             >
               Live Stats
             </Link>
             <Link 
               href="/register"
-              className="text-sm font-bold text-purple-400 hover:text-purple-300 transition-all px-3 py-1.5 rounded-xl outline-none focus-visible:ring-2 focus-visible:ring-purple-500/50 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-950 hover:bg-purple-500/5"
+              className="text-sm font-bold text-purple-400 hover:text-purple-300 transition-all px-3 py-1.5 rounded-xl outline-none focus-visible:ring-2 focus-visible:ring-purple-500/50 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-950 hover:bg-purple-500/5 aria-[current=page]:bg-purple-500/10 aria-[current=page]:text-white aria-[current=page]:shadow-sm"
               aria-current={pathname === '/register' ? 'page' : undefined}
             >
               Register
