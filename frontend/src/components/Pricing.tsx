@@ -6,6 +6,7 @@ import { useEffect, useId, useState } from 'react';
 import { toast } from '@/components/Toast';
 import Button from '@/components/ui/Button';
 import Link from 'next/link';
+import type { UserPreferences, ApiResponse } from '@/types/api';
 
 const tiers = [
   {
@@ -150,7 +151,7 @@ export default function Pricing() {
             const serverUrl = process.env.NEXT_PUBLIC_SERVER_URL || 'https://stackpulse-b8fw.onrender.com';
             const prefsResponse = await fetch(`${serverUrl}/api/users/${address}`);
             if (prefsResponse.ok) {
-              const prefsData = await prefsResponse.json();
+              const prefsData: ApiResponse<UserPreferences> = await prefsResponse.json();
               if (prefsData.user) {
                 setEmail(prefsData.user.email || '');
                 setDiscord(prefsData.user.discord || '');
