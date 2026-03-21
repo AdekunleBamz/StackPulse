@@ -6,6 +6,7 @@ import { useEffect, useId, useState } from 'react';
 import { toast } from '@/components/Toast';
 import Button from '@/components/ui/Button';
 import Link from 'next/link';
+import type { NotificationPreference, ChannelAction } from '@/types/settings';
 import { useAccount } from '@/hooks/useAccount';
 import type { UserPreferences, ApiResponse } from '@/types/api';
 
@@ -68,10 +69,10 @@ export default function Pricing() {
   const [isSaving, setIsSaving] = useState(false);
   const [subscribingTier, setSubscribingTier] = useState<number | null>(null);
   const [username, setUsername] = useState('');
-  const [email, setEmail] = useState('');
-  const [discord, setDiscord] = useState('');
-  const [telegram, setTelegram] = useState('');
-  const [editingChannel, setEditingChannel] = useState<'email' | 'discord' | 'telegram' | null>(null);
+  const [email, setEmail] = useState<string>('');
+  const [discord, setDiscord] = useState<string>('');
+  const [telegram, setTelegram] = useState<string>('');
+  const [editingChannel, setEditingChannel] = useState<ChannelAction | null>(null);
   const [tempValue, setTempValue] = useState('');
   const [isDataLoading, setIsDataLoading] = useState(false);
 
