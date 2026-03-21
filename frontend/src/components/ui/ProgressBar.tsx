@@ -43,11 +43,11 @@ export default function ProgressBar({
           <span>{clampedProgress}%</span>
         </div>
       )}
-      <div className={`w-full ${sizeClasses[size]} bg-gray-800 rounded-full overflow-hidden shadow-inner`}>
+      <div className={`w-full ${sizeClasses[size]} bg-gray-800 rounded-full overflow-hidden shadow-inner border border-gray-700/30`}>
         <div
           className={`${sizeClasses[size]} ${colorClasses[color]} rounded-full ${
-            animate ? 'transition-all duration-500 ease-out' : ''
-          } relative overflow-hidden`}
+            animate ? 'transition-all duration-700 ease-in-out' : ''
+          } relative overflow-hidden shadow-[0_0_15px_-3px_rgba(0,0,0,0.1)] active:shadow-purple-500/50`}
           style={{ width: `${clampedProgress}%` }}
           role="progressbar"
           aria-valuenow={clampedProgress}
@@ -55,7 +55,7 @@ export default function ProgressBar({
           aria-valuemax={100}
         >
           {/* Shimmer effect inside progress bar */}
-          <div className="absolute inset-0 bg-white/20 animate-pulse" />
+          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent animate-shimmer" style={{ backgroundSize: '200% 100%' }} />
         </div>
       </div>
     </div>
