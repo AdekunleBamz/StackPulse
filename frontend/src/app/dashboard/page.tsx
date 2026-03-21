@@ -79,6 +79,7 @@ export default function DashboardPage() {
   const [alerts, setAlerts] = useState<DashboardAlert[]>([]);
   const [isDataLoading, setIsDataLoading] = useState(true);
   const [syncingAlertIds, setSyncingAlertIds] = useState<Set<number>>(new Set());
+  const [history, setHistory] = useState<AlertHistoryItem[]>([]);
   const { enabled: soundEnabled, toggle: toggleSound, playSound } = useSound();
   const { permission: notifyPermission, requestPermission, sendNotification } = useNotifications();
   
@@ -294,6 +295,21 @@ export default function DashboardPage() {
           }
           toast.error('Delete failed', 'Please try again.');
         }
+      },
+    });
+  };
+
+  // Clear activity history
+  const clearHistory = () => {
+    confirm({
+      title: 'Clear activity history?',
+      message: 'This will permanently remove all past alert logs from your dashboard.',
+      confirmLabel: 'Clear All',
+      cancelLabel: 'Cancel',
+      variant: 'danger',
+      onConfirm: () => {
+        setHistory([]);
+        toast.success('Activity history cleared');
       },
     });
   };
@@ -565,6 +581,63 @@ export default function DashboardPage() {
                   </div>
                 );
               })}
+            </div>
+          )}
+        </div>
+
+        {/* Recent Activity Section */}
+        <div className="mt-12 mb-8">
+          <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center gap-3">
+              <Activity className="w-6 h-6 text-purple-400" />
+              <h2 className="text-xl font-bold text-white">Recent Activity</h2>
+            </div>
+            {history.length > 0 && (
+              <button
+                onClick={clearHistory}
+                className="text-xs text-gray-500 hover:text-red-400 transition-colors flex items-center gap-1"
+              >
+                <Trash2 className="w-3 h-3" />
+                Clear History
+              </button>
+            )}
+          </div>
+
+          {history.length === 0 ? (
+            <div className="bg-gray-900/40 rounded-2xl border border-gray-800/50 p-12 text-center">
+              <div className="w-16 h-16 bg-gray-800/30 rounded-2xl flex items-center justify-center mx-auto mb-4 opacity-40">
+                <Activity className="w-8 h-8 text-gray-500" />
+              </div>
+              <p className="text-gray-500 font-medium">No recent activity detected.</p>
+              <p className="text-gray-600 text-xs mt-1">Alert triggers will appear here in real-time.</p>
+            </div>
+          ) : (
+            <div className="space-y-4">
+              {history.map((item, idx) => (
+                <div 
+                  key={item.id} 
+                  className="bg-gray-800/30 rounded-xl p-4 border border-gray-700/30 flex items-center justify-between group hover:border-purple-500/20 transition-all"
+                  style={{ animationDelay: `${idx * 50}ms`, animationFillMode: 'both' }}
+                >
+                  <div className="flex items-center gap-4">
+                    <div className="w-2 h-2 rounded-full bg-purple-500 animate-pulse shadow-[0_0_8px_rgba(168,85,247,0.5)]" />
+                    <div>
+                      <p className="text-gray-200 text-sm font-medium">{item.message}</p>
+                      <p className="text-gray-500 text-[10px] mt-0.5">{new Date(item.timestamp).toLocaleString()}</p>
+                    </div>
+                  </div>
+                  {item.txId && (
+                    <a 
+                      href={`https://explorer.hiro.so/txid/${item.txId}?chain=mainnet`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-[10px] font-bold text-purple-400 hover:text-purple-300 opacity-0 group-hover:opacity-100 transition-opacity"
+                    >
+                      View Transaction →
+                    </a>
+                  )}
+                </div>
+              ))}
             </div>
           )}
         </div>
