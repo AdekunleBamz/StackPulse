@@ -277,7 +277,10 @@ export default function AlertHistory({ userAddress }: AlertHistoryProps) {
               </tr>
             ) : (
               history.map((entry) => (
-                <tr key={entry.id} className="hover:bg-gray-800/30 transition-colors">
+                <tr 
+                  key={entry.id} 
+                  className="group hover:bg-white/[0.02] transition-all duration-300 ease-out border-l-2 border-transparent hover:border-purple-500/50"
+                >
                   <td className="px-6 py-4">
                     <span className="text-white font-medium">{entry.alertName}</span>
                   </td>
