@@ -301,16 +301,19 @@ export default function BadgeShowcase({ userBadges = [] }: BadgeShowcaseProps) {
         <div
           className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4"
           onClick={() => setSelectedBadge(null)}
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="modal-title"
         >
           <div
             className="bg-gray-900 border border-gray-700 rounded-2xl p-6 max-w-md w-full"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="text-center mb-6">
-              <div className="text-7xl mb-4 filter drop-shadow-2xl">
+              <div className="text-7xl mb-4 filter drop-shadow-2xl" aria-hidden="true">
                 {selectedBadge.earned ? selectedBadge.icon : '🔒'}
               </div>
-              <h3 className="text-3xl font-extrabold text-white mb-2 tracking-tight">
+              <h3 id="modal-title" className="text-3xl font-extrabold text-white mb-2 tracking-tight">
                 {selectedBadge.name}
               </h3>
               <div
