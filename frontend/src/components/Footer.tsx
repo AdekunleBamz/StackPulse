@@ -58,12 +58,12 @@ export default function Footer() {
               Real-time blockchain monitoring and alerting platform for the Stacks ecosystem. 
               Get instant notifications for whale transfers, contract deployments, and NFT mints.
             </p>
-            <div className="flex space-x-4 mt-6">
+            <div className="flex space-x-3 mt-8">
               {socialLinks.map((social) => (
                 <a
                   key={social.label}
                   href={social.href}
-                  className="w-10 h-10 rounded-xl bg-gray-900 border border-gray-800 flex items-center justify-center text-gray-500 hover:text-white hover:border-purple-500/50 hover:bg-gray-800 hover:shadow-[0_0_15px_rgba(168,85,247,0.15)] transition-all duration-300 hover:-translate-y-1 active:scale-95 focus:outline-none focus:ring-2 focus:ring-purple-500/50"
+                  className="w-11 h-11 rounded-2xl bg-white/5 border border-white/5 flex items-center justify-center text-gray-400 hover:text-white hover:border-purple-500/40 hover:bg-white/10 hover:shadow-[0_0_20px_rgba(168,85,247,0.15)] transition-all duration-300 hover:-translate-y-1 active:scale-95 focus:outline-none focus:ring-2 focus:ring-purple-500/50"
                   aria-label={social.label}
                   target="_blank"
                   rel="noopener noreferrer"
