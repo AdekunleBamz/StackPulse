@@ -10,6 +10,7 @@ import { DashboardSkeleton } from '@/components/LoadingSkeleton';
 import Button from '@/components/ui/Button';
 import { useAccount } from '@/hooks/useAccount';
 import { useSound } from '@/hooks/useSound';
+import { useNotifications } from '@/hooks/useNotifications';
 import { 
   Bell, 
   Wallet, 
@@ -27,7 +28,9 @@ import {
   ToggleRight,
   Loader2,
   Volume2,
-  VolumeX
+  VolumeX,
+  Monitor,
+  MonitorOff
 } from 'lucide-react';
 import { Breadcrumbs } from '@/components';
 
@@ -77,6 +80,7 @@ export default function DashboardPage() {
   const [isDataLoading, setIsDataLoading] = useState(true);
   const [syncingAlertIds, setSyncingAlertIds] = useState<Set<number>>(new Set());
   const { enabled: soundEnabled, toggle: toggleSound, playSound } = useSound();
+  const { permission: notifyPermission, requestPermission, sendNotification } = useNotifications();
   
   // Load alerts from server when address changes
   useEffect(() => {
@@ -170,6 +174,7 @@ export default function DashboardPage() {
 
           toast.success('Alert created', `TX: ${data.txId}`);
           playSound('success');
+          sendNotification('Alert Created', { body: `Alert "${newAlertName || alertTypes[newAlertType - 1].name}" is now active.` });
           setShowCreateAlert(false);
           setNewAlertName('');
           setNewAlertThreshold('10000');
@@ -239,6 +244,7 @@ export default function DashboardPage() {
       
       toast.success('Status Updated', `${existing?.name || 'Alert'} is now ${nextEnabled ? 'enabled' : 'disabled'}.`);
       playSound('notification');
+      sendNotification('Status Updated', { body: `${existing?.name || 'Alert'} is now ${nextEnabled ? 'enabled' : 'disabled'}.` });
     } catch (err) {
       console.error('Error toggling alert:', err);
       // Revert optimism
@@ -384,10 +390,17 @@ export default function DashboardPage() {
 	            </Button>
 	            <button
 	              onClick={toggleSound}
-	              className="p-2.5 bg-gray-800 hover:bg-gray-700 rounded-xl border border-gray-700 transition-all"
+	              className="p-2.5 bg-gray-800 hover:bg-gray-700 rounded-xl border border-gray-700 transition-all text-purple-400"
 	              title={soundEnabled ? 'Mute sounds' : 'Unmute sounds'}
 	            >
-	              {soundEnabled ? <Volume2 className="w-5 h-5 text-purple-400" /> : <VolumeX className="w-5 h-5 text-gray-500" />}
+	              {soundEnabled ? <Volume2 className="w-5 h-5" /> : <VolumeX className="w-5 h-5 text-gray-500" />}
+	            </button>
+	            <button
+	              onClick={requestPermission}
+	              className={`p-2.5 bg-gray-800 hover:bg-gray-700 rounded-xl border border-gray-700 transition-all ${notifyPermission === 'granted' ? 'text-blue-400' : 'text-gray-500'}`}
+	              title={notifyPermission === 'granted' ? 'Notifications enabled' : 'Enable desktop notifications'}
+	            >
+	              {notifyPermission === 'granted' ? <Monitor className="w-5 h-5" /> : <MonitorOff className="w-5 h-5" />}
 	            </button>
 	          </div>
 	        </div>
