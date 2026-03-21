@@ -689,13 +689,13 @@ export default function Pricing() {
             {tiers.map((tier, index) => (
               <div
                 key={index}
-                className={`group relative flex flex-col bg-gray-900 border transition-all duration-500 rounded-[2.5rem] p-8 md:p-10 ${
+                className={`group relative flex flex-col bg-gray-900 border transition-all duration-500 rounded-[2.5rem] p-8 md:p-10 hover:shadow-[0_30px_60px_-15px_rgba(0,0,0,0.5)] ${
                   tier.popular
-                    ? 'border-purple-500/50 shadow-2xl shadow-purple-500/10 scale-105 z-10 bg-gradient-to-br from-gray-900 via-gray-900 to-purple-900/5'
+                    ? 'border-purple-500/50 shadow-[0_20px_50px_-20px_rgba(168,85,247,0.15)] scale-[1.02] hover:scale-[1.05] z-10 bg-gradient-to-br from-gray-900 via-gray-900 to-purple-900/10'
                     : tier.tier === currentTier && isRegistered
-                      ? 'border-emerald-500/50 shadow-xl shadow-emerald-500/5 bg-emerald-500/5'
-                      : 'border-gray-800/50 hover:border-gray-700 hover:bg-gray-800/40'
-                } ${!isRegistered ? 'opacity-70 blur-[1px]' : ''}`}
+                      ? 'border-emerald-500/40 shadow-xl shadow-emerald-500/5 bg-emerald-500/5 hover:scale-[1.03]'
+                      : 'border-white/5 hover:border-white/10 hover:bg-gray-800/40 hover:scale-[1.03]'
+                } ${!isRegistered ? 'opacity-70 blur-[0.5px]' : ''}`}
               >
                 {/* Popular Badge */}
                 {tier.popular && (
