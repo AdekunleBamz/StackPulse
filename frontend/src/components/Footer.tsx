@@ -74,7 +74,7 @@ export default function Footer() {
           </div>
 
           {/* Links Columns */}
-          <div>
+          <nav aria-label="Product Links">
             <h3 className="text-white font-bold text-sm uppercase tracking-wider mb-4">Product</h3>
             <ul className="space-y-3">
               {footerLinks.product.map((link) => (
@@ -85,9 +85,9 @@ export default function Footer() {
                 </li>
               ))}
             </ul>
-          </div>
+          </nav>
 
-          <div>
+          <nav aria-label="Resource Links">
             <h3 className="text-white font-bold text-sm uppercase tracking-wider mb-4">Resources</h3>
             <ul className="space-y-3">
               {footerLinks.resources.map((link) => (
@@ -109,9 +109,9 @@ export default function Footer() {
                 </li>
               ))}
             </ul>
-          </div>
+          </nav>
 
-          <div>
+          <nav aria-label="Legal Links">
             <h3 className="text-white font-bold text-sm uppercase tracking-wider mb-4">Legal</h3>
             <ul className="space-y-3">
               {footerLinks.legal.map((link) => (
@@ -122,7 +122,7 @@ export default function Footer() {
                 </li>
               ))}
             </ul>
-          </div>
+          </nav>
         </div>
 
         {/* Bottom Bar */}
