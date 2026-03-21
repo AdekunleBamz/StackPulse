@@ -80,7 +80,7 @@ export default function Footer() {
             <ul className="space-y-4">
               {footerLinks.product.map((link) => (
                 <li key={link.label}>
-                  <Link href={link.href} className="text-gray-500 hover:text-purple-400 transition-all duration-200 text-sm font-medium hover:translate-x-1 inline-block">
+                  <Link href={link.href} className="text-gray-400/80 hover:text-indigo-400 transition-all duration-300 text-sm font-medium hover:translate-x-1.5 inline-block">
                     {link.label}
                   </Link>
                 </li>
@@ -95,7 +95,7 @@ export default function Footer() {
                 <li key={link.label}>
                   <a 
                     href={link.href} 
-                    className="text-gray-500 hover:text-purple-400 transition-all duration-200 text-sm font-medium hover:translate-x-1 flex items-center gap-1 group/flink"
+                    className="text-gray-400/80 hover:text-indigo-400 transition-all duration-300 text-sm font-medium hover:translate-x-1.5 flex items-center gap-1 group/flink"
                     target={link.href.startsWith('http') ? '_blank' : undefined}
                     rel={link.href.startsWith('http') ? 'noopener noreferrer' : undefined}
                   >
@@ -117,7 +117,7 @@ export default function Footer() {
             <ul className="space-y-4">
               {footerLinks.legal.map((link) => (
                 <li key={link.label}>
-                  <Link href={link.href} className="text-gray-500 hover:text-purple-400 transition-all duration-200 text-sm font-medium hover:translate-x-1 inline-block">
+                  <Link href={link.href} className="text-gray-400/80 hover:text-indigo-400 transition-all duration-300 text-sm font-medium hover:translate-x-1.5 inline-block">
                     {link.label}
                   </Link>
                 </li>
