@@ -74,8 +74,9 @@ export default function Features() {
                 {feature.description}
               </p>
               
-              {/* Subtle background glow */}
-              <div className="absolute -right-10 -bottom-10 w-40 h-40 bg-purple-500/5 rounded-full blur-3xl group-hover:bg-purple-500/10 transition-colors duration-500" />
+              {/* Subtle background glows */}
+              <div className="absolute -right-10 -bottom-10 w-40 h-40 bg-purple-500/5 rounded-full blur-3xl group-hover:bg-purple-500/10 group-hover:scale-150 transition-all duration-700" />
+              <div className="absolute -left-10 -top-10 w-32 h-32 bg-indigo-500/5 rounded-full blur-2xl group-hover:bg-indigo-500/10 group-hover:scale-150 transition-all duration-700" />
             </div>
           ))}
         </div>
