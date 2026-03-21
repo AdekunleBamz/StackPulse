@@ -62,9 +62,10 @@ export default function Features() {
               role="listitem"
             >
               <div
-                className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${feature.color} flex items-center justify-center mb-6 group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 shadow-lg shadow-black/20`}
+                className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${feature.color} flex items-center justify-center mb-6 group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 shadow-xl shadow-black/30 relative ring-1 ring-white/20`}
               >
-                <feature.icon className="w-6 h-6 text-white" />
+                <div className="absolute inset-0 bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity rounded-2xl animate-pulse" />
+                <feature.icon className="w-6 h-6 text-white relative z-10" />
               </div>
               <h3 className="text-xl font-black text-white mb-3 group-hover:text-purple-400 transition-colors tracking-tight">
                 {feature.title}
