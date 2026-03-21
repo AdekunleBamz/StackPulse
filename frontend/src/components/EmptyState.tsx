@@ -15,17 +15,17 @@ interface EmptyStateProps {
 export default function EmptyState({ icon: Icon, title, description, action, className = "" }: EmptyStateProps) {
   return (
     <div 
-      className={`flex flex-col items-center justify-center py-16 px-4 text-center animate-in fade-in zoom-in duration-500 ${className}`}
+      className={`flex flex-col items-center justify-center py-16 px-4 text-center animate-zoom-in duration-500 group ${className}`}
       role="status"
       aria-labelledby="empty-state-title"
       aria-describedby="empty-state-description"
       aria-live="polite"
     >
       <div 
-        className="w-20 h-20 bg-gray-800/50 rounded-full flex items-center justify-center mb-6 shadow-inner border border-gray-700/50"
+        className="w-20 h-20 bg-gray-800/50 rounded-full flex items-center justify-center mb-6 shadow-inner border border-gray-700/50 group-hover:bg-gray-800 group-hover:scale-110 group-hover:shadow-purple-500/10 transition-all duration-500 ease-out"
         aria-hidden="true"
       >
-        <Icon className="w-10 h-10 text-gray-400" strokeWidth={1.5} />
+        <Icon className="w-10 h-10 text-gray-400 group-hover:text-purple-400 transition-colors duration-500" strokeWidth={1.5} />
       </div>
       
       <h3 id="empty-state-title" className="text-xl font-bold text-white mb-2 tracking-tight">{title}</h3>
