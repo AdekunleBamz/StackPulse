@@ -24,40 +24,40 @@ export default function Breadcrumbs({ className }: BreadcrumbsProps) {
     >
       <ol className="flex items-center space-x-2">
         <li>
-          <Link
-            href="/"
-            className="flex items-center text-gray-400 hover:text-purple-400 transition-colors"
-          >
-            <Home className="w-4 h-4" />
-            <span className="sr-only">Home</span>
-          </Link>
-        </li>
-        
-        {paths.map((path, index) => {
-          const href = `/${paths.slice(0, index + 1).join('/')}`;
-          const isLast = index === paths.length - 1;
-          const label = path
-            .replace(/-/g, ' ')
-            .replace(/^\w/, (c) => c.toUpperCase());
-
-          return (
-            <li key={path} className="flex items-center">
-              <ChevronRight className="w-4 h-4 text-gray-600 mx-1 shrink-0" />
-              {isLast ? (
-                <span className="text-purple-400 font-bold text-sm tracking-wide" aria-current="page">
-                  {label}
-                </span>
-              ) : (
-                <Link
-                  href={href}
-                  className="text-gray-400 hover:text-purple-400 text-sm font-medium transition-colors"
-                >
-                  {label}
-                </Link>
-              )}
-            </li>
-          );
-        })}
+            <Link
+              href="/"
+              className="flex items-center text-gray-500 hover:text-purple-400 transition-all duration-200 hover:scale-105 active:scale-95"
+            >
+              <Home className="w-3.5 h-3.5" />
+              <span className="sr-only">Home</span>
+            </Link>
+          </li>
+          
+          {paths.map((path, index) => {
+            const href = `/${paths.slice(0, index + 1).join('/')}`;
+            const isLast = index === paths.length - 1;
+            const label = path
+              .replace(/-/g, ' ')
+              .replace(/^\w/, (c) => c.toUpperCase());
+  
+            return (
+              <li key={path} className="flex items-center">
+                <ChevronRight className="w-3.5 h-3.5 text-gray-700 mx-1.5 shrink-0" />
+                {isLast ? (
+                  <span className="text-purple-400 font-bold text-xs tracking-wider uppercase" aria-current="page">
+                    {label}
+                  </span>
+                ) : (
+                  <Link
+                    href={href}
+                    className="text-gray-500 hover:text-gray-200 text-xs font-semibold transition-all duration-200 hover:translate-x-0.5"
+                  >
+                    {label}
+                  </Link>
+                )}
+              </li>
+            );
+          })}
       </ol>
     </nav>
   );
