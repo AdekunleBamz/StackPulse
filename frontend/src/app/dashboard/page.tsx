@@ -9,6 +9,8 @@ import { NoAlertsState } from '@/components/EmptyState';
 import { DashboardSkeleton } from '@/components/LoadingSkeleton';
 import Button from '@/components/ui/Button';
 import { useAccount } from '@/hooks/useAccount';
+import { useSound } from '@/hooks/useSound';
+import { useNotifications } from '@/hooks/useNotifications';
 import { 
   Bell, 
   Wallet, 
@@ -27,7 +29,9 @@ import {
   Volume2,
   VolumeX,
   Monitor,
-import { AlertCard, ActivityItem, Breadcrumbs } from '@/components';
+  MonitorOff
+} from 'lucide-react';
+import { Breadcrumbs } from '@/components';
 
 const DEPLOYER_ADDRESS = process.env.NEXT_PUBLIC_DEPLOYER_ADDRESS || '';
 
@@ -62,6 +66,9 @@ export default function DashboardPage() {
   const { address, isConnected, connect, isRegistered, userData, isLoading: isAccountLoading } = useAccount();
   const [alerts, setAlerts] = useState<DashboardAlert[]>([]);
   const [isDataLoading, setIsDataLoading] = useState(true);
+  const [syncingAlertIds, setSyncingAlertIds] = useState<Set<number>>(new Set());
+  const { enabled: soundEnabled, toggle: toggleSound, playSound } = useSound();
+  const { permission: notifyPermission, requestPermission, sendNotification } = useNotifications();
   
   // Load alerts from server when address changes
   useEffect(() => {
@@ -152,6 +159,8 @@ export default function DashboardPage() {
           }
 
           toast.success('Alert created', `TX: ${data.txId}`);
+          playSound('success');
+          sendNotification('Alert Created', { body: `Alert "${newAlertName || alertTypes[newAlertType - 1].name}" is now active.` });
           setShowCreateAlert(false);
           setNewAlertName('');
           setNewAlertThreshold('10000');
@@ -201,6 +210,20 @@ export default function DashboardPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ enabled: nextEnabled })
       });
+      
+      if (!res.ok) throw new Error('Failed to update status');
+      
+      toast.success('Status Updated', `${existing?.name || 'Alert'} is now ${nextEnabled ? 'enabled' : 'disabled'}.`);
+      playSound('notification');
+      sendNotification('Status Updated', { body: `${existing?.name || 'Alert'} is now ${nextEnabled ? 'enabled' : 'disabled'}.` });
+    } catch (err) {
+      console.error('Error toggling alert:', err);
+      // Revert optimism
+      setAlerts((prev) =>
+        prev.map((a) => (a.id === alertId ? { ...a, enabled: !nextEnabled } : a))
+      );
+      toast.error('Sync Failed', 'Could not update alert status. Please try again.');
+    } finally {
       toast.dismiss(toastId);
     } catch (err) {
       logger.error('Error toggling alert:', err);
@@ -337,6 +360,20 @@ export default function DashboardPage() {
 	            >
 	              {userData.tier === 0 ? 'Upgrade' : 'Manage Plan'}
 	            </Button>
+	            <button
+	              onClick={toggleSound}
+	              className="p-2.5 bg-gray-800 hover:bg-gray-700 rounded-xl border border-gray-700 transition-all text-purple-400"
+	              title={soundEnabled ? 'Mute sounds' : 'Unmute sounds'}
+	            >
+	              {soundEnabled ? <Volume2 className="w-5 h-5" /> : <VolumeX className="w-5 h-5 text-gray-500" />}
+	            </button>
+	            <button
+	              onClick={requestPermission}
+	              className={`p-2.5 bg-gray-800 hover:bg-gray-700 rounded-xl border border-gray-700 transition-all ${notifyPermission === 'granted' ? 'text-blue-400' : 'text-gray-500'}`}
+	              title={notifyPermission === 'granted' ? 'Notifications enabled' : 'Enable desktop notifications'}
+	            >
+	              {notifyPermission === 'granted' ? <Monitor className="w-5 h-5" /> : <MonitorOff className="w-5 h-5" />}
+	            </button>
 	          </div>
 	        </div>
 
