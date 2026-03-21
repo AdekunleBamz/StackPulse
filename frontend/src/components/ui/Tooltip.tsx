@@ -48,10 +48,10 @@ export default function Tooltip({
   };
 
   const arrowClasses = {
-    top: 'top-full left-1/2 -translate-x-1/2 border-t-gray-800',
-    bottom: 'bottom-full left-1/2 -translate-x-1/2 border-b-gray-800',
-    left: 'left-full top-1/2 -translate-y-1/2 border-l-gray-800',
-    right: 'right-full top-1/2 -translate-y-1/2 border-r-gray-800'
+    top: 'top-full left-1/2 -translate-x-1/2 border-t-gray-900/95',
+    bottom: 'bottom-full left-1/2 -translate-x-1/2 border-b-gray-900/95',
+    left: 'left-full top-1/2 -translate-y-1/2 border-l-gray-900/95',
+    right: 'right-full top-1/2 -translate-y-1/2 border-r-gray-900/95'
   };
 
   return (
