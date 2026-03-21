@@ -42,7 +42,11 @@ export default class ErrorBoundary extends Component<Props, State> {
 
       return (
         <div className="min-h-screen flex items-center justify-center bg-gray-900 p-4">
-          <div className="max-w-md w-full bg-gray-800 rounded-xl p-8 border border-red-500/30">
+          <div 
+            className="max-w-md w-full bg-gray-800 rounded-xl p-8 border border-red-500/30"
+            role="alert"
+            aria-live="assertive"
+          >
             <div className="text-center">
               <div className="w-16 h-16 bg-red-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
                 <svg 
