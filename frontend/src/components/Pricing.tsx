@@ -439,9 +439,11 @@ export default function Pricing() {
     if (channel === 'discord') setTempValue(discord);
     if (channel === 'telegram') setTempValue(telegram);
   };  return (
-    <section className="py-24 px-4 bg-[#030712] relative overflow-hidden" id="pricing">
-      {/* Background glow */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-4xl h-96 bg-purple-500/5 blur-[120px] pointer-events-none" />
+    <section className="py-32 px-4 bg-[#030712] relative overflow-hidden" id="pricing">
+      {/* Background depth layers */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-6xl h-[500px] bg-purple-600/5 blur-[150px] pointer-events-none" />
+      <div className="absolute top-40 left-1/4 w-96 h-96 bg-indigo-600/5 blur-[120px] pointer-events-none" />
+      <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-purple-600/5 blur-[120px] pointer-events-none" />
       
       <div className="max-w-6xl mx-auto relative z-10">
         {/* Registration Card - Always at top */}
