@@ -40,7 +40,7 @@ const alertTypes = [
   { id: 6, name: 'Address Watch', icon: Activity, description: 'Monitor specific addresses', iconBgClass: 'bg-orange-500/20', iconClass: 'text-orange-300' },
 ];
 
-interface UserAlert {
+export interface DashboardAlert {
   id: number;
   type: number;
   name: string;
@@ -48,6 +48,17 @@ interface UserAlert {
   threshold?: number;
   targetAddress?: string;
   triggerCount: number;
+  createdAt?: string;
+}
+
+export interface AlertHistoryItem {
+  id: string;
+  alertId: number;
+  type: number;
+  message: string;
+  timestamp: string;
+  txId?: string;
+  data?: any;
 }
 
 interface UserData {
