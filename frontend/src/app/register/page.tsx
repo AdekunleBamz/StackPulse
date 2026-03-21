@@ -100,7 +100,9 @@ export default function RegisterPage() {
         <Breadcrumbs className="mb-8 w-full" />
 
         {/* Registration Card */}
-        <div className="bg-gray-900 border border-gray-800 rounded-2xl p-8">
+        <div className="relative bg-gray-900/40 backdrop-blur-xl border border-white/5 rounded-3xl p-10 shadow-[0_20px_50px_rgba(0,0,0,0.5)] overflow-hidden">
+          <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-purple-500/40 to-transparent" />
+          
           {/* Header */}
           <div className="text-center mb-8">
             <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-blue-500 rounded-xl flex items-center justify-center mx-auto mb-4">
