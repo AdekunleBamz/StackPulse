@@ -621,14 +621,18 @@ export default function DashboardPage() {
               {history.map((item, idx) => (
                 <div 
                   key={item.id} 
-                  className="bg-gray-800/30 rounded-xl p-4 border border-gray-700/30 flex items-center justify-between group hover:border-purple-500/20 transition-all text-left"
-                  style={{ animationDelay: `${idx * 50}ms`, animationFillMode: 'both' }}
+                  className={`bg-gray-800/30 rounded-xl p-4 border ${
+                    idx === 0 
+                      ? 'border-purple-500/50 shadow-[0_0_20px_rgba(168,85,247,0.1)] ring-1 ring-purple-500/20' 
+                      : 'border-gray-700/30'
+                  } flex items-center justify-between group hover:border-purple-500/20 transition-all text-left animate-in fade-in slide-in-from-top-4 duration-700`}
+                  style={{ animationDelay: `${idx * 40}ms`, animationFillMode: 'both' }}
                 >
                   <div className="flex items-center gap-4">
-                    <div className="w-2 h-2 rounded-full bg-purple-500 animate-pulse shadow-[0_0_8px_rgba(168,85,247,0.5)]" />
+                    <div className={`w-2 h-2 rounded-full ${idx === 0 ? 'bg-purple-400 animate-pulse' : 'bg-gray-600'} shadow-[0_0_8px_rgba(168,85,247,0.4)]`} />
                     <div>
-                      <p className="text-gray-200 text-sm font-medium">{item.message}</p>
-                      <p className="text-gray-500 text-[10px] mt-0.5">{new Date(item.timestamp).toLocaleString()}</p>
+                      <p className={`text-sm font-medium ${idx === 0 ? 'text-white' : 'text-gray-300'}`}>{item.message}</p>
+                      <p className="text-gray-500 text-[10px] mt-0.5 font-mono">{new Date(item.timestamp).toLocaleTimeString()}</p>
                     </div>
                   </div>
                   {item.txId && (
