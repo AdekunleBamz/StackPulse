@@ -61,6 +61,7 @@ export default function DashboardPage() {
   const { confirm, ConfirmDialog } = useConfirmDialog();
   const createAlertTitleId = useId();
   const createAlertDescId = useId();
+  const modalRef = useRef<HTMLDivElement>(null);
   const createAlertSelectRef = useRef<HTMLSelectElement>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [userData, setUserData] = useState<UserData | null>(null);
@@ -152,6 +153,24 @@ export default function DashboardPage() {
 
     const onKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') setShowCreateAlert(false);
+      if (e.key !== 'Tab') return;
+
+      const focusable = modalRef.current?.querySelectorAll<HTMLElement>(
+        'a, button, input, select, textarea, [tabindex]:not([tabindex="-1"])'
+      );
+      if (!focusable || focusable.length === 0) return;
+
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      const active = document.activeElement as HTMLElement | null;
+
+      if (e.shiftKey && active === first) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && active === last) {
+        e.preventDefault();
+        first.focus();
+      }
     };
     window.addEventListener('keydown', onKeyDown);
 
@@ -576,6 +595,7 @@ export default function DashboardPage() {
             onClick={() => setShowCreateAlert(false)}
           >
             <div
+              ref={modalRef}
               className="bg-gray-800 rounded-2xl p-6 max-w-md w-full border border-purple-500/30 shadow-2xl shadow-purple-900/40 animate-zoom-in"
               role="dialog"
               aria-modal="true"
