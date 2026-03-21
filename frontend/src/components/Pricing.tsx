@@ -79,6 +79,7 @@ export default function Pricing() {
   const [editingChannel, setEditingChannel] = useState<'email' | 'discord' | 'telegram' | null>(null);
   const [tempValue, setTempValue] = useState('');
   const [showPreview, setShowPreview] = useState(false);
+  const [showBulkEdit, setShowBulkEdit] = useState(false);
   const editChannelTitleId = useId();
   const [isDataLoading, setIsDataLoading] = useState(false);
 
@@ -556,6 +557,20 @@ export default function Pricing() {
                       </div>
                     </button>
                   ))}
+                </div>
+
+                {/* Bulk Actions */}
+                <div className="mt-4 flex justify-end">
+                  <button
+                    onClick={() => {
+                      setTempValue(email); // Start with email as primary for bulk
+                      setShowBulkEdit(true);
+                    }}
+                    className="text-[10px] font-black uppercase tracking-widest text-purple-400 hover:text-purple-300 transition-colors flex items-center gap-1"
+                  >
+                    <Settings className="w-3 h-3" />
+                    Bulk Configuration
+                  </button>
                 </div>
 
                 {/* Dashboard Shortcut & Preview */}
