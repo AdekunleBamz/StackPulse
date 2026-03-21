@@ -386,7 +386,10 @@ export default function DashboardPage() {
 
         {/* Stats Cards */}
         <div className="grid md:grid-cols-4 gap-4 mb-8">
-          <div className="bg-gray-800 rounded-xl p-6 border border-gray-700">
+          <div 
+            className="bg-gray-800 rounded-xl p-6 border border-gray-700 animate-fade-in hover:-translate-y-1 hover:shadow-lg hover:shadow-purple-500/10 transition-all"
+            style={{ animationDelay: '0ms', animationFillMode: 'both' }}
+          >
             <div className="flex items-center gap-3 mb-2">
               <Bell className="w-5 h-5 text-purple-400" />
               <span className="text-gray-400">Active Alerts</span>
@@ -394,7 +397,10 @@ export default function DashboardPage() {
             <p className="text-3xl font-bold text-white">{alerts.filter(a => a.enabled).length}</p>
             <p className="text-sm text-gray-500">of {maxAlerts[userData.tier]} max</p>
           </div>
-          <div className="bg-gray-800 rounded-xl p-6 border border-gray-700">
+          <div 
+            className="bg-gray-800 rounded-xl p-6 border border-gray-700 animate-fade-in hover:-translate-y-1 hover:shadow-lg hover:shadow-purple-500/10 transition-all"
+            style={{ animationDelay: '100ms', animationFillMode: 'both' }}
+          >
             <div className="flex items-center gap-3 mb-2">
               <Zap className="w-5 h-5 text-yellow-400" />
               <span className="text-gray-400">Triggers Today</span>
@@ -402,7 +408,10 @@ export default function DashboardPage() {
             <p className="text-3xl font-bold text-white">{alerts.reduce((sum, a) => sum + a.triggerCount, 0)}</p>
             <p className="text-sm text-gray-500">notifications sent</p>
           </div>
-          <div className="bg-gray-800 rounded-xl p-6 border border-gray-700">
+          <div 
+            className="bg-gray-800 rounded-xl p-6 border border-gray-700 animate-fade-in hover:-translate-y-1 hover:shadow-lg hover:shadow-purple-500/10 transition-all"
+            style={{ animationDelay: '200ms', animationFillMode: 'both' }}
+          >
             <div className="flex items-center gap-3 mb-2">
               <Activity className="w-5 h-5 text-green-400" />
               <span className="text-gray-400">Alert Types</span>
@@ -410,7 +419,10 @@ export default function DashboardPage() {
             <p className="text-3xl font-bold text-white">{new Set(alerts.map(a => a.type)).size}</p>
             <p className="text-sm text-gray-500">categories monitored</p>
           </div>
-          <div className="bg-gray-800 rounded-xl p-6 border border-gray-700">
+          <div 
+            className="bg-gray-800 rounded-xl p-6 border border-gray-700 animate-fade-in hover:-translate-y-1 hover:shadow-lg hover:shadow-purple-500/10 transition-all"
+            style={{ animationDelay: '300ms', animationFillMode: 'both' }}
+          >
             <div className="flex items-center gap-3 mb-2">
               <Award className="w-5 h-5 text-blue-400" />
               <span className="text-gray-400">Badges Earned</span>
