@@ -22,7 +22,7 @@ const variantClasses: Record<ButtonVariant, string> = {
   ghost:
     'bg-transparent text-gray-400 hover:bg-white/5 hover:text-white active:bg-white/10 transition-colors duration-200',
   danger:
-    'bg-rose-600 text-white hover:bg-rose-500 shadow-lg shadow-rose-500/20 active:bg-rose-700',
+    'bg-rose-600 text-white hover:bg-rose-500 shadow-lg shadow-rose-500/20 hover:shadow-rose-500/40 active:bg-rose-700 transition-all duration-200',
 };
 
 const sizeClasses: Record<ButtonSize, string> = {
