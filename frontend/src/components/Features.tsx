@@ -59,7 +59,7 @@ export default function Features() {
           {features.map((feature, index) => (
             <div
               key={index}
-              className="group relative bg-white/[0.02] border border-white/5 rounded-3xl p-6 sm:p-8 hover:bg-white/[0.04] hover:border-purple-500/30 transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_30px_60px_-15px_rgba(168,85,247,0.25)] overflow-hidden outline-none focus-visible:ring-2 focus-visible:ring-purple-500/50 focus-visible:ring-offset-4 focus-visible:ring-offset-gray-950"
+              className="group relative bg-white/[0.02] border border-white/5 rounded-3xl p-6 sm:p-8 hover:bg-white/[0.04] hover:border-purple-500/30 transition-all duration-300 hover:-translate-y-2 hover:shadow-[0_30px_60px_-15px_rgba(168,85,247,0.25)] overflow-hidden outline-none focus-visible:ring-2 focus-visible:ring-purple-500/50 focus-visible:ring-offset-4 focus-visible:ring-offset-gray-950"
               role="listitem"
               tabIndex={0}
             >
