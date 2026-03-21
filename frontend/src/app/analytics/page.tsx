@@ -268,6 +268,12 @@ export default function AnalyticsPage() {
 
   return (
     <div className="min-h-screen bg-gray-950 text-white">
+      <a
+        href="#main"
+        className="sr-only focus:not-sr-only focus:absolute focus:top-6 focus:left-6 focus:z-[100] h-12 px-6 flex items-center justify-center rounded-xl bg-purple-600 text-white font-bold shadow-[0_10px_30px_rgba(168,85,247,0.4)] transition-all active:scale-95 outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-purple-600"
+      >
+        Skip to content
+      </a>
       {/* Header */}
       <header className="border-b border-gray-800 bg-gray-900/50 backdrop-blur-sm sticky top-0 z-10">
         <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
@@ -432,11 +438,13 @@ export default function AnalyticsPage() {
             <h2 className="text-xl font-semibold">Live Event Feed</h2>
             <div className="flex items-center gap-2">
               <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
-              <span className="text-sm text-gray-400">Live</span>
+              <span className="text-sm text-gray-400" aria-live="polite" aria-atomic="true">
+                Live updates arriving
+              </span>
             </div>
           </div>
 
-          <div className="space-y-3">
+          <div className="space-y-3" aria-live="polite" aria-relevant="additions">
             {!analytics?.recentEvents || analytics.recentEvents.length === 0 ? (
               <NoResultsState />
             ) : (
