@@ -111,10 +111,10 @@ export default function ConnectWallet() {
                 role="menuitem"
                 aria-pressed={network === 'mainnet'}
                 aria-label="Switch to Mainnet"
-                className={`px-3 py-1 rounded-lg text-xs font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-purple-500/50 ${
+                className={`flex-1 px-3 py-2 rounded-xl text-xs font-bold transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-purple-500/50 ${
                   network === 'mainnet'
-                    ? 'bg-purple-600 text-white'
-                    : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
+                    ? 'bg-purple-600 text-white shadow-lg shadow-purple-500/25'
+                    : 'bg-gray-800 text-gray-400 hover:bg-gray-700 hover:text-gray-200'
                 }`}
               >
                 Mainnet
@@ -128,10 +128,10 @@ export default function ConnectWallet() {
                 role="menuitem"
                 aria-pressed={network === 'testnet'}
                 aria-label="Switch to Testnet"
-                className={`px-3 py-1 rounded-lg text-xs font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-purple-500/50 ${
+                className={`flex-1 px-3 py-2 rounded-xl text-xs font-bold transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-purple-500/50 ${
                   network === 'testnet'
-                    ? 'bg-purple-600 text-white'
-                    : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
+                    ? 'bg-purple-600 text-white shadow-lg shadow-purple-500/25'
+                    : 'bg-gray-800 text-gray-400 hover:bg-gray-700 hover:text-gray-200'
                 }`}
               >
                 Testnet
@@ -144,7 +144,7 @@ export default function ConnectWallet() {
               disconnect();
               setShowDropdown(false);
             }}
-            className="w-full flex items-center gap-2 px-4 py-3 text-red-400 hover:bg-gray-700 transition-colors rounded-b-xl"
+            className="w-full flex items-center gap-2 px-4 py-4 text-red-400 hover:bg-red-500/10 hover:text-red-300 transition-all duration-200 rounded-b-2xl font-semibold border-t border-white/5"
             role="menuitem"
           >
             <LogOut className="w-4 h-4" />
