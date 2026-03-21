@@ -43,15 +43,15 @@ export default class ErrorBoundary extends Component<Props, State> {
       return (
         <div className="min-h-screen flex items-center justify-center bg-[#030712] p-6 selection:bg-red-500/30">
           <div 
-            className="max-w-md w-full bg-gray-900/40 backdrop-blur-xl rounded-3xl p-10 border border-white/5 shadow-[0_25px_50px_rgba(0,0,0,0.5)] relative overflow-hidden"
+            className="max-w-md w-full bg-gray-900/40 backdrop-blur-xl rounded-3xl p-10 border border-white/5 shadow-[0_25px_50px_rgba(0,0,0,0.5)] shadow-[0_0_50px_-12px_rgba(239,68,68,0.2)] relative overflow-hidden animate-zoom-in"
             role="alert"
             aria-live="assertive"
           >
-            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-red-500/40 to-transparent" />
+            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-red-500/80 to-transparent animate-shimmer" style={{ backgroundSize: '200% 100%' }} />
             <div className="text-center">
-              <div className="w-20 h-20 bg-red-500/10 rounded-2xl flex items-center justify-center mx-auto mb-8 rotate-3 hover:rotate-0 transition-transform duration-500" aria-hidden="true">
+              <div className="w-20 h-20 bg-red-500/10 rounded-2xl flex items-center justify-center mx-auto mb-8 rotate-3 hover:rotate-0 hover:scale-110 hover:shadow-[0_0_20px_rgba(239,68,68,0.3)] transition-all duration-500 ease-out" aria-hidden="true">
                 <svg 
-                  className="w-10 h-10 text-red-500" 
+                  className="w-10 h-10 text-red-500 animate-pulse" 
                   fill="none" 
                   stroke="currentColor" 
                   strokeWidth={1.5}
