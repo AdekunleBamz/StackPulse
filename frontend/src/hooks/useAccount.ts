@@ -1,0 +1,94 @@
+import { useState, useEffect, useCallback } from 'react';
+import { useWallet } from '@/context/WalletContext';
+import type { UserAccountData } from '@/app/dashboard/page';
+
+const DEPLOYER_ADDRESS = process.env.NEXT_PUBLIC_DEPLOYER_ADDRESS || '';
+
+export function useAccount() {
+  const { address, isConnected, connect } = useWallet();
+  const [isRegistered, setIsRegistered] = useState(false);
+  const [userData, setUserData] = useState<UserAccountData | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  const checkRegistration = useCallback(async () => {
+    if (!address || !DEPLOYER_ADDRESS) {
+      setIsLoading(false);
+      return;
+    }
+
+    try {
+      const { principalCV, cvToHex, hexToCV, cvToValue } = await import('@stacks/transactions');
+      
+      const response = await fetch(
+        `https://api.mainnet.hiro.so/v2/contracts/call-read/${DEPLOYER_ADDRESS}/stackpulse-v-j3/get-user`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            sender: address,
+            arguments: [cvToHex(principalCV(address))]
+          })
+        }
+      );
+      
+      const data = await response.json();
+      const registered = data.result && data.result !== '0x09';
+      setIsRegistered(registered);
+
+      if (registered && data.result) {
+        const cv = hexToCV(data.result);
+        const val = cvToValue(cv);
+        if (val && val.value) {
+          setUserData({
+            username: val.value.username?.value || '',
+            tier: Number(val.value.tier?.value || 0),
+            alertsEnabled: Number(val.value['alerts-enabled']?.value || 0),
+            subscriptionEnds: Number(val.value['subscription-ends']?.value || 0),
+          });
+          
+          localStorage.setItem(`stackpulse_registered_${address}`, JSON.stringify({
+            tier: Number(val.value.tier?.value || 0),
+            username: val.value.username?.value || '',
+            timestamp: Date.now()
+          }));
+        }
+      } else {
+        localStorage.removeItem(`stackpulse_registered_${address}`);
+      }
+    } catch (error) {
+      console.error('Error checking account:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  }, [address]);
+
+  useEffect(() => {
+    // Try to load from cache first
+    if (address) {
+      const cached = localStorage.getItem(`stackpulse_registered_${address}`);
+      if (cached) {
+        const parsed = JSON.parse(cached);
+        setIsRegistered(true);
+        // We don't have full userData in cache yet, but we can populate what we have
+        setUserData(prev => ({
+          username: parsed.username || '',
+          tier: parsed.tier || 0,
+          alertsEnabled: prev?.alertsEnabled || 0,
+          subscriptionEnds: prev?.subscriptionEnds || 0
+        }));
+      }
+    }
+    
+    checkRegistration();
+  }, [address, checkRegistration]);
+
+  return {
+    address,
+    isConnected,
+    connect,
+    isRegistered,
+    userData,
+    isLoading,
+    refresh: checkRegistration
+  };
+}
