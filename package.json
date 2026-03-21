@@ -3,11 +3,23 @@
   "version": "1.0.0",
   "type": "module",
   "description": "Real-time Stacks blockchain monitoring and alert system",
+  "author": "AdekunleBamz",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AdekunleBamz/StackPulse.git"
+  },
+  "bugs": {
+    "url": "https://github.com/AdekunleBamz/StackPulse/issues"
+  },
+  "homepage": "https://github.com/AdekunleBamz/StackPulse#readme",
   "scripts": {
     "test": "vitest run",
     "test:watch": "vitest",
     "clarinet:check": "clarinet check",
-    "clarinet:test": "clarinet test"
+    "clarinet:test": "clarinet test",
+    "lint:all": "npm run lint --prefix frontend && npm run lint --prefix server",
+    "build:all": "npm run build --prefix shared && npm run build --prefix server && npm run build --prefix frontend"
   },
   "devDependencies": {
     "@hirosystems/clarinet-sdk": "^2.3.2",
@@ -26,8 +38,6 @@
     "chainhooks",
     "clarity"
   ],
-  "author": "StackPulse Team",
-  "license": "MIT",
   "dependencies": {
     "@hirosystems/chainhooks-client": "^1.0.0",
     "undici": "^7.16.0"
