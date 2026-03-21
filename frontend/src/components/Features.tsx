@@ -58,19 +58,19 @@ export default function Features() {
           {features.map((feature, index) => (
             <div
               key={index}
-              className="group relative bg-white/[0.02] border border-white/5 rounded-3xl p-8 hover:bg-white/[0.04] hover:border-purple-500/30 transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_30px_60px_-15px_rgba(168,85,247,0.25)] overflow-hidden"
+              className="group relative bg-white/[0.02] border border-white/5 rounded-3xl p-6 sm:p-8 hover:bg-white/[0.04] hover:border-purple-500/30 transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_30px_60px_-15px_rgba(168,85,247,0.25)] overflow-hidden"
               role="listitem"
             >
               <div
-                className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${feature.color} flex items-center justify-center mb-6 group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 shadow-xl shadow-black/30 relative ring-1 ring-white/20`}
+                className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${feature.color} flex items-center justify-center mb-5 sm:mb-6 group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 shadow-xl shadow-black/30 relative ring-1 ring-white/20`}
               >
                 <div className="absolute inset-0 bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity rounded-2xl animate-pulse" />
                 <feature.icon className="w-6 h-6 text-white relative z-10" />
               </div>
-              <h3 className="text-xl font-black text-white mb-3 group-hover:text-purple-400 transition-colors tracking-tight">
+              <h3 className="text-lg sm:text-xl font-black text-white mb-2 sm:mb-3 group-hover:text-purple-400 transition-colors tracking-tight">
                 {feature.title}
               </h3>
-              <p className="text-gray-400 leading-relaxed font-medium">
+              <p className="text-gray-400 leading-relaxed font-medium text-sm sm:text-base">
                 {feature.description}
               </p>
               
