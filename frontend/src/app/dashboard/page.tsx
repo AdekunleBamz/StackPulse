@@ -38,17 +38,20 @@ const alertTypes = [
   { id: 6, name: 'Address Watch', icon: Activity, description: 'Monitor specific addresses', iconBgClass: 'bg-orange-500/20', iconClass: 'text-orange-300' },
 ];
 
-interface UserAlert {
-  id: number;
-  type: number;
+export type AlertCategoryId = 1 | 2 | 3 | 4 | 5 | 6;
+
+export interface DashboardAlert {
+  id: string | number;
+  type: AlertCategoryId;
   name: string;
   enabled: boolean;
   threshold?: number;
   targetAddress?: string;
   triggerCount: number;
+  createdAt?: string;
 }
 
-interface UserData {
+export interface UserAccountData {
   username: string;
   tier: number;
   alertsEnabled: number;
@@ -63,10 +66,10 @@ export default function DashboardPage() {
   const createAlertDescId = useId();
   const createAlertSelectRef = useRef<HTMLSelectElement>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [userData, setUserData] = useState<UserData | null>(null);
-  const [alerts, setAlerts] = useState<UserAlert[]>([]);
+  const [userData, setUserData] = useState<UserAccountData | null>(null);
+  const [alerts, setAlerts] = useState<DashboardAlert[]>([]);
   const [showCreateAlert, setShowCreateAlert] = useState(false);
-  const [newAlertType, setNewAlertType] = useState(1);
+  const [newAlertType, setNewAlertType] = useState<AlertCategoryId>(1);
   const [newAlertName, setNewAlertName] = useState('');
   const [newAlertThreshold, setNewAlertThreshold] = useState('10000');
   const [isCreating, setIsCreating] = useState(false);
