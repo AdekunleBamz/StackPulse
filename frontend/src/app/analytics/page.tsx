@@ -367,7 +367,11 @@ export default function AnalyticsPage() {
         {/* Event Types */}
         <div className="mb-8">
           <h2 className="text-xl font-semibold mb-4">Event Types</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+          <div 
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4"
+            role="list"
+            aria-label="Event type statistics"
+          >
             <EventTypeCard
               type="Whale Transfers"
               count={analytics?.eventStats.whaleTransfers || 0}

@@ -129,7 +129,11 @@ export default function HistoryPage() {
         <section className="py-8">
           <div className="container mx-auto px-4">
             <h2 className="text-xl font-semibold mb-4">Recent Triggers</h2>
-            <div className="grid gap-4 mb-8">
+            <div 
+              className="grid gap-4 mb-8"
+              role="list"
+              aria-label="Recent alert triggers"
+            >
               {recentTriggers.map((trigger) => {
                 const typeInfo = alertTypeInfo.find(t => t.id === trigger.type);
                 const timeAgo = Math.floor((Date.now() - trigger.triggeredAt.getTime()) / 60000);
