@@ -239,15 +239,15 @@ export default function BadgeShowcase({ userBadges = [] }: BadgeShowcaseProps) {
         </div>
 
         {/* Filter */}
-        <div className="flex bg-gray-800 rounded-lg p-1" role="group" aria-label="Filter badges">
+        <div className="flex bg-gray-800 rounded-lg p-1" role="group" aria-label="Filter badges by status">
           {(['all', 'earned', 'locked'] as const).map((f) => (
             <button
               key={f}
               onClick={() => setFilter(f)}
-              aria-current={filter === f ? 'true' : undefined}
-              className={`px-3 py-1 rounded-md text-sm capitalize transition-all hover:scale-105 active:scale-95 ${
+              aria-pressed={filter === f}
+              className={`px-3 py-1 rounded-md text-sm capitalize transition-all focus:outline-none focus:ring-2 focus:ring-purple-500/50 ${
                 filter === f
-                  ? 'bg-purple-600 text-white'
+                  ? 'bg-purple-600 text-white shadow-sm'
                   : 'text-gray-400 hover:text-white'
               }`}
             >
