@@ -285,8 +285,8 @@ export default function AlertHistory({ userAddress }: AlertHistoryProps) {
                     <span className="text-white font-medium">{entry.alertName}</span>
                   </td>
                   <td className="px-6 py-4">
-                    <span className="inline-flex items-center gap-1.5 text-sm">
-                      <span>{alertTypeInfo[entry.alertType]?.icon}</span>
+                    <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-gray-800/50 border border-gray-700/50 text-xs font-semibold group-hover:border-purple-500/30 transition-colors">
+                      <span aria-hidden="true">{alertTypeInfo[entry.alertType]?.icon}</span>
                       <span className="text-gray-300">
                         {alertTypeInfo[entry.alertType]?.name}
                       </span>
