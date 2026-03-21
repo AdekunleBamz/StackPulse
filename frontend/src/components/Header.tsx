@@ -196,10 +196,10 @@ export default function Header() {
                 >
                   Live Stats
                 </Link>
-                <div className="pt-2 px-1">
+                <div className="pt-4 px-2">
                   <Link
                     href="/register"
-                    className="block rounded-xl px-4 py-3.5 text-base font-bold text-center bg-purple-600 hover:bg-purple-500 text-white transition-all shadow-lg shadow-purple-500/25 focus:outline-none focus-visible:ring-2 focus-visible:ring-purple-500/50 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-950"
+                    className="flex items-center justify-center h-14 rounded-2xl bg-gradient-to-r from-purple-600 via-indigo-600 to-indigo-700 text-base font-black text-white transition-all shadow-[0_10px_30px_-5px_rgba(168,85,247,0.4)] active:scale-95 outline-none focus-visible:ring-2 focus-visible:ring-purple-500/50 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-950 tracking-tight"
                     aria-current={pathname === '/register' ? 'page' : undefined}
                     onClick={() => setIsOpen(false)}
                   >
