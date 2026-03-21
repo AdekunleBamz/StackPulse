@@ -18,7 +18,7 @@ export default function LoadingSkeleton({
   height,
   animation = 'wave'
 }: SkeletonProps) {
-  const baseClasses = 'bg-gray-800/50 backdrop-blur-sm';
+  const baseClasses = 'bg-gray-800/40 backdrop-blur-md shadow-inner border border-white/5';
   
   const variantClasses = {
     text: 'rounded-md',
@@ -28,7 +28,7 @@ export default function LoadingSkeleton({
   
   const animationClasses = {
     pulse: 'animate-pulse duration-1000',
-    wave: 'shimmer before:absolute before:inset-0 before:-translate-x-full before:animate-shimmer before:bg-gradient-to-r before:from-transparent before:via-white/5 before:to-transparent relative overflow-hidden',
+    wave: 'shimmer before:absolute before:inset-0 before:-translate-x-full before:animate-shimmer before:bg-gradient-to-r before:from-transparent before:via-white/10 before:to-transparent relative overflow-hidden',
     none: ''
   };
   
