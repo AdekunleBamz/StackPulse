@@ -75,11 +75,11 @@ export default function Footer() {
 
           {/* Links Columns */}
           <nav aria-label="Product Links">
-            <h3 className="text-white font-bold text-sm uppercase tracking-wider mb-4">Product</h3>
-            <ul className="space-y-3">
+            <h3 className="text-white font-bold text-[11px] uppercase tracking-[0.2em] mb-6 opacity-90">Product</h3>
+            <ul className="space-y-4">
               {footerLinks.product.map((link) => (
                 <li key={link.label}>
-                  <Link href={link.href} className="text-gray-400 hover:text-purple-400 transition-colors text-sm">
+                  <Link href={link.href} className="text-gray-500 hover:text-purple-400 transition-all duration-200 text-sm font-medium hover:translate-x-1 inline-block">
                     {link.label}
                   </Link>
                 </li>
