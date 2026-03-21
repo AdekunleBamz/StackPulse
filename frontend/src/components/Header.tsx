@@ -4,9 +4,11 @@ import ConnectWallet from './ConnectWallet';
 import Link from 'next/link';
 import { Menu, X } from 'lucide-react';
 import { useEffect, useId, useRef, useState } from 'react';
+import { usePathname } from 'next/navigation';
 
 export default function Header() {
   const [isOpen, setIsOpen] = useState(false);
+  const pathname = usePathname();
   const mobileNavId = useId();
   const mobileNavRef = useRef<HTMLDivElement>(null);
 
