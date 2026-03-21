@@ -43,13 +43,13 @@ const features = [
 
 export default function Features() {
   return (
-    <section className="py-20 px-4">
-      <div className="max-w-6xl mx-auto">
-        <div className="text-center mb-16">
-          <h2 className="text-4xl font-bold text-white mb-4">
-            Powerful Blockchain Monitoring
+    <section className="py-32 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-7xl mx-auto">
+        <div className="text-center mb-24">
+          <h2 className="text-4xl sm:text-5xl lg:text-6xl font-black mb-6 tracking-tight text-white drop-shadow-sm">
+            Powerful Blockchain <span className="bg-gradient-to-r from-purple-400 to-indigo-400 bg-clip-text text-transparent">Monitoring</span>
           </h2>
-          <p className="text-gray-400 text-lg max-w-2xl mx-auto">
+          <p className="text-gray-400 text-lg sm:text-xl max-w-2xl mx-auto font-medium leading-relaxed">
             Stay ahead of the market with real-time alerts powered by Hiro Chainhooks
           </p>
         </div>
