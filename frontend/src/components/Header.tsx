@@ -65,11 +65,7 @@ export default function Header() {
   ];
 
   return (
-    <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
-      scrolled 
-        ? 'bg-gray-950/90 backdrop-blur-2xl border-b border-white/10 shadow-lg shadow-black/20 py-1' 
-        : 'bg-gray-950/40 backdrop-blur-md border-b border-white/5 py-3'
-    }`}>
+    <header className="fixed top-0 left-0 right-0 z-50 bg-gray-950/80 backdrop-blur-xl border-b border-white/5 shadow-sm shadow-white/[0.02]">
       <a
         href="#main"
         className="sr-only focus:not-sr-only focus:absolute focus:top-6 focus:left-6 focus:z-[100] h-12 px-6 flex items-center justify-center rounded-xl bg-purple-600 text-white font-bold shadow-[0_10px_30px_rgba(168,85,247,0.4)] transition-all active:scale-95 outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-purple-600"
@@ -195,9 +191,7 @@ export default function Header() {
             />
             <div
               ref={mobileNavRef}
-              className={`md:hidden fixed left-0 right-0 z-50 bg-gray-950/90 backdrop-blur-2xl border-b border-white/10 shadow-2xl shadow-purple-500/10 animate-slide-down duration-700 ease-in-out transition-all ${
-                scrolled ? 'top-[72px]' : 'top-[88px]'
-              }`}
+              className="md:hidden fixed top-16 left-0 right-0 z-50 bg-gray-950/90 backdrop-blur-xl border-b border-white/10 shadow-2xl shadow-purple-500/10 animate-slide-down"
               id={mobileNavId}
               role="dialog"
               aria-modal="true"
