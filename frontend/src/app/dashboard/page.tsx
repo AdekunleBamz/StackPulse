@@ -410,7 +410,7 @@ export default function DashboardPage() {
               <span className="text-gray-400">Active Alerts</span>
             </div>
             <p className="text-3xl font-bold text-white">{alerts.filter(a => a.enabled).length}</p>
-            <p className="text-sm text-gray-500">of {maxAlerts[userData.tier]} max</p>
+            <p className="text-sm text-gray-400">of {maxAlerts[userData.tier]} max</p>
           </div>
           <div 
             className="bg-gray-800 rounded-xl p-6 border border-gray-700 animate-fade-in hover:-translate-y-1 hover:shadow-lg hover:shadow-purple-500/10 transition-all"
@@ -423,7 +423,7 @@ export default function DashboardPage() {
               <span className="text-gray-400">Triggers Today</span>
             </div>
             <p className="text-3xl font-bold text-white">{alerts.reduce((sum, a) => sum + a.triggerCount, 0)}</p>
-            <p className="text-sm text-gray-500">notifications sent</p>
+            <p className="text-sm text-gray-400">notifications sent</p>
           </div>
           <div 
             className="bg-gray-800 rounded-xl p-6 border border-gray-700 animate-fade-in hover:-translate-y-1 hover:shadow-lg hover:shadow-purple-500/10 transition-all"
@@ -436,7 +436,7 @@ export default function DashboardPage() {
               <span className="text-gray-400">Alert Types</span>
             </div>
             <p className="text-3xl font-bold text-white">{new Set(alerts.map(a => a.type)).size}</p>
-            <p className="text-sm text-gray-500">categories monitored</p>
+            <p className="text-sm text-gray-400">categories monitored</p>
           </div>
           <div 
             className="bg-gray-800 rounded-xl p-6 border border-gray-700 animate-fade-in hover:-translate-y-1 hover:shadow-lg hover:shadow-purple-500/10 transition-all"
@@ -449,7 +449,7 @@ export default function DashboardPage() {
               <span className="text-gray-400">Badges Earned</span>
             </div>
             <p className="text-3xl font-bold text-white">0</p>
-            <p className="text-sm text-gray-500">reputation NFTs</p>
+            <p className="text-sm text-gray-400">reputation NFTs</p>
           </div>
         </div>
 
@@ -531,8 +531,8 @@ export default function DashboardPage() {
                         {alertType && <alertType.icon className={`w-5 h-5 ${alert.enabled ? 'text-purple-400' : 'text-gray-500'}`} />}
                       </div>
                       <div>
-                        <h4 className={`font-semibold ${alert.enabled ? 'text-white' : 'text-gray-500'}`}>{alert.name}</h4>
-                        <p className="text-gray-500 text-sm">
+                        <h4 className={`font-semibold ${alert.enabled ? 'text-white' : 'text-gray-400'}`}>{alert.name}</h4>
+                        <p className="text-gray-400 text-sm">
                           {alertType?.description} • {alert.triggerCount} triggers
                         </p>
                       </div>
