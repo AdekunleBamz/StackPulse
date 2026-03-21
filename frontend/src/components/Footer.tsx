@@ -77,7 +77,7 @@ export default function Footer() {
 
           {/* Links Columns */}
           <nav aria-label="Product Links">
-            <h3 className="text-white/40 font-black text-[11px] uppercase tracking-[0.25em] mb-7">Product</h3>
+            <h3 className="text-white/90 font-bold text-[10px] uppercase tracking-[0.25em] mb-7">Product</h3>
             <ul className="space-y-4">
               {footerLinks.product.map((link) => (
                 <li key={link.label}>
@@ -93,7 +93,7 @@ export default function Footer() {
           </nav>
 
           <nav aria-label="Resource Links">
-            <h3 className="text-white font-bold text-[11px] uppercase tracking-[0.2em] mb-6 opacity-90">Resources</h3>
+            <h3 className="text-white/90 font-bold text-[10px] uppercase tracking-[0.25em] mb-7">Resources</h3>
             <ul className="space-y-4">
               {footerLinks.resources.map((link) => (
                 <li key={link.label}>
@@ -117,7 +117,7 @@ export default function Footer() {
           </nav>
  
           <nav aria-label="Legal Links">
-            <h3 className="text-white font-bold text-[11px] uppercase tracking-[0.2em] mb-6 opacity-90">Legal</h3>
+            <h3 className="text-white/90 font-bold text-[10px] uppercase tracking-[0.25em] mb-7">Legal</h3>
             <ul className="space-y-4">
               {footerLinks.legal.map((link) => (
                 <li key={link.label}>
