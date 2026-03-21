@@ -1,7 +1,11 @@
 'use client';
 
 import { useWallet } from '@/context/WalletContext';
-import { Check, Wallet, Mail, MessageCircle, Send } from 'lucide-react';
+import { Check, Wallet, Mail, 
+  MessageCircle, 
+  Send, 
+  CheckCircle2
+} from 'lucide-react';
 import { useEffect, useId, useState, memo } from 'react';
 import { toast } from '@/components/Toast';
 import Button from '@/components/ui/Button';
@@ -533,10 +537,21 @@ export default function Pricing() {
                       <div className={`w-10 h-10 ${chan.value ? 'bg-emerald-500/10' : chan.color} rounded-xl flex items-center justify-center mx-auto mb-3 transition-colors`} aria-hidden="true">
                         <chan.icon className={`w-5 h-5 ${chan.value ? 'text-emerald-500' : chan.iconColor}`} />
                       </div>
-                      <p className="text-white text-xs font-bold mb-1">{chan.label}</p>
-                      <p className={`text-[10px] font-medium truncate ${chan.value ? 'text-emerald-400' : 'text-gray-500 italic'}`}>
-                        {chan.value ? (chan.value.slice(0, 12) + (chan.value.length > 12 ? '..' : '')) : 'Add now'}
-                      </p>
+                      <div className="flex flex-col items-center gap-1">
+                        <p className="text-white text-xs font-bold">{chan.label}</p>
+                        <div className="flex items-center gap-1.5">
+                          {chan.value ? (
+                            <span className="flex items-center gap-0.5 text-[9px] font-black uppercase tracking-tighter text-emerald-400 bg-emerald-500/5 px-1.5 py-0.5 rounded-md border border-emerald-500/10">
+                              <CheckCircle2 className="w-2 h-2" />
+                              Linked
+                            </span>
+                          ) : (
+                            <span className="text-[9px] font-black uppercase tracking-tighter text-gray-500 bg-gray-500/5 px-1.5 py-0.5 rounded-md border border-gray-500/10">
+                              Disconnected
+                            </span>
+                          )}
+                        </div>
+                      </div>
                     </button>
                   ))}
                 </div>
