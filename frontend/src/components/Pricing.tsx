@@ -59,6 +59,7 @@ export default function Pricing() {
   const [subscriptionEnds, setSubscriptionEnds] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
+  const [subscribingTier, setSubscribingTier] = useState<number | null>(null);
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [discord, setDiscord] = useState('');
@@ -218,14 +219,13 @@ export default function Pricing() {
       2: 5000000,   // 5 STX for Pro
       3: 20000000,  // 20 STX for Premium
     };
-    const price = tierPrices[selectedTier] || 0;
-
-    setIsLoading(true);
+    const price = tierPrices[selectedTier] || 0;    setIsLoading(true);
+    setSubscribingTier(selectedTier);
     try {
       setUsername(normalizedUsername);
       const { openContractCall } = await import('@stacks/connect');
       const { stringAsciiCV, uintCV } = await import('@stacks/transactions');
-
+ 
       // Post-condition: allow STX transfer for paid tiers (new v7+ format)
       const postConditions: { type: 'stx-postcondition'; address: string; condition: 'eq'; amount: number }[] = price > 0 && address ? [
         {
@@ -235,7 +235,7 @@ export default function Pricing() {
           amount: price
         }
       ] : [];
-
+ 
       // V3 contract: register-and-subscribe combines both steps
       // alerts bitmask: 31 = all alerts enabled (1+2+4+8+16)
       await openContractCall({
@@ -291,11 +291,13 @@ export default function Pricing() {
         },
         onCancel: () => {
           console.log('Registration cancelled');
+          setSubscribingTier(null);
         },
       });
     } catch (error) {
       console.error('Registration error:', error);
       toast.error('Registration failed', 'Please try again.');
+      setSubscribingTier(null);
     } finally {
       setIsLoading(false);
     }
@@ -329,8 +331,8 @@ export default function Pricing() {
       2: 5000000,   // 5 STX for Pro
       3: 20000000,  // 20 STX for Premium
     };
-    const price = tierPrices[tier] || 0;
-
+    const price = tierPrices[tier] || 0;    setIsLoading(true);
+    setSubscribingTier(tier);
     try {
       const { openContractCall } = await import('@stacks/connect');
       const { uintCV } = await import('@stacks/transactions');
@@ -367,14 +369,19 @@ export default function Pricing() {
             'Subscription upgraded',
             `${tier === 1 ? 'Basic' : tier === 2 ? 'Pro' : 'Premium'} tier. TX: ${data.txId}`
           );
+          setSubscribingTier(null);
         },
         onCancel: () => {
           console.log('Upgrade cancelled');
+          setSubscribingTier(null);
         },
       });
     } catch (error) {
       console.error('Subscription error:', error);
       toast.error('Upgrade failed', 'Please try again.');
+      setSubscribingTier(null);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -725,7 +732,7 @@ export default function Pricing() {
 
                 <Button
                   onClick={() => handleSubscribe(tier.tier)}
-                  disabled={!isRegistered || (isRegistered && tier.tier === currentTier)}
+                  disabled={!isRegistered || (isRegistered && tier.tier === currentTier) || isLoading}
                   variant={tier.popular ? 'primary' : 'secondary'}
                   size="lg"
                   className={`w-full h-12 rounded-2xl font-black transition-all ${
@@ -733,6 +740,7 @@ export default function Pricing() {
                       ? 'shadow-lg shadow-purple-600/20 hover:shadow-purple-600/40' 
                       : ''
                   }`}
+                  isLoading={subscribingTier === tier.tier}
                 >
                   {isRegistered && tier.tier === currentTier ? 'Active Plan' : tier.price === 0 ? 'Current Tier' : 'Upgrade Plan'}
                 </Button>
