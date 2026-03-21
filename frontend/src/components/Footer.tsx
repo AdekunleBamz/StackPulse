@@ -88,20 +88,20 @@ export default function Footer() {
           </nav>
 
           <nav aria-label="Resource Links">
-            <h3 className="text-white font-bold text-sm uppercase tracking-wider mb-4">Resources</h3>
-            <ul className="space-y-3">
+            <h3 className="text-white font-bold text-[11px] uppercase tracking-[0.2em] mb-6 opacity-90">Resources</h3>
+            <ul className="space-y-4">
               {footerLinks.resources.map((link) => (
                 <li key={link.label}>
                   <a 
                     href={link.href} 
-                    className="text-gray-400 hover:text-purple-400 transition-colors text-sm flex items-center gap-1"
+                    className="text-gray-500 hover:text-purple-400 transition-all duration-200 text-sm font-medium hover:translate-x-1 flex items-center gap-1 group/flink"
                     target={link.href.startsWith('http') ? '_blank' : undefined}
                     rel={link.href.startsWith('http') ? 'noopener noreferrer' : undefined}
                   >
                     {link.label}
                     {link.href.startsWith('http') && (
                       <>
-                        <ExternalLink className="w-3 h-3 opacity-50" aria-hidden="true" />
+                        <ExternalLink className="w-3 h-3 opacity-30 group-hover/flink:opacity-100 transition-opacity" aria-hidden="true" />
                         <span className="sr-only">(opens in new tab)</span>
                       </>
                     )}
@@ -110,13 +110,13 @@ export default function Footer() {
               ))}
             </ul>
           </nav>
-
+ 
           <nav aria-label="Legal Links">
-            <h3 className="text-white font-bold text-sm uppercase tracking-wider mb-4">Legal</h3>
-            <ul className="space-y-3">
+            <h3 className="text-white font-bold text-[11px] uppercase tracking-[0.2em] mb-6 opacity-90">Legal</h3>
+            <ul className="space-y-4">
               {footerLinks.legal.map((link) => (
                 <li key={link.label}>
-                  <Link href={link.href} className="text-gray-400 hover:text-purple-400 transition-colors text-sm">
+                  <Link href={link.href} className="text-gray-500 hover:text-purple-400 transition-all duration-200 text-sm font-medium hover:translate-x-1 inline-block">
                     {link.label}
                   </Link>
                 </li>
