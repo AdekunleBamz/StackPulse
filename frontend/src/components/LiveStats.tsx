@@ -130,15 +130,15 @@ export default function LiveStats() {
           {statItems.map((item, index) => (
             <div
               key={index}
-              className="group relative bg-gray-800/40 backdrop-blur-sm rounded-2xl p-5 text-center border border-gray-700/50 hover:border-gray-500/50 transition-all hover:scale-[1.03] hover:shadow-2xl hover:shadow-black/40 overflow-hidden"
+              className="group relative bg-white/[0.03] border border-white/5 rounded-2xl p-6 text-center hover:bg-white/[0.06] hover:border-white/10 transition-all duration-500 hover:-translate-y-1.5 hover:shadow-[0_20px_40px_-15px_rgba(0,0,0,0.5)] overflow-hidden"
             >
-              <div className={`text-3xl font-extrabold tracking-tight ${item.color} drop-shadow-sm group-hover:drop-shadow-md transition-all`}>
+              <div className={`text-3xl font-black tracking-tighter ${item.color} mb-1 group-hover:scale-110 transition-transform duration-500 relative z-10`}>
                 {item.value.toLocaleString()}
               </div>
-              <div className="text-gray-400 text-[10px] font-bold uppercase tracking-wider mt-2 group-hover:text-gray-300 transition-colors">{item.label}</div>
+              <div className="text-gray-400 text-[10px] font-bold uppercase tracking-widest mt-2 group-hover:text-gray-200 transition-colors relative z-10">{item.label}</div>
               
               {/* Subtle background glow on hover */}
-              <div className={`absolute inset-0 opacity-0 group-hover:opacity-10 transition-opacity rounded-2xl bg-gradient-to-br ${item.glow} to-transparent pointer-events-none`} />
+              <div className={`absolute inset-0 opacity-0 group-hover:opacity-20 transition-opacity duration-500 bg-gradient-to-br ${item.glow} to-transparent pointer-events-none blur-xl`} />
             </div>
           ))}
         </div>
