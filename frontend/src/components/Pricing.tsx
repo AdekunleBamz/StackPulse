@@ -609,54 +609,58 @@ export default function Pricing() {
         {/* Edit Channel Modal */}
         {editingChannel && (
           <div
-            className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-[100] p-4 animate-fade-in"
+            className="fixed inset-0 bg-black/60 backdrop-blur-md flex items-center justify-center z-[100] p-4 animate-in fade-in duration-300"
             onClick={() => {
               setEditingChannel(null);
               setTempValue('');
             }}
           >
             <div
-              className="bg-gray-900 rounded-3xl p-8 max-w-md w-full border border-gray-800 shadow-2xl animate-zoom-in"
+              className="bg-gray-900/90 backdrop-blur-2xl rounded-3xl p-10 max-w-md w-full border border-white/5 shadow-[0_30px_70px_rgba(0,0,0,0.6)] animate-in zoom-in-95 duration-300 relative overflow-hidden"
               role="dialog"
               aria-modal="true"
               aria-labelledby={editChannelTitleId}
               onClick={(e) => e.stopPropagation()}
             >
-              <div className="text-center mb-6">
-                <div className="w-16 h-16 bg-purple-500/10 rounded-2xl flex items-center justify-center mx-auto mb-4" aria-hidden="true">
-                  {editingChannel === 'email' && <Mail className="w-8 h-8 text-purple-400" />}
-                  {editingChannel === 'discord' && <MessageCircle className="w-8 h-8 text-purple-400" />}
-                  {editingChannel === 'telegram' && <Send className="w-8 h-8 text-purple-400" />}
+              <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-purple-500/30 to-transparent" />
+              
+              <div className="text-center mb-8">
+                <div className="w-20 h-20 bg-purple-500/10 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-inner" aria-hidden="true">
+                  {editingChannel === 'email' && <Mail className="w-10 h-10 text-purple-400" />}
+                  {editingChannel === 'discord' && <MessageCircle className="w-10 h-10 text-purple-400" />}
+                  {editingChannel === 'telegram' && <Send className="w-10 h-10 text-purple-400" />}
                 </div>
-                <h3 id={editChannelTitleId} className="text-2xl font-black text-white">
-                  Add {editingChannel.charAt(0).toUpperCase() + editingChannel.slice(1)}
+                <h3 id={editChannelTitleId} className="text-3xl font-bold text-white tracking-tight">
+                  Update {editingChannel.charAt(0).toUpperCase() + editingChannel.slice(1)}
                 </h3>
-                <p className="text-gray-400 text-sm mt-1">Enter your details to receive alerts</p>
+                <p className="text-gray-400 font-medium text-sm mt-2 opacity-80">Configure your alert destination</p>
               </div>
-
-              <input
-                id="edit-channel-input"
-                type={editingChannel === 'email' ? 'email' : 'text'}
-                value={tempValue}
-                onChange={(e) => setTempValue(e.target.value)}
-                placeholder={
-                  editingChannel === 'email' ? 'your@email.com' :
-                  editingChannel === 'discord' ? 'username#1234' :
-                  '@username'
-                }
-                className="w-full bg-gray-800 border border-gray-700 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-purple-500 mb-6 font-medium"
-                autoFocus
-                aria-label={`Enter your ${editingChannel}`}
-              />
-
-              <div className="grid grid-cols-2 gap-3">
+ 
+              <div className="relative mb-8">
+                <input
+                  id="edit-channel-input"
+                  type={editingChannel === 'email' ? 'email' : 'text'}
+                  value={tempValue}
+                  onChange={(e) => setTempValue(e.target.value)}
+                  placeholder={
+                    editingChannel === 'email' ? 'your@email.com' :
+                    editingChannel === 'discord' ? 'username#1234' :
+                    '@username'
+                  }
+                  className="w-full bg-gray-950/50 border border-white/5 rounded-2xl px-5 py-4 text-white placeholder-gray-600 focus:outline-none focus:border-purple-500/50 transition-all font-bold text-lg text-center tracking-tight shadow-inner"
+                  autoFocus
+                  aria-label={`Enter your ${editingChannel}`}
+                />
+              </div>
+ 
+              <div className="grid grid-cols-2 gap-4">
                 <Button
                   onClick={() => {
                     setEditingChannel(null);
                     setTempValue('');
                   }}
                   variant="ghost"
-                  className="rounded-xl font-bold"
+                  className="rounded-2xl font-bold h-12 border border-white/5 hover:bg-white/5"
                 >
                   Cancel
                 </Button>
@@ -664,7 +668,7 @@ export default function Pricing() {
                   onClick={saveChannelUpdate}
                   disabled={isSaving}
                   variant="primary"
-                  className="rounded-xl font-bold"
+                  className="rounded-2xl font-bold h-12 shadow-lg shadow-purple-600/20"
                   isLoading={isSaving}
                 >
                   Save Changes
