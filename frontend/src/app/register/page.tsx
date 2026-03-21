@@ -16,6 +16,7 @@ export default function RegisterPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [usernameError, setUsernameError] = useState('');
   const [submitError, setSubmitError] = useState('');
+  const [loadingStep, setLoadingStep] = useState('');
   const router = useRouter();
 
   const handleRegister = async (e: React.FormEvent) => {
@@ -40,11 +41,14 @@ export default function RegisterPage() {
     }
 
     setIsLoading(true);
-
+    setLoadingStep('Preparing...');
+ 
     try {
+      setLoadingStep('Connecting...');
       const { openContractCall } = await import('@stacks/connect');
       const { stringAsciiCV, uintCV } = await import('@stacks/transactions');
-
+ 
+      setLoadingStep('Signature required...');
       // V3 contract: register-and-subscribe in one step (tier 0 = free)
       await openContractCall({
         contractAddress: DEPLOYER_ADDRESS,
@@ -57,6 +61,7 @@ export default function RegisterPage() {
           uintCV(31) // All alerts enabled
         ],
         onFinish: (data: { txId: string }) => {
+          setLoadingStep('Success!');
           console.log('Registration submitted:', data.txId);
           toast.success('Registration submitted', `TX: ${data.txId}`);
           // Redirect to pricing after a delay
@@ -65,12 +70,14 @@ export default function RegisterPage() {
         onCancel: () => {
           console.log('Registration cancelled');
           setIsLoading(false);
+          setLoadingStep('');
         },
       });
     } catch (err) {
       console.error('Registration error:', err);
       toast.error('Registration failed', 'Please try again.');
       setSubmitError('Failed to submit registration. Please try again.');
+      setLoadingStep('');
     } finally {
       setIsLoading(false);
     }
@@ -172,7 +179,7 @@ export default function RegisterPage() {
                     <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
                     <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
                   </svg>
-                  Registering...
+                  {loadingStep || 'Registering...'}
                 </span>
               ) : (
                 'Register Account'
