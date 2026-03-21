@@ -30,7 +30,7 @@ export default function Home() {
       <Header />
       
       {/* Hero Section */}
-      <section className="relative pt-32 pb-20 px-4 sm:px-6 lg:px-8 overflow-hidden" aria-describedby="hero-subtitle">
+      <section className="relative py-40 sm:py-48 px-4 sm:px-6 lg:px-8 overflow-hidden" aria-describedby="hero-subtitle">
         {/* Background Image with priority loading */}
         <div className="absolute inset-0 z-0">
           <Image
@@ -135,17 +135,17 @@ export default function Home() {
       </section>
       
       {/* Features Section */}
-      <section id="features" className="scroll-mt-24">
+      <section id="features" className="scroll-mt-24 py-32">
         <Features />
       </section>
       
       {/* Live Stats Section */}
-      <section id="stats" className="scroll-mt-24">
+      <section id="stats" className="scroll-mt-24 py-32">
         <LiveStats />
       </section>
       
       {/* Pricing Section */}
-      <section id="pricing" className="scroll-mt-24">
+      <section id="pricing" className="scroll-mt-24 py-32">
         <Pricing />
       </section>
       
