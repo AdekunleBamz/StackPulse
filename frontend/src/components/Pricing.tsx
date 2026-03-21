@@ -6,6 +6,8 @@ import { useEffect, useId, useState } from 'react';
 import { toast } from '@/components/Toast';
 import Button from '@/components/ui/Button';
 import Link from 'next/link';
+import type { UserPreferences, ApiResponse } from '@/types/api';
+import { ERROR_MESSAGES } from '@/constants/errors';
 
 const tiers = [
   {
@@ -198,17 +200,12 @@ export default function Pricing() {
 
     const normalizedUsername = username.trim().toLowerCase();
     if (!normalizedUsername) {
-      toast.warning('Username required', 'Enter a username to continue.');
+      toast.warning(ERROR_MESSAGES.REGISTRATION_REQUIRED.title, ERROR_MESSAGES.REGISTRATION_REQUIRED.message);
       return;
     }
 
-    if (normalizedUsername.length < 3 || normalizedUsername.length > 32) {
-      toast.warning('Invalid username', 'Username must be 3–32 characters.');
-      return;
-    }
-
-    if (!/^[a-z0-9_]+$/.test(normalizedUsername)) {
-      toast.warning('Invalid username', 'Use only letters, numbers, and underscores.');
+    if (normalizedUsername.length < 3 || normalizedUsername.length > 32 || !/^[a-z0-9_]+$/.test(normalizedUsername)) {
+      toast.warning(ERROR_MESSAGES.INVALID_USERNAME.title, ERROR_MESSAGES.INVALID_USERNAME.message);
       return;
     }
 
@@ -296,7 +293,7 @@ export default function Pricing() {
       });
     } catch (error) {
       console.error('Registration error:', error);
-      toast.error('Registration failed', 'Please try again.');
+      toast.error(ERROR_MESSAGES.CONTRACT_ERROR.title, ERROR_MESSAGES.CONTRACT_ERROR.message);
       setSubscribingTier(null);
     } finally {
       setIsLoading(false);
@@ -393,7 +390,7 @@ export default function Pricing() {
     if (editingChannel === 'email' && value) {
       const isValidEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
       if (!isValidEmail) {
-        toast.warning('Invalid email', 'Please enter a valid email address.');
+        toast.warning(ERROR_MESSAGES.INVALID_EMAIL.title, ERROR_MESSAGES.INVALID_EMAIL.message);
         return;
       }
     }
