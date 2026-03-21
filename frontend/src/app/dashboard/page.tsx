@@ -6,10 +6,7 @@ import { useRouter } from 'next/navigation';
 import { toast } from '@/components/Toast';
 import { useConfirmDialog } from '@/components/ConfirmDialog';
 import { NoAlertsState } from '@/components/EmptyState';
-import  DashboardSkeleton,
-  StatsCardSkeleton,
-  HistorySkeleton
-} from '@/components/LoadingSkeleton';
+import { DashboardSkeleton } from '@/components/LoadingSkeleton';
 import Button from '@/components/ui/Button';
 import { useAccount } from '@/hooks/useAccount';
 import { useSound } from '@/hooks/useSound';
@@ -606,9 +603,7 @@ export default function DashboardPage() {
             )}
           </div>
 
-          {isDataLoading ? (
-            <HistorySkeleton />
-          ) : history.length === 0 ? (
+          {history.length === 0 ? (
             <div className="bg-gray-900/40 rounded-2xl border border-gray-800/50 p-12 text-center">
               <div className="w-16 h-16 bg-gray-800/30 rounded-2xl flex items-center justify-center mx-auto mb-4 opacity-40">
                 <Activity className="w-8 h-8 text-gray-500" />
@@ -621,18 +616,14 @@ export default function DashboardPage() {
               {history.map((item, idx) => (
                 <div 
                   key={item.id} 
-                  className={`bg-gray-800/30 rounded-xl p-4 border ${
-                    idx === 0 
-                      ? 'border-purple-500/50 shadow-[0_0_20px_rgba(168,85,247,0.1)] ring-1 ring-purple-500/20' 
-                      : 'border-gray-700/30'
-                  } flex items-center justify-between group hover:border-purple-500/20 transition-all text-left animate-in fade-in slide-in-from-top-4 duration-700`}
-                  style={{ animationDelay: `${idx * 40}ms`, animationFillMode: 'both' }}
+                  className="bg-gray-800/30 rounded-xl p-4 border border-gray-700/30 flex items-center justify-between group hover:border-purple-500/20 transition-all"
+                  style={{ animationDelay: `${idx * 50}ms`, animationFillMode: 'both' }}
                 >
                   <div className="flex items-center gap-4">
-                    <div className={`w-2 h-2 rounded-full ${idx === 0 ? 'bg-purple-400 animate-pulse' : 'bg-gray-600'} shadow-[0_0_8px_rgba(168,85,247,0.4)]`} />
+                    <div className="w-2 h-2 rounded-full bg-purple-500 animate-pulse shadow-[0_0_8px_rgba(168,85,247,0.5)]" />
                     <div>
-                      <p className={`text-sm font-medium ${idx === 0 ? 'text-white' : 'text-gray-300'}`}>{item.message}</p>
-                      <p className="text-gray-500 text-[10px] mt-0.5 font-mono">{new Date(item.timestamp).toLocaleTimeString()}</p>
+                      <p className="text-gray-200 text-sm font-medium">{item.message}</p>
+                      <p className="text-gray-500 text-[10px] mt-0.5">{new Date(item.timestamp).toLocaleString()}</p>
                     </div>
                   </div>
                   {item.txId && (
