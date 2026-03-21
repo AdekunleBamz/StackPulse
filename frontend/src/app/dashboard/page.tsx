@@ -8,6 +8,8 @@ import { useConfirmDialog } from '@/components/ConfirmDialog';
 import { NoAlertsState } from '@/components/EmptyState';
 import { DashboardSkeleton } from '@/components/LoadingSkeleton';
 import Button from '@/components/ui/Button';
+import { useAccount } from '@/hooks/useAccount';
+import { LOADING_STATES } from '@/constants/loading';
 import { 
   Bell, 
   Wallet, 
@@ -56,90 +58,49 @@ interface UserData {
 }
 
 export default function DashboardPage() {
-  const { isConnected, address, connect } = useWallet();
+  const { address, isConnected, connect, isRegistered, userData, isLoading: isAccountLoading } = useAccount();
   const router = useRouter();
   const { confirm, ConfirmDialog } = useConfirmDialog();
   const createAlertTitleId = useId();
   const createAlertDescId = useId();
   const createAlertSelectRef = useRef<HTMLSelectElement>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [userData, setUserData] = useState<UserData | null>(null);
-  const [alerts, setAlerts] = useState<UserAlert[]>([]);
+  
+  const [alerts, setAlerts] = useState<DashboardAlert[]>([]);
   const [showCreateAlert, setShowCreateAlert] = useState(false);
-  const [newAlertType, setNewAlertType] = useState(1);
+  const [newAlertType, setNewAlertType] = useState<AlertCategoryId>(1);
   const [newAlertName, setNewAlertName] = useState('');
   const [newAlertThreshold, setNewAlertThreshold] = useState('10000');
   const [isCreating, setIsCreating] = useState(false);
+  const [isDataLoading, setIsDataLoading] = useState(true);
 
   const tierNames = ['Free', 'Basic', 'Pro', 'Premium'];
   const maxAlerts = [3, 10, 25, 999];
 
-  // Check user registration and load data
+  // Load alerts from server when address changes
   useEffect(() => {
-    const loadUserData = async () => {
-      if (!address || !DEPLOYER_ADDRESS) {
-        setIsLoading(false);
-        return;
-      }
-
+    const loadAlerts = async () => {
+      if (!address) return;
+      setIsDataLoading(true);
       try {
-        const { principalCV, cvToHex, hexToCV, cvToValue } = await import('@stacks/transactions');
-
-        // Check V3 contract for user data
-        const response = await fetch(
-          `https://api.mainnet.hiro.so/v2/contracts/call-read/${DEPLOYER_ADDRESS}/stackpulse-v-j3/get-user`,
-          {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              sender: address,
-              arguments: [cvToHex(principalCV(address))]
-            })
-          }
-        );
-
-        const data = await response.json();
-        
-        if (data.result && data.result !== '0x09') {
-          try {
-            const cv = hexToCV(data.result);
-            const parsed = cvToValue(cv);
-            if (parsed && parsed.value) {
-              setUserData({
-                username: parsed.value.username?.value || '',
-                tier: Number(parsed.value.tier?.value || 0),
-                alertsEnabled: Number(parsed.value['alerts-enabled']?.value || 0),
-                subscriptionEnds: Number(parsed.value['subscription-ends']?.value || 0)
-              });
-            }
-          } catch (parseErr) {
-            console.error('Error parsing user data:', parseErr);
+        const serverUrl = process.env.NEXT_PUBLIC_SERVER_URL || 'https://stackpulse-b8fw.onrender.com';
+        const alertsResponse = await fetch(`${serverUrl}/api/users/${address}/alerts`);
+        if (alertsResponse.ok) {
+          const alertsData = await alertsResponse.json();
+          if (alertsData.alerts) {
+            setAlerts(alertsData.alerts);
           }
         }
-
-        // Load alerts from server
-        try {
-          const serverUrl = process.env.NEXT_PUBLIC_SERVER_URL || 'https://stackpulse-b8fw.onrender.com';
-          const alertsResponse = await fetch(`${serverUrl}/api/users/${address}/alerts`);
-          if (alertsResponse.ok) {
-            const alertsData = await alertsResponse.json();
-            if (alertsData.alerts) {
-              setAlerts(alertsData.alerts);
-            }
-          }
-        } catch (err) {
-          console.error('Error loading alerts:', err);
-        }
-
-      } catch (error) {
-        console.error('Error loading user data:', error);
+      } catch (err) {
+        console.error('Error loading alerts:', err);
       } finally {
-        setIsLoading(false);
+        setIsDataLoading(false);
       }
     };
 
-    loadUserData();
+    loadAlerts();
   }, [address]);
+
+  const isLoading = isAccountLoading || (isConnected && isDataLoading);
 
   useEffect(() => {
     if (!showCreateAlert) return;
@@ -328,20 +289,7 @@ export default function DashboardPage() {
 
   // Loading state
   if (isLoading) {
-    return (
-      <main id="main" className="min-h-screen bg-gray-950 py-8 px-4">
-        <div className="max-w-6xl mx-auto">
-          <div className="flex items-center justify-between mb-8">
-            <div>
-              <div className="h-8 w-40 bg-gray-800 rounded-lg animate-pulse mb-2" />
-              <div className="h-4 w-56 bg-gray-800 rounded animate-pulse" />
-            </div>
-            <div className="h-10 w-40 bg-gray-800 rounded-xl animate-pulse" />
-          </div>
-          <DashboardSkeleton />
-        </div>
-      </main>
-    );
+    return <DashboardSkeleton message={isAccountLoading ? LOADING_STATES.FETCHING_ACCOUNT : LOADING_STATES.LOADING_ALERTS} />;
   }
 
   // Not registered - redirect to pricing
