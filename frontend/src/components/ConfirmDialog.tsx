@@ -128,7 +128,7 @@ export default function ConfirmDialog({
             onClick={onCancel}
             disabled={isLoading}
             ref={cancelButtonRef}
-            className="flex-1 px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg font-semibold transition-colors disabled:opacity-50"
+            className="flex-1 px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg font-semibold disabled:opacity-50 shadow-sm hover:-translate-y-0.5 hover:shadow-lg active:scale-95 transition-all duration-300"
           >
             {cancelLabel}
           </button>
@@ -136,7 +136,7 @@ export default function ConfirmDialog({
             onClick={handleConfirm}
             disabled={isLoading}
             aria-busy={isLoading}
-            className={`flex-1 px-4 py-2 ${styles.button} text-white rounded-lg font-semibold transition-colors disabled:opacity-50 flex items-center justify-center gap-2`}
+            className={`flex-1 px-4 py-2 ${styles.button} text-white rounded-lg font-semibold disabled:opacity-50 flex items-center justify-center gap-2 shadow-sm hover:-translate-y-0.5 hover:shadow-lg active:scale-95 transition-all duration-300`}
           >
             {isLoading && (
               <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24">
