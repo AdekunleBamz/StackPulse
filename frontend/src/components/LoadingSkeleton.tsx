@@ -18,17 +18,17 @@ export default function LoadingSkeleton({
   height,
   animation = 'wave'
 }: SkeletonProps) {
-  const baseClasses = animation === 'wave' ? '' : 'bg-gray-800';
+  const baseClasses = 'bg-gray-800/50 backdrop-blur-sm';
   
   const variantClasses = {
-    text: 'rounded',
+    text: 'rounded-md',
     circular: 'rounded-full',
-    rectangular: 'rounded-lg'
+    rectangular: 'rounded-xl'
   };
   
   const animationClasses = {
-    pulse: 'animate-pulse',
-    wave: 'shimmer',
+    pulse: 'animate-pulse duration-1000',
+    wave: 'shimmer before:absolute before:inset-0 before:-translate-x-full before:animate-shimmer before:bg-gradient-to-r before:from-transparent before:via-white/5 before:to-transparent relative overflow-hidden',
     none: ''
   };
   
