@@ -6,19 +6,9 @@ import { useEffect, useId, useState } from 'react';
 import { toast } from '@/components/Toast';
 import Button from '@/components/ui/Button';
 import Link from 'next/link';
-import { apiUrl, DEPLOYER_ADDRESS } from '@/lib/env';
-import logger from '@/lib/logger';
-
-const PRICING_USERNAME_MIN_LENGTH = 3;
-const PRICING_USERNAME_MAX_LENGTH = 32;
-const PRICING_CHANNEL_PREVIEW_LENGTH = 12;
-/** Tier prices in microSTX (1 STX = 1_000_000 microSTX). */
-const TIER_PRICES_MICRO_STX: Record<number, number> = {
-  0: 0,           // Free
-  1: 1_000_000,   // 1 STX for Basic
-  2: 5_000_000,   // 5 STX for Pro
-  3: 20_000_000,  // 20 STX for Premium
-};
+import type { NotificationPreference, ChannelAction } from '@/types/settings';
+import { useAccount } from '@/hooks/useAccount';
+import type { UserPreferences, ApiResponse } from '@/types/api';
 
 const tiers = [
   {
@@ -73,10 +63,10 @@ export default function Pricing() {
   const [isSaving, setIsSaving] = useState(false);
   const [subscribingTier, setSubscribingTier] = useState<number | null>(null);
   const [username, setUsername] = useState('');
-  const [email, setEmail] = useState('');
-  const [discord, setDiscord] = useState('');
-  const [telegram, setTelegram] = useState('');
-  const [editingChannel, setEditingChannel] = useState<'email' | 'discord' | 'telegram' | null>(null);
+  const [email, setEmail] = useState<string>('');
+  const [discord, setDiscord] = useState<string>('');
+  const [telegram, setTelegram] = useState<string>('');
+  const [editingChannel, setEditingChannel] = useState<ChannelAction | null>(null);
   const [tempValue, setTempValue] = useState('');
 
   const tierNames = ['Free', 'Basic', 'Pro', 'Premium'];
