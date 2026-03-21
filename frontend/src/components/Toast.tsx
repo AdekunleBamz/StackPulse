@@ -137,9 +137,9 @@ function Toast({ id, type, title, message, duration = 5000, onClose }: ToastProp
     >
       <Icon className={`w-5 h-5 mt-0.5 ${styles.iconColor}`} strokeWidth={2.5} />
       
-      <div className="flex-1 min-w-0">
-        <h4 className="font-bold text-white text-sm tracking-tight">{title}</h4>
-        {message && <p className="text-xs text-gray-300/90 mt-1 leading-relaxed">{message}</p>}
+      <div className="flex-1 min-w-0 py-0.5">
+        <h4 className="font-bold text-white text-[13px] tracking-wide antialiased transition-colors">{title}</h4>
+        {message && <p className="text-[11px] text-gray-200/70 mt-1.5 leading-relaxed font-medium transition-colors">{message}</p>}
       </div>
       
       <button
