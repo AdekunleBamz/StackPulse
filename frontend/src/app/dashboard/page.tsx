@@ -167,6 +167,7 @@ export default function DashboardPage() {
   const handleCreateAlert = async () => {
     if (!address || !userData) return;
 
+    const toastId = toast.loading('Creating Alert', 'Waiting for wallet confirmation...');
     setIsCreating(true);
     try {
       const { openContractCall } = await import('@stacks/connect');
@@ -185,6 +186,7 @@ export default function DashboardPage() {
         ],
         onFinish: async (data: { txId: string }) => {
           console.log('Alert created:', data.txId);
+          toast.dismiss(toastId);
           
           // Save to server too
           try {
@@ -218,16 +220,21 @@ export default function DashboardPage() {
             threshold: parseInt(newAlertThreshold),
             triggerCount: 0
           }]);
+          setIsCreating(false);
         },
         onCancel: () => {
           console.log('Alert creation cancelled');
+          toast.dismiss(toastId);
+          setIsCreating(false);
         }
       });
     } catch (error) {
       console.error('Error creating alert:', error);
+      toast.dismiss(toastId);
       toast.error('Failed to create alert', 'Please try again.');
-    } finally {
       setIsCreating(false);
+    } finally {
+      // Note: setIsCreating(false) is handled in callbacks because openContractCall is async-finish
     }
   };
 
@@ -235,6 +242,7 @@ export default function DashboardPage() {
   const toggleAlert = async (alertId: number) => {
     const existing = alerts.find((a) => a.id === alertId);
     const nextEnabled = !(existing?.enabled ?? false);
+    const toastId = toast.loading('Syncing', `Updating ${existing?.name || 'alert'}...`);
 
     // Update local state
     setAlerts(prev => prev.map(a => 
@@ -249,8 +257,10 @@ export default function DashboardPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ enabled: nextEnabled })
       });
+      toast.dismiss(toastId);
     } catch (err) {
       console.error('Error toggling alert:', err);
+      toast.dismiss(toastId);
       setAlerts((prev) =>
         prev.map((a) => (a.id === alertId ? { ...a, enabled: existing?.enabled ?? a.enabled } : a))
       );
@@ -267,6 +277,7 @@ export default function DashboardPage() {
       cancelLabel: 'Cancel',
       variant: 'danger',
       onConfirm: async () => {
+        const toastId = toast.loading('Deleting', 'Removing alert from dashboard...');
         let removedAlert: UserAlert | undefined;
         setAlerts((prev) => {
           removedAlert = prev.find((a) => a.id === alertId);
@@ -279,9 +290,11 @@ export default function DashboardPage() {
             method: 'DELETE',
           });
           if (!res.ok) throw new Error('Delete failed');
+          toast.dismiss(toastId);
           toast.success('Alert deleted');
         } catch (err) {
           console.error('Error deleting alert:', err);
+          toast.dismiss(toastId);
           if (removedAlert) {
             setAlerts((prev) => [removedAlert!, ...prev]);
           }
