@@ -723,7 +723,7 @@ export default function Pricing() {
                     <span className="text-6xl sm:text-7xl font-black text-white tracking-tighter drop-shadow-2xl">{tier.price}</span>
                     <div className="flex flex-col mb-1 ml-1">
                       <span className="text-gray-400 font-black text-xs tracking-[0.2em]">STX</span>
-                      <span className="text-gray-600 font-bold text-[10px] uppercase tracking-widest">/ Month</span>
+                      <span className="text-gray-500/40 font-bold text-[10px] uppercase tracking-widest">/ Month</span>
                     </div>
                   </div>
                 </div>
