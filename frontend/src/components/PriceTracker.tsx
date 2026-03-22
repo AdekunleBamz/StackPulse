@@ -1,19 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
 import { TrendingUp, ArrowUp, ArrowDown, Minus } from 'lucide-react';
-
-interface PriceData {
-  stx: {
-    usd: number;
-    change24h: number;
-  };
-  btc: {
-    usd: number;
-    change24h: number;
-  };
-}
-
 import { usePrice } from '@/hooks/usePrice';
 
 export default function PriceTracker() {
