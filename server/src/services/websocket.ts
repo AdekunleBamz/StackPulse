@@ -36,17 +36,28 @@ function getChannel(message: WSMessage): string | undefined {
   return message.channel || message.subscription;
 }
 
-export function broadcastNotification(notification: Record<string, unknown>, type: string = 'notification'): void {
+export function broadcastNotification(notification: Record<string, unknown>, recipients?: string[], type: string = 'notification'): void {
   const message: WSMessage = { type: type as any, data: notification };
   const payload = JSON.stringify(message);
 
   clients.forEach((client) => {
     if (client.socket.readyState === WebSocket.OPEN) {
-      client.socket.send(payload);
+      // If recipients provided, only send to matching addresses
+      if (recipients && recipients.length > 0) {
+        if (client.address && recipients.includes(client.address)) {
+          client.socket.send(payload);
+        }
+      } else {
+        // Otherwise broadcast to everyone
+        client.socket.send(payload);
+      }
     }
   });
 
-  logger.debug('Broadcast notification', { type: (notification as any)?.type });
+  logger.debug('Broadcast notification', { 
+    type: (notification as any)?.type || type, 
+    recipientsCount: recipients?.length || 'all' 
+  });
 }
 
 export function broadcastStats(stats: Record<string, unknown>): void {
