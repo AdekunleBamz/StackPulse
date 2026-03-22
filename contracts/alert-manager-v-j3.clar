@@ -172,16 +172,16 @@
 ;; @param name: Descriptive label for the user
 ;; @param target-address: Optional principal to monitor
 ;; @param threshold: Numeric value for event filtering (e.g., min STX)
-;; @param user-tier: Current subscription level for limit validation
 (define-public (create-alert 
     (alert-type uint)
     (name (string-ascii 64))
     (target-address (optional principal))
-    (threshold uint)
-    (user-tier uint))
+    (threshold uint))
   (let
     (
       (caller tx-sender)
+      (user-data (unwrap! (contract-call? .stackpulse-v-j3 get-user caller) ERR-NOT-REGISTERED))
+      (user-tier (get tier user-data))
       (alert-id (var-get next-alert-id))
       (current-count (get-user-alert-count caller))
       (max-allowed (get-max-alerts-for-tier user-tier))
