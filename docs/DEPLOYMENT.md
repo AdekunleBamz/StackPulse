@@ -107,7 +107,57 @@ plan:
 
 ---
 
-## 2. Server Deployment (Render)
+---
+
+## 2. Local Deployment (Docker Compose)
+
+For a quick local setup with all dependencies, use Docker Compose.
+
+### docker-compose.yml
+
+```yaml
+version: '3.8'
+
+services:
+  server:
+    build: ./server
+    ports:
+      - "3000:3000"
+    environment:
+      - PORT=3000
+      - CHAINHOOK_AUTH_TOKEN=${CHAINHOOK_AUTH_TOKEN}
+      - REDIS_URL=redis://redis:6379
+    depends_on:
+      - redis
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "3001:3000"
+    environment:
+      - NEXT_PUBLIC_SERVER_URL=http://localhost:3000
+    depends_on:
+      - server
+
+  redis:
+    image: redis:alpine
+    ports:
+      - "6379:6379"
+```
+
+### Usage
+
+```bash
+# Start all services
+docker-compose up -d
+
+# View logs
+docker-compose logs -f
+```
+
+---
+
+## 3. Server Deployment (Render)
 
 ### Setup
 
