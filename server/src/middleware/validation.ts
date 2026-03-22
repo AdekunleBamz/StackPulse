@@ -164,6 +164,13 @@ export const schemas: Record<string, ValidationSchema> = {
     threshold: { type: 'number', required: false, min: 0 },
     targetAddress: { type: 'string', required: false },
     webhookUrl: { type: 'string', required: false }
+  },
+  stxAddress: {
+    address: { 
+      type: 'string', 
+      required: true, 
+      pattern: /^(S[PM][0-9A-Z]{38,39}|[sp][pm][0-9a-z]{38,39})$/ 
+    }
   }
 };
 
