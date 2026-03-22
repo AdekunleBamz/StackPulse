@@ -328,6 +328,33 @@ All endpoints return errors in a consistent format:
 }
 ```
 
+**Example (400 Bad Request):**
+```json
+{
+  "success": false,
+  "error": "Invalid Stacks address format",
+  "code": 400
+}
+```
+
+**Example (401 Unauthorized):**
+```json
+{
+  "success": false,
+  "error": "Missing or invalid CHAINHOOK_AUTH_TOKEN",
+  "code": 401
+}
+```
+
+**Example (429 Too Many Requests):**
+```json
+{
+  "success": false,
+  "error": "Rate limit exceeded. Please try again later.",
+  "code": 429
+}
+```
+
 ### Common Error Codes
 
 | Code | Description |
