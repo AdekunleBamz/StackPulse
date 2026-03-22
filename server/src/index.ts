@@ -7,7 +7,7 @@ import express, { Request, Response, NextFunction } from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import dotenv from 'dotenv';
-import { createLogger, format, transports } from 'winston';
+import logger from './utils/logger';
 
 // Import Stacks utilities using @stacks/transactions and @stacks/connect
 import {
@@ -37,24 +37,6 @@ import { clearOldData } from './services/analytics';
 
 // Load environment variables
 dotenv.config();
-
-// Initialize logger
-const logger = createLogger({
-  level: process.env.LOG_LEVEL || 'info',
-  format: format.combine(
-    format.timestamp(),
-    format.errors({ stack: true }),
-    format.json()
-  ),
-  transports: [
-    new transports.Console({
-      format: format.combine(
-        format.colorize(),
-        format.simple()
-      )
-    })
-  ]
-});
 
 // Initialize Express app
 const app = express();
