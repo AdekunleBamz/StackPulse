@@ -1,17 +1,6 @@
-'use client';
-
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Bell, X, Check, ExternalLink } from 'lucide-react';
-
-interface Notification {
-  id: string;
-  type: 'whale' | 'contract' | 'nft' | 'token' | 'swap' | 'alert' | 'badge';
-  title: string;
-  message: string;
-  txHash?: string;
-  timestamp: Date;
-  read: boolean;
-}
+import { useNotificationData } from '@/hooks/useNotificationData';
 
 const notificationIcons: Record<string, string> = {
   whale: '🐋',
@@ -29,54 +18,13 @@ interface NotificationCenterProps {
 
 export default function NotificationCenter({ maxNotifications = 50 }: NotificationCenterProps) {
   const [isOpen, setIsOpen] = useState(false);
-  const [notifications, setNotifications] = useState<Notification[]>([]);
-  const [unreadCount, setUnreadCount] = useState(0);
-
-  // Fetch notifications from server
-  useEffect(() => {
-    const fetchNotifications = async () => {
-      try {
-        const serverUrl = process.env.NEXT_PUBLIC_SERVER_URL || 'https://stackpulse-b8fw.onrender.com';
-        const response = await fetch(`${serverUrl}/api/notifications?limit=${maxNotifications}`);
-        if (response.ok) {
-          const data = await response.json();
-          if (data.notifications) {
-            setNotifications(data.notifications.map((n: any) => ({
-              ...n,
-              timestamp: new Date(n.timestamp),
-            })));
-          }
-        }
-      } catch (error) {
-        console.error('Error fetching notifications:', error);
-      }
-    };
-
-    fetchNotifications();
-    // Poll for new notifications every 30 seconds
-    const interval = setInterval(fetchNotifications, 30000);
-    return () => clearInterval(interval);
-  }, [maxNotifications]);
-
-  // Update unread count
-  useEffect(() => {
-    const unread = notifications.filter(n => !n.read).length;
-    setUnreadCount(unread);
-  }, [notifications]);
-
-  const markAsRead = (id: string) => {
-    setNotifications(prev =>
-      prev.map(n => (n.id === id ? { ...n, read: true } : n))
-    );
-  };
-
-  const markAllAsRead = () => {
-    setNotifications(prev => prev.map(n => ({ ...n, read: true })));
-  };
-
-  const clearAll = () => {
-    setNotifications([]);
-  };
+  const {
+    notifications,
+    unreadCount,
+    markAsRead,
+    markAllAsRead,
+    clearAll
+  } = useNotificationData(maxNotifications);
 
   const formatTime = (date: Date) => {
     const now = new Date();
