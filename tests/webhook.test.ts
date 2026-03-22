@@ -71,7 +71,8 @@ describe('Webhook Utilities', () => {
         timestamp: Date.now()
       };
       
-      expect(validateWebhookPayload(payload)).toBeNull();
+      const { payload: result } = validateWebhookPayload(payload);
+      expect(result).toBeNull();
     });
 
     it('should reject payload without data', () => {
@@ -80,7 +81,8 @@ describe('Webhook Utilities', () => {
         timestamp: Date.now()
       };
       
-      expect(validateWebhookPayload(payload)).toBeNull();
+      const { payload: result } = validateWebhookPayload(payload);
+      expect(result).toBeNull();
     });
 
     it('should reject payload with old timestamp', () => {
@@ -90,7 +92,8 @@ describe('Webhook Utilities', () => {
         timestamp: Date.now() - 600000 // 10 minutes ago
       };
       
-      expect(validateWebhookPayload(payload)).toBeNull();
+      const { payload: result } = validateWebhookPayload(payload);
+      expect(result).toBeNull();
     });
   });
 
