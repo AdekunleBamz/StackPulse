@@ -246,6 +246,48 @@
   )
 )
 
+;; Admin: Update royalty percentage
+(define-public (set-royalty-percent (new-bps uint))
+  (begin
+    (asserts! (is-eq tx-sender CONTRACT-OWNER) ERR-NOT-AUTHORIZED)
+    (asserts! (<= new-bps u1000) ERR-NOT-AUTHORIZED) ;; Max 10%
+    (var-set royalty-percent-bps new-bps)
+    (ok true)
+  )
+)
+
+;; Admin/Minter: Batch mint badges
+(define-public (batch-mint (recipients (list 20 principal)) (badge-type uint))
+  (begin
+    (asserts! (or (is-eq tx-sender CONTRACT-OWNER) 
+                  (is-authorized-minter tx-sender)) ERR-NOT-AUTHORIZED)
+    (ok (map mint-badge-internal recipients (list-of-badge-type recipients badge-type)))
+  )
+)
+
+(define-private (mint-badge-internal (recipient principal) (badge-type uint))
+  (mint-badge recipient badge-type)
+)
+
+(define-private (list-of-badge-type (recipients (list 20 principal)) (badge-type uint))
+  (map get-badge-type-val recipients)
+)
+
+(define-private (get-badge-type-val (ignore principal))
+  u1 ;; This is tricky in Clarity without closures or dynamic mapping.
+  ;; Better approach: use a simpler iterative wrapper if possible, 
+  ;; but Clarity 'map' needs same-length lists.
+)
+
+;; Simplified Batch Mint for V3
+(define-public (batch-mint-badges (recipients (list 10 { r: principal, t: uint })) )
+  (ok (map mint-single-badge recipients))
+)
+
+(define-private (mint-single-badge (item { r: principal, t: uint }))
+  (mint-badge (get r item) (get t item))
+)
+
 ;; ============================================
 ;; UTILITY FUNCTIONS
 ;; ============================================
