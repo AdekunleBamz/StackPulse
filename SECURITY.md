@@ -2,33 +2,29 @@
 
 ## Supported Versions
 
-Currently, the following versions of StackPulse are supported with security updates:
+Security updates are provided for the following versions of StackPulse:
 
 | Version | Supported          |
 | ------- | ------------------ |
-| 1.0.x   | :white_check_mark: |
-| < 1.0   | :x:                |
+| 3.x     | :white_check_mark: |
+| 1.0.x   | :x:                |
 
 ## Reporting a Vulnerability
 
-We take the security of StackPulse seriously. If you believe you have found a security vulnerability in this project, please report it to us responsibly.
+We take the security of StackPulse seriously. If you believe you have found a security vulnerability, please report it to us by emailing [bams.kunle@gmail.com](mailto:bams.kunle@gmail.com).
 
-**Please do not report security vulnerabilities via public GitHub issues.**
+Please include the following in your report:
+- Type of issue (e.g., buffer overflow, SQL injection, cross-site scripting)
+- Full paths of source file(s) related to the manifestation of the issue
+- The location of the affected code (tag/branch/commit or direct URL)
+- Any special configuration required to reproduce the issue
+- Step-by-step instructions to reproduce the issue
+- Proof-of-concept or exploit code (if possible)
+- Impact of the issue, including how an attacker might exploit the issue
 
-Instead, please send an email to [INSERT SECURITY EMAIL]. 
+### Response Timeline
+- **Acknowledgement**: Within 24 hours of receipt.
+- **Triage**: Within 3 business days.
+- **Disclosure Policy**: 90 days after the initial report, or sooner if a fix is released.
 
-### Our Process
-
-1. **Acknowledgment**: We will acknowledge receipt of your report within 48 hours.
-2. **Investigation**: We will investigate the issue and determine its impact and severity.
-3. **Resolution**: Once the vulnerability is confirmed, we will work on a fix.
-4. **Disclosure**: After the fix is deployed and verified, we will coordinate a public disclosure if appropriate.
-
-### Guidelines for Responsible Disclosure
-
-- Provide detailed steps to reproduce the vulnerability.
-- Do not exploit the vulnerability further than necessary to prove its existence.
-- Do not disclose the vulnerability to others until we have had a chance to address it.
-- Respect users' data and privacy.
-
-Thank you for helping keep StackPulse secure!
+We will provide regular status updates until the issue is resolved.
