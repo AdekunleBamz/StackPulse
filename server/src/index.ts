@@ -136,7 +136,11 @@ const eventStats = {
 const processAsync = (handler: (payload: ChainhookPayload) => Promise<void>) => {
   return async (req: Request, res: Response) => {
     // Respond immediately with 202 Accepted to prevent Hiro timeout
-    res.status(202).json({ status: 'accepted', message: 'Processing async' });
+    res.status(202).json({ 
+      success: true, 
+      status: 'accepted', 
+      message: 'Event received and processing in background' 
+    });
     
     // Process in background
     try {
@@ -144,8 +148,12 @@ const processAsync = (handler: (payload: ChainhookPayload) => Promise<void>) => 
       if (payload && payload.apply) {
         await handler(payload);
       }
-    } catch (error) {
-      logger.error('Async processing error', { error });
+    } catch (error: any) {
+      logger.error('Async processing error', { 
+        error: error.message,
+        path: req.path,
+        requestId: req.headers['x-request-id']
+      });
     }
   };
 };
@@ -874,9 +882,27 @@ app.delete('/api/users/:address/alerts/:alertId', async (req: Request, res: Resp
 });
 
 // Error handling middleware
-app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
-  logger.error('Unhandled error', { error: err.message, stack: err.stack });
-  res.status(500).json({ error: 'Internal server error' });
+app.use((err: any, req: Request, res: Response, next: NextFunction) => {
+  const statusCode = err.status || err.statusCode || 500;
+  const message = err.message || 'Internal server error';
+  
+  logger.error('API Error', { 
+    error: message, 
+    stack: process.env.NODE_ENV === 'development' ? err.stack : undefined,
+    path: req.path,
+    method: req.method,
+    ip: req.ip
+  });
+
+  res.status(statusCode).json({
+    success: false,
+    error: {
+      message,
+      code: err.code || 'INTERNAL_ERROR',
+      timestamp: new Date().toISOString(),
+      path: req.path
+    }
+  });
 });
 
 // Start server
