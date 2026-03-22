@@ -22,9 +22,14 @@ import {
   Award,
   Trash2,
   ToggleLeft,
-  ToggleRight
-} from 'lucide-react';
-import { Breadcrumbs } from '@/components';
+  ToggleRight,
+  Loader2,
+  Volume2,
+  VolumeX,
+  Monitor,
+import { AlertCard, ActivityItem, Breadcrumbs } from '@/components';
+
+const DEPLOYER_ADDRESS = process.env.NEXT_PUBLIC_DEPLOYER_ADDRESS || '';
 
 // Alert types matching the contracts and chainhooks
 const alertTypes = [
@@ -503,6 +508,58 @@ export default function DashboardPage() {
                   </div>
                 );
               })}
+            </div>
+          )}
+        </div>
+
+        {/* Recent Activity Section */}
+        <div className="mt-12 mb-8">
+          <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center gap-3">
+              <Activity className="w-6 h-6 text-purple-400" />
+              <h2 className="text-xl font-bold text-white">Recent Activity</h2>
+            </div>
+            {history.length > 0 && (
+              <button
+                onClick={clearHistory}
+                className="text-xs text-gray-500 hover:text-red-400 transition-colors flex items-center gap-1"
+              >
+                <Trash2 className="w-3 h-3" />
+                Clear History
+              </button>
+            )}
+          </div>
+
+          {isDataLoading ? (
+            <HistorySkeleton />
+          ) : history.length === 0 ? (
+            <div className="bg-gray-900/40 rounded-2xl border border-gray-800/50 p-12 text-center">
+              <div className="w-16 h-16 bg-gray-800/30 rounded-2xl flex items-center justify-center mx-auto mb-4 opacity-40">
+                <Activity className="w-8 h-8 text-gray-500" />
+              </div>
+              <p className="text-gray-500 font-medium">No recent activity detected.</p>
+              <p className="text-gray-600 text-xs mt-1">Alert triggers will appear here in real-time.</p>
+            </div>
+          ) : (
+            <div className="space-y-4">
+              {history.slice(0, visibleHistoryLimit).map((item, idx) => (
+                <ActivityItem 
+                  key={item.id} 
+                  item={item} 
+                  index={idx} 
+                />
+              ))}
+              
+              {history.length > visibleHistoryLimit && (
+                <div className="pt-2 flex justify-center">
+                  <button
+                    onClick={() => setVisibleHistoryLimit(prev => prev + 10)}
+                    className="px-6 py-2 bg-gray-800/50 hover:bg-gray-800 rounded-xl border border-gray-700/50 text-gray-400 text-xs font-bold transition-all hover:text-purple-400 active:scale-95"
+                  >
+                    Load More Activity
+                  </button>
+                </div>
+              )}
             </div>
           )}
         </div>

@@ -7,7 +7,8 @@
 export { default as Header } from './Header';
 export { default as Footer } from './Footer';
 
-// UI Components
+export { default as ActivityItem } from './ActivityItem';
+export { default as AlertCard } from './AlertCard';
 export { default as AlertHistory } from './AlertHistory';
 export { default as LoadingSkeleton } from './LoadingSkeleton';
 export { default as BadgeShowcase } from './BadgeShowcase';
