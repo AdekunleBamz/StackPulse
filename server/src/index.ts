@@ -42,6 +42,22 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// Environment validation
+const REQUIRED_ENV = [
+  'CHAINHOOK_AUTH_TOKEN',
+  'DEPLOYER_ADDRESS',
+  'REGISTRY_CONTRACT',
+  'ALERT_CONTRACT'
+];
+
+const missingEnv = REQUIRED_ENV.filter(key => !process.env[key]);
+if (missingEnv.length > 0) {
+  logger.error('❌ Missing required environment variables:', { missing: missingEnv });
+  process.exit(1);
+}
+
+logger.info('✅ Environment validation successful');
+
 // Middleware
 app.use(helmet());
 app.use(cors());
