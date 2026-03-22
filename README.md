@@ -12,6 +12,20 @@
 
 More detail lives in [docs/WORKSPACES.md](docs/WORKSPACES.md).
 
+## Architecture
+
+```mermaid
+graph TD
+    ST(Stacks Blockchain) --> CH[Hiro Chainhooks]
+    CH --> S[Server - Express/TypeScript]
+    S --> D[(Memory Store)]
+    S --> WS[WebSocket Service]
+    S --> N[Notification Service]
+    WS --> F[Frontend - Next.js]
+    F --> U[User]
+    N --> U
+```
+
 ## Quick start
 
 ```bash
