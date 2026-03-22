@@ -7,6 +7,7 @@
 export { default as Header } from './Header';
 
 // UI Components
+export { default as AlertCard } from './AlertCard';
 export { default as AlertHistory } from './AlertHistory';
 export { default as BadgeShowcase } from './BadgeShowcase';
 export { default as ConnectWallet } from './ConnectWallet';

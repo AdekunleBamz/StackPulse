@@ -35,7 +35,7 @@ import {
   Monitor,
   MonitorOff
 } from 'lucide-react';
-import { Breadcrumbs } from '@/components';
+import { AlertCard, Breadcrumbs } from '@/components';
 
 const DEPLOYER_ADDRESS = process.env.NEXT_PUBLIC_DEPLOYER_ADDRESS || '';
 
@@ -539,50 +539,15 @@ export default function DashboardPage() {
               {alerts.map((alert, index) => {
                 const alertType = alertTypes.find(t => t.id === alert.type);
                 return (
-                  <div 
-                    key={alert.id} 
-                    className="bg-gray-800 rounded-xl p-4 border border-gray-700 flex items-center justify-between animate-slide-up hover:border-purple-500/50 transition-colors"
-                    style={{ animationDelay: `${index * 100}ms`, animationFillMode: 'both' }}
-                  >
-                    <div className="flex items-center gap-4">
-                      <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${alert.enabled ? 'bg-purple-500/20' : 'bg-gray-700'}`}>
-                        {alertType && <alertType.icon className={`w-5 h-5 ${alert.enabled ? 'text-purple-400' : 'text-gray-500'}`} />}
-                      </div>
-                      <div>
-                        <h4 className={`font-semibold ${alert.enabled ? 'text-white' : 'text-gray-500'}`}>{alert.name}</h4>
-                        <p className="text-gray-500 text-sm">
-                          {alertType?.description} • {alert.triggerCount} triggers
-                        </p>
-                      </div>
-                    </div>
-	                    <div className="flex items-center gap-3">
-	                      <button
-	                        type="button"
-	                        onClick={() => toggleAlert(alert.id)}
-	                        className="p-2 hover:bg-gray-700 rounded-lg transition-all cursor-pointer focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400/90"
-	                        aria-pressed={alert.enabled}
-	                        aria-label={alert.enabled ? 'Disable alert' : 'Enable alert'}
-	                        title={alert.enabled ? 'Disable alert' : 'Enable alert'}
-	                      >
-	                        {syncingAlertIds.has(alert.id) ? (
-	                          <Loader2 className="w-6 h-6 animate-spin text-purple-500" />
-	                        ) : alert.enabled ? (
-	                          <ToggleRight className="w-6 h-6 text-green-500" />
-	                        ) : (
-	                          <ToggleLeft className="w-6 h-6 text-gray-500" />
-	                        )}
-	                      </button>
-	                      <button
-	                        type="button"
-	                        onClick={() => deleteAlert(alert.id)}
-	                        className="p-2 hover:bg-red-500/20 rounded-lg transition-all cursor-pointer focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400/90"
-	                        aria-label="Delete alert"
-	                        title="Delete alert"
-	                      >
-	                        <Trash2 className="w-5 h-5 text-red-400" />
-	                      </button>
-	                    </div>
-                  </div>
+                  <AlertCard
+                    key={alert.id}
+                    alert={alert}
+                    alertType={alertType}
+                    isSyncing={syncingAlertIds.has(alert.id)}
+                    index={index}
+                    onToggle={toggleAlert}
+                    onDelete={deleteAlert}
+                  />
                 );
               })}
             </div>
