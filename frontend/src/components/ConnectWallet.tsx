@@ -1,13 +1,10 @@
 'use client';
 
-import { useWallet } from '@/context/WalletContext';
 import { Wallet, LogOut, ChevronDown } from 'lucide-react';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import Button from '@/components/ui/Button';
 import CopyButton from '@/components/ui/CopyButton';
 import { truncateAddress } from '@shared/utils/format';
-
-export default function ConnectWallet() {
 import { useWalletAction } from '@/hooks/useWalletAction';
 
 export default function ConnectWallet() {
@@ -152,7 +149,5 @@ export default function ConnectWallet() {
         </div>
       )}
     </div>
-  );
-}
   );
 }
