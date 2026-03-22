@@ -124,5 +124,25 @@ describe('Webhook Utilities', () => {
       expect(result.valid).toBe(false);
       expect(result.error).toBe('Invalid payload');
     });
+
+    it('should process a simulated whale transfer payload', () => {
+      const whalePayload = {
+        event: 'stx_transfer',
+        data: {
+          tx_id: '0x123...',
+          sender: 'SP123...',
+          recipient: 'SP456...',
+          amount: '1000000000', // 1000 STX
+          memo: 'Whale transfer'
+        },
+        timestamp: Date.now()
+      };
+
+      const result = processWebhook(whalePayload, undefined, config);
+
+      expect(result.valid).toBe(true);
+      expect(result.payload?.event).toBe('stx_transfer');
+      expect(result.payload?.data.amount).toBeDefined();
+    });
   });
 });
