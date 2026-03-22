@@ -46,3 +46,10 @@ npm --prefix shared run build
 - [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md)
 - [docs/CONTRACTS.md](docs/CONTRACTS.md)
 - [CONTRIBUTING.md](CONTRIBUTING.md)
+
+## Community & Support
+
+Join our community to get help, stay updated, and contribute:
+- **Discord**: [Join our server](https://discord.gg/stackpulse)
+- **Telegram**: [Follow us](https://t.me/stackpulse)
+- **Twitter**: [Follow @StackPulse](https://twitter.com/StackPulse)
