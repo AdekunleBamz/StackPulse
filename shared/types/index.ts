@@ -98,31 +98,14 @@ export interface User {
   badgeCount: number;
 }
 
-/** User notification preferences */
-export interface UserPreferences {
-  /** User's Stacks wallet address */
-  address: string;
-  /** Optional username */
-  username?: string;
-  /** Optional email for notifications */
-  email?: string;
-  /** Optional Discord tag */
-  discord?: string;
-  /** Optional Telegram username */
-  telegram?: string;
-  /** Array of enabled alert types */
-  enabledAlerts: string[];
+export type UserTier = 'Free' | 'Basic' | 'Pro' | 'Premium';
+
+export interface TierLimits {
+  maxAlerts: number;
+  features: string[];
+  webhookSupport: boolean;
 }
 
-/** Subscription tier levels */
-export enum SubscriptionTier {
-  Free = 0,
-  Basic = 1,
-  Pro = 2,
-  Premium = 3,
-}
-
-// ============================================================================
 // Notification Types
 // ============================================================================
 
