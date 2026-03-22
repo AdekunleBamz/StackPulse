@@ -124,8 +124,9 @@ export default function NotificationCenter({ maxNotifications = 50 }: Notificati
                 {unreadCount > 0 && (
                   <button
                     onClick={markAllAsRead}
-                    className="text-xs text-purple-400 hover:text-purple-300"
+                    className="text-xs text-purple-400 hover:text-purple-300 flex items-center gap-1 font-medium transition-colors"
                   >
+                    <Check className="w-3.5 h-3.5" aria-hidden="true" />
                     Mark all read
                   </button>
                 )}
