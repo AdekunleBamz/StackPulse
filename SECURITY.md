@@ -1,0 +1,24 @@
+# Security Policy
+
+## Supported Versions
+
+Only the latest version of StackPulse is currently supported for security updates.
+
+| Version | Supported          |
+| ------- | ------------------ |
+| 1.0.x   | :white_check_mark: |
+
+## Reporting a Vulnerability
+
+We take the security of StackPulse seriously. If you believe you have found a security vulnerability, please report it to us by emailing [bams.kunle@gmail.com](mailto:bams.kunle@gmail.com).
+
+Please include the following in your report:
+- Type of issue (e.g., buffer overflow, SQL injection, cross-site scripting)
+- Full paths of source file(s) related to the manifestation of the issue
+- The location of the affected code (tag/branch/commit or direct URL)
+- Any special configuration required to reproduce the issue
+- Step-by-step instructions to reproduce the issue
+- Proof-of-concept or exploit code (if possible)
+- Impact of the issue, including how an attacker might exploit the issue
+
+We will acknowledge receipt of your report within 48 hours and provide a regular status update until the issue is resolved.
