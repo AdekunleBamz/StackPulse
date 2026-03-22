@@ -1,6 +1,6 @@
-# StackPulse Frontend
+# 🎨 StackPulse Frontend
 
-Next.js app for the public landing page plus the registration, dashboard, history, badges, and analytics views.
+The **StackPulse Frontend** is a modern, responsive Next.js 14 application providing a real-time dashboard for the StackPulse monitoring system. It handles user registration, alert configuration, and provides detailed analytics for Stacks blockchain events.
 
 ## Commands
 
