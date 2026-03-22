@@ -10,18 +10,31 @@ type UserSession = {
   signUserOut: () => void;
 };
 
+/**
+ * Context type for Stacks wallet management
+ */
 interface WalletContextType {
+  /** Whether a wallet is currently connected */
   isConnected: boolean;
+  /** The current Stacks address of the connected user */
   address: string | null;
+  /** The active Stacks network (mainnet or testnet) */
   network: 'mainnet' | 'testnet';
+  /** The @stacks/connect UserSession instance */
   userSession: UserSession | null;
+  /** Initiates the Stacks wallet connection flow */
   connect: () => void;
+  /** Disconnects the current wallet session */
   disconnect: () => void;
+  /** Switches between mainnet and testnet */
   switchNetwork: (network: 'mainnet' | 'testnet') => void;
 }
 
 const WalletContext = createContext<WalletContextType | null>(null);
 
+/**
+ * Provider component for Stacks wallet state and actions
+ */
 export function WalletProvider({ children }: { children: ReactNode }) {
   const [isConnected, setIsConnected] = useState(false);
   const [address, setAddress] = useState<string | null>(null);
