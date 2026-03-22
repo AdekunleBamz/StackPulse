@@ -12,7 +12,7 @@ import Button from '@/components/ui/Button';
 import Link from 'next/link';
 import type { NotificationPreference, ChannelAction } from '@/types/settings';
 import { useAccount } from '@/hooks/useAccount';
-import type { UserPreferences, ApiResponse } from '@/types/api';
+import { usePricing } from '@/hooks/usePricing';
 
 const tiers = [
   {
@@ -69,275 +69,40 @@ export default function Pricing() {
     refresh: refreshAccount 
   } = useAccount();
   
-  const [isSaving, setIsSaving] = useState(false);
-  const [subscribingTier, setSubscribingTier] = useState<number | null>(null);
-  const [username, setUsername] = useState('');
-  const [email, setEmail] = useState<string>('');
-  const [discord, setDiscord] = useState<string>('');
-  const [telegram, setTelegram] = useState<string>('');
-  const [showEditChannel, setShowEditChannel] = useState(false);
-  const [editingChannel, setEditingChannel] = useState<'email' | 'discord' | 'telegram' | null>(null);
-  const [tempValue, setTempValue] = useState('');
-  const [showPreview, setShowPreview] = useState(false);
-  const [showBulkEdit, setShowBulkEdit] = useState(false);
-  const editChannelTitleId = useId();
-  const [isDataLoading, setIsDataLoading] = useState(false);
-
-  const tierNames = ['Free', 'Basic', 'Pro', 'Premium'];
-  const tierColors = ['gray', 'blue', 'purple', 'yellow'];
-
-  // Sync state with userData from hook
-  useEffect(() => {
-    if (userData) {
-      setUsername(userData.username || '');
-    }
-  }, [userData]);
-
-  // Fetch preferences from server if registered
-  useEffect(() => {
-    const fetchPrefs = async () => {
-      if (!isRegistered || !address) return;
-      setIsDataLoading(true);
-      try {
-        const serverUrl = process.env.NEXT_PUBLIC_SERVER_URL || 'https://stackpulse-b8fw.onrender.com';
-        const prefsResponse = await fetch(`${serverUrl}/api/users/${address}`);
-        if (prefsResponse.ok) {
-          const prefsData: ApiResponse<UserPreferences> = await prefsResponse.json();
-          const user = prefsData.user || prefsData.data;
-          if (user) {
-            setEmail(user.email || '');
-            setDiscord(user.discord || '');
-            setTelegram(user.telegram || '');
-            if (user.username) setUsername(user.username);
-          }
-        }
-      } catch (err) {
-        console.error('Failed to fetch user preferences:', err);
-      } finally {
-        setIsDataLoading(false);
-      }
-    };
-
-    fetchPrefs();
-  }, [isRegistered, address]);
-
-  const isLoading = isAccountLoading || isDataLoading;
-  const currentTier = userData?.tier || 0;
-  const subscriptionEnds = userData?.subscriptionEnds || 0;
-
-  useEffect(() => {
-    if (!editingChannel) return;
-
-    const previousOverflow = document.body.style.overflow;
-    document.body.style.overflow = 'hidden';
-
-    const onKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
-        setEditingChannel(null);
-        setTempValue('');
-      }
-    };
-    window.addEventListener('keydown', onKeyDown);
-
-    return () => {
-      window.removeEventListener('keydown', onKeyDown);
-      document.body.style.overflow = previousOverflow;
-    };
-  }, [editingChannel]);
+  const { 
+    subscribingTier, 
+    isSubmitting: isSubscribing, 
+    handleRegister: internalHandleRegister, 
+    handleSubscribe: internalHandleSubscribe 
+  } = usePricing();
 
   const handleRegister = async (selectedTier: number = 0) => {
-    if (!isConnected) {
-      connect();
-      return;
-    }
-
-    const normalizedUsername = username.trim().toLowerCase();
-    if (!normalizedUsername) {
-      toast.warning('Username required', 'Enter a username to continue.');
-      return;
-    }
-
-    if (normalizedUsername.length < 3 || normalizedUsername.length > 32) {
-      toast.warning('Invalid username', 'Username must be 3–32 characters.');
-      return;
-    }
-
-    if (!/^[a-z0-9_]+$/.test(normalizedUsername)) {
-      toast.warning('Invalid username', 'Use only letters, numbers, and underscores.');
-      return;
-    }
-
-    // Calculate price for the tier (in microSTX)
-    const tierPrices: Record<number, number> = {
-      0: 0,         // Free
-      1: 1000000,   // 1 STX for Basic
-      2: 5000000,   // 5 STX for Pro
-      3: 20000000,  // 20 STX for Premium
-    };
-    const price = tierPrices[selectedTier] || 0;    setIsLoading(true);
-    setSubscribingTier(selectedTier);
-    try {
-      setUsername(normalizedUsername);
-      const { openContractCall } = await import('@stacks/connect');
-      const { stringAsciiCV, uintCV } = await import('@stacks/transactions');
- 
-      // Post-condition: allow STX transfer for paid tiers (new v7+ format)
-      const postConditions: { type: 'stx-postcondition'; address: string; condition: 'eq'; amount: number }[] = price > 0 && address ? [
-        {
-          type: 'stx-postcondition',
-          address: address,
-          condition: 'eq',
-          amount: price
-        }
-      ] : [];
- 
-      // V3 contract: register-and-subscribe combines both steps
-      // alerts bitmask: 31 = all alerts enabled (1+2+4+8+16)
-      await openContractCall({
-        contractAddress: DEPLOYER_ADDRESS,
-        contractName: 'stackpulse-v-j3',
-        functionName: 'register-and-subscribe',
-        functionArgs: [
-          stringAsciiCV(normalizedUsername),
-          stringAsciiCV(email || ''),
-          uintCV(selectedTier),
-          uintCV(31) // Enable all alert types
-        ],
-        postConditions,
-        onFinish: async (data: { txId: string }) => {
-          console.log('Registration + Subscription submitted:', data.txId);
-          
-          // Save notification preferences to server
-          try {
-            const serverUrl = process.env.NEXT_PUBLIC_SERVER_URL || 'https://stackpulse-b8fw.onrender.com';
-            await fetch(`${serverUrl}/api/users`, {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                address: address,
-                username: normalizedUsername,
-                email: email || undefined,
-                discord: discord || undefined,
-                telegram: telegram || undefined,
-                tier: selectedTier,
-                enabledAlerts: ['whale', 'contract', 'nft', 'token', 'swap', 'alert', 'badge']
-              })
-            });
-            console.log('User preferences saved to server');
-          } catch (err) {
-            console.error('Failed to save preferences:', err);
-            toast.warning('Registered', 'Saved on-chain but failed to sync preferences.');
-          }
-          
-          const tierName = selectedTier === 0 ? 'Free' : selectedTier === 2 ? 'Pro' : 'Premium';
-          toast.success('Registration submitted', `Tier: ${tierName}. TX: ${data.txId}`);
-          
-          // Cache registration locally for instant UX on next visit
-          if (address) {
-            localStorage.setItem(`stackpulse_registered_${address}`, JSON.stringify({
-              tier: selectedTier,
-              username: normalizedUsername,
-              timestamp: Date.now()
-            }));
-          }
-          
-          setIsRegistered(true);
-          setCurrentTier(selectedTier);
-        },
-        onCancel: () => {
-          console.log('Registration cancelled');
-          setSubscribingTier(null);
-        },
-      });
-    } catch (error) {
-      console.error('Registration error:', error);
-      toast.error('Registration failed', 'Please try again.');
-      setSubscribingTier(null);
-    } finally {
-      setIsLoading(false);
-    }
+    await internalHandleRegister(username, email, selectedTier, (tier, user) => {
+      // Cache registration locally for instant UX on next visit
+      if (address) {
+        localStorage.setItem(`stackpulse_registered_${address}`, JSON.stringify({
+          tier,
+          username: user,
+          timestamp: Date.now()
+        }));
+      }
+      setIsRegistered(true);
+      setCurrentTier(tier);
+    });
   };
 
   const handleSubscribe = async (tier: number) => {
-    if (!isConnected) {
-      connect();
-      return;
-    }
-
-    // If not registered, do register-and-subscribe in one step
-    if (!isRegistered) {
-      if (!username.trim()) {
-        toast.warning('Username required', 'Enter a username to register first.');
-        return;
-      }
-      await handleRegister(tier);
-      return;
-    }
-
-    // If already registered, upgrade subscription
-    if (tier === 0) {
-      toast.info('Free tier', 'Upgrade below for more features.');
-      return;
-    }
-
-    // Calculate price for the tier (in microSTX)
-    const tierPrices: Record<number, number> = {
-      1: 1000000,   // 1 STX for Basic
-      2: 5000000,   // 5 STX for Pro
-      3: 20000000,  // 20 STX for Premium
-    };
-    const price = tierPrices[tier] || 0;    setIsLoading(true);
-    setSubscribingTier(tier);
-    try {
-      const { openContractCall } = await import('@stacks/connect');
-      const { uintCV } = await import('@stacks/transactions');
-
-      // Post-condition: allow STX transfer from user to contract owner (new v7+ format)
-      const postConditions: { type: 'stx-postcondition'; address: string; condition: 'eq'; amount: number }[] = price > 0 && address ? [
-        {
-          type: 'stx-postcondition',
-          address: address,
-          condition: 'eq',
-          amount: price
+    await internalHandleSubscribe(tier, isRegistered, currentTier, username, (t) => {
+      setCurrentTier(t);
+      if (address) {
+        const cached = localStorage.getItem(`stackpulse_registered_${address}`);
+        if (cached) {
+          const data = JSON.parse(cached);
+          data.tier = t;
+          localStorage.setItem(`stackpulse_registered_${address}`, JSON.stringify(data));
         }
-      ] : [];
-
-      await openContractCall({
-        contractAddress: DEPLOYER_ADDRESS,
-        contractName: 'stackpulse-v-j3',
-        functionName: 'upgrade-subscription',
-        functionArgs: [uintCV(tier)],
-        postConditions,
-        onFinish: async (data: { txId: string }) => {
-          console.log('Upgrade submitted:', data.txId);
-          setCurrentTier(tier);
-          // Update cache
-          if (address) {
-            const cached = localStorage.getItem(`stackpulse_registered_${address}`);
-            if (cached) {
-              const data = JSON.parse(cached);
-              data.tier = tier;
-              localStorage.setItem(`stackpulse_registered_${address}`, JSON.stringify(data));
-            }
-          }
-          toast.success(
-            'Subscription upgraded',
-            `${tier === 1 ? 'Basic' : tier === 2 ? 'Pro' : 'Premium'} tier. TX: ${data.txId}`
-          );
-          setSubscribingTier(null);
-        },
-        onCancel: () => {
-          console.log('Upgrade cancelled');
-          setSubscribingTier(null);
-        },
-      });
-    } catch (error) {
-      console.error('Subscription error:', error);
-      toast.error('Upgrade failed', 'Please try again.');
-      setSubscribingTier(null);
-    } finally {
-      setIsLoading(false);
-    }
+      }
+    });
   };
 
   // Save a notification channel update
