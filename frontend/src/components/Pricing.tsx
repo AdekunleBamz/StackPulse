@@ -790,3 +790,106 @@ export default function Pricing() {
     </section>
   );
 }
+
+const PricingCard = memo(({ 
+  tier, 
+  isRegistered, 
+  currentTier, 
+  subscribingTier, 
+  isLoading, 
+  handleSubscribe 
+}: {
+  tier: {
+    name: string;
+    price: number;
+    tier: number;
+    features: string[];
+    popular: boolean;
+  };
+  isRegistered: boolean;
+  currentTier: number;
+  subscribingTier: number | null;
+  isLoading: boolean;
+  handleSubscribe: (tier: number) => void;
+}) => {
+  const isMostPopular = tier.name === 'Pro';
+  
+  return (
+    <div
+      className={`group relative flex flex-col backdrop-blur-xl transition-all duration-500 rounded-[2rem] p-8 sm:p-12 hover:-translate-y-3 hover:ring-1 ${
+        isMostPopular
+          ? 'border-2 border-purple-500/50 shadow-[0_20px_50px_-20px_rgba(168,85,247,0.25)] scale-[1.05] z-10 bg-gradient-to-br from-gray-900 via-purple-950/20 to-gray-900 hover:shadow-[0_30px_80px_-15px_rgba(168,85,247,0.5)] hover:border-purple-400 hover:ring-purple-500/40'
+          : tier.popular
+            ? 'border-2 border-purple-500/50 shadow-[0_20px_50px_-20px_rgba(168,85,247,0.15)] scale-[1.02] hover:scale-[1.05] z-10 bg-gradient-to-br from-gray-900/80 via-gray-900/40 to-purple-900/20 hover:shadow-[0_30px_70px_-15px_rgba(168,85,247,0.4)] hover:border-purple-400 hover:ring-purple-500/30'
+            : tier.tier === currentTier && isRegistered
+              ? 'bg-emerald-500/[0.03] border border-emerald-500/40 shadow-xl shadow-emerald-500/5 hover:scale-[1.03] hover:border-emerald-500/60 hover:shadow-[0_30px_60px_-15px_rgba(16,185,129,0.2)] hover:ring-emerald-500/30'
+              : 'bg-white/[0.03] border border-white/5 hover:border-white/20 hover:bg-white/[0.05] hover:scale-[1.03] hover:shadow-[0_30px_60px_-15px_rgba(0,0,0,0.6)] hover:ring-white/10'
+      } ${!isRegistered ? 'opacity-75 blur-[0.3px]' : ''}`}
+    >
+      {/* Popular Badge */}
+      {(tier.popular || isMostPopular) && (
+        <div className={`absolute -top-5 left-1/2 -translate-x-1/2 text-white text-[10px] font-black uppercase tracking-[0.25em] px-6 py-2.5 rounded-full z-20 shadow-lg ${
+          isMostPopular 
+            ? 'bg-gradient-to-r from-purple-500 via-indigo-500 to-purple-500 bg-[length:200%_auto] animate-shimmer shadow-purple-500/40' 
+            : 'bg-gradient-to-r from-purple-600 to-indigo-600 shadow-purple-600/30'
+        }`}>
+          {isMostPopular ? 'Most Popular' : 'Popular'}
+        </div>
+      )}
+      
+      {/* Current Plan Badge */}
+      {isRegistered && tier.tier === currentTier && (
+        <div className="absolute -top-5 left-1/2 -translate-x-1/2 bg-emerald-600 text-white text-[10px] font-black uppercase tracking-[0.25em] px-6 py-2.5 rounded-full shadow-[0_10px_20px_-5px_rgba(16,185,129,0.3)] z-20">
+          ✓ Your Plan
+        </div>
+      )}
+
+      <div className="mb-12">
+        <h3 className={`text-xl font-black mb-2 tracking-tighter uppercase ${isMostPopular ? 'text-purple-400' : 'text-white opacity-50'}`}>{tier.name}</h3>
+        <div className="flex items-baseline gap-1.5">
+          <span className="text-6xl sm:text-7xl font-black text-white tracking-tighter drop-shadow-2xl">{tier.price}</span>
+          <div className="flex flex-col mb-1 ml-1">
+            <span className="text-gray-400 font-black text-xs tracking-[0.2em]">STX</span>
+            <span className="text-gray-500/40 font-bold text-[10px] uppercase tracking-widest">/ Month</span>
+          </div>
+        </div>
+      </div>
+
+      <ul className="space-y-5 mb-14 flex-1">
+        {tier.features.map((feature, i) => (
+          <li key={i} className="group/feature flex items-start gap-4 text-gray-400 font-medium text-[13px] leading-relaxed transition-colors hover:text-white">
+            <div className={`mt-0.5 w-5 h-5 rounded-full flex items-center justify-center shrink-0 transition-all duration-300 group-hover/feature:scale-110 ${
+              isMostPopular 
+                ? 'bg-purple-500/20 text-purple-400 shadow-[0_0_15px_rgba(168,85,247,0.3)]'
+                : tier.popular 
+                  ? 'bg-purple-500/20 text-purple-400 shadow-[0_0_10px_rgba(168,85,247,0.2)]' 
+                  : 'bg-emerald-500/10 text-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.1)]'
+            }`}>
+              <Check className="w-3 h-3" strokeWidth={4} />
+            </div>
+            <span className="group-hover/feature:translate-x-0.5 transition-transform duration-300">{feature}</span>
+          </li>
+        ))}
+      </ul>
+
+      <Button
+        onClick={() => handleSubscribe(tier.tier)}
+        disabled={!isRegistered || (isRegistered && tier.tier === currentTier) || isLoading}
+        variant={tier.popular || isMostPopular ? 'primary' : 'secondary'}
+        size="lg"
+        className={`w-full h-13 rounded-2xl font-black transition-all duration-300 transform active:scale-[0.97] ${
+          isMostPopular
+            ? 'shadow-xl shadow-purple-600/40 hover:shadow-purple-600/60 hover:scale-[1.02] bg-gradient-to-r from-purple-600 to-indigo-600 border-none'
+            : tier.popular 
+              ? 'shadow-xl shadow-purple-600/20 hover:shadow-purple-600/50 hover:scale-[1.02]' 
+              : 'border border-white/5 hover:border-white/20 hover:bg-white/5'
+        }`}
+        isLoading={subscribingTier === tier.tier}
+      >
+        {isRegistered && tier.tier === currentTier ? 'Active Plan' : tier.price === 0 ? 'Current Tier' : 'Upgrade Plan'}
+      </Button>
+    </div>
+  );
+});
+
+PricingCard.displayName = 'PricingCard';
