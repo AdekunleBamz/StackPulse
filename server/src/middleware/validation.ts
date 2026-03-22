@@ -166,7 +166,7 @@ export function validateParams(schema: ValidationSchema) {
 }
 
 // Predefined validation schemas
-export const schemas = {
+export const schemas: Record<string, ValidationSchema> = {
   createAlert: {
     name: { type: 'string', required: true, min: 1, max: 64 },
     alertType: { type: 'number', required: true, min: 1, max: 6 },
@@ -179,6 +179,13 @@ export const schemas = {
     threshold: { type: 'number', required: false, min: 0 },
     targetAddress: { type: 'string', required: false },
     webhookUrl: { type: 'string', required: false }
+  },
+  stxAddress: {
+    address: { 
+      type: 'string', 
+      required: true, 
+      pattern: /^(S[PM][0-9A-Z]{38,39}|[sp][pm][0-9a-z]{38,39})$/ 
+    }
   }
 };
 
