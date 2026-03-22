@@ -36,8 +36,8 @@ function getChannel(message: WSMessage): string | undefined {
   return message.channel || message.subscription;
 }
 
-export function broadcastNotification(notification: Record<string, unknown>): void {
-  const message: WSMessage = { type: 'notification', data: notification };
+export function broadcastNotification(notification: Record<string, unknown>, type: string = 'notification'): void {
+  const message: WSMessage = { type: type as any, data: notification };
   const payload = JSON.stringify(message);
 
   clients.forEach((client) => {
