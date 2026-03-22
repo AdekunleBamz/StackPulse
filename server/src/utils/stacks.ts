@@ -225,6 +225,7 @@ export function parseWhaleTransfer(event: any) {
         amount,
         amountSTX,
         amountFormatted: `${amountSTX.toLocaleString()} STX`,
+        amountFormattedFull: `${amountSTX.toLocaleString()} STX`,
         isWhale: true
       };
     }
@@ -243,6 +244,8 @@ export function parseContractDeployment(tx: any) {
   try {
     return {
       contractId: tx.smart_contract.contract_id,
+      contractName: tx.smart_contract.contract_id.split('.')[1],
+      deployer: tx.sender_address,
       sender: tx.sender_address,
       txId: tx.tx_id,
       timestamp: tx.burn_block_time
@@ -262,6 +265,10 @@ export function parseNFTMint(event: any) {
   try {
     return {
       assetId: event.data.asset_identifier,
+      assetIdentifier: event.data.asset_identifier,
+      assetName: event.data.asset_identifier.split('::')[1],
+      contractAddress: event.data.asset_identifier.split('.')[0],
+      tokenId: decodeClarityValue(event.data.value),
       recipient: event.data.recipient,
       value: decodeClarityValue(event.data.value)
     };

@@ -1,4 +1,15 @@
 import logger from '../utils/logger';
+import { broadcastNotification as wsBroadcast } from './websocket';
+
+export interface NotificationPayload {
+  address: string;
+  type: string;
+  data: any;
+  timestamp: number;
+}
+
+// In-memory store for user preferences (simulating a database)
+const userPreferences = new Map<string, any>();
 
 /**
  * Notifications Service
@@ -177,6 +188,7 @@ class NotificationsService {
     return null;
   }
 
+
   /**
    * Create notifications in batch
    */
@@ -196,4 +208,18 @@ class NotificationsService {
   }
 }
 
-export default new NotificationsService();
+const service = new NotificationsService();
+
+// Export individual functions for index.ts
+export const broadcastNotification = wsBroadcast;
+export const saveUserPreferences = (prefs: any) => {
+  const address = prefs.address;
+  userPreferences.set(address, prefs);
+  logger.info('User preferences saved', { address });
+  return prefs;
+};
+export const getUserPreferences = (address: string) => userPreferences.get(address);
+export const getAllUsers = () => Array.from(userPreferences.keys());
+export const deleteUserPreferences = (address: string) => userPreferences.delete(address);
+
+export default service;
