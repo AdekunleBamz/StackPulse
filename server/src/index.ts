@@ -7,6 +7,7 @@ import express, { Request, Response, NextFunction } from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import dotenv from 'dotenv';
+import compression from 'compression';
 import logger from './utils/logger';
 
 // Import Stacks utilities using @stacks/transactions and @stacks/connect
@@ -82,6 +83,7 @@ app.use(cors({
   credentials: true
 }));
 app.use(express.json({ limit: '10mb' }));
+app.use(compression());
 app.use(requestTimeout(30000));
 app.use(requestLogger());
 
