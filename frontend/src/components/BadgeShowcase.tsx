@@ -135,12 +135,12 @@ function BadgeCard({ badge, onClick }: BadgeCardProps) {
     <button
       type="button"
       onClick={onClick}
-      className={`relative p-4 rounded-xl border-2 transition-all cursor-pointer hover:scale-105 text-left w-full focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 focus:ring-offset-gray-900 ${
+      className={`relative p-4 rounded-xl border-2 transition-all cursor-pointer hover:scale-105 hover:-translate-y-1.5 text-left w-full focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 focus:ring-offset-gray-900 ${
         badge.earned
-          ? `bg-gradient-to-br ${rarityColors[badge.rarity]} bg-opacity-20 ${rarityBorders[badge.rarity]} hover:shadow-lg hover:border-white/20 ${
+          ? `bg-gradient-to-br ${rarityColors[badge.rarity]} bg-opacity-20 ${rarityBorders[badge.rarity]} hover:shadow-xl hover:shadow-purple-500/20 hover:border-white/20 ${
               badge.rarity === 'legendary' || badge.rarity === 'epic' ? 'shadow-[0_0_20px_rgba(168,85,247,0.2)]' : ''
             }`
-          : 'bg-gray-800/50 border-gray-700 opacity-60 hover:opacity-80'
+          : 'bg-gray-800/50 border-gray-700 opacity-60 hover:opacity-100 hover:bg-gray-800 hover:shadow-lg'
       }`}
       aria-label={`${badge.name} badge, ${badge.rarity} rarity. ${badge.earned ? 'Earned' : 'Locked'}. ${badge.description}`}
     >
