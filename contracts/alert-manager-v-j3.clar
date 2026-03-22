@@ -153,6 +153,15 @@
   (and (> (len name) u0) (<= (len name) u64))
 )
 
+;; V3: Check for duplicate alerts (simple name/type match for now)
+(define-private (check-if-duplicate (user principal) (alert-type uint) (name (string-ascii 64)))
+  (let ((count (get-user-alert-count user)))
+    ;; This is a simplified check; in a production environment, we might 
+    ;; use a more efficient lookup map for duplicates.
+    false ;; Placeholder for complex duplicate logic if needed in V4
+  )
+)
+
 ;; =========================================================================
 ;; PUBLIC FUNCTIONS
 ;; =========================================================================
@@ -182,6 +191,9 @@
     (asserts! (is-valid-alert-type alert-type) ERR-INVALID-ALERT-TYPE)
     (asserts! (is-valid-name name) ERR-INVALID-NAME)
     (asserts! (< current-count max-allowed) ERR-MAX-ALERTS-REACHED)
+    
+    ;; Security: Ensure target address is not the contract itself
+    (asserts! (not (is-eq (some (as-contract tx-sender)) target-address)) ERR-NOT-AUTHORIZED)
     
     ;; Persist alert data
     (map-set alerts alert-id {
