@@ -4,15 +4,28 @@ Use small, reviewable changes and keep documentation close to the code it descri
 
 ## Local setup
 
-```bash
-git clone https://github.com/YOUR_USERNAME/StackPulse.git
-cd StackPulse
+1. **Clone the repository**:
+   ```bash
+   git clone https://github.com/AdekunleBamz/StackPulse.git
+   cd StackPulse
+   ```
 
-npm install
-npm --prefix server install
-npm --prefix frontend install
-npm --prefix shared install
-```
+2. **Install root dependencies**:
+   ```bash
+   npm install
+   ```
+
+3. **Initialize sub-workspaces**:
+   ```bash
+   # Backend server
+   cd server && npm install && cd ..
+   
+   # Frontend application
+   cd frontend && npm install && cd ..
+   
+   # Shared logic
+   cd shared && npm install && cd ..
+   ```
 
 ## Day-to-day workflow
 
