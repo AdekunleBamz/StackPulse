@@ -99,70 +99,30 @@ router.get(
       });
     }
 
-    // Filter alerts by user
-    let userAlerts = Array.from(alerts.values()).filter((alert) => alert.userId === address);
+    // Extraction and filtering
+    const { address, type, cursor, limit: limitStr } = req.query;
+    const limit = Math.min(parseInt(limitStr as string) || 20, 100);
+    const cursorTime = cursor ? new Date(cursor as string).getTime() : Date.now();
 
-    // Pagination
-    const page = parsePositiveInt(req.query.page as string | undefined, ALERTS_DEFAULT_PAGE);
-    const limit = parsePositiveInt(req.query.limit as string | undefined, ALERTS_DEFAULT_LIMIT, ALERTS_MAX_LIMIT);
-    const sortByInput = typeof req.query.sortBy === 'string' ? req.query.sortBy : 'createdAt';
-    const sortOrderInput = typeof req.query.sortOrder === 'string' ? req.query.sortOrder : 'desc';
-    const sortBy = VALID_ALERT_SORT_FIELDS.has(sortByInput) ? sortByInput : 'createdAt';
-    const sortOrder = VALID_SORT_ORDERS.has(sortOrderInput) ? sortOrderInput : 'desc';
+    // Filter and aggregate
+    let filteredAlerts = Array.from(alerts.values())
+      .filter(alert => alert.userId === address)
+      .filter(alert => !type || alert.alertType === parseInt(type as string))
+      .filter(alert => alert.createdAt.getTime() < cursorTime)
+      .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
 
-    // Apply sorting
-    userAlerts.sort((a, b) => {
-      let aVal: number | string;
-      let bVal: number | string;
-      
-      switch (sortBy) {
-        case 'name':
-          aVal = a.name.toLowerCase();
-          bVal = b.name.toLowerCase();
-          break;
-        case 'alertType':
-          aVal = a.alertType;
-          bVal = b.alertType;
-          break;
-        case 'enabled':
-          aVal = a.enabled ? 1 : 0;
-          bVal = b.enabled ? 1 : 0;
-          break;
-        case 'triggerCount':
-          aVal = a.triggerCount;
-          bVal = b.triggerCount;
-          break;
-        default:
-          aVal = a.createdAt.getTime();
-          bVal = b.createdAt.getTime();
-      }
-      
-      if (sortOrder === 'asc') {
-        return aVal > bVal ? 1 : -1;
-      }
-      return aVal < bVal ? 1 : -1;
-    });
-
-    // Calculate pagination
-    const total = userAlerts.length;
-    const totalPages = Math.ceil(total / limit);
-    const startIndex = (page - 1) * limit;
-    const endIndex = startIndex + limit;
-    const paginatedAlerts = userAlerts.slice(startIndex, endIndex);
-
-    // Cache for 1 minute
-    cache.set(cacheKey, paginatedAlerts, ALERTS_CACHE_TTL_MS);
+    const total = filteredAlerts.length;
+    const paginated = filteredAlerts.slice(0, limit);
+    const nextCursor = paginated.length === limit ? paginated[paginated.length - 1].createdAt.toISOString() : null;
 
     res.json({
       success: true,
-      alerts: paginatedAlerts,
+      alerts: paginated,
       pagination: {
-        page,
         limit,
         total,
-        totalPages,
-        hasNext: page < totalPages,
-        hasPrev: page > 1
+        nextCursor,
+        hasMore: !!nextCursor
       }
     });
   })
