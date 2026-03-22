@@ -246,7 +246,8 @@
       (alert-data (unwrap! (map-get? alerts alert-id) ERR-ALERT-NOT-FOUND))
       (new-enabled (not (get enabled alert-data)))
     )
-    ;; Ownership check
+    ;; Capability check
+    (asserts! (not (var-get is-paused)) ERR-PAUSED)
     (asserts! (is-eq (get owner alert-data) caller) ERR-NOT-AUTHORIZED)
     
     ;; Update enabled status
@@ -279,7 +280,8 @@
       (alert-type (get alert-type alert-data))
       (type-count (get-user-alert-type-count caller alert-type))
     )
-    ;; Ownership check
+    ;; Capability check
+    (asserts! (not (var-get is-paused)) ERR-PAUSED)
     (asserts! (is-eq (get owner alert-data) caller) ERR-NOT-AUTHORIZED)
     
     ;; Physical deletion from map
