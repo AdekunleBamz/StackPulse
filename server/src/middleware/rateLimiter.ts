@@ -45,7 +45,8 @@ const defaultOptions: RateLimitOptions = {
  * Rate limiter middleware factory
  */
 export function rateLimiter(options: RateLimitOptions = defaultOptions) {
-  const { windowMs, maxRequests, message, keyGenerator } = { ...defaultOptions, ...options };
+  const mergedOptions = { ...defaultOptions, ...options };
+  const { windowMs, maxRequests, message, keyGenerator, maxRequestsGenerator } = mergedOptions;
 
   return (req: Request, res: Response, next: NextFunction) => {
     const key = keyGenerator!(req);
@@ -55,7 +56,6 @@ export function rateLimiter(options: RateLimitOptions = defaultOptions) {
     let entry = rateLimitStore.get(key);
 
     if (!entry || now > entry.resetTime) {
-      // New window
       entry = {
         count: 1,
         resetTime: now + windowMs
@@ -64,7 +64,6 @@ export function rateLimiter(options: RateLimitOptions = defaultOptions) {
       return next();
     }
 
-    // Check if limit exceeded
     if (entry.count >= effectiveMaxRequests) {
       const retryAfter = Math.ceil((entry.resetTime - now) / 1000);
       
@@ -72,6 +71,7 @@ export function rateLimiter(options: RateLimitOptions = defaultOptions) {
         key, 
         path: req.path, 
         requests: entry.count, 
+        effectiveMaxRequests,
         retryAfter 
       });
 
@@ -83,14 +83,12 @@ export function rateLimiter(options: RateLimitOptions = defaultOptions) {
       });
     }
 
-    // Increment counter
     entry.count++;
     rateLimitStore.set(key, entry);
 
-    // Set rate limit headers
     res.setHeader('X-RateLimit-Limit', effectiveMaxRequests.toString());
-    res.setHeader('X-RateLimit-Remaining', (effectiveMaxRequests - entry.count).toString());
-    res.setHeader('X-RateLimit-Reset', entry.resetTime.toString());
+    res.setHeader('X-RateLimit-Remaining', Math.max(0, effectiveMaxRequests - entry.count).toString());
+    res.setHeader('X-RateLimit-Reset', new Date(entry.resetTime).toISOString());
 
     next();
   };
