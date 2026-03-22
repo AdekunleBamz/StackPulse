@@ -1,54 +1,36 @@
 /**
  * Security Middleware
- * Security headers and protections
+ * Production hardening with Helmet and custom CSP
  */
-
 import { Request, Response, NextFunction } from 'express';
+import helmet from 'helmet';
 
 /**
- * Security headers middleware
+ * Enhanced security middleware
  */
-export function securityHeaders(req: Request, res: Response, next: NextFunction) {
-  // HSTS
-  res.setHeader('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
-  
-  // X-Frame-Options
-  res.setHeader('X-Frame-Options', 'DENY');
-  
-  // X-Content-Type-Options
-  res.setHeader('X-Content-Type-Options', 'nosniff');
-  
-  // X-XSS-Protection
-  res.setHeader('X-XSS-Protection', '1; mode=block');
-  
-  // Referrer-Policy
-  res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
-  
-  // Content-Security-Policy
-  res.setHeader(
-    'Content-Security-Policy',
-    "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'"
-  );
-  
-  // Permissions-Policy
-  res.setHeader(
-  // COOP
-  res.setHeader('Cross-Origin-Opener-Policy', 'same-origin');
-  
-  // CORP
-  res.setHeader('Cross-Origin-Resource-Policy', 'same-origin');
-
-  // Content Security Policy
-  res.setHeader('Content-Security-Policy', "default-src 'self'; script-src 'self'; object-src 'none';");
-
-  // Permissions Policy
-  res.setHeader('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');
-  
-  next();
-}
+export const securityMetrics = helmet({
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc: ["'self'"],
+      scriptSrc: ["'self'", "'unsafe-inline'"],
+      styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
+      imgSrc: ["'self'", "data:"],
+      connectSrc: ["'self'", "https://api.mainnet.hiro.so"],
+      fontSrc: ["'self'", "https://fonts.gstatic.com"],
+      objectSrc: ["'none'"],
+      upgradeInsecureRequests: [],
+    },
+  },
+  crossOriginEmbedderPolicy: false,
+  hsts: {
+    maxAge: 63072000,
+    includeSubDomains: true,
+    preload: true,
+  },
+});
 
 /**
- * CORS middleware
+ * CORS middleware (kept for compatibility)
  */
 export function corsMiddleware(req: Request, res: Response, next: NextFunction) {
   const allowedOrigins = process.env.ALLOWED_ORIGINS 
@@ -56,43 +38,27 @@ export function corsMiddleware(req: Request, res: Response, next: NextFunction) 
     : ['http://localhost:3000', 'http://localhost:3001'];
   
   const origin = req.headers.origin;
-  
   if (origin && allowedOrigins.includes(origin)) {
     res.setHeader('Access-Control-Allow-Origin', origin);
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE, OPTIONS');
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
     res.setHeader('Access-Control-Allow-Credentials', 'true');
-    res.setHeader('Access-Control-Max-Age', '86400');
   }
   
-  // Handle preflight
-  if (req.method === 'OPTIONS') {
-    return res.sendStatus(200);
-  }
-  
+  if (req.method === 'OPTIONS') return res.sendStatus(200);
   next();
 }
 
 /**
- * Prevent clickjacking
- */
-export function preventClickjacking(req: Request, res: Response, next: NextFunction) {
-  res.setHeader('X-Frame-Options', 'DENY');
-  next();
-}
-
-/**
- * Remove powered by header
+ * Legacy removal of powered-by (Helmet does this, kept for explicit clarity)
  */
 export function removePoweredBy(req: Request, res: Response, next: NextFunction) {
   res.removeHeader('X-Powered-By');
-  res.removeHeader('Server');
   next();
 }
 
 export default {
-  securityHeaders,
+  securityMetrics,
   corsMiddleware,
-  preventClickjacking,
   removePoweredBy
 };
