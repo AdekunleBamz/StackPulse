@@ -79,7 +79,7 @@ function Toast({ id, type, title, message, duration = 5000, onClose }: ToastProp
     startTimeRef.current = Date.now();
     timerRef.current = window.setTimeout(() => {
       setIsLeaving(true);
-      leavingTimerRef.current = window.setTimeout(() => onClose(id), 300);
+      leavingTimerRef.current = window.setTimeout(() => onClose(id), 400);
     }, remainingMsRef.current);
 
     progressIntervalRef.current = window.setInterval(() => {
@@ -100,7 +100,7 @@ function Toast({ id, type, title, message, duration = 5000, onClose }: ToastProp
   const handleClose = () => {
     clearTimers();
     setIsLeaving(true);
-    leavingTimerRef.current = window.setTimeout(() => onClose(id), 300);
+    leavingTimerRef.current = window.setTimeout(() => onClose(id), 400);
   };
 
   const pause = () => {
@@ -132,7 +132,7 @@ function Toast({ id, type, title, message, duration = 5000, onClose }: ToastProp
         styles.bg
       } ${styles.border} ${
         isLeaving 
-          ? 'opacity-0 translate-x-12 scale-90 blur-md pointer-events-none' 
+          ? 'opacity-0 translate-x-12 scale-95 blur-md pointer-events-none' 
           : 'opacity-100 translate-x-0 scale-100 animate-in fade-in slide-in-from-right-12 duration-700 ease-[cubic-bezier(0.16,1,0.3,1)]'
       }`}
       onMouseEnter={pause}
