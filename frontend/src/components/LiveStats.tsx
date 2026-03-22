@@ -2,6 +2,7 @@
 
 import { Activity, ExternalLink } from 'lucide-react';
 import { useEffect, useState } from 'react';
+import { useMetrics } from '@/hooks/useMetrics';
 import { StatsCardSkeleton } from './LoadingSkeleton';
 
 interface EventStats {
