@@ -225,13 +225,28 @@ const service = new NotificationsService();
 // Export individual functions for index.ts
 export const broadcastNotification = wsBroadcast;
 export const saveUserPreferences = (prefs: any) => {
+  if (!prefs || typeof prefs !== 'object') {
+    throw new Error('Invalid preferences data');
+  }
+  
   const address = prefs.address;
+  if (!address || typeof address !== 'string') {
+    throw new Error('User address is required in preferences');
+  }
+
+  // Basic address validation
+  if (!address.startsWith('SP') && !address.startsWith('ST')) {
+    throw new Error('Invalid Stacks address format');
+  }
+
   const isUpdate = userPreferences.has(address);
   userPreferences.set(address, prefs);
+  
   logger.info(isUpdate ? 'User preferences updated' : 'User preferences created', { 
     address,
-    alertCount: prefs.alerts?.length || 0 
+    alertCount: Array.isArray(prefs.alerts) ? prefs.alerts.length : 0 
   });
+  
   return prefs;
 };
 export const getUserPreferences = (address: string) => userPreferences.get(address);
