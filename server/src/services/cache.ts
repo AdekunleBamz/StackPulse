@@ -29,23 +29,19 @@ class CacheService {
   }
 
   /**
-   * Set a value in cache with optional user-tier limits
+   * Set a value in cache with LRU eviction
    */
-  set<T>(key: string, value: T, ttlMs: number = 3600000, tier: number = 0): void {
-    const limit = MAX_CACHE_SIZE_PER_USER.get(tier) || 100;
-    
-    // Simple way to count keys per user if they follow a prefix pattern like "alerts:address"
-    const userPrefix = key.split(':')[0] + ':' + key.split(':')[1];
-    const userEntryCount = Array.from(this.cache.keys()).filter(k => k.startsWith(userPrefix)).length;
-
-    if (userEntryCount >= limit && !this.cache.has(key)) {
-      logger.warn('User cache limit reached', { key, tier, limit });
-      return;
-    }
-
-    if (this.cache.size >= MAX_CACHE_SIZE && !this.cache.has(key)) {
-      this.cleanup(); // Force cleanup if full
-      if (this.cache.size >= MAX_CACHE_SIZE) return;
+  set<T>(key: string, value: T, ttlMs: number = 3600000): void {
+    // If key exists, delete it first to move it to the end (most recent)
+    if (this.cache.has(key)) {
+      this.cache.delete(key);
+    } else if (this.cache.size >= MAX_CACHE_SIZE) {
+      // Evict the oldest entry (first item in Map iterator)
+      const oldestKey = this.cache.keys().next().value;
+      if (oldestKey !== undefined) {
+        this.cache.delete(oldestKey);
+        logger.debug('Cache entry evicted (LRU)', { key: oldestKey });
+      }
     }
     
     this.cache.set(key, {
@@ -55,22 +51,11 @@ class CacheService {
   }
 
   /**
-   * Get-or-set pattern for async operations
-   */
-  async getOrSet<T>(key: string, fetcher: () => Promise<T>, ttlMs?: number): Promise<T> {
-    const cached = this.get<T>(key);
-    if (cached) return cached;
-
-    const fresh = await fetcher();
-    this.set(key, fresh, ttlMs);
-    return fresh;
-  }
-
-  /**
-   * Get a value from cache
+   * Get a value from cache and update its recency
    */
   get<T>(key: string): T | null {
     const entry = this.cache.get(key);
+    
     if (!entry) return null;
 
     if (Date.now() > entry.expiresAt) {
@@ -78,27 +63,11 @@ class CacheService {
       return null;
     }
 
+    // Refresh recency by re-inserting
+    this.cache.delete(key);
+    this.cache.set(key, entry);
+
     return entry.value as T;
-  }
-
-  /**
-   * Clean up expired entries to prevent memory leaks
-   */
-  cleanup(): void {
-    const now = Date.now();
-    let count = 0;
-    for (const [key, entry] of this.cache.entries()) {
-      if (now > entry.expiresAt) {
-        this.cache.delete(key);
-        count++;
-      }
-    }
-    if (count > 0) logger.debug('Cache cleanup', { removed: count });
-  }
-
-  destroy(): void {
-    if (this.cleanupInterval) clearInterval(this.cleanupInterval);
-    this.cache.clear();
   }
 }
 
