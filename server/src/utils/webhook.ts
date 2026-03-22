@@ -35,85 +35,85 @@ export function generateSignature(payload: string, secret: string): string {
 }
 
 /**
- * Verify webhook signature
+ * Verify webhook signature with secret rotation support
  */
 export function verifySignature(
   payload: string,
   signature: string,
-  secret: string
+  secrets: string | string[]
 ): boolean {
-  const expectedSignature = generateSignature(payload, secret);
+  const secretList = Array.isArray(secrets) ? secrets : [secrets];
   const providedSignature = Buffer.from(signature, 'utf8');
-  const expectedSignatureBuffer = Buffer.from(expectedSignature, 'utf8');
 
-  if (providedSignature.length !== expectedSignatureBuffer.length) {
-    return false;
+  for (const secret of secretList) {
+    const expectedSignature = generateSignature(payload, secret);
+    const expectedSignatureBuffer = Buffer.from(expectedSignature, 'utf8');
+
+    if (
+      providedSignature.length === expectedSignatureBuffer.length &&
+      crypto.timingSafeEqual(providedSignature, expectedSignatureBuffer)
+    ) {
+      return true;
+    }
   }
 
-  return crypto.timingSafeEqual(
-    providedSignature,
-    expectedSignatureBuffer
-  );
+  return false;
 }
 
 /**
- * Validate webhook payload structure
+ * Validate webhook payload structure with strict type checks
  */
 export function validateWebhookPayload(data: any): { payload: WebhookPayload | null; error?: string } {
-  if (!data) return { payload: null, error: 'Empty payload' };
+  if (!data || typeof data !== 'object') {
+    return { payload: null, error: 'Invalid or missing payload object' };
+  }
   
   const { event, data: payloadData, timestamp } = data;
   
   if (!event || typeof event !== 'string') {
-    return { payload: null, error: 'Missing or invalid event type' };
+    return { payload: null, error: 'Event type must be a valid string' };
   }
   
-  if (!payloadData) {
-    return { payload: null, error: 'Missing payload data' };
+  if (!payloadData || typeof payloadData !== 'object') {
+    return { payload: null, error: 'Payload data must be a valid object' };
   }
   
-  if (!timestamp || typeof timestamp !== 'number') {
-    return { payload: null, error: 'Missing or invalid timestamp' };
+  if (typeof timestamp !== 'number' || isNaN(timestamp)) {
+    return { payload: null, error: 'Timestamp must be a valid unix numeric value' };
   }
   
-  // Check if timestamp is within acceptable range (5 minutes)
+  // Strict 5-minute window check for replay protection
   const now = Date.now();
   if (Math.abs(now - timestamp) > 300000) {
-    return { payload: null, error: 'Webhook timestamp expired' };
+    return { payload: null, error: 'Webhook signature expired (5min window)' };
   }
   
   return {
-    payload: {
-      event,
-      data: payloadData,
-      timestamp
-    }
+    payload: { event, data: payloadData, timestamp }
   };
 }
 
 /**
- * Process webhook request
+ * Process authenticated webhook request
  */
 export function processWebhook(
   body: any,
   signature: string | undefined,
-  config: WebhookConfig
+  config: WebhookConfig & { alternateSecrets?: string[] }
 ): { valid: boolean; payload?: WebhookPayload; error?: string } {
-  // Verify signature if provided
   if (config.signatureHeader && signature) {
-    const bodyString = JSON.stringify(body);
-    if (!verifySignature(bodyString, signature, config.secret)) {
-      return { valid: false, error: 'Invalid signature' };
+    const bodyString = typeof body === 'string' ? body : JSON.stringify(body);
+    const allSecrets = [config.secret, ...(config.alternateSecrets || [])];
+    
+    if (!verifySignature(bodyString, signature, allSecrets)) {
+      logger.warn('Webhook signature verification failed', { signatureExists: !!signature });
+      return { valid: false, error: 'Unauthorized: Invalid signature' };
     }
   }
   
-  // Validate payload
-  const { payload, error } = validateWebhookPayload(body);
-  if (!payload) {
-    return { valid: false, error: error || 'Invalid payload' };
-  }
-  
-  return { valid: true, payload };
+  return validateWebhookPayload(body).payload 
+    ? { valid: true, payload: body } 
+    : { valid: false, error: 'Malformed payload structure' };
 }
 
 /**
