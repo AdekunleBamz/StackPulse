@@ -110,8 +110,16 @@ export default function PriceTracker() {
   return (
     <div className="flex items-center gap-6 px-4 py-2 bg-gray-800/50 rounded-lg">
       <div className="flex items-center gap-3">
-        <TrendingUp className="w-4 h-4 text-purple-400" />
-        <span className="text-gray-400 text-sm hidden sm:inline">Prices:</span>
+        <div className="relative">
+          <TrendingUp className="w-4 h-4 text-purple-400" />
+          {loading && (
+            <span className="absolute -top-1 -right-1 flex h-2 w-2">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-purple-400 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-purple-500"></span>
+            </span>
+          )}
+        </div>
+        <span className="text-gray-400 text-sm hidden sm:inline">{loading ? 'Refreshing...' : 'Prices:'}</span>
       </div>
 
       {/* STX Price */}
