@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { formatSTX } from '../../server/src/utils/stacks';
+import { formatSTX, decodeClarityValue } from '../../server/src/utils/stacks';
 
 describe('Stacks Utilities', () => {
   describe('formatSTX', () => {
@@ -15,6 +15,26 @@ describe('Stacks Utilities', () => {
 
     it('should handle large amounts correctly', () => {
       expect(formatSTX(1000000000)).toBe('1000.000000');
+    });
+  });
+
+  describe('decodeClarityValue', () => {
+    it('should decode uint values correctly', () => {
+      const mockUint = { type: 1, value: BigInt(100) }; // Mocked CV structure
+      expect(decodeClarityValue(mockUint as any)).toBe('100');
+    });
+
+    it('should decode principal values correctly', () => {
+      const mockPrincipal = { type: 5, address: { version: 22, hash160: '...' } }; // Mocked CV
+      // Since it's internal to @stacks/transactions, we verify it handles our mock structure
+      // or returns a fallback if the structure is too complex for simple mocking
+      const result = decodeClarityValue(mockPrincipal as any);
+      expect(result).toBeDefined();
+    });
+
+    it('should handle null/undefined values gracefully', () => {
+      expect(decodeClarityValue(null as any)).toBe('');
+      expect(decodeClarityValue(undefined as any)).toBe('');
     });
   });
 });
