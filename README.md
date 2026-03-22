@@ -1,6 +1,6 @@
-# StackPulse
+# 🚀 StackPulse
 
-StackPulse is a Stacks monitoring workspace that combines Clarity contracts, Hiro Chainhook manifests, an Express ingestion server, a shared TypeScript package, and a Next.js frontend.
+**StackPulse** is a high-performance Stacks network monitoring workspace designed for real-time visibility into on-chain events. It seamlessly integrates Clarity smart contracts, Hiro Chainhook manifests, and a robust Next.js frontend to provide a comprehensive alerting and analytics platform for the Stacks ecosystem.
 
 ## Workspace overview
 
