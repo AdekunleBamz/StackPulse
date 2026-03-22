@@ -6,7 +6,8 @@ import { useRouter } from 'next/navigation';
 import { toast } from '@/components/Toast';
 import { useConfirmDialog } from '@/components/ConfirmDialog';
 import { NoAlertsState } from '@/components/EmptyState';
-import  DashboardSkeleton,
+import { 
+  DashboardSkeleton,
   StatsCardSkeleton,
   HistorySkeleton
 } from '@/components/LoadingSkeleton';
