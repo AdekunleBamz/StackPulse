@@ -29,12 +29,23 @@ class CacheService {
   }
 
   /**
-   * Set a value in cache
+   * Set a value in cache with optional user-tier limits
    */
-  set<T>(key: string, value: T, ttlMs: number = 3600000): void {
-    if (this.cache.size >= MAX_CACHE_SIZE && !this.cache.has(key)) {
-      logger.warn('Maximum cache size reached, dropping new entry', { key });
+  set<T>(key: string, value: T, ttlMs: number = 3600000, tier: number = 0): void {
+    const limit = MAX_CACHE_SIZE_PER_USER.get(tier) || 100;
+    
+    // Simple way to count keys per user if they follow a prefix pattern like "alerts:address"
+    const userPrefix = key.split(':')[0] + ':' + key.split(':')[1];
+    const userEntryCount = Array.from(this.cache.keys()).filter(k => k.startsWith(userPrefix)).length;
+
+    if (userEntryCount >= limit && !this.cache.has(key)) {
+      logger.warn('User cache limit reached', { key, tier, limit });
       return;
+    }
+
+    if (this.cache.size >= MAX_CACHE_SIZE && !this.cache.has(key)) {
+      this.cleanup(); // Force cleanup if full
+      if (this.cache.size >= MAX_CACHE_SIZE) return;
     }
     
     this.cache.set(key, {
@@ -44,16 +55,24 @@ class CacheService {
   }
 
   /**
+   * Get-or-set pattern for async operations
+   */
+  async getOrSet<T>(key: string, fetcher: () => Promise<T>, ttlMs?: number): Promise<T> {
+    const cached = this.get<T>(key);
+    if (cached) return cached;
+
+    const fresh = await fetcher();
+    this.set(key, fresh, ttlMs);
+    return fresh;
+  }
+
+  /**
    * Get a value from cache
    */
   get<T>(key: string): T | null {
     const entry = this.cache.get(key);
-    
-    if (!entry) {
-      return null;
-    }
+    if (!entry) return null;
 
-    // Check if expired
     if (Date.now() > entry.expiresAt) {
       this.cache.delete(key);
       return null;
@@ -63,90 +82,25 @@ class CacheService {
   }
 
   /**
-   * Check if key exists in cache
+   * Clean up expired entries to prevent memory leaks
    */
-  has(key: string): boolean {
-    const entry = this.cache.get(key);
-    
-    if (!entry) {
-      return false;
-    }
-
-    // Check if expired
-    if (Date.now() > entry.expiresAt) {
-      this.cache.delete(key);
-      return false;
-    }
-
-    return true;
-  }
-
-  /**
-   * Delete a key from cache
-   */
-  delete(key: string): boolean {
-    return this.cache.delete(key);
-  }
-
-  /**
-   * Clear all cache
-   */
-  clear(): void {
-    this.cache.clear();
-  }
-
-  /**
-   * Clean up expired entries
-   */
-  private cleanup(): void {
-    const now = Date.now();
-    for (const [key, entry] of this.cache.entries()) {
-      if (now > entry.expiresAt) {
-        this.cache.delete(key);
-      }
-    }
-  }
-
-  /**
-   * Get cache size
-   */
-  size(): number {
-    return this.cache.size;
-  }
-
-  /**
-   * Destroy cache service
-   */
-  destroy(): void {
-    if (this.cleanupInterval) { // Only clear if it was set
-      clearInterval(this.cleanupInterval);
-    }
-    logger.info('Cache cleared');
-  }
-
-  /**
-   * Cleanup expired items to prevent memory leaks
-   */
-  cleanupExpired() {
+  cleanup(): void {
     const now = Date.now();
     let count = 0;
-    
     for (const [key, entry] of this.cache.entries()) {
-      if (entry.expiresAt < now) {
+      if (now > entry.expiresAt) {
         this.cache.delete(key);
         count++;
       }
     }
-    
-    if (count > 0) {
-      logger.info('Cleaned up expired cache items', { count });
-    }
+    if (count > 0) logger.debug('Cache cleanup', { removed: count });
+  }
+
+  destroy(): void {
+    if (this.cleanupInterval) clearInterval(this.cleanupInterval);
+    this.cache.clear();
   }
 }
 
 const cacheService = new CacheService();
-
-// Periodically cleanup expired items
-cacheService['cleanupInterval'] = setInterval(() => cacheService.cleanupExpired(), 600000); // Every 10 minutes
-
 export default cacheService;
