@@ -35,6 +35,7 @@ import requestLogger from './middleware/requestLogger';
 import db from './services/db';
 import { clearOldData } from './services/analytics';
 import { requestTimeout } from './middleware/timeout';
+import { sanitizePayload } from './utils/webhook';
 
 // Load environment variables
 dotenv.config();
