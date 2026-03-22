@@ -52,6 +52,7 @@
 
 (define-data-var last-token-id uint u0)
 (define-data-var total-badges-minted uint u0)
+(define-data-var royalty-percent-bps uint u500) ;; 5% default royalties
 
 ;; Badge metadata
 (define-map badge-data uint
@@ -154,6 +155,14 @@
 
 (define-read-only (is-authorized-minter (minter principal))
   (default-to false (map-get? authorized-minters minter))
+)
+
+;; Royalty info for marketplaces
+(define-read-only (get-royalty-info)
+  (ok {
+    receiver: CONTRACT-OWNER,
+    percent-bps: (var-get royalty-percent-bps)
+  })
 )
 
 ;; ============================================
