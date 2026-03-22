@@ -92,7 +92,7 @@ export default function ConfirmDialog({
       
       {/* Dialog */}
       <div
-        className="relative bg-gray-900 border border-gray-700 rounded-2xl p-6 max-w-md w-full shadow-2xl animate-zoom-in"
+        className="relative bg-gray-900 border border-gray-700 rounded-2xl p-6 max-w-md w-full shadow-2xl animate-zoom-in max-h-[90vh] overflow-y-auto custom-scrollbar"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-start gap-4">
