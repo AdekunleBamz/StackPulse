@@ -55,59 +55,6 @@ export default function Header() {
     };
   }, [isOpen]);
 
-  useEffect(() => {
-    if (!isOpen) return;
-    const t = window.setTimeout(() => {
-      const firstFocusable = mobileNavRef.current?.querySelector<HTMLElement>('a, button, [tabindex]:not([tabindex="-1"])');
-      firstFocusable?.focus?.();
-    }, 0);
-    return () => window.clearTimeout(t);
-  }, [isOpen]);
-
-  return (
-    <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
-      scrolled 
-        ? 'bg-gray-950/90 backdrop-blur-2xl border-b border-white/10 shadow-lg shadow-black/20 py-1' 
-        : 'bg-gray-950/40 backdrop-blur-md border-b border-white/5 py-3'
-    }`}>
-      <a
-        href="#main"
-        className="sr-only focus:not-sr-only focus:absolute focus:top-6 focus:left-6 focus:z-[100] h-12 px-6 flex items-center justify-center rounded-xl bg-purple-600 text-white font-bold shadow-[0_10px_30px_rgba(168,85,247,0.4)] transition-all active:scale-95 outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-purple-600"
-      >
-        Skip to content
-      </a>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16">
-          {/* Logo */}
-          <Link 
-            href="/" 
-            className="flex items-center space-x-2 group/logo outline-none focus-visible:ring-2 focus-visible:ring-purple-500/50 focus-visible:ring-offset-4 focus-visible:ring-offset-gray-950 rounded-xl transition-all"
-            aria-label="StackPulse Home"
-          >
-            <div 
-              className="w-9 h-9 bg-gradient-to-br from-purple-500 via-purple-600 to-blue-600 rounded-xl flex items-center justify-center shadow-lg shadow-purple-500/10 group-hover/logo:scale-125 group-hover/logo:shadow-purple-500/40 transition-all duration-300"
-              aria-hidden="true"
-            >
-              <svg 
-                className="w-5 h-5 text-white transform group-hover/logo:rotate-[15deg] transition-transform duration-300" 
-                fill="none" 
-                stroke="currentColor" 
-                viewBox="0 0 24 24"
-                aria-hidden="true"
-              >
-                <path 
-                  strokeLinecap="round" 
-                  strokeLinejoin="round" 
-                  strokeWidth={2.5} 
-                  d="M13 10V3L4 14h7v7l9-11h-7z" 
-                />
-              </svg>
-            </div>
-            <span className="text-xl font-black bg-gradient-to-r from-white via-purple-200 to-blue-200 bg-clip-text text-transparent tracking-tight">
-              StackPulse
-            </span>
-          </Link>
-
   const navLinks = [
     { href: '/#features', label: 'Features', aria: 'View platform features' },
     { href: '/#pricing', label: 'Pricing', aria: 'View subscription pricing' },
@@ -158,6 +105,7 @@ export default function Header() {
               StackPulse
             </span>
           </Link>
+
           {/* Navigation */}
           <nav className="hidden md:flex items-center space-x-8" aria-label="Primary">
             {navLinks.map((link) => (
