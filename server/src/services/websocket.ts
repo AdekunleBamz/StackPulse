@@ -87,28 +87,25 @@ export function initWebSocket(server: HTTPServer): WebSocketServer {
       return;
     }
     const clientId = generateClientId();
-    const client: WSClient = {
+    const client: WSClient & { isAlive: boolean } = {
       id: clientId,
       socket: ws,
       subscriptions: new Set<string>(),
       connectedAt: Date.now(),
+      isAlive: true
     };
 
-    clients.set(clientId, client);
+    clients.set(clientId, client as any);
     logger.info('WebSocket client connected', { clientId, ip: req.socket.remoteAddress });
 
-    ws.send(
-      JSON.stringify({
-        type: 'notification',
-        data: {
-          title: 'Connected to StackPulse',
-          message: 'Real-time notifications enabled',
-          connectedAt: client.connectedAt,
-        },
-      })
-    );
+    // Handle pong responses
+    ws.on('pong', () => {
+      (client as any).isAlive = true;
+    });
 
     ws.on('message', (data: Buffer) => {
+      // ... existing message handling ...
+      (client as any).isAlive = true;
       try {
         const message: WSMessage = JSON.parse(data.toString());
         handleMessage(client, message);
@@ -118,23 +115,24 @@ export function initWebSocket(server: HTTPServer): WebSocketServer {
       }
     });
 
+    // ... existing close/error handlers ...
+
+    // Proactive heartbeat check
+    const heartbeatInterval = setInterval(() => {
+      if ((client as any).isAlive === false) {
+        logger.warn('Client heartbeat failed, terminating', { clientId });
+        return ws.terminate();
+      }
+
+      (client as any).isAlive = false;
+      ws.ping();
+    }, 30000);
+
     ws.on('close', () => {
+      clearInterval(heartbeatInterval);
       clients.delete(clientId);
       logger.info('WebSocket client disconnected', { clientId });
     });
-
-    ws.on('error', (error: Error) => {
-      logger.error('WebSocket error', { clientId, error });
-      clients.delete(clientId);
-    });
-
-    const pingInterval = setInterval(() => {
-      if (ws.readyState === WebSocket.OPEN) {
-        ws.ping();
-      } else {
-        clearInterval(pingInterval);
-      }
-    }, 30000);
   });
 
   logger.info('WebSocket server initialized');
