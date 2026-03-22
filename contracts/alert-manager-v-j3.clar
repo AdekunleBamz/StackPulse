@@ -35,6 +35,7 @@
 (define-constant ERR-INVALID-NAME (err u105))        ;; Alert name is empty or too long
 (define-constant ERR-ALERT-DISABLED (err u106))      ;; Action attempted on a disabled alert
 (define-constant ERR-DUPLICATE-ALERT (err u107))      ;; Redundant alert configuration
+(define-constant ERR-PAUSED (err u108))              ;; Contract is in emergency pause state
 
 ;; TIER LIMITS (Defined by StackPulse Subscription Model)
 (define-constant MAX-ALERTS-FREE u3)
@@ -54,6 +55,7 @@
 (define-data-var next-alert-id uint u1)
 (define-data-var total-alerts uint u0)
 (define-data-var total-triggers uint u0)
+(define-data-var is-paused bool false)
 (define-data-var contract-version (string-ascii 8) "v3.0.0")
 
 ;; PRIMARY STORAGE: Central map for all alert details
@@ -188,6 +190,7 @@
       (type-count (get-user-alert-type-count caller alert-type))
     )
     ;; Comprehensive input validation
+    (asserts! (not (var-get is-paused)) ERR-PAUSED)
     (asserts! (is-valid-alert-type alert-type) ERR-INVALID-ALERT-TYPE)
     (asserts! (is-valid-name name) ERR-INVALID-NAME)
     (asserts! (< current-count max-allowed) ERR-MAX-ALERTS-REACHED)
@@ -360,6 +363,7 @@
     )
     ;; Security: Only the creator can modify settings
     (asserts! (is-eq (get owner alert-data) caller) ERR-NOT-AUTHORIZED)
+    (asserts! (not (var-get is-paused)) ERR-PAUSED)
     
     ;; Re-validate inputs
     (asserts! (is-valid-name name) ERR-INVALID-NAME)
@@ -381,6 +385,16 @@
       block: block-height
     })
     
+    (ok true)
+  )
+)
+
+;; PAUSE: Emergency operation toggle
+(define-public (set-paused (paused bool))
+  (begin
+    (asserts! (is-eq tx-sender CONTRACT-OWNER) ERR-NOT-AUTHORIZED)
+    (var-set is-paused paused)
+    (print { event: "pause-status", status: paused, block: block-height })
     (ok true)
   )
 )
