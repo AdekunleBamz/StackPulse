@@ -14,6 +14,7 @@ interface Notification {
   priority: 'low' | 'normal' | 'high' | 'urgent';
   timestamp: number;
   read: boolean;
+  metadata?: Record<string, any>;
 }
 
 const MAX_NOTIFICATIONS_PER_USER = 100;
