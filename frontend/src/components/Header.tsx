@@ -186,7 +186,7 @@ export default function Header() {
             />
             <div
               ref={mobileNavRef}
-              className={`md:hidden fixed left-0 right-0 z-50 bg-gray-950/90 backdrop-blur-2xl border-b border-white/10 shadow-2xl shadow-purple-500/10 animate-slide-down duration-700 ease-in-out transition-all ${
+              className={`md:hidden fixed left-0 right-0 z-50 bg-gray-950/90 backdrop-blur-2xl border-b border-white/10 shadow-2xl shadow-purple-500/10 animate-in slide-in-from-top-4 fade-in zoom-in-95 duration-500 ease-out transition-all ${
                 scrolled ? 'top-[72px]' : 'top-[88px]'
               }`}
               id={mobileNavId}
