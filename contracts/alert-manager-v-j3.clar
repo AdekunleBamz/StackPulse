@@ -1,92 +1,106 @@
 ;; StackPulse Alert Manager V3
+;; =========================================================================
+;; This contract manages user alerts for different blockchain events.
+;; It handles alert creation, status management (toggle/delete), 
+;; and trigger recording from off-chain services like chainhooks.
+;;
 ;; Upgrades from V2:
 ;; - Enhanced error handling with descriptive codes
-;; - Optimized gas usage
-;; - Improved alert tracking with metadata
-;; - Batch operations for efficiency
-;; - Better chainhook integration
+;; - Optimized gas usage through minimized map lookups
+;; - Improved alert tracking with detailed metadata (creation/trigger times)
+;; - Batch-ready data structures for future efficiency
+;; - Better chainhook integration through standardized events
 ;;
-;; Alert Types (matching chainhooks):
-;; 1 = Whale Transfer
-;; 2 = Contract Deployed  
-;; 3 = NFT Mint
-;; 4 = Token Launch
-;; 5 = Large Swap
-;; 6 = Custom Address Watch
+;; Alert Types (matching system-wide event IDs):
+;; 1 = Whale Transfer (> threshold STX)
+;; 2 = Contract Deployed (New contract on-chain)
+;; 3 = NFT Mint (SIP-009 event)
+;; 4 = Token Launch (SIP-010 event)
+;; 5 = Large Swap (DEX activity)
+;; 6 = Custom Address Watch (Specific principal activity)
 
-;; ============================================
+;; =========================================================================
 ;; CONSTANTS
-;; ============================================
+;; =========================================================================
 
+;; Contract owner for administrative actions (e.g., moderation, status resets)
 (define-constant CONTRACT-OWNER tx-sender)
-(define-constant ERR-NOT-AUTHORIZED (err u100))
-(define-constant ERR-NOT-REGISTERED (err u101))
-(define-constant ERR-ALERT-NOT-FOUND (err u102))
-(define-constant ERR-MAX-ALERTS-REACHED (err u103))
-(define-constant ERR-INVALID-ALERT-TYPE (err u104))
-(define-constant ERR-INVALID-NAME (err u105))
-(define-constant ERR-ALERT-DISABLED (err u106))
-(define-constant ERR-DUPLICATE-ALERT (err u107))
 
-;; Max alerts per tier
+;; ERROR CODES
+(define-constant ERR-NOT-AUTHORIZED (err u100))      ;; Caller doesn't own the resource
+(define-constant ERR-NOT-REGISTERED (err u101))      ;; User hasn't registered in StackPulse
+(define-constant ERR-ALERT-NOT-FOUND (err u102))     ;; Referenced alert ID doesn't exist
+(define-constant ERR-MAX-ALERTS-REACHED (err u103))  ;; User hit their tier's alert limit
+(define-constant ERR-INVALID-ALERT-TYPE (err u104))  ;; Alert type outside valid [1-6] range
+(define-constant ERR-INVALID-NAME (err u105))        ;; Alert name is empty or too long
+(define-constant ERR-ALERT-DISABLED (err u106))      ;; Action attempted on a disabled alert
+(define-constant ERR-DUPLICATE-ALERT (err u107))      ;; Redundant alert configuration
+
+;; TIER LIMITS (Defined by StackPulse Subscription Model)
 (define-constant MAX-ALERTS-FREE u3)
 (define-constant MAX-ALERTS-BASIC u10)
 (define-constant MAX-ALERTS-PRO u25)
 (define-constant MAX-ALERTS-PREMIUM u999)
 
-;; Valid alert type range
+;; VALIDATION PARAMETERS
 (define-constant MIN-ALERT-TYPE u1)
 (define-constant MAX-ALERT-TYPE u6)
 
-;; ============================================
+;; =========================================================================
 ;; DATA STORAGE
-;; ============================================
+;; =========================================================================
 
+;; Counters for ID assignment and global statistics
 (define-data-var next-alert-id uint u1)
 (define-data-var total-alerts uint u0)
 (define-data-var total-triggers uint u0)
 (define-data-var contract-version (string-ascii 8) "v3.0.0")
 
-;; Alert storage with V3 enhanced metadata
+;; PRIMARY STORAGE: Central map for all alert details
 (define-map alerts uint
   {
-    owner: principal,
-    alert-type: uint,
-    name: (string-ascii 64),
-    target-address: (optional principal),
-    threshold: uint,
-    enabled: bool,
-    trigger-count: uint,
-    last-triggered: uint,    ;; V3: Track last trigger block
-    created-at: uint
+    owner: principal,                ;; User who created the alert
+    alert-type: uint,               ;; Event category [1-6]
+    name: (string-ascii 64),        ;; User-defined label
+    target-address: (optional principal), ;; Optional specific address to watch
+    threshold: uint,                ;; Numeric parameter (e.g., STX amount)
+    enabled: bool,                  ;; Active/Passive status
+    trigger-count: uint,            ;; Historical trigger frequency
+    last-triggered: uint,           ;; Block height of most recent event
+    created-at: uint                ;; Block height at creation
   }
 )
 
-;; User alert count
+;; LOOKUP OPTIMIZATIONS
+;; Tracks how many alerts a principal has created
 (define-map user-alert-count principal uint)
 
-;; User's alert IDs (for lookup)
+;; Maps a user's index [0...count-1] to a global alert ID for easy listing
 (define-map user-alerts { user: principal, index: uint } uint)
 
-;; V3: Track alert types per user for quick lookup
+;; Tracks count per alert type for user-level analytics and reporting
 (define-map user-alert-types { user: principal, alert-type: uint } uint)
 
-;; ============================================
+;; =========================================================================
 ;; READ-ONLY FUNCTIONS
-;; ============================================
+;; =========================================================================
 
+;; Returns currently deployed contract version
 (define-read-only (get-version)
   (var-get contract-version)
 )
 
+;; Retrieves full metadata for a specific alert ID
 (define-read-only (get-alert (alert-id uint))
   (map-get? alerts alert-id)
 )
 
+;; Returns total number of alerts owned by a principal
 (define-read-only (get-user-alert-count (user principal))
   (default-to u0 (map-get? user-alert-count user))
 )
 
+;; Internal logic for determining tier-based alert limits
 (define-read-only (get-max-alerts-for-tier (tier uint))
   (if (is-eq tier u0) MAX-ALERTS-FREE
     (if (is-eq tier u1) MAX-ALERTS-BASIC
@@ -94,6 +108,7 @@
         MAX-ALERTS-PREMIUM)))
 )
 
+;; Returns alert details for a user based on sequential index
 (define-read-only (get-user-alert-by-index (user principal) (index uint))
   (match (map-get? user-alerts { user: user, index: index })
     alert-id (map-get? alerts alert-id)
@@ -101,6 +116,7 @@
   )
 )
 
+;; Returns global dashboard statistics
 (define-read-only (get-stats)
   {
     total-alerts: (var-get total-alerts),
@@ -110,12 +126,12 @@
   }
 )
 
-;; V3: Get count of specific alert type for user
+;; Returns frequency of specific alert types for a user
 (define-read-only (get-user-alert-type-count (user principal) (alert-type uint))
   (default-to u0 (map-get? user-alert-types { user: user, alert-type: alert-type }))
 )
 
-;; V3: Check if alert is enabled and valid
+;; Simple check for alert status (active/inactive)
 (define-read-only (is-alert-active (alert-id uint))
   (match (map-get? alerts alert-id)
     alert-data (get enabled alert-data)
@@ -123,26 +139,31 @@
   )
 )
 
-;; ============================================
+;; =========================================================================
 ;; PRIVATE HELPER FUNCTIONS
-;; ============================================
+;; =========================================================================
 
-;; V3: Validate alert type
+;; Validates that the provided ID matches a known alert category
 (define-private (is-valid-alert-type (alert-type uint))
   (and (>= alert-type MIN-ALERT-TYPE) (<= alert-type MAX-ALERT-TYPE))
 )
 
-;; V3: Validate alert name
+;; Validates that alert names are present and within length constraints
 (define-private (is-valid-name (name (string-ascii 64)))
-  (> (len name) u0)
+  (and (> (len name) u0) (<= (len name) u64))
 )
 
-;; ============================================
+;; =========================================================================
 ;; PUBLIC FUNCTIONS
-;; ============================================
+;; =========================================================================
 
-;; Create a new alert
-;; alert-type: 1=whale, 2=contract, 3=nft, 4=token, 5=swap, 6=address
+;; CREATION: Register a new alert for the calling principal
+;; =========================================================================
+;; @param alert-type: ID representing the event category [1-6]
+;; @param name: Descriptive label for the user
+;; @param target-address: Optional principal to monitor
+;; @param threshold: Numeric value for event filtering (e.g., min STX)
+;; @param user-tier: Current subscription level for limit validation
 (define-public (create-alert 
     (alert-type uint)
     (name (string-ascii 64))
@@ -157,12 +178,12 @@
       (max-allowed (get-max-alerts-for-tier user-tier))
       (type-count (get-user-alert-type-count caller alert-type))
     )
-    ;; V3: Enhanced validation
+    ;; Comprehensive input validation
     (asserts! (is-valid-alert-type alert-type) ERR-INVALID-ALERT-TYPE)
     (asserts! (is-valid-name name) ERR-INVALID-NAME)
     (asserts! (< current-count max-allowed) ERR-MAX-ALERTS-REACHED)
     
-    ;; Store alert with V3 enhanced metadata
+    ;; Persist alert data
     (map-set alerts alert-id {
       owner: caller,
       alert-type: alert-type,
@@ -175,15 +196,16 @@
       created-at: block-height
     })
     
-    ;; Update user's alert tracking
+    ;; Update tracking maps
     (map-set user-alert-count caller (+ current-count u1))
     (map-set user-alerts { user: caller, index: current-count } alert-id)
     (map-set user-alert-types { user: caller, alert-type: alert-type } (+ type-count u1))
     
-    ;; Update global stats
+    ;; Increment global identifiers
     (var-set next-alert-id (+ alert-id u1))
     (var-set total-alerts (+ (var-get total-alerts) u1))
     
+    ;; Emit event for indexer alignment
     (print {
       event: "alert-created",
       version: "v3",
@@ -199,7 +221,9 @@
   )
 )
 
-;; Toggle alert enabled/disabled
+;; TOGGLE: Enable or Disable an existing alert
+;; =========================================================================
+;; @param alert-id: The ID of the alert to update
 (define-public (toggle-alert (alert-id uint))
   (let
     (
@@ -207,12 +231,15 @@
       (alert-data (unwrap! (map-get? alerts alert-id) ERR-ALERT-NOT-FOUND))
       (new-enabled (not (get enabled alert-data)))
     )
+    ;; Ownership check
     (asserts! (is-eq (get owner alert-data) caller) ERR-NOT-AUTHORIZED)
     
+    ;; Update enabled status
     (map-set alerts alert-id (merge alert-data {
       enabled: new-enabled
     }))
     
+    ;; Emit event
     (print {
       event: "alert-toggled",
       version: "v3",
@@ -225,7 +252,9 @@
   )
 )
 
-;; Delete an alert
+;; DELETE: Permanently remove an alert from tracking
+;; =========================================================================
+;; @param alert-id: The ID of the alert to remove
 (define-public (delete-alert (alert-id uint))
   (let
     (
@@ -235,18 +264,20 @@
       (alert-type (get alert-type alert-data))
       (type-count (get-user-alert-type-count caller alert-type))
     )
+    ;; Ownership check
     (asserts! (is-eq (get owner alert-data) caller) ERR-NOT-AUTHORIZED)
     
-    ;; Remove alert
+    ;; Physical deletion from map
     (map-delete alerts alert-id)
     
-    ;; Update counts
+    ;; Consistent count decrementing
     (map-set user-alert-count caller (- current-count u1))
     (if (> type-count u0)
       (map-set user-alert-types { user: caller, alert-type: alert-type } (- type-count u1))
       true
     )
     
+    ;; Emit event for server synchronization
     (print {
       event: "alert-deleted",
       version: "v3",
@@ -260,28 +291,32 @@
   )
 )
 
-;; Record alert trigger (called by chainhook server or authorized caller)
+;; RECORD TRIGGER: Mark an alert as fired (called by observer services)
+;; =========================================================================
+;; @param alert-id: The ID of the alert that matched an event
 (define-public (record-trigger (alert-id uint))
   (let
     (
       (alert-data (unwrap! (map-get? alerts alert-id) ERR-ALERT-NOT-FOUND))
       (new-trigger-count (+ (get trigger-count alert-data) u1))
     )
-    ;; Only owner or contract owner can record triggers
+    ;; Authorized sources: The alert owner or the administrative owner
     (asserts! (or (is-eq tx-sender (get owner alert-data)) 
                   (is-eq tx-sender CONTRACT-OWNER)) ERR-NOT-AUTHORIZED)
     
-    ;; V3: Check alert is enabled
+    ;; Guard against triggers on disabled alerts
     (asserts! (get enabled alert-data) ERR-ALERT-DISABLED)
     
+    ;; Update historical trigger data
     (map-set alerts alert-id (merge alert-data {
       trigger-count: new-trigger-count,
       last-triggered: block-height
     }))
     
-    ;; V3: Update global trigger count
+    ;; Aggregated platform metrics
     (var-set total-triggers (+ (var-get total-triggers) u1))
     
+    ;; Real-time event propagation
     (print {
       event: "alert-triggered",
       version: "v3",
@@ -296,7 +331,11 @@
   )
 )
 
-;; Update alert settings
+;; UPDATE: Modify existing alert parameters without ID mutation
+;; =========================================================================
+;; @param name: New label for the alert
+;; @param target-address: Updated specific address (optional)
+;; @param threshold: Updated numeric filter value
 (define-public (update-alert 
     (alert-id uint)
     (name (string-ascii 64))
@@ -307,15 +346,20 @@
       (caller tx-sender)
       (alert-data (unwrap! (map-get? alerts alert-id) ERR-ALERT-NOT-FOUND))
     )
+    ;; Security: Only the creator can modify settings
     (asserts! (is-eq (get owner alert-data) caller) ERR-NOT-AUTHORIZED)
+    
+    ;; Re-validate inputs
     (asserts! (is-valid-name name) ERR-INVALID-NAME)
     
+    ;; Atomic update through merge
     (map-set alerts alert-id (merge alert-data {
       name: name,
       target-address: target-address,
       threshold: threshold
     }))
     
+    ;; Change event
     (print {
       event: "alert-updated",
       version: "v3",
@@ -329,22 +373,28 @@
   )
 )
 
-;; ============================================
+;; =========================================================================
 ;; ADMIN FUNCTIONS
-;; ============================================
+;; =========================================================================
 
-;; V3: Admin can disable/enable alerts for moderation
+;; MODERATION: Forcefully enable/disable alerts (Emergency use only)
+;; =========================================================================
+;; @param alert-id: Targeted alert
+;; @param enabled: Target status
 (define-public (admin-set-alert-status (alert-id uint) (enabled bool))
   (let
     (
       (alert-data (unwrap! (map-get? alerts alert-id) ERR-ALERT-NOT-FOUND))
     )
+    ;; Strict administrative restriction
     (asserts! (is-eq tx-sender CONTRACT-OWNER) ERR-NOT-AUTHORIZED)
     
+    ;; Forced status update
     (map-set alerts alert-id (merge alert-data {
       enabled: enabled
     }))
     
+    ;; Management event
     (print {
       event: "admin-alert-status",
       version: "v3",
