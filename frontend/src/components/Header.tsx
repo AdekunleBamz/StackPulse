@@ -57,14 +57,12 @@ export default function Header() {
     };
   }, [isOpen]);
 
-  useEffect(() => {
-    if (!isOpen) return;
-    const t = window.setTimeout(() => {
-      const firstFocusable = mobileNavRef.current?.querySelector<HTMLElement>('a, button, [tabindex]:not([tabindex="-1"])');
-      firstFocusable?.focus?.();
-    }, 0);
-    return () => window.clearTimeout(t);
-  }, [isOpen]);
+  const navLinks = [
+    { href: '/#features', label: 'Features', aria: 'View platform features' },
+    { href: '/#pricing', label: 'Pricing', aria: 'View subscription pricing' },
+    { href: '/#stats', label: 'Live Stats', aria: 'View live blockchain statistics' },
+    { href: '/register', label: 'Register', aria: 'Register for whale alerts', primary: true },
+  ];
 
   return (
     <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
@@ -84,7 +82,7 @@ export default function Header() {
           <Link 
             href="/" 
             className="flex items-center space-x-2 group/logo outline-none focus-visible:ring-2 focus-visible:ring-purple-500/50 focus-visible:ring-offset-4 focus-visible:ring-offset-gray-950 rounded-xl transition-all"
-            aria-label="StackPulse Dashboard Home"
+            aria-label="StackPulse Home"
           >
             <div 
               className="w-9 h-9 bg-gradient-to-br from-purple-500 via-purple-600 to-blue-600 rounded-xl flex items-center justify-center shadow-lg shadow-purple-500/10 group-hover/logo:scale-125 group-hover/logo:shadow-purple-500/40 transition-all duration-300"
