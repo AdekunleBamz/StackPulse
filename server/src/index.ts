@@ -31,7 +31,7 @@ import {
   deleteUserPreferences,
   NotificationPayload
 } from './services/notifications';
-import { tieredApiLimiter } from './middleware/rateLimiter';
+import { apiLimiter, tieredApiLimiter } from './middleware/rateLimiter';
 import requestLogger from './middleware/requestLogger';
 import db from './services/db';
 import { clearOldData } from './services/analytics';
@@ -86,6 +86,9 @@ app.use(express.json({ limit: '10mb' }));
 app.use(compression());
 app.use(requestTimeout(30000));
 app.use(requestLogger());
+
+// Global API Rate Limiter
+app.use('/api/v1', apiLimiter);
 
 // Optional authentication middleware for chainhook endpoints
 // Note: Hiro Platform chainhooks don't always send auth headers, so we make this optional
