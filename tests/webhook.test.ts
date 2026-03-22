@@ -147,5 +147,24 @@ describe('Webhook Utilities', () => {
       expect(result.payload?.event).toBe('stx_transfer');
       expect(result.payload?.data.amount).toBeDefined();
     });
+
+    it('should process a simulated alert trigger payload', () => {
+      const alertPayload = {
+        event: 'alert.triggered',
+        data: {
+          alertId: '42',
+          owner: 'SP789...',
+          type: 'price_threshold',
+          value: '50000'
+        },
+        timestamp: Date.now()
+      };
+
+      const result = processWebhook(alertPayload, undefined, config);
+
+      expect(result.valid).toBe(true);
+      expect(result.payload?.event).toBe('alert.triggered');
+      expect(result.payload?.data.alertId).toBe('42');
+    });
   });
 });
