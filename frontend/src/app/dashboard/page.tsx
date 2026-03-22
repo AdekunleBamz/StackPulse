@@ -1,7 +1,6 @@
 'use client';
 
 import { useEffect, useId, useMemo, useRef, useState } from 'react';
-import { useWallet } from '@/context/WalletContext';
 import { useRouter } from 'next/navigation';
 import { toast } from '@/components/Toast';
 import { useConfirmDialog } from '@/components/ConfirmDialog';
@@ -19,7 +18,6 @@ import {
   Bell, 
   Wallet, 
   Plus, 
-  Settings, 
   Activity,
   Zap,
   FileCode,
@@ -28,9 +26,6 @@ import {
   ArrowLeftRight,
   Award,
   Trash2,
-  ToggleLeft,
-  ToggleRight,
-  Loader2,
   Volume2,
   VolumeX,
   Monitor,
