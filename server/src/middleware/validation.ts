@@ -2,189 +2,80 @@ import { Request, Response, NextFunction } from 'express';
 import logger from '../utils/logger';
 
 /**
- * Validate body payload size based on tier
+ * Enhanced schema validation middleware
+ * Inspired by Zod's declarative approach
  */
-export function validatePayloadSize(req: Request, res: Response, next: NextFunction) {
-  const userTier = (req as any).user?.tier || 0;
-  const limits = [10240, 102400, 1048576, 10485760]; // 10K, 100K, 1M, 10M
-  const limit = limits[userTier] || 10240;
-  
-  const contentLength = parseInt(req.headers['content-length'] || '0');
-  if (contentLength > limit) {
-    logger.warn('Payload size limit exceeded', { userTier, limit, contentLength });
-    return res.status(413).json({
-      success: false,
-      error: `Payload too large for your tier. Limit: ${limit} bytes.`
-    });
-  }
-  next();
-}
+export type SchemaRule = {
+  type: 'string' | 'number' | 'boolean' | 'array' | 'object';
+  required?: boolean;
+  min?: number;
+  max?: number;
+  regex?: RegExp;
+  message?: string;
+};
 
-interface ValidationSchema {
-  [key: string]: {
-    type: 'string' | 'number' | 'boolean' | 'array' | 'object';
-    required?: boolean;
-    min?: number;
-    max?: number;
-    pattern?: RegExp;
-  };
-}
+export type ValidationSchema = Record<string, SchemaRule>;
 
 /**
- * Validate request body against schema
+ * Validate request against schema
  */
-export function validateBody(schema: ValidationSchema) {
+export const validate = (schema: ValidationSchema, part: 'body' | 'query' | 'params' = 'body') => {
   return (req: Request, res: Response, next: NextFunction) => {
-    const errors: string[] = [];
+    const data = req[part];
+    const errors: Record<string, string> = {};
 
-    for (const [field, rules] of Object.entries(schema)) {
-      const value = req.body[field];
+    for (const [field, rule] of Object.entries(schema)) {
+      const value = data[field];
 
-      // Check required
-      if (rules.required && (value === undefined || value === null || value === '')) {
-        errors.push(`Field '${field}' is required`);
+      if (rule.required && (value === undefined || value === null || value === '')) {
+        errors[field] = rule.message || `Field '${field}' is required`;
         continue;
       }
 
-      // Skip validation if not required and not provided
-      if (!rules.required && (value === undefined || value === null)) {
-        continue;
-      }
-
-      // Check type
-      if (typeof value !== rules.type) {
-        errors.push(`Field '${field}' must be of type ${rules.type}`);
-      }
-
-      // Check min length
-      if (rules.min !== undefined) {
-        if (typeof value === 'string' && value.length < rules.min) {
-          errors.push(`Field '${field}' must be at least ${rules.min} characters`);
+      if (value !== undefined && value !== null) {
+        if (rule.type === 'array' && !Array.isArray(value)) {
+          errors[field] = `Field '${field}' must be an array`;
+        } else if (rule.type !== 'array' && typeof value !== rule.type) {
+          errors[field] = `Field '${field}' must be a ${rule.type}`;
         }
-        if (typeof value === 'number' && value < rules.min) {
-          errors.push(`Field '${field}' must be at least ${rules.min}`);
-        }
-      }
 
-      // Check max length
-      if (rules.max !== undefined) {
-        if (typeof value === 'string' && value.length > rules.max) {
-          errors.push(`Field '${field}' must be at most ${rules.max} characters`);
+        if (rule.min !== undefined) {
+          const val = rule.type === 'string' ? (value as string).length : (value as number);
+          if (val < rule.min) errors[field] = `Minimum ${rule.min} required`;
         }
-        if (typeof value === 'number' && value > rules.max) {
-          errors.push(`Field '${field}' must be at most ${rules.max}`);
-        }
-      }
 
-      // Check pattern
-      if (rules.pattern && typeof value === 'string' && !rules.pattern.test(value)) {
-        errors.push(`Field '${field}' has invalid format`);
+        if (rule.max !== undefined) {
+          const val = rule.type === 'string' ? (value as string).length : (value as number);
+          if (val > rule.max) errors[field] = `Maximum ${rule.max} allowed`;
+        }
+
+        if (rule.regex && !rule.regex.test(String(value))) {
+          errors[field] = `Invalid format for '${field}'`;
+        }
       }
     }
 
-    if (errors.length > 0) {
-      return res.status(400).json({
-        success: false,
-        errors
-      });
+    if (Object.keys(errors).length > 0) {
+      logger.warn(`Validation failed on ${req.path}`, { part, errors });
+      return res.status(400).json({ success: false, errors });
     }
 
     next();
   };
-}
+};
 
 /**
- * Validate request query parameters
+ * Predefined schemas
  */
-export function validateQuery(schema: ValidationSchema) {
-  return (req: Request, res: Response, next: NextFunction) => {
-    const errors: string[] = [];
-
-    for (const [field, rules] of Object.entries(schema)) {
-      const value = req.query[field];
-
-      // Check required
-      if (rules.required && !value) {
-        errors.push(`Query parameter '${field}' is required`);
-        continue;
-      }
-
-      // Skip if not required and not provided
-      if (!rules.required && !value) {
-        continue;
-      }
-
-      // Check type
-      const parsedValue = rules.type === 'number' ? parseFloat(value as string) : value;
-      if (typeof parsedValue !== rules.type) {
-        errors.push(`Query parameter '${field}' must be of type ${rules.type}`);
-      }
-    }
-
-    if (errors.length > 0) {
-      return res.status(400).json({
-        success: false,
-        errors
-      });
-    }
-
-    next();
-  };
-}
-
-/**
- * Validate request params
- */
-export function validateParams(schema: ValidationSchema) {
-  return (req: Request, res: Response, next: NextFunction) => {
-    const errors: string[] = [];
-
-    for (const [field, rules] of Object.entries(schema)) {
-      const value = req.params[field];
-
-      // Check required
-      if (rules.required && !value) {
-        errors.push(`Parameter '${field}' is required`);
-        continue;
-      }
-
-      // Check type
-      if (value && typeof value !== rules.type) {
-        errors.push(`Parameter '${field}' must be of type ${rules.type}`);
-      }
-    }
-
-    if (errors.length > 0) {
-      return res.status(400).json({
-        success: false,
-        errors
-      });
-    }
-
-    next();
-  };
-}
-
-// Predefined validation schemas
 export const schemas = {
-  createAlert: {
-    name: { type: 'string', required: true, min: 1, max: 64 },
-    alertType: { type: 'number', required: true, min: 1, max: 6 },
+  alert: {
+    name: { type: 'string', required: true, min: 2, max: 64 },
+    type: { type: 'number', required: true, min: 0, max: 10 },
     threshold: { type: 'number', required: false, min: 0 },
-    targetAddress: { type: 'string', required: false },
-    webhookUrl: { type: 'string', required: false }
   },
-  updateAlert: {
-    name: { type: 'string', required: false, min: 1, max: 64 },
-    threshold: { type: 'number', required: false, min: 0 },
-    targetAddress: { type: 'string', required: false },
-    webhookUrl: { type: 'string', required: false }
+  registration: {
+    address: { type: 'string', required: true, regex: /^S[P|N|M|B][0-9A-Z]{38,39}$/i },
   }
 };
 
-export default {
-  validateBody,
-  validateQuery,
-  validateParams,
-  schemas
-};
+export default { validate, schemas };
