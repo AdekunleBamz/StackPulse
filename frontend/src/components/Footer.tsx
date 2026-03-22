@@ -30,10 +30,10 @@ const footerLinks = {
 };
 
 const socialLinks = [
-  { icon: Twitter, href: '#', label: 'Twitter' },
-  { icon: Github, href: 'https://github.com/AdekunleBamz/StackPulse', label: 'GitHub' },
-  { icon: Linkedin, href: '#', label: 'LinkedIn' },
-  { icon: Mail, href: 'mailto:support@stackpulse.io', label: 'Email' },
+  { icon: Twitter, href: '#', label: 'Follow us on Twitter' },
+  { icon: Github, href: 'https://github.com/AdekunleBamz/StackPulse', label: 'View source on GitHub' },
+  { icon: Linkedin, href: '#', label: 'Connect on LinkedIn' },
+  { icon: Mail, href: 'mailto:support@stackpulse.io', label: 'Send us an email' },
 ];
 
 export default function Footer() {
