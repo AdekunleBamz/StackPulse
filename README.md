@@ -81,127 +81,17 @@ cp .env.example .env
 # Required: CHAINHOOK_AUTH_TOKEN, DATABASE_URL, etc.
 ```
 
-## 📟 Common Commands
+- [docs/API.md](docs/API.md)
+- [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md)
+- [docs/CONTRACTS.md](docs/CONTRACTS.md)
+- [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)
+- [CONTRIBUTING.md](CONTRIBUTING.md)
 
-### Development
+## Features & Highlights
 
-```bash
-# Start frontend development server
-npm --prefix frontend run dev
-
-# Start backend development server
-npm --prefix server run dev
-
-# Start both with Docker Compose
-docker compose up -d
-```
-
-### Building
-
-```bash
-# Build all packages
-npm run build:all
-
-# Build individual packages
-npm --prefix shared run build
-npm --prefix server run build
-npm --prefix frontend run build
-```
-
-### Testing & Quality
-
-```bash
-# Run Clarinet contract checks
-npm run clarinet:check
-
-# Run fast pre-push checks (clarinet + focused utility tests)
-npm run check:fast
-
-# Run Clarinet contract tests
-npm run clarinet:test
-
-# Run all tests
-npm test
-
-# Run focused shared-format/common utility tests
-npm run test:format
-
-# Run tests in watch mode
-npm run test:watch
-
-# Lint all packages
-npm run lint:all
-```
-
-## 📚 Documentation
-
-| Doc | Description |
-|-----|-------------|
-| [API Reference](docs/API.md) | Complete API endpoint documentation |
-| [Deployment Guide](docs/DEPLOYMENT.md) | Production deployment instructions |
-| [Contract Docs](docs/CONTRACTS.md) | Clarity contract specifications |
-| [Architecture](docs/WORKSPACES.md) | System architecture overview |
-| [Contributing](CONTRIBUTING.md) | Contribution guidelines |
-
-## 🔧 Configuration
-
-### Environment Variables
-
-| Variable | Description | Required |
-|----------|-------------|----------|
-| `PORT` | Server port | No (default: 3000) |
-| `CHAINHOOK_AUTH_TOKEN` | Authentication token for chainhook endpoints | Yes |
-| `DATABASE_URL` | Database connection string | Yes |
-| `REDIS_URL` | Redis connection URL | No |
-| `LOG_LEVEL` | Logging level (debug, info, warn, error) | No |
-| `NODE_ENV` | Environment (development, production) | No |
-
-### Rate Limiting
-
-StackPulse implements tiered rate limiting:
-
-| Tier | Requests/minute |
-|------|-----------------|
-| Free | 100 |
-| Basic | 1,000 |
-| Pro | 5,000 |
-| Enterprise | 20,000 |
-
-## 🤝 Contributing
-
-We welcome contributions! Please follow these steps:
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feat/amazing-feature`)
-3. Commit your changes with signed commits (`git commit -S -m 'feat: add amazing feature'`)
-4. Push to the branch (`git push origin feat/amazing-feature`)
-5. Open a Pull Request
-
-Please read [CONTRIBUTING.md](CONTRIBUTING.md) for detailed guidelines.
-
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 🙏 Acknowledgments
-
-- [Hiro Systems](https://www.hiro.so/) for Chainhooks and Stacks tooling
-- [Stacks Foundation](https://stacks.org/) for the Stacks blockchain
-- [Clarity Language](https://clarity-lang.org/) for secure smart contracts
-
-## 🔗 Links & Community
-
-- **Official Website**: [stackpulse.io](https://stackpulse.io)
-- **Documentation**: [docs.stackpulse.io](https://docs.stackpulse.io)
-- **GitHub Repository**: [AdekunleBamz/StackPulse](https://github.com/AdekunleBamz/StackPulse)
-- **Discord Community**: [Join our community](https://discord.gg/stackpulse)
-- **Twitter / X**: [@StackPulse](https://twitter.com/StackPulse)
-- **Telegram**: [Global Community](https://t.me/stackpulse)
-
----
-
-## 🔐 Security & Verification
-
-All official commits and releases are GPG-signed by the lead developer **[AdekunleBamz](https://github.com/AdekunleBamz)**.
-
-Built with ❤️ by **Adekunle Bamz** and contributors
+- **Real-time Monitoring**: Sub-second ingestion of Stacks blockchain events.
+- **Tiered Alerts**: Tiered feature gating (Basic, Pro, Premium) with granular limits.
+- **Multi-Channel Delivery**: Integration with Discord, Telegram, and custom Webhooks.
+- **Live Analytics**: High-performance data windowing for responsive dashboard charts.
+- **Security First**: JWT-based authentication, SSH-signed commits, and CSP-hardened headers.
+- **Reliability**: Exponential backoff retries, LRU caching, and health-monitored subsystems.
