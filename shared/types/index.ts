@@ -28,6 +28,14 @@ export interface User {
   badgeCount: number;
 }
 
+export type UserTier = 'Free' | 'Basic' | 'Pro' | 'Premium';
+
+export interface TierLimits {
+  maxAlerts: number;
+  features: string[];
+  webhookSupport: boolean;
+}
+
 // Notification Types
 export interface Notification {
   id: string;
