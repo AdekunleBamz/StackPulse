@@ -1,13 +1,18 @@
 /**
- * Alert type definitions
+ * Types of activities that can trigger an alert
  */
-
 export enum AlertType {
+  /** Transfer of a significant amount of STX (typically >10,000) */
   WhaleTransfer = 1,
+  /** Deployment of a new smart contract to the blockchain */
   ContractDeploy = 2,
+  /** Minting of a new Non-Fungible Token */
   NFTMint = 3,
+  /** Deployment of a new SIP-010 fungible token */
   TokenLaunch = 4,
+  /** Large value swap on a Decentralized Exchange */
   LargeSwap = 5,
+  /** Specific activity on a watched Stacks address */
   AddressWatch = 6,
 }
 
