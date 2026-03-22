@@ -25,6 +25,7 @@
 (define-constant ERR-ZERO-AMOUNT (err u104))
 (define-constant ERR-SELF-REFERRAL (err u105))
 (define-constant ERR-NO-EARNINGS (err u106))
+(define-constant ERR-PAUSED (err u107))
 
 ;; Subscription prices in microSTX
 (define-constant PRICE-FREE u0)
@@ -41,6 +42,7 @@
 ;; DATA STORAGE
 ;; ============================================
 
+(define-data-var is-paused bool false)
 (define-data-var total-collected uint u0)
 (define-data-var total-fees uint u0)
 (define-data-var total-subscriptions uint u0)
@@ -147,6 +149,7 @@
         (map-get? user-payments caller)))
     )
     ;; V3: Enhanced validation
+    (asserts! (not (var-get is-paused)) ERR-PAUSED)
     (asserts! (is-valid-tier tier) ERR-INVALID-TIER)
     
     ;; Only transfer if not free tier
@@ -219,6 +222,7 @@
       (fee-amount (/ (* amount PLATFORM-FEE-BPS) u10000))
     )
     ;; V3: Enhanced validation
+    (asserts! (not (var-get is-paused)) ERR-PAUSED)
     (asserts! (> amount u0) ERR-ZERO-AMOUNT)
     (asserts! (> fee-amount u0) ERR-INVALID-AMOUNT)
     
@@ -250,6 +254,7 @@
       (earnings (get-referral-earnings caller))
     )
     ;; V3: Better error message
+    (asserts! (not (var-get is-paused)) ERR-PAUSED)
     (asserts! (> earnings u0) ERR-NO-EARNINGS)
     (asserts! (<= earnings (var-get contract-balance)) ERR-INSUFFICIENT-BALANCE)
     
@@ -327,5 +332,20 @@
     })
     
     (ok balance)
+  )
+)
+
+;; V3: Admin toggle pause status
+(define-public (set-paused (paused bool))
+  (begin
+    (asserts! (is-eq tx-sender CONTRACT-OWNER) ERR-NOT-AUTHORIZED)
+    (var-set is-paused paused)
+    (print {
+      event: "pause-status-changed",
+      version: "v3",
+      paused: paused,
+      block: block-height
+    })
+    (ok true)
   )
 )
