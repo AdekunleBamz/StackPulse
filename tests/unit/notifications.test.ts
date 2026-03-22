@@ -1,11 +1,9 @@
 import { describe, it, expect } from 'vitest';
-import { 
+import notificationsService, { 
   saveUserPreferences, 
   getUserPreferences, 
   getAllUsers,
-  deleteUserPreferences,
-  trackNotification,
-  getNotifications
+  deleteUserPreferences
 } from '../../server/src/services/notifications';
 
 describe('Notification Service', () => {
@@ -52,18 +50,18 @@ describe('Notification Service', () => {
       const notification = {
         title: 'Whale Alert!',
         message: 'A large STX transfer was detected.',
-        type: 'whale_transfer'
+        type: 'alert' as const
       };
 
-      trackNotification(testAddress, notification.type, notification.title, notification.message);
+      notificationsService.createNotification(testAddress, notification.type, notification.title, notification.message);
       
-      const history = getNotifications(testAddress);
+      const history = notificationsService.getNotifications(testAddress);
       expect(history.length).toBeGreaterThan(0);
       expect(history[0].title).toBe(notification.title);
     });
 
     it('should return empty array for user with no notifications', () => {
-      const history = getNotifications('no-notifications');
+      const history = notificationsService.getNotifications('no-notifications');
       expect(history).toEqual([]);
     });
   });
