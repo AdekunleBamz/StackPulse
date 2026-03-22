@@ -1,5 +1,11 @@
 import { describe, it, expect, vi } from 'vitest';
-import { getClientCount, getClientStats, initWebSocket } from '../../server/src/services/websocket';
+import { 
+  getClientCount, 
+  getClientStats, 
+  initWebSocket, 
+  sendToAddress,
+  broadcastNotification
+} from '../../server/src/services/websocket';
 import { Server as HTTPServer } from 'http';
 
 describe('WebSocket Service', () => {
@@ -20,6 +26,17 @@ describe('WebSocket Service', () => {
       const mockServer = { on: vi.fn() } as unknown as HTTPServer;
       const wss = initWebSocket(mockServer);
       expect(wss).toBeDefined();
+    });
+  });
+
+  describe('Broadcasting', () => {
+    it('should return false when sending to non-existent address', () => {
+      const sent = sendToAddress('non-existent', { type: 'notification', data: { message: 'hello' } });
+      expect(sent).toBe(false);
+    });
+
+    it('should not throw when broadcasting to empty client list', () => {
+      expect(() => broadcastNotification({ message: 'test' })).not.toThrow();
     });
   });
 });
