@@ -1,43 +1,27 @@
 'use client';
 
 import { Activity, ExternalLink } from 'lucide-react';
-import { useEffect, useState, memo } from 'react';
+import { useEffect, useState } from 'react';
 import { StatsCardSkeleton } from './LoadingSkeleton';
-import type { EventStats } from '@/types/api';
-import { formatNumber } from '@/lib/format';
+
+interface EventStats {
+  whaleTransfers: number;
+  contractDeployments: number;
+  nftMints: number;
+  tokenLaunches: number;
+  largeSwaps: number;
+  subscriptions: number;
+  alertsTriggered: number;
+  feesCollected: number;
+  badgesEarned: number;
+}
 
 const SERVER_URL = process.env.NEXT_PUBLIC_SERVER_URL || 'https://stackpulse-b8fw.onrender.com';
 
-const LiveStats = memo(() => {
-  const [stats, setStats] = useState<EventStats | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
-  const [refreshKey, setRefreshKey] = useState(0);
+import { useStats } from '../hooks/useStats';
 
-  useEffect(() => {
-    const fetchStats = async () => {
-      try {
-        const res = await fetch(`${SERVER_URL}/api/stats`);
-        if (!res.ok) throw new Error('Bad response');
-        const data = await res.json();
-        const payload = data?.stats ?? data;
-        if (!payload) throw new Error('Missing stats');
-        setStats(payload);
-        setLastUpdated(new Date());
-        setError(null);
-      } catch (error) {
-        console.error('Failed to fetch stats:', error);
-        setError('Unable to load live stats right now.');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchStats();
-    const interval = setInterval(fetchStats, 30000); // Refresh every 30s
-    return () => clearInterval(interval);
-  }, [refreshKey]);
+export default function LiveStats() {
+  const { stats, loading, error, lastUpdated, refresh } = useStats(30000);
 
   const statItems = stats ? [
     { label: 'Whale Transfers', value: stats.whaleTransfers, color: 'text-blue-400', glow: 'from-blue-400/20' },
@@ -132,7 +116,7 @@ const LiveStats = memo(() => {
               className="group relative bg-white/[0.03] border border-white/5 rounded-2xl p-6 text-center hover:bg-white/[0.06] hover:border-white/10 transition-all duration-500 hover:-translate-y-1.5 hover:shadow-[0_20px_40px_-15px_rgba(0,0,0,0.5)] overflow-hidden"
             >
               <div className={`text-3xl font-black tracking-tighter ${item.color} mb-1 group-hover:scale-110 transition-transform duration-500 relative z-10`}>
-                {formatNumber(item.value)}
+                {item.value.toLocaleString()}
               </div>
               <div className="text-gray-400 text-[10px] font-bold uppercase tracking-widest mt-2 group-hover:text-gray-200 transition-colors relative z-10">{item.label}</div>
               
@@ -144,8 +128,4 @@ const LiveStats = memo(() => {
       </div>
     </section>
   );
-});
-
-LiveStats.displayName = 'LiveStats';
-
-export default LiveStats;
+}
