@@ -18,36 +18,10 @@ interface EventStats {
 
 const SERVER_URL = process.env.NEXT_PUBLIC_SERVER_URL || 'https://stackpulse-b8fw.onrender.com';
 
+import { useStats } from '@/hooks/useStats';
+
 export default function LiveStats() {
-  const [stats, setStats] = useState<EventStats | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
-  const [refreshKey, setRefreshKey] = useState(0);
-
-  useEffect(() => {
-    const fetchStats = async () => {
-      try {
-        const res = await fetch(`${SERVER_URL}/api/stats`);
-        if (!res.ok) throw new Error('Bad response');
-        const data = await res.json();
-        const payload = data?.stats ?? data;
-        if (!payload) throw new Error('Missing stats');
-        setStats(payload);
-        setLastUpdated(new Date());
-        setError(null);
-      } catch (error) {
-        console.error('Failed to fetch stats:', error);
-        setError('Unable to load live stats right now.');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchStats();
-    const interval = setInterval(fetchStats, 30000); // Refresh every 30s
-    return () => clearInterval(interval);
-  }, [refreshKey]);
+  const { stats, loading, error, lastUpdated, refresh } = useStats(30000);
 
   const statItems = stats ? [
     { label: 'Whale Transfers', value: stats.whaleTransfers, color: 'text-blue-400', glow: 'from-blue-400/20' },
@@ -82,10 +56,7 @@ export default function LiveStats() {
             <p className="text-gray-500 text-sm mt-2 max-w-xs mx-auto">{error}</p>
             <button
               type="button"
-              onClick={() => {
-                setLoading(true);
-                setRefreshKey((k) => k + 1);
-              }}
+              onClick={refresh}
               className="mt-6 inline-flex items-center justify-center px-6 py-2 bg-gray-800 border border-gray-700 hover:bg-gray-700 text-white rounded-xl font-semibold transition-all hover:scale-105 active:scale-95 shadow-lg"
             >
               Retry

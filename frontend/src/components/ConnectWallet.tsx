@@ -8,24 +8,35 @@ import CopyButton from '@/components/ui/CopyButton';
 import { truncateAddress } from '@shared/utils/format';
 
 export default function ConnectWallet() {
-  const { isConnected, address, network, connect, disconnect, switchNetwork } = useWallet();
-  const [showDropdown, setShowDropdown] = useState(false);
-  const wrapperRef = useRef<HTMLDivElement>(null);
+import { useWalletAction } from '@/hooks/useWalletAction';
 
+export default function ConnectWallet() {
+  const { 
+    isConnected, 
+    address, 
+    network, 
+    showDropdown, 
+    explorerUrl,
+    connect, 
+    disconnect, 
+    switchNetwork,
+    toggleDropdown,
+    closeDropdown
+  } = useWalletAction();
+  
+  const wrapperRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!showDropdown) return;
 
     const onPointerDown = (e: MouseEvent | TouchEvent) => {
-      const target = e.target as Node | null;
-      if (!target) return;
-      if (wrapperRef.current && !wrapperRef.current.contains(target)) {
-        setShowDropdown(false);
+      if (wrapperRef.current && !wrapperRef.current.contains(e.target as Node)) {
+        closeDropdown();
       }
     };
 
     const onKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') setShowDropdown(false);
+      if (e.key === 'Escape') closeDropdown();
     };
 
     document.addEventListener('mousedown', onPointerDown);
@@ -37,7 +48,7 @@ export default function ConnectWallet() {
       document.removeEventListener('touchstart', onPointerDown);
       window.removeEventListener('keydown', onKeyDown);
     };
-  }, [showDropdown]);
+  }, [showDropdown, closeDropdown]);
 
   if (!isConnected) {
     return (
@@ -55,15 +66,10 @@ export default function ConnectWallet() {
     );
   }
 
-  const explorerUrl =
-    network === 'testnet'
-      ? `https://explorer.hiro.so/address/${address}?chain=testnet`
-      : `https://explorer.hiro.so/address/${address}?chain=mainnet`;
-
   return (
     <div ref={wrapperRef} className="relative">
       <Button
-        onClick={() => setShowDropdown(!showDropdown)}
+        onClick={toggleDropdown}
         variant="secondary"
         size="md"
         aria-haspopup="menu"
@@ -106,10 +112,7 @@ export default function ConnectWallet() {
             <div className="flex gap-2 mt-2" role="none">
               <button
                 type="button"
-                onClick={() => {
-                  switchNetwork('mainnet');
-                  setShowDropdown(false);
-                }}
+                onClick={() => switchNetwork('mainnet')}
                 role="menuitem"
                 aria-pressed={network === 'mainnet'}
                 aria-label="Switch to Mainnet"
@@ -123,10 +126,7 @@ export default function ConnectWallet() {
               </button>
               <button
                 type="button"
-                onClick={() => {
-                  switchNetwork('testnet');
-                  setShowDropdown(false);
-                }}
+                onClick={() => switchNetwork('testnet')}
                 role="menuitem"
                 aria-pressed={network === 'testnet'}
                 aria-label="Switch to Testnet"
@@ -142,10 +142,7 @@ export default function ConnectWallet() {
           </div>
           <button
             type="button"
-            onClick={() => {
-              disconnect();
-              setShowDropdown(false);
-            }}
+            onClick={disconnect}
             className="w-full flex items-center gap-2 px-4 py-4 text-red-400 hover:bg-red-500/10 hover:text-red-300 transition-all duration-200 rounded-b-2xl font-semibold border-t border-white/5"
             role="menuitem"
           >
@@ -155,5 +152,7 @@ export default function ConnectWallet() {
         </div>
       )}
     </div>
+  );
+}
   );
 }
