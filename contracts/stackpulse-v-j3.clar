@@ -18,16 +18,18 @@
 ;; ============================================
 
 (define-constant CONTRACT-OWNER tx-sender)
-(define-constant ERR-ALREADY-REGISTERED (err u101))
-(define-constant ERR-NOT-REGISTERED (err u102))
-(define-constant ERR-INVALID-TIER (err u103))
-(define-constant ERR-TRANSFER-FAILED (err u104))
-(define-constant ERR-NOT-AUTHORIZED (err u105))
-(define-constant ERR-INVALID-USERNAME (err u106))
-(define-constant ERR-INVALID-ALERTS (err u107))
-(define-constant ERR-SUBSCRIPTION-EXPIRED (err u108))
-(define-constant ERR-SAME-TIER (err u109))
-(define-constant ERR-INVALID-HOOK-TYPE (err u110))
+
+;; ERROR CODES
+(define-constant ERR-NOT-AUTHORIZED (err u100))      ;; Caller lacks required permissions
+(define-constant ERR-ALREADY-REGISTERED (err u101))  ;; User principal already exists in registry
+(define-constant ERR-NOT-REGISTERED (err u102))     ;; User principal not found in registry
+(define-constant ERR-INVALID-TIER (err u103))       ;; Provided tier ID is outside valid range
+(define-constant ERR-TRANSFER-FAILED (err u104))    ;; STX payment transfer failed
+(define-constant ERR-INVALID-USERNAME (err u105))   ;; Username fails length or character validation
+(define-constant ERR-INVALID-ALERTS (err u106))     ;; Alert bitmask exceeds maximum allowed value
+(define-constant ERR-SUBSCRIPTION-EXPIRED (err u107)) ;; Subscription period has ended
+(define-constant ERR-SAME-TIER (err u108))          ;; Upgrade target matches current tier
+(define-constant ERR-INVALID-HOOK-TYPE (err u109))  ;; Chainhook event type outside valid [1-9] range
 
 ;; Subscription duration: ~30 days in blocks (assuming 10 min blocks)
 (define-constant BLOCKS-PER-MONTH u4320)
