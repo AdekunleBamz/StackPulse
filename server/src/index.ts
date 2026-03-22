@@ -920,29 +920,27 @@ const server = app.listen(PORT, () => {
 const gracefulShutdown = (signal: string) => {
   logger.info(`${signal} received, starting graceful shutdown...`);
   
+  // Force shutdown after 10 seconds (reduced from 30 for responsiveness)
+  const forceShutdown = setTimeout(() => {
+    logger.error('Forced shutdown after timeout - some resources may not have closed cleanly');
+    process.exit(1);
+  }, 10000);
+
   // Stop accepting new connections
   server.close((err) => {
+    clearTimeout(forceShutdown);
+    
     if (err) {
       logger.error('Error during server shutdown', { error: err });
       process.exit(1);
     }
     
-    logger.info('HTTP server closed');
+    logger.info('HTTP server closed, all connections terminated');
     
-    // Save any pending data
-    logger.info('Saving pending data...');
-    
-    // Close database connections, etc.
+    // Save any pending data or close other resources here
     logger.info('Graceful shutdown complete');
-    
     process.exit(0);
   });
-  
-  // Force shutdown after 30 seconds
-  setTimeout(() => {
-    logger.error('Forced shutdown after timeout');
-    process.exit(1);
-  }, 30000);
 };
 
 // Register signal handlers
