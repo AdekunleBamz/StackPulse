@@ -8,7 +8,10 @@ import path from 'path';
 
 const logDir = process.env.LOG_DIR || path.join(process.cwd(), 'logs');
 
-// Create the logger
+/**
+ * The primary Winston logger instance for StackPulse.
+ * Configured with console and file transports, supporting JSON formatting and timestamping.
+ */
 const logger = createLogger({
   level: process.env.LOG_LEVEL || 'info',
   format: format.combine(
