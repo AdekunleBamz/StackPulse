@@ -4,6 +4,11 @@
  */
 
 import { API_URLS } from '@stackpulse/shared/constants';
+import { 
+  cvToJSON, 
+  hexToCV,
+  addressToString
+} from '@stacks/transactions';
 import logger from './logger';
 
 interface Transaction {
@@ -185,3 +190,142 @@ export async function getBlockTransactions(
     return [];
   }
 }
+
+/**
+ * Decode Clarity value from hex string
+ */
+export function decodeClarityValue(hex: string): any {
+  if (!hex || hex === '0x') return null;
+  try {
+    // Standardize hex string
+    const normalizedHex = hex.startsWith('0x') ? hex : `0x${hex}`;
+    const cv = hexToCV(normalizedHex);
+    return cvToJSON(cv);
+  } catch (error: any) {
+    logger.error('Error decoding Clarity value', { hex, error: error.message });
+    return null;
+  }
+}
+
+/**
+ * Parse Whale Transfer Event
+ */
+export function parseWhaleTransfer(event: any) {
+  if (!event || event.type !== 'stx_transfer_event') return null;
+  
+  try {
+    const { sender, recipient, amount } = event.data;
+    const amountSTX = parseInt(amount) / 1000000;
+    
+    // Logic for whale detection (e.g., > 10,000 STX)
+    if (amountSTX >= 10000) {
+      return {
+        sender,
+        recipient,
+        amount,
+        amountSTX,
+        amountFormatted: `${amountSTX.toLocaleString()} STX`,
+        amountFormattedFull: `${amountSTX.toLocaleString()} STX`,
+        isWhale: true
+      };
+    }
+  } catch (error: any) {
+    logger.error('Error parsing whale transfer', { error: error.message });
+  }
+  return null;
+}
+
+/**
+ * Parse Contract Deployment Event
+ */
+export function parseContractDeployment(tx: any) {
+  if (!tx || tx.tx_type !== 'smart_contract') return null;
+  
+  try {
+    return {
+      contractId: tx.smart_contract.contract_id,
+      contractName: tx.smart_contract.contract_id.split('.')[1],
+      deployer: tx.sender_address,
+      sender: tx.sender_address,
+      txId: tx.tx_id,
+      timestamp: tx.burn_block_time
+    };
+  } catch (error: any) {
+    logger.error('Error parsing contract deployment', { error: error.message });
+    return null;
+  }
+}
+
+/**
+ * Parse NFT Mint Event
+ */
+export function parseNFTMint(event: any) {
+  if (!event || event.type !== 'nft_mint_event') return null;
+  
+  try {
+    return {
+      assetId: event.data.asset_identifier,
+      assetIdentifier: event.data.asset_identifier,
+      assetName: event.data.asset_identifier.split('::')[1],
+      contractAddress: event.data.asset_identifier.split('.')[0],
+      tokenId: decodeClarityValue(event.data.value),
+      recipient: event.data.recipient,
+      value: decodeClarityValue(event.data.value)
+    };
+  } catch (error: any) {
+    logger.error('Error parsing NFT mint', { error: error.message });
+    return null;
+  }
+}
+
+/**
+ * Parse StackPulse Protocol Event
+ */
+export function parseStackPulseEvent(event: any) {
+  if (!event || event.type !== 'contract_event') return null;
+  
+  try {
+    const contractId = event.contract_identifier;
+    if (!contractId.includes('stackpulse') && !contractId.includes('alert-manager')) return null;
+    
+    const value = decodeClarityValue(event.data.value);
+    return {
+      contractId,
+      eventName: event.data.topic,
+      data: value ? value.value : null
+    };
+  } catch (error: any) {
+    logger.error('Error parsing StackPulse event', { error: error.message });
+    return null;
+  }
+}
+
+/**
+ * Format STX amount
+ */
+export function formatSTX(microStx: string | number): string {
+  const amount = typeof microStx === 'string' ? parseInt(microStx) : microStx;
+  return (amount / 1000000).toLocaleString(undefined, { 
+    minimumFractionDigits: 2, 
+    maximumFractionDigits: 6 
+  }) + ' STX';
+}
+
+/**
+ * Create user session for internal tracking
+ */
+export function createUserSession(address: string) {
+  return {
+    id: `session_${Math.random().toString(36).slice(2, 11)}`,
+    address,
+    createdAt: Date.now()
+  };
+}
+
+/**
+ * Stacks App Configuration for Connect
+ */
+export const stacksAppConfig = {
+  name: 'StackPulse',
+  icon: '/logo.png'
+};

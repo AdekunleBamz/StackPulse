@@ -1,4 +1,15 @@
 import logger from '../utils/logger';
+import { broadcastNotification as wsBroadcast } from './websocket';
+
+export interface NotificationPayload {
+  address: string;
+  type: string;
+  data: any;
+  timestamp: number;
+}
+
+// In-memory store for user preferences (simulating a database)
+const userPreferences = new Map<string, any>();
 
 /**
  * Notifications Service
@@ -52,7 +63,13 @@ class NotificationsService {
     }
     
     this.notifications.set(userAddress, userNotifications);
-    logger.debug('Notification created', { userAddress, type, notificationId: notification.id });
+    logger.info('Notification created', { 
+      userAddress, 
+      type, 
+      title,
+      notificationId: notification.id,
+      totalCount: userNotifications.length 
+    });
 
     return notification;
   }
@@ -168,14 +185,21 @@ class NotificationsService {
         return this.createNotification(userAddress, type, title, message, priority);
       } catch (err) {
         lastError = err;
-        logger.warn(`Notification attempt ${i + 1} failed`, { userAddress, i, err });
-        await new Promise(resolve => setTimeout(resolve, 1000 * Math.pow(2, i))); // Exponential backoff
+        const delay = 1000 * Math.pow(2, i);
+        logger.warn(`Notification attempt ${i + 1}/${retries} failed. Retrying in ${delay}ms...`, { 
+          userAddress, 
+          type,
+          title,
+          error: err instanceof Error ? err.message : String(err) 
+        });
+        await new Promise(resolve => setTimeout(resolve, delay)); // Exponential backoff
       }
     }
     
     logger.error('Failed to send notification after retries', { userAddress, retries, lastError });
     return null;
   }
+
 
   /**
    * Create notifications in batch
@@ -196,4 +220,37 @@ class NotificationsService {
   }
 }
 
-export default new NotificationsService();
+const service = new NotificationsService();
+
+// Export individual functions for index.ts
+export const broadcastNotification = wsBroadcast;
+export const saveUserPreferences = (prefs: any) => {
+  if (!prefs || typeof prefs !== 'object') {
+    throw new Error('Invalid preferences data');
+  }
+  
+  const address = prefs.address;
+  if (!address || typeof address !== 'string') {
+    throw new Error('User address is required in preferences');
+  }
+
+  // Basic address validation
+  if (!address.startsWith('SP') && !address.startsWith('ST')) {
+    throw new Error('Invalid Stacks address format');
+  }
+
+  const isUpdate = userPreferences.has(address);
+  userPreferences.set(address, prefs);
+  
+  logger.info(isUpdate ? 'User preferences updated' : 'User preferences created', { 
+    address,
+    alertCount: Array.isArray(prefs.alerts) ? prefs.alerts.length : 0 
+  });
+  
+  return prefs;
+};
+export const getUserPreferences = (address: string) => userPreferences.get(address);
+export const getAllUsers = () => Array.from(userPreferences.keys());
+export const deleteUserPreferences = (address: string) => userPreferences.delete(address);
+
+export default service;

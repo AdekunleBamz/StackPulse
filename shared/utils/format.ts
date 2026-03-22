@@ -6,6 +6,10 @@
  * Formats a micro-STX amount into a human-readable STX string.
  * @param microStx - The amount in micro-STX (1 STX = 1,000,000 micro-STX).
  * @returns A formatted string with appropriate units (STX, K STX, or M STX).
+ * @example
+ * formatStxAmount(1000000) // "1.000000 STX"
+ * formatStxAmount(1500000000) // "1.50K STX"
+ * formatStxAmount("2000000000000") // "2.00M STX"
  */
 export function formatStxAmount(microStx: number | string): string {
   const amount = typeof microStx === 'string' ? parseFloat(microStx) : microStx;

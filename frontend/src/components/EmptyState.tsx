@@ -29,7 +29,7 @@ export default function EmptyState({ icon: Icon, title, description, action, cla
       </div>
       
       <h3 id="empty-state-title" className="text-xl font-bold text-white mb-2 tracking-tight">{title}</h3>
-      <p id="empty-state-description" className="text-gray-400 max-w-md mb-8 leading-relaxed">{description}</p>
+      <p id="empty-state-description" className="text-gray-300 max-w-md mb-8 leading-relaxed font-medium">{description}</p>
       
       {action && (
         <button

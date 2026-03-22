@@ -1,29 +1,28 @@
 # Dependencies
 node_modules/
-server/node_modules/
-frontend/node_modules/
+**/node_modules/
 
 # Build outputs
 dist/
-server/dist/
+**/dist/
 frontend/.next/
 *.js.map
 *.js
+!*.config.js
+!*.mjs
 
 # Environment files
 .env
 .env.local
 .env.*.local
-server/.env
+*.env
 
-# Clarinet settings (contains mnemonics!)
-settings/
-
-# Build outputs
-dist/
-server/dist/
-frontend/.next/
-*.js.map
+# Clarinet
+.cache/
+.clarinet/
+settings/devnet.toml
+settings/mainnet.toml
+/settings/
 
 # Logs
 logs/
@@ -40,23 +39,9 @@ Thumbs.db
 *.swp
 *.swo
 
-# Clarinet
-.cache/
-.clarinet/
-
-# Clarinet settings (contains test mnemonics)
-settings/Devnet.toml
-settings/Mainnet.toml
-
 # Test coverage
 coverage/
 
 # Temporary files
 *.tmp
-
-# Tests
-tests/
-
-# Scripts
-scripts/
 *.temp

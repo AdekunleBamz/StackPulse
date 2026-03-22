@@ -4,15 +4,28 @@ Use small, reviewable changes and keep documentation close to the code it descri
 
 ## Local setup
 
-```bash
-git clone https://github.com/YOUR_USERNAME/StackPulse.git
-cd StackPulse
+1. **Clone the repository**:
+   ```bash
+   git clone https://github.com/AdekunleBamz/StackPulse.git
+   cd StackPulse
+   ```
 
-npm install
-npm --prefix server install
-npm --prefix frontend install
-npm --prefix shared install
-```
+2. **Install root dependencies**:
+   ```bash
+   npm install
+   ```
+
+3. **Initialize sub-workspaces**:
+   ```bash
+   # Backend server
+   cd server && npm install && cd ..
+   
+   # Frontend application
+   cd frontend && npm install && cd ..
+   
+   # Shared logic
+   cd shared && npm install && cd ..
+   ```
 
 ## Day-to-day workflow
 
@@ -48,6 +61,16 @@ npm --prefix frontend run build
 # Shared package
 npm --prefix shared run build
 ```
+
+## Testing guidelines
+
+Maintain high coverage for new features:
+- **Unit Tests**: Place in `tests/unit/` for pure logic (e.g., Stacks utilities, notification service).
+- **Integration Tests**: Use `tests/webhook.test.ts` for verifying end-to-end event ingestion.
+- **Contract Tests**: Add new `.clar` tests to `tests/` for any logic changes in smart contracts.
+- **Frontend Tests**: Use Vitest for hook and component logic in the `frontend` directory.
+
+All PRs should include relevant tests and pass on CI.
 
 ## Repo-specific expectations
 

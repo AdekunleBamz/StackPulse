@@ -19,6 +19,7 @@ interface AnalyticsData {
   hourly: Map<number, Map<string, number>>;
   daily: Map<number, Map<string, number>>;
   userEventCounts: Map<string, number>;
+  userAlertTriggers: Map<string, number>;
 }
 
 // Memory safety limits
@@ -38,6 +39,7 @@ const analytics: AnalyticsData = {
   hourly: new Map(),
   daily: new Map(),
   userEventCounts: new Map(),
+  userAlertTriggers: new Map(),
 };
 
 // Track an event
@@ -57,6 +59,12 @@ export function trackEvent(eventType: string, metadata?: Record<string, any>, us
     }
     
     analytics.userEventCounts.set(userAddress, currentCount + 1);
+
+    // Specifically track alert triggers
+    if (eventType === 'alert-triggered') {
+      const triggerCount = analytics.userAlertTriggers.get(userAddress) || 0;
+      analytics.userAlertTriggers.set(userAddress, triggerCount + 1);
+    }
   }
 
   const now = Date.now();
@@ -186,6 +194,7 @@ export function getAnalyticsSummary(): {
   eventsByType: Record<string, number>;
   last24h: Record<string, number>;
   last7d: Record<string, number>;
+  topAlertUsers: Array<{ address: string; count: number }>;
 } {
   let totalEvents = 0;
   const eventsByType: Record<string, number> = {};
@@ -200,7 +209,11 @@ export function getAnalyticsSummary(): {
     eventTypes: analytics.events.size,
     eventsByType,
     last24h: getEventsInWindow('24h'),
-    last7d: getEventsInWindow('7d')
+    last7d: getEventsInWindow('7d'),
+    topAlertUsers: Array.from(analytics.userAlertTriggers.entries())
+      .map(([address, count]) => ({ address, count }))
+      .sort((a, b) => b.count - a.count)
+      .slice(0, 10)
   };
 }
 

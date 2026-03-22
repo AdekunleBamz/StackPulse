@@ -1,79 +1,98 @@
 ;; StackPulse Fee Vault V3
+;; =========================================================================
+;; This contract serves as the central treasury for the StackPulse protocol.
+;; It manages subscription fee collection, referral payouts, and platform 
+;; fee aggregation. It also includes an emergency pause mechanism for security.
+;;
 ;; Upgrades from V2:
-;; - Enhanced error handling
-;; - Optimized gas usage
-;; - Better revenue tracking per tier
-;; - Improved referral system
-;; - Enhanced event logging for chainhooks
+;; - Enhanced error handling with descriptive codes
+;; - Optimized gas usage through minimized cross-contract calls
+;; - Better revenue tracking per tier for detailed analytics
+;; - Improved referral system with automated payout tracking
+;; - Enhanced event logging for detailed off-chain indexing
 ;;
 ;; Features:
-;; - Subscription fee collection
-;; - Revenue tracking per tier
-;; - Withdrawal to treasury
-;; - Referral bonus tracking
+;; - Subscription fee collection with referral integration
+;; - Revenue tracking partitioned by subscription tiers
+;; - Secure withdrawal to designated treasury address
+;; - Referral bonus tracking and user-initiated withdrawals
+;; - Emergency pause/resume functionality
 
-;; ============================================
+;; =========================================================================
 ;; CONSTANTS
-;; ============================================
+;; =========================================================================
 
+;; Protocol administrative owner
 (define-constant CONTRACT-OWNER tx-sender)
-(define-constant TREASURY-ADDRESS tx-sender)
-(define-constant ERR-NOT-AUTHORIZED (err u100))
-(define-constant ERR-INVALID-AMOUNT (err u101))
-(define-constant ERR-INSUFFICIENT-BALANCE (err u102))
-(define-constant ERR-INVALID-TIER (err u103))
-(define-constant ERR-ZERO-AMOUNT (err u104))
-(define-constant ERR-SELF-REFERRAL (err u105))
-(define-constant ERR-NO-EARNINGS (err u106))
 
-;; Subscription prices in microSTX
+;; Designated address for consolidated protocol revenue
+(define-constant TREASURY-ADDRESS tx-sender)
+
+;; ERROR CODES
+(define-constant ERR-NOT-AUTHORIZED (err u100))      ;; Access denied for current caller
+(define-constant ERR-INVALID-AMOUNT (err u101))      ;; Value is zero or exceeds limits
+(define-constant ERR-INSUFFICIENT-BALANCE (err u102)) ;; Vault lacks funds for operation
+(define-constant ERR-INVALID-TIER (err u103))       ;; Provided tier ID is invalid
+(define-constant ERR-ZERO-AMOUNT (err u104))        ;; Operation requires non-zero value
+(define-constant ERR-SELF-REFERRAL (err u105))      ;; User cannot refer themselves
+(define-constant ERR-NO-EARNINGS (err u106))        ;; No pending rewards for withdrawal
+(define-constant ERR-PAUSED (err u107))             ;; Contract is in emergency pause state
+
+;; PRICING STRUCTURE (microSTX)
 (define-constant PRICE-FREE u0)
 (define-constant PRICE-BASIC u10000)         ;; 0.01 STX
 (define-constant PRICE-PRO u150000)          ;; 0.15 STX  
 (define-constant PRICE-PREMIUM u450000)      ;; 0.45 STX
 
-;; Platform fee percentage (10%)
-(define-constant PLATFORM-FEE-BPS u1000)     ;; 10% in basis points (1000/10000)
-(define-constant REFERRAL-BONUS-BPS u500)    ;; 5% referral bonus
+;; REVENUE DISTRIBUTION PARAMETERS
+(define-constant PLATFORM-FEE-BPS u1000)     ;; 10% Protocol fee
+(define-constant REFERRAL-BONUS-BPS u500)    ;; 5% Referral incentive
 (define-constant MAX-TIER u3)
 
-;; ============================================
+;; =========================================================================
 ;; DATA STORAGE
-;; ============================================
+;; =========================================================================
 
-(define-data-var total-collected uint u0)
-(define-data-var total-fees uint u0)
-(define-data-var total-subscriptions uint u0)
-(define-data-var total-referral-paid uint u0)  ;; V3: Track total referral payouts
-(define-data-var contract-balance uint u0)
+;; Emergency Safeguard
+(define-data-var is-paused bool false)
+
+;; GLOBAL METRICS
+(define-data-var total-collected uint u0)      ;; Aggregate STX from subscriptions
+(define-data-var total-fees uint u0)           ;; Aggregate platform fees
+(define-data-var total-subscriptions uint u0)  ;; Numeric count of purchases
+(define-data-var total-referral-paid uint u0)  ;; Total STX sent to referrers
+(define-data-var contract-balance uint u0)     ;; Current liquid STX in vault
 (define-data-var contract-version (string-ascii 8) "v3.0.0")
 
-;; Track revenue by tier
+;; ANALYTICS MAPS
+;; Revenue breakdown per tier ID
 (define-map tier-revenue uint uint)
 
-;; Track user payments with V3 enhanced data
+;; Detailed payment history per user principal
 (define-map user-payments principal 
   {
     total-paid: uint,
     last-payment: uint,
     subscription-count: uint,
-    current-tier: uint       ;; V3: Track current tier
+    current-tier: uint
   }
 )
 
-;; Referral tracking
-(define-map referral-earnings principal uint)
-(define-map referrer-of principal principal)
-(define-map referral-count principal uint)  ;; V3: Count of referrals per user
+;; REFERRAL SYSTEM STORAGE
+(define-map referral-earnings principal uint)  ;; Pending withdrawal balance
+(define-map referrer-of principal principal)   ;; User to Referrer link
+(define-map referral-count principal uint)     ;; Number of successful referrals
 
-;; ============================================
+;; =========================================================================
 ;; READ-ONLY FUNCTIONS
-;; ============================================
+;; =========================================================================
 
+;; Returns deployed contract version
 (define-read-only (get-version)
   (var-get contract-version)
 )
 
+;; Calculates STX cost for a given tier
 (define-read-only (get-subscription-price (tier uint))
   (if (is-eq tier u0) PRICE-FREE
     (if (is-eq tier u1) PRICE-BASIC
@@ -82,26 +101,32 @@
           u0))))
 )
 
+;; Retrieves historic revenue for a specific tier
 (define-read-only (get-tier-revenue (tier uint))
   (default-to u0 (map-get? tier-revenue tier))
 )
 
+;; Returns payment history for a user
 (define-read-only (get-user-payments (user principal))
   (map-get? user-payments user)
 )
 
+;; Returns unclaimed referral balance
 (define-read-only (get-referral-earnings (referrer principal))
   (default-to u0 (map-get? referral-earnings referrer))
 )
 
+;; Returns count of users invited by a principal
 (define-read-only (get-referral-count (referrer principal))
   (default-to u0 (map-get? referral-count referrer))
 )
 
+;; Returns the referrer for a specific user
 (define-read-only (get-referrer (user principal))
   (map-get? referrer-of user)
 )
 
+;; Consolidated vault performance metrics
 (define-read-only (get-vault-stats)
   {
     total-collected: (var-get total-collected),
@@ -117,25 +142,28 @@
   }
 )
 
-;; ============================================
+;; =========================================================================
 ;; PRIVATE HELPER FUNCTIONS
-;; ============================================
+;; =========================================================================
 
-;; V3: Validate tier
+;; Internal tier validation check
 (define-private (is-valid-tier (tier uint))
   (<= tier MAX-TIER)
 )
 
-;; V3: Calculate referral bonus
+;; Internal royalty/bonus calculation logic
 (define-private (calculate-referral-bonus (amount uint))
   (/ (* amount REFERRAL-BONUS-BPS) u10000)
 )
 
-;; ============================================
+;; =========================================================================
 ;; PUBLIC FUNCTIONS
-;; ============================================
+;; =========================================================================
 
-;; Collect subscription fee
+;; FEE COLLECTION: Process subscription payments and handle referrals
+;; =========================================================================
+;; @param tier: Target subscription level
+;; @param referrer: Optional address of the user who invited the caller
 (define-public (collect-subscription-fee (tier uint) (referrer (optional principal)))
   (let
     (
@@ -146,16 +174,17 @@
         { total-paid: u0, last-payment: u0, subscription-count: u0, current-tier: u0 }
         (map-get? user-payments caller)))
     )
-    ;; V3: Enhanced validation
+    ;; State and input validation
+    (asserts! (not (var-get is-paused)) ERR-PAUSED)
     (asserts! (is-valid-tier tier) ERR-INVALID-TIER)
     
-    ;; Only transfer if not free tier
+    ;; Process non-zero transactions
     (if (> price u0)
       (begin
-        ;; Transfer STX to this contract
+        ;; Atomic STX transfer to vault
         (try! (stx-transfer? price caller (as-contract tx-sender)))
         
-        ;; V3: Enhanced referral handling
+        ;; Automated referral logic
         (match referrer
           ref-addr 
             (if (and (not (is-eq ref-addr caller)) (> price u0))
@@ -165,7 +194,7 @@
                   (current-earnings (get-referral-earnings ref-addr))
                   (current-ref-count (get-referral-count ref-addr))
                 )
-                ;; Track referral
+                ;; Track referral attribution and reward
                 (map-set referrer-of caller ref-addr)
                 (map-set referral-earnings ref-addr (+ current-earnings referral-bonus))
                 (map-set referral-count ref-addr (+ current-ref-count u1))
@@ -174,7 +203,7 @@
               false)
           false)
         
-        ;; Update balances
+        ;; Update aggregate metrics
         (var-set total-collected (+ (var-get total-collected) price))
         (var-set contract-balance (+ (var-get contract-balance) price))
         
@@ -182,7 +211,7 @@
       )
       true)
     
-    ;; Update tier revenue
+    ;; Persist revenue and payment metadata
     (map-set tier-revenue tier (+ current-tier-revenue price))
     
     ;; V3: Update user payments with current tier
@@ -193,9 +222,10 @@
       current-tier: tier
     })
     
-    ;; Update subscription count
+    ;; Global transaction count
     (var-set total-subscriptions (+ (var-get total-subscriptions) u1))
     
+    ;; Emit event for indexers
     (print {
       event: "fee-collected",
       version: "v3",
@@ -211,18 +241,22 @@
   )
 )
 
-;; Collect platform fee (called on alert triggers, etc.)
+;; PLATFORM FEES: Collect operational fees (e.g., from alert triggers)
+;; =========================================================================
+;; @param amount: Base amount for fee calculation
+;; @param fee-type: Contextual label for the fee
 (define-public (collect-platform-fee (amount uint) (fee-type (string-ascii 32)))
   (let
     (
       (caller tx-sender)
       (fee-amount (/ (* amount PLATFORM-FEE-BPS) u10000))
     )
-    ;; V3: Enhanced validation
+    ;; Guard clauses
+    (asserts! (not (var-get is-paused)) ERR-PAUSED)
     (asserts! (> amount u0) ERR-ZERO-AMOUNT)
     (asserts! (> fee-amount u0) ERR-INVALID-AMOUNT)
     
-    ;; Transfer fee
+    ;; Transfer to vault
     (try! (stx-transfer? fee-amount caller (as-contract tx-sender)))
     
     ;; Update tracking
@@ -242,21 +276,23 @@
   )
 )
 
-;; Withdraw referral earnings
+;; REFERRAL WITHDRAWAL: User initiated claimed of earned bonuses
+;; =========================================================================
 (define-public (withdraw-referral-earnings)
   (let
     (
       (caller tx-sender)
       (earnings (get-referral-earnings caller))
     )
-    ;; V3: Better error message
+    ;; Validation and capability checks
+    (asserts! (not (var-get is-paused)) ERR-PAUSED)
     (asserts! (> earnings u0) ERR-NO-EARNINGS)
     (asserts! (<= earnings (var-get contract-balance)) ERR-INSUFFICIENT-BALANCE)
     
-    ;; Transfer earnings
+    ;; Secure payout
     (try! (as-contract (stx-transfer? earnings tx-sender caller)))
     
-    ;; Reset earnings and update balances
+    ;; Reconcile internal balances
     (map-set referral-earnings caller u0)
     (var-set contract-balance (- (var-get contract-balance) earnings))
     (var-set total-referral-paid (+ (var-get total-referral-paid) earnings))
@@ -273,21 +309,23 @@
   )
 )
 
-;; ============================================
+;; =========================================================================
 ;; ADMIN FUNCTIONS
-;; ============================================
+;; =========================================================================
 
-;; Admin: Withdraw to treasury
+;; WITHDRAWAL: Transfer protocol revenue to treasury
+;; =========================================================================
 (define-public (withdraw-to-treasury (amount uint))
   (begin
+    ;; Identity check
     (asserts! (is-eq tx-sender CONTRACT-OWNER) ERR-NOT-AUTHORIZED)
     (asserts! (> amount u0) ERR-ZERO-AMOUNT)
     (asserts! (<= amount (var-get contract-balance)) ERR-INSUFFICIENT-BALANCE)
     
-    ;; Transfer to treasury
+    ;; Outbound transfer
     (try! (as-contract (stx-transfer? amount tx-sender TREASURY-ADDRESS)))
     
-    ;; Update balance
+    ;; Balance reconciliation
     (var-set contract-balance (- (var-get contract-balance) amount))
     
     (print {
@@ -295,7 +333,7 @@
       version: "v3",
       amount: amount,
       treasury: TREASURY-ADDRESS,
-      remaining-balance: (- (var-get contract-balance) amount),
+      remaining-balance: (var-get contract-balance),
       block: block-height
     })
     
@@ -303,7 +341,8 @@
   )
 )
 
-;; V3: Admin emergency withdrawal (all funds)
+;; EMERGENCY: Evacuate all vault funds to treasury
+;; =========================================================================
 (define-public (emergency-withdraw)
   (let
     (
@@ -312,10 +351,10 @@
     (asserts! (is-eq tx-sender CONTRACT-OWNER) ERR-NOT-AUTHORIZED)
     (asserts! (> balance u0) ERR-ZERO-AMOUNT)
     
-    ;; Transfer all to treasury
+    ;; Total fund evacuation
     (try! (as-contract (stx-transfer? balance tx-sender TREASURY-ADDRESS)))
     
-    ;; Reset balance
+    ;; State reset
     (var-set contract-balance u0)
     
     (print {
@@ -327,5 +366,21 @@
     })
     
     (ok balance)
+  )
+)
+
+;; PAUSE: Toggle contract operating status
+;; =========================================================================
+(define-public (set-paused (paused bool))
+  (begin
+    (asserts! (is-eq tx-sender CONTRACT-OWNER) ERR-NOT-AUTHORIZED)
+    (var-set is-paused paused)
+    (print {
+      event: "pause-status-changed",
+      version: "v3",
+      paused: paused,
+      block: block-height
+    })
+    (ok true)
   )
 )

@@ -1,11 +1,18 @@
 'use client';
 
 import { useWallet } from '@/context/WalletContext';
-import { Check, Wallet, Mail, MessageCircle, Send } from 'lucide-react';
-import { useEffect, useId, useState } from 'react';
+import { Check, Wallet, Mail, 
+  MessageCircle, 
+  Send, 
+  CheckCircle2
+} from 'lucide-react';
+import { useEffect, useId, useState, memo } from 'react';
 import { toast } from '@/components/Toast';
 import Button from '@/components/ui/Button';
 import Link from 'next/link';
+import type { NotificationPreference, ChannelAction } from '@/types/settings';
+import { useAccount } from '@/hooks/useAccount';
+import { usePricing } from '@/hooks/usePricing';
 
 const tiers = [
   {
@@ -52,337 +59,50 @@ const tiers = [
 const DEPLOYER_ADDRESS = process.env.NEXT_PUBLIC_DEPLOYER_ADDRESS || '';
 
 export default function Pricing() {
-  const { isConnected, connect, address } = useWallet();
-  const editChannelTitleId = useId();
-  const [isRegistered, setIsRegistered] = useState(false);
-  const [currentTier, setCurrentTier] = useState(0);
-  const [subscriptionEnds, setSubscriptionEnds] = useState(0);
-  const [isLoading, setIsLoading] = useState(false);
-  const [isSaving, setIsSaving] = useState(false);
-  const [subscribingTier, setSubscribingTier] = useState<number | null>(null);
-  const [username, setUsername] = useState('');
-  const [email, setEmail] = useState('');
-  const [discord, setDiscord] = useState('');
-  const [telegram, setTelegram] = useState('');
-  const [editingChannel, setEditingChannel] = useState<'email' | 'discord' | 'telegram' | null>(null);
-  const [tempValue, setTempValue] = useState('');
-
-  const tierNames = ['Free', 'Basic', 'Pro', 'Premium'];
-  const tierColors = ['gray', 'blue', 'purple', 'yellow'];
-
-  // Check registration status when wallet connects
-  useEffect(() => {
-    const checkRegistration = async () => {
-      if (!address) return;
-      
-      // First check localStorage for cached registration (faster UX)
-      const cachedReg = localStorage.getItem(`stackpulse_registered_${address}`);
-      if (cachedReg) {
-        const cached = JSON.parse(cachedReg);
-        setIsRegistered(true);
-        setCurrentTier(cached.tier || 0);
-        setUsername(cached.username || '');
-      }
-      
-      // Always check contract for latest data
-      if (!DEPLOYER_ADDRESS) {
-        console.warn('DEPLOYER_ADDRESS not set!');
-        return;
-      }
-      
-      try {
-        const { principalCV, cvToHex, hexToCV, cvToValue } = await import('@stacks/transactions');
-        
-        console.log('Checking registration for:', address);
-        console.log('Using contract:', DEPLOYER_ADDRESS);
-        
-        // Use V3 contract
-        const response = await fetch(
-          `https://api.mainnet.hiro.so/v2/contracts/call-read/${DEPLOYER_ADDRESS}/stackpulse-v-j3/get-user`,
-          {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              sender: address,
-              arguments: [cvToHex(principalCV(address))]
-            })
-          }
-        );
-        
-        const data = await response.json();
-        console.log('Contract response:', data);
-        
-        // If result is not 0x09 (none), user is registered
-        const registered = data.result && data.result !== '0x09';
-        setIsRegistered(registered);
-        
-        // Parse user data to get tier
-        if (registered && data.result) {
-          try {
-            const cv = hexToCV(data.result);
-            const userData = cvToValue(cv);
-            console.log('Parsed user data:', userData);
-            if (userData && userData.value) {
-              const tier = Number(userData.value.tier?.value || 0);
-              const uname = userData.value.username?.value || '';
-              setCurrentTier(tier);
-              setSubscriptionEnds(Number(userData.value['subscription-ends']?.value || 0));
-              setUsername(uname);
-              
-              // Cache registration status for faster future loads
-              localStorage.setItem(`stackpulse_registered_${address}`, JSON.stringify({
-                tier,
-                username: uname,
-                timestamp: Date.now()
-              }));
-            }
-          } catch (parseErr) {
-            console.error('Error parsing user data:', parseErr);
-          }
-        } else {
-          // Not registered - clear any cached data
-          localStorage.removeItem(`stackpulse_registered_${address}`);
-        }
-        
-        // If registered, fetch saved notification preferences from server
-        if (registered) {
-          try {
-            const serverUrl = process.env.NEXT_PUBLIC_SERVER_URL || 'https://stackpulse-b8fw.onrender.com';
-            const prefsResponse = await fetch(`${serverUrl}/api/users/${address}`);
-            if (prefsResponse.ok) {
-              const prefsData = await prefsResponse.json();
-              if (prefsData.user) {
-                setEmail(prefsData.user.email || '');
-                setDiscord(prefsData.user.discord || '');
-                setTelegram(prefsData.user.telegram || '');
-                if (prefsData.user.username) setUsername(prefsData.user.username);
-              }
-            }
-          } catch (err) {
-            console.error('Failed to fetch user preferences:', err);
-          }
-        }
-      } catch (error) {
-        console.error('Error checking registration:', error);
-      }
-    };
-
-    checkRegistration();
-  }, [address]);
-
-  useEffect(() => {
-    if (!editingChannel) return;
-
-    const previousOverflow = document.body.style.overflow;
-    document.body.style.overflow = 'hidden';
-
-    const onKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
-        setEditingChannel(null);
-        setTempValue('');
-      }
-    };
-    window.addEventListener('keydown', onKeyDown);
-
-    return () => {
-      window.removeEventListener('keydown', onKeyDown);
-      document.body.style.overflow = previousOverflow;
-    };
-  }, [editingChannel]);
+  const { 
+    address, 
+    isConnected, 
+    connect, 
+    isRegistered, 
+    userData, 
+    isLoading: isAccountLoading,
+    refresh: refreshAccount 
+  } = useAccount();
+  
+  const { 
+    subscribingTier, 
+    isSubmitting: isSubscribing, 
+    handleRegister: internalHandleRegister, 
+    handleSubscribe: internalHandleSubscribe 
+  } = usePricing();
 
   const handleRegister = async (selectedTier: number = 0) => {
-    if (!isConnected) {
-      connect();
-      return;
-    }
-
-    const normalizedUsername = username.trim().toLowerCase();
-    if (!normalizedUsername) {
-      toast.warning('Username required', 'Enter a username to continue.');
-      return;
-    }
-
-    if (normalizedUsername.length < 3 || normalizedUsername.length > 32) {
-      toast.warning('Invalid username', 'Username must be 3–32 characters.');
-      return;
-    }
-
-    if (!/^[a-z0-9_]+$/.test(normalizedUsername)) {
-      toast.warning('Invalid username', 'Use only letters, numbers, and underscores.');
-      return;
-    }
-
-    // Calculate price for the tier (in microSTX)
-    const tierPrices: Record<number, number> = {
-      0: 0,         // Free
-      1: 1000000,   // 1 STX for Basic
-      2: 5000000,   // 5 STX for Pro
-      3: 20000000,  // 20 STX for Premium
-    };
-    const price = tierPrices[selectedTier] || 0;    setIsLoading(true);
-    setSubscribingTier(selectedTier);
-    try {
-      setUsername(normalizedUsername);
-      const { openContractCall } = await import('@stacks/connect');
-      const { stringAsciiCV, uintCV } = await import('@stacks/transactions');
- 
-      // Post-condition: allow STX transfer for paid tiers (new v7+ format)
-      const postConditions: { type: 'stx-postcondition'; address: string; condition: 'eq'; amount: number }[] = price > 0 && address ? [
-        {
-          type: 'stx-postcondition',
-          address: address,
-          condition: 'eq',
-          amount: price
-        }
-      ] : [];
- 
-      // V3 contract: register-and-subscribe combines both steps
-      // alerts bitmask: 31 = all alerts enabled (1+2+4+8+16)
-      await openContractCall({
-        contractAddress: DEPLOYER_ADDRESS,
-        contractName: 'stackpulse-v-j3',
-        functionName: 'register-and-subscribe',
-        functionArgs: [
-          stringAsciiCV(normalizedUsername),
-          stringAsciiCV(email || ''),
-          uintCV(selectedTier),
-          uintCV(31) // Enable all alert types
-        ],
-        postConditions,
-        onFinish: async (data: { txId: string }) => {
-          console.log('Registration + Subscription submitted:', data.txId);
-          
-          // Save notification preferences to server
-          try {
-            const serverUrl = process.env.NEXT_PUBLIC_SERVER_URL || 'https://stackpulse-b8fw.onrender.com';
-            await fetch(`${serverUrl}/api/users`, {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                address: address,
-                username: normalizedUsername,
-                email: email || undefined,
-                discord: discord || undefined,
-                telegram: telegram || undefined,
-                tier: selectedTier,
-                enabledAlerts: ['whale', 'contract', 'nft', 'token', 'swap', 'alert', 'badge']
-              })
-            });
-            console.log('User preferences saved to server');
-          } catch (err) {
-            console.error('Failed to save preferences:', err);
-            toast.warning('Registered', 'Saved on-chain but failed to sync preferences.');
-          }
-          
-          const tierName = selectedTier === 0 ? 'Free' : selectedTier === 2 ? 'Pro' : 'Premium';
-          toast.success('Registration submitted', `Tier: ${tierName}. TX: ${data.txId}`);
-          
-          // Cache registration locally for instant UX on next visit
-          if (address) {
-            localStorage.setItem(`stackpulse_registered_${address}`, JSON.stringify({
-              tier: selectedTier,
-              username: normalizedUsername,
-              timestamp: Date.now()
-            }));
-          }
-          
-          setIsRegistered(true);
-          setCurrentTier(selectedTier);
-        },
-        onCancel: () => {
-          console.log('Registration cancelled');
-          setSubscribingTier(null);
-        },
-      });
-    } catch (error) {
-      console.error('Registration error:', error);
-      toast.error('Registration failed', 'Please try again.');
-      setSubscribingTier(null);
-    } finally {
-      setIsLoading(false);
-    }
+    await internalHandleRegister(username, email, selectedTier, (tier, user) => {
+      // Cache registration locally for instant UX on next visit
+      if (address) {
+        localStorage.setItem(`stackpulse_registered_${address}`, JSON.stringify({
+          tier,
+          username: user,
+          timestamp: Date.now()
+        }));
+      }
+      setIsRegistered(true);
+      setCurrentTier(tier);
+    });
   };
 
   const handleSubscribe = async (tier: number) => {
-    if (!isConnected) {
-      connect();
-      return;
-    }
-
-    // If not registered, do register-and-subscribe in one step
-    if (!isRegistered) {
-      if (!username.trim()) {
-        toast.warning('Username required', 'Enter a username to register first.');
-        return;
-      }
-      await handleRegister(tier);
-      return;
-    }
-
-    // If already registered, upgrade subscription
-    if (tier === 0) {
-      toast.info('Free tier', 'Upgrade below for more features.');
-      return;
-    }
-
-    // Calculate price for the tier (in microSTX)
-    const tierPrices: Record<number, number> = {
-      1: 1000000,   // 1 STX for Basic
-      2: 5000000,   // 5 STX for Pro
-      3: 20000000,  // 20 STX for Premium
-    };
-    const price = tierPrices[tier] || 0;    setIsLoading(true);
-    setSubscribingTier(tier);
-    try {
-      const { openContractCall } = await import('@stacks/connect');
-      const { uintCV } = await import('@stacks/transactions');
-
-      // Post-condition: allow STX transfer from user to contract owner (new v7+ format)
-      const postConditions: { type: 'stx-postcondition'; address: string; condition: 'eq'; amount: number }[] = price > 0 && address ? [
-        {
-          type: 'stx-postcondition',
-          address: address,
-          condition: 'eq',
-          amount: price
+    await internalHandleSubscribe(tier, isRegistered, currentTier, username, (t) => {
+      setCurrentTier(t);
+      if (address) {
+        const cached = localStorage.getItem(`stackpulse_registered_${address}`);
+        if (cached) {
+          const data = JSON.parse(cached);
+          data.tier = t;
+          localStorage.setItem(`stackpulse_registered_${address}`, JSON.stringify(data));
         }
-      ] : [];
-
-      await openContractCall({
-        contractAddress: DEPLOYER_ADDRESS,
-        contractName: 'stackpulse-v-j3',
-        functionName: 'upgrade-subscription',
-        functionArgs: [uintCV(tier)],
-        postConditions,
-        onFinish: async (data: { txId: string }) => {
-          console.log('Upgrade submitted:', data.txId);
-          setCurrentTier(tier);
-          // Update cache
-          if (address) {
-            const cached = localStorage.getItem(`stackpulse_registered_${address}`);
-            if (cached) {
-              const data = JSON.parse(cached);
-              data.tier = tier;
-              localStorage.setItem(`stackpulse_registered_${address}`, JSON.stringify(data));
-            }
-          }
-          toast.success(
-            'Subscription upgraded',
-            `${tier === 1 ? 'Basic' : tier === 2 ? 'Pro' : 'Premium'} tier. TX: ${data.txId}`
-          );
-          setSubscribingTier(null);
-        },
-        onCancel: () => {
-          console.log('Upgrade cancelled');
-          setSubscribingTier(null);
-        },
-      });
-    } catch (error) {
-      console.error('Subscription error:', error);
-      toast.error('Upgrade failed', 'Please try again.');
-      setSubscribingTier(null);
-    } finally {
-      setIsLoading(false);
-    }
+      }
+    });
   };
 
   // Save a notification channel update
@@ -585,16 +305,48 @@ export default function Pricing() {
                       <div className={`w-10 h-10 ${chan.value ? 'bg-emerald-500/10' : chan.color} rounded-xl flex items-center justify-center mx-auto mb-3 transition-colors`} aria-hidden="true">
                         <chan.icon className={`w-5 h-5 ${chan.value ? 'text-emerald-500' : chan.iconColor}`} />
                       </div>
-                      <p className="text-white text-xs font-bold mb-1">{chan.label}</p>
-                      <p className={`text-[10px] font-medium truncate ${chan.value ? 'text-emerald-400' : 'text-gray-500 italic'}`}>
-                        {chan.value ? (chan.value.slice(0, 12) + (chan.value.length > 12 ? '..' : '')) : 'Add now'}
-                      </p>
+                      <div className="flex flex-col items-center gap-1">
+                        <p className="text-white text-xs font-bold">{chan.label}</p>
+                        <div className="flex items-center gap-1.5">
+                          {chan.value ? (
+                            <span className="flex items-center gap-0.5 text-[9px] font-black uppercase tracking-tighter text-emerald-400 bg-emerald-500/5 px-1.5 py-0.5 rounded-md border border-emerald-500/10">
+                              <CheckCircle2 className="w-2 h-2" />
+                              Linked
+                            </span>
+                          ) : (
+                            <span className="text-[9px] font-black uppercase tracking-tighter text-gray-500 bg-gray-500/5 px-1.5 py-0.5 rounded-md border border-gray-500/10">
+                              Disconnected
+                            </span>
+                          )}
+                        </div>
+                      </div>
                     </button>
                   ))}
                 </div>
 
-                {/* Dashboard Shortcut */}
-                <div className="mt-8 flex justify-center">
+                {/* Bulk Actions */}
+                <div className="mt-4 flex justify-end">
+                  <button
+                    onClick={() => {
+                      setTempValue(email); // Start with email as primary for bulk
+                      setShowBulkEdit(true);
+                    }}
+                    className="text-[10px] font-black uppercase tracking-widest text-purple-400 hover:text-purple-300 transition-colors flex items-center gap-1"
+                  >
+                    <Settings className="w-3 h-3" />
+                    Bulk Configuration
+                  </button>
+                </div>
+
+                {/* Dashboard Shortcut & Preview */}
+                <div className="mt-8 flex flex-col md:flex-row items-center justify-center gap-4">
+                  <button
+                    onClick={() => setShowPreview(true)}
+                    className="inline-flex items-center gap-2 px-6 py-3 bg-gray-800 text-purple-400 border border-purple-500/20 rounded-2xl font-bold text-sm hover:bg-gray-700 transition-all active:scale-95"
+                  >
+                    <Activity className="w-4 h-4" />
+                    Preview Alerts
+                  </button>
                   <Link
                     href="/dashboard"
                     className="inline-flex items-center gap-2 px-8 py-3 bg-white text-gray-950 rounded-2xl font-black text-sm hover:bg-gray-200 transition-all shadow-xl shadow-white/5 group active:scale-95"
@@ -607,6 +359,92 @@ export default function Pricing() {
             )}
           </div>
         </div>
+
+        {/* Global Notification Preview Modal */}
+        {showPreview && (
+          <div 
+            className="fixed inset-0 bg-black/80 backdrop-blur-xl flex items-center justify-center z-[110] p-4 animate-in fade-in zoom-in duration-300"
+            onClick={() => setShowPreview(false)}
+          >
+            <div 
+              className="bg-gray-900 border border-white/10 rounded-[2.5rem] max-w-2xl w-full p-8 md:p-12 shadow-[0_0_100px_rgba(168,85,247,0.15)] relative overflow-hidden"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="flex items-center justify-between mb-8">
+                <div>
+                  <h3 className="text-3xl font-black text-white">Alert Preview</h3>
+                  <p className="text-gray-400 font-medium">How your notifications will appear</p>
+                </div>
+                <button onClick={() => setShowPreview(false)} className="p-2 hover:bg-white/5 rounded-full transition-colors">
+                  <X className="w-6 h-6 text-gray-500" />
+                </button>
+              </div>
+
+              <div className="space-y-6">
+                {/* Discord Mockup */}
+                <div className="bg-[#313338] rounded-xl p-4 border-l-4 border-[#5865F2] shadow-lg animate-in slide-in-from-left duration-500">
+                  <div className="flex items-start gap-3">
+                    <div className="w-10 h-10 bg-[#5865F2] rounded-full flex items-center justify-center flex-shrink-0">
+                      <Zap className="w-6 h-6 text-white" />
+                    </div>
+                    <div>
+                      <div className="flex items-center gap-2 mb-1">
+                        <span className="text-white font-bold text-sm">StackPulse BOT</span>
+                        <span className="bg-[#5865F2] text-[10px] text-white px-1 rounded uppercase font-bold">Bot</span>
+                        <span className="text-gray-400 text-xs">Today at 1:42 PM</span>
+                      </div>
+                      <div className="text-[#DBDEE1] text-sm leading-relaxed">
+                        <strong className="block text-white text-base mb-1">🚨 Whale Transfer Detected!</strong>
+                        Address <code className="bg-black/20 px-1 rounded text-purple-400">SP3E...VY3B</code> transferred 
+                        <strong className="text-emerald-400"> 25,000 STX</strong> to Bitrue.
+                        <div className="mt-3 py-2 px-3 bg-black/20 rounded-lg border border-white/5 text-xs text-blue-400 font-mono">
+                          TX: 0x4f12...a9c3
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Telegram Mockup */}
+                <div className="bg-[#242F3D] rounded-xl p-4 shadow-lg animate-in slide-in-from-right duration-500 delay-100">
+                  <div className="flex items-center gap-3 mb-2">
+                    <div className="w-8 h-8 bg-[#3390EC] rounded-full flex items-center justify-center font-bold text-white text-xs">SP</div>
+                    <span className="text-white font-bold text-sm">StackPulse Alerts</span>
+                  </div>
+                  <div className="text-[#E7E9ED] text-sm whitespace-pre-wrap">
+                    🔥 <strong className="text-white font-extrabold uppercase tracking-tight">Contract Deployment</strong>{'\n'}
+                    {'\n'}
+                    New contract <code className="text-blue-400">alex-dao-v3</code> was deployed by <code className="text-blue-400">SP2Z...</code>
+                    {'\n'}
+                    {'\n'}
+                    <span className="text-gray-400 italic">View on Stacks Explorer →</span>
+                  </div>
+                </div>
+
+                {/* Email Mockup */}
+                <div className="bg-white rounded-xl p-4 shadow-lg text-gray-900 animate-in slide-in-from-bottom duration-500 delay-200">
+                  <div className="border-b pb-2 mb-3 flex items-center justify-between">
+                    <span className="bg-purple-100 text-purple-700 text-[10px] font-black px-2 py-0.5 rounded tracking-tighter">StackPulse Security</span>
+                    <span className="text-[10px] text-gray-400">1:45 PM</span>
+                  </div>
+                  <h4 className="font-bold text-base mb-1">Daily Summary: {alertsEnabled} Actives</h4>
+                  <p className="text-xs text-gray-600 leading-relaxed italic">
+                    You had 12 triggers today. The largest was a 50k STX swap on ALEX DEX.
+                  </p>
+                </div>
+              </div>
+              
+              <div className="mt-10 pt-6 border-t border-white/5 flex justify-center">
+                <button 
+                  onClick={() => setShowPreview(false)}
+                  className="px-10 py-3 bg-purple-600 text-white rounded-2xl font-black text-sm hover:bg-purple-500 transition-all active:scale-95"
+                >
+                  Got It, Thanks!
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Edit Channel Modal */}
         {editingChannel && (
@@ -693,71 +531,15 @@ export default function Pricing() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-y-16 md:gap-8 lg:gap-8 items-stretch">
             {tiers.map((tier, index) => (
-              <div
+              <PricingCard
                 key={index}
-                className={`group relative flex flex-col backdrop-blur-xl transition-all duration-300 rounded-[2rem] p-8 sm:p-12 hover:-translate-y-3 hover:ring-1 ${
-                  tier.popular
-                    ? 'border-2 border-purple-500/50 shadow-[0_20px_50px_-20px_rgba(168,85,247,0.15)] scale-[1.02] hover:scale-[1.05] z-10 bg-gradient-to-br from-gray-900/80 via-gray-900/40 to-purple-900/20 hover:shadow-[0_30px_70px_-15px_rgba(168,85,247,0.4)] hover:border-purple-400 hover:ring-purple-500/30'
-                    : tier.tier === currentTier && isRegistered
-                      ? 'bg-emerald-500/[0.03] border border-emerald-500/40 shadow-xl shadow-emerald-500/5 hover:scale-[1.03] hover:border-emerald-500/60 hover:shadow-[0_30px_60px_-15px_rgba(16,185,129,0.2)] hover:ring-emerald-500/30'
-                      : 'bg-white/[0.03] border border-white/5 hover:border-white/20 hover:bg-white/[0.05] hover:scale-[1.03] hover:shadow-[0_30px_60px_-15px_rgba(0,0,0,0.6)] hover:ring-white/10'
-                } ${!isRegistered ? 'opacity-75 blur-[0.3px]' : ''}`}
-              >
-                {/* Popular Badge */}
-                {tier.popular && (
-                  <div className="absolute -top-5 left-1/2 -translate-x-1/2 bg-gradient-to-r from-purple-600 to-indigo-600 text-white text-[10px] font-black uppercase tracking-[0.25em] px-6 py-2.5 rounded-full shadow-[0_10px_20px_-5px_rgba(168,85,247,0.5)] z-20">
-                    Most Popular
-                  </div>
-                )}
-                
-                {/* Current Plan Badge */}
-                {isRegistered && tier.tier === currentTier && (
-                  <div className="absolute -top-5 left-1/2 -translate-x-1/2 bg-emerald-600 text-white text-[10px] font-black uppercase tracking-[0.25em] px-6 py-2.5 rounded-full shadow-[0_10px_20px_-5px_rgba(16,185,129,0.3)] z-20">
-                    ✓ Your Plan
-                  </div>
-                )}
-
-                <div className="mb-12">
-                  <h3 className="text-xl font-black text-white mb-2 tracking-tighter uppercase opacity-50">{tier.name}</h3>
-                  <div className="flex items-baseline gap-1.5">
-                    <span className="text-6xl sm:text-7xl font-black text-white tracking-tighter drop-shadow-2xl">{tier.price}</span>
-                    <div className="flex flex-col mb-1 ml-1">
-                      <span className="text-gray-400 font-black text-xs tracking-[0.2em]">STX</span>
-                      <span className="text-gray-500/40 font-bold text-[10px] uppercase tracking-widest">/ Month</span>
-                    </div>
-                  </div>
-                </div>
-
-                <ul className="space-y-5 mb-14 flex-1">
-                  {tier.features.map((feature, i) => (
-                    <li key={i} className="group/feature flex items-start gap-4 text-gray-400 font-medium text-[13px] leading-relaxed transition-colors hover:text-white">
-                      <div className={`mt-0.5 w-5 h-5 rounded-full flex items-center justify-center shrink-0 transition-all duration-300 group-hover/feature:scale-110 ${
-                        tier.popular 
-                          ? 'bg-purple-500/20 text-purple-400 shadow-[0_0_10px_rgba(168,85,247,0.2)]' 
-                          : 'bg-emerald-500/10 text-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.1)]'
-                      }`}>
-                        <Check className="w-3 h-3" strokeWidth={4} />
-                      </div>
-                      <span className="group-hover/feature:translate-x-0.5 transition-transform duration-300">{feature}</span>
-                    </li>
-                  ))}
-                </ul>
-
-                <Button
-                  onClick={() => handleSubscribe(tier.tier)}
-                  disabled={!isRegistered || (isRegistered && tier.tier === currentTier) || isLoading}
-                  variant={tier.popular ? 'primary' : 'secondary'}
-                  size="lg"
-                  className={`w-full h-13 rounded-2xl font-black transition-all duration-300 transform active:scale-[0.97] ${
-                    tier.popular 
-                      ? 'shadow-xl shadow-purple-600/20 hover:shadow-purple-600/50 hover:scale-[1.02]' 
-                      : 'border border-white/5 hover:border-white/20 hover:bg-white/5'
-                  }`}
-                  isLoading={subscribingTier === tier.tier}
-                >
-                  {isRegistered && tier.tier === currentTier ? 'Active Plan' : tier.price === 0 ? 'Current Tier' : 'Upgrade Plan'}
-                </Button>
-              </div>
+                tier={tier}
+                isRegistered={isRegistered}
+                currentTier={currentTier}
+                subscribingTier={subscribingTier}
+                isLoading={isLoading}
+                handleSubscribe={handleSubscribe}
+              />
             ))}
           </div>
 
@@ -773,3 +555,106 @@ export default function Pricing() {
     </section>
   );
 }
+
+const PricingCard = memo(({ 
+  tier, 
+  isRegistered, 
+  currentTier, 
+  subscribingTier, 
+  isLoading, 
+  handleSubscribe 
+}: {
+  tier: {
+    name: string;
+    price: number;
+    tier: number;
+    features: string[];
+    popular: boolean;
+  };
+  isRegistered: boolean;
+  currentTier: number;
+  subscribingTier: number | null;
+  isLoading: boolean;
+  handleSubscribe: (tier: number) => void;
+}) => {
+  const isMostPopular = tier.name === 'Pro';
+  
+  return (
+    <div
+      className={`group relative flex flex-col backdrop-blur-xl transition-all duration-500 rounded-[2rem] p-8 sm:p-12 hover:-translate-y-3 hover:ring-1 ${
+        isMostPopular
+          ? 'border-2 border-purple-500/50 shadow-[0_20px_50px_-20px_rgba(168,85,247,0.25)] scale-[1.05] z-10 bg-gradient-to-br from-gray-900 via-purple-950/20 to-gray-900 hover:shadow-[0_30px_80px_-15px_rgba(168,85,247,0.5)] hover:border-purple-400 hover:ring-purple-500/40'
+          : tier.popular
+            ? 'border-2 border-purple-500/50 shadow-[0_20px_50px_-20px_rgba(168,85,247,0.15)] scale-[1.02] hover:scale-[1.05] z-10 bg-gradient-to-br from-gray-900/80 via-gray-900/40 to-purple-900/20 hover:shadow-[0_30px_70px_-15px_rgba(168,85,247,0.4)] hover:border-purple-400 hover:ring-purple-500/30'
+            : tier.tier === currentTier && isRegistered
+              ? 'bg-emerald-500/[0.03] border border-emerald-500/40 shadow-xl shadow-emerald-500/5 hover:scale-[1.03] hover:border-emerald-500/60 hover:shadow-[0_30px_60px_-15px_rgba(16,185,129,0.2)] hover:ring-emerald-500/30'
+              : 'bg-white/[0.03] border border-white/5 hover:border-white/20 hover:bg-white/[0.05] hover:scale-[1.03] hover:shadow-[0_30px_60px_-15px_rgba(0,0,0,0.6)] hover:ring-white/10'
+      } ${!isRegistered ? 'opacity-75 blur-[0.3px]' : ''}`}
+    >
+      {/* Popular Badge */}
+      {(tier.popular || isMostPopular) && (
+        <div className={`absolute -top-5 left-1/2 -translate-x-1/2 text-white text-[10px] font-black uppercase tracking-[0.25em] px-6 py-2.5 rounded-full z-20 shadow-lg ${
+          isMostPopular 
+            ? 'bg-gradient-to-r from-purple-500 via-indigo-500 to-purple-500 bg-[length:200%_auto] animate-shimmer shadow-purple-500/40' 
+            : 'bg-gradient-to-r from-purple-600 to-indigo-600 shadow-purple-600/30'
+        }`}>
+          {isMostPopular ? 'Most Popular' : 'Popular'}
+        </div>
+      )}
+      
+      {/* Current Plan Badge */}
+      {isRegistered && tier.tier === currentTier && (
+        <div className="absolute -top-5 left-1/2 -translate-x-1/2 bg-emerald-600 text-white text-[10px] font-black uppercase tracking-[0.25em] px-6 py-2.5 rounded-full shadow-[0_10px_20px_-5px_rgba(16,185,129,0.3)] z-20">
+          ✓ Your Plan
+        </div>
+      )}
+
+      <div className="mb-12">
+        <h3 className={`text-xl font-black mb-2 tracking-tighter uppercase ${isMostPopular ? 'text-purple-400' : 'text-white opacity-50'}`}>{tier.name}</h3>
+        <div className="flex items-baseline gap-1.5">
+          <span className="text-6xl sm:text-7xl font-black text-white tracking-tighter drop-shadow-2xl">{tier.price}</span>
+          <div className="flex flex-col mb-1 ml-1">
+            <span className="text-gray-400 font-black text-xs tracking-[0.2em]">STX</span>
+            <span className="text-gray-500/40 font-bold text-[10px] uppercase tracking-widest">/ Month</span>
+          </div>
+        </div>
+      </div>
+
+      <ul className="space-y-5 mb-14 flex-1">
+        {tier.features.map((feature, i) => (
+          <li key={i} className="group/feature flex items-start gap-4 text-gray-400 font-medium text-[13px] leading-relaxed transition-colors hover:text-white">
+            <div className={`mt-0.5 w-5 h-5 rounded-full flex items-center justify-center shrink-0 transition-all duration-300 group-hover/feature:scale-110 ${
+              isMostPopular 
+                ? 'bg-purple-500/20 text-purple-400 shadow-[0_0_15px_rgba(168,85,247,0.3)]'
+                : tier.popular 
+                  ? 'bg-purple-500/20 text-purple-400 shadow-[0_0_10px_rgba(168,85,247,0.2)]' 
+                  : 'bg-emerald-500/10 text-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.1)]'
+            }`}>
+              <Check className="w-3 h-3" strokeWidth={4} />
+            </div>
+            <span className="group-hover/feature:translate-x-0.5 transition-transform duration-300">{feature}</span>
+          </li>
+        ))}
+      </ul>
+
+      <Button
+        onClick={() => handleSubscribe(tier.tier)}
+        disabled={!isRegistered || (isRegistered && tier.tier === currentTier) || isLoading}
+        variant={tier.popular || isMostPopular ? 'primary' : 'secondary'}
+        size="lg"
+        className={`w-full h-13 rounded-2xl font-black transition-all duration-300 transform active:scale-[0.97] ${
+          isMostPopular
+            ? 'shadow-xl shadow-purple-600/40 hover:shadow-purple-600/60 hover:scale-[1.02] bg-gradient-to-r from-purple-600 to-indigo-600 border-none'
+            : tier.popular 
+              ? 'shadow-xl shadow-purple-600/20 hover:shadow-purple-600/50 hover:scale-[1.02]' 
+              : 'border border-white/5 hover:border-white/20 hover:bg-white/5'
+        }`}
+        isLoading={subscribingTier === tier.tier}
+      >
+        {isRegistered && tier.tier === currentTier ? 'Active Plan' : tier.price === 0 ? 'Current Tier' : 'Upgrade Plan'}
+      </Button>
+    </div>
+  );
+});
+
+PricingCard.displayName = 'PricingCard';

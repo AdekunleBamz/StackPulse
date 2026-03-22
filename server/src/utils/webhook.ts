@@ -162,3 +162,27 @@ export async function sendWebhook(
     return false;
   }
 }
+
+/**
+ * Recursively sanitize payload objects to prevent prototype pollution
+ * and strip internal metadata.
+ */
+export function sanitizePayload(data: any): any {
+  if (data === null || typeof data !== 'object') {
+    return typeof data === 'string' ? data.trim() : data;
+  }
+
+  if (Array.isArray(data)) {
+    return data.map(item => sanitizePayload(item));
+  }
+
+  const sanitized: any = {};
+  for (const [key, value] of Object.entries(data)) {
+    // Skip keys that could lead to prototype pollution or are internal
+    if (key === '__proto__' || key === 'constructor' || key.startsWith('$')) {
+      continue;
+    }
+    sanitized[key] = sanitizePayload(value);
+  }
+  return sanitized;
+}

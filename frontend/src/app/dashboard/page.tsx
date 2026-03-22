@@ -1,18 +1,23 @@
 'use client';
 
-import { useEffect, useId, useRef, useState } from 'react';
-import { useWallet } from '@/context/WalletContext';
+import { useEffect, useId, useMemo, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { toast } from '@/components/Toast';
 import { useConfirmDialog } from '@/components/ConfirmDialog';
 import { NoAlertsState } from '@/components/EmptyState';
-import { DashboardSkeleton } from '@/components/LoadingSkeleton';
+import { 
+  DashboardSkeleton,
+  StatsCardSkeleton,
+  LoadingSkeleton as HistorySkeleton
+} from '@/components/LoadingSkeleton';
 import Button from '@/components/ui/Button';
+import { useAccount } from '@/hooks/useAccount';
+import { useSound } from '@/hooks/useSound';
+import { useNotifications } from '@/hooks/useNotifications';
 import { 
   Bell, 
   Wallet, 
   Plus, 
-  Settings, 
   Activity,
   Zap,
   FileCode,
@@ -21,12 +26,26 @@ import {
   ArrowLeftRight,
   Award,
   Trash2,
-  ToggleLeft,
-  ToggleRight
+  Volume2,
+  VolumeX,
+  Monitor,
+  MonitorOff,
 } from 'lucide-react';
-import { Breadcrumbs } from '@/components';
+import { AlertCard, ActivityItem, Breadcrumbs } from '@/components';
 
 const DEPLOYER_ADDRESS = process.env.NEXT_PUBLIC_DEPLOYER_ADDRESS || '';
+
+const tierNames: Record<number, string> = {
+  0: 'Free',
+  1: 'Basic',
+  2: 'Pro',
+};
+
+const maxAlerts: Record<number, number> = {
+  0: 1,
+  1: 5,
+  2: 20,
+};
 
 // Alert types matching the contracts and chainhooks
 const alertTypes = [
@@ -38,7 +57,7 @@ const alertTypes = [
   { id: 6, name: 'Address Watch', icon: Activity, description: 'Monitor specific addresses', iconBgClass: 'bg-orange-500/20', iconClass: 'text-orange-300' },
 ];
 
-interface UserAlert {
+export interface DashboardAlert {
   id: number;
   type: number;
   name: string;
@@ -46,100 +65,69 @@ interface UserAlert {
   threshold?: number;
   targetAddress?: string;
   triggerCount: number;
+  createdAt?: string;
 }
 
-interface UserData {
-  username: string;
-  tier: number;
-  alertsEnabled: number;
-  subscriptionEnds: number;
+export interface AlertHistoryItem {
+  id: string;
+  alertId: number;
+  type: number;
+  message: string;
+  timestamp: string;
+  txId?: string;
+  data?: any;
 }
+
+// Dashboard component
 
 export default function DashboardPage() {
-  const { isConnected, address, connect } = useWallet();
   const router = useRouter();
   const { confirm, ConfirmDialog } = useConfirmDialog();
-  const createAlertTitleId = useId();
-  const createAlertDescId = useId();
-  const createAlertSelectRef = useRef<HTMLSelectElement>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [userData, setUserData] = useState<UserData | null>(null);
-  const [alerts, setAlerts] = useState<UserAlert[]>([]);
+  const { address, isConnected, connect, userData, isLoading: isAccountLoading } = useAccount();
+  const [alerts, setAlerts] = useState<DashboardAlert[]>([]);
+  const [isDataLoading, setIsDataLoading] = useState(true);
+  const [isCreating, setIsCreating] = useState(false);
+  const [syncingAlertIds, setSyncingAlertIds] = useState<Set<number>>(new Set());
+  const [history, setHistory] = useState<AlertHistoryItem[]>([]);
+  const [visibleHistoryLimit, setVisibleHistoryLimit] = useState(5);
+  
+  // Create Alert State
   const [showCreateAlert, setShowCreateAlert] = useState(false);
   const [newAlertType, setNewAlertType] = useState(1);
   const [newAlertName, setNewAlertName] = useState('');
   const [newAlertThreshold, setNewAlertThreshold] = useState('10000');
-  const [isCreating, setIsCreating] = useState(false);
+  
+  const createAlertTitleId = useId();
+  const createAlertDescId = useId();
+  const createAlertSelectRef = useRef<HTMLSelectElement>(null);
 
-  const tierNames = ['Free', 'Basic', 'Pro', 'Premium'];
-  const maxAlerts = [3, 10, 25, 999];
-
-  // Check user registration and load data
+  const { enabled: soundEnabled, toggle: toggleSound, playSound } = useSound();
+  const { permission: notifyPermission, requestPermission, sendNotification } = useNotifications();
+  
+  // Load alerts from server when address changes
   useEffect(() => {
-    const loadUserData = async () => {
-      if (!address || !DEPLOYER_ADDRESS) {
-        setIsLoading(false);
-        return;
-      }
-
+    const loadAlerts = async () => {
+      if (!address) return;
       try {
-        const { principalCV, cvToHex, hexToCV, cvToValue } = await import('@stacks/transactions');
-
-        // Check V3 contract for user data
-        const response = await fetch(
-          `https://api.mainnet.hiro.so/v2/contracts/call-read/${DEPLOYER_ADDRESS}/stackpulse-v-j3/get-user`,
-          {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              sender: address,
-              arguments: [cvToHex(principalCV(address))]
-            })
-          }
-        );
-
-        const data = await response.json();
-        
-        if (data.result && data.result !== '0x09') {
-          try {
-            const cv = hexToCV(data.result);
-            const parsed = cvToValue(cv);
-            if (parsed && parsed.value) {
-              setUserData({
-                username: parsed.value.username?.value || '',
-                tier: Number(parsed.value.tier?.value || 0),
-                alertsEnabled: Number(parsed.value['alerts-enabled']?.value || 0),
-                subscriptionEnds: Number(parsed.value['subscription-ends']?.value || 0)
-              });
-            }
-          } catch (parseErr) {
-            console.error('Error parsing user data:', parseErr);
+        const serverUrl = process.env.NEXT_PUBLIC_SERVER_URL || 'https://stackpulse-b8fw.onrender.com';
+        const alertsResponse = await fetch(`${serverUrl}/api/users/${address}/alerts`);
+        if (alertsResponse.ok) {
+          const alertsData = await alertsResponse.json();
+          if (alertsData.alerts) {
+            setAlerts(alertsData.alerts);
           }
         }
-
-        // Load alerts from server
-        try {
-          const serverUrl = process.env.NEXT_PUBLIC_SERVER_URL || 'https://stackpulse-b8fw.onrender.com';
-          const alertsResponse = await fetch(`${serverUrl}/api/users/${address}/alerts`);
-          if (alertsResponse.ok) {
-            const alertsData = await alertsResponse.json();
-            if (alertsData.alerts) {
-              setAlerts(alertsData.alerts);
-            }
-          }
-        } catch (err) {
-          console.error('Error loading alerts:', err);
-        }
-
-      } catch (error) {
-        console.error('Error loading user data:', error);
+      } catch (err) {
+        console.error('Error loading alerts:', err);
       } finally {
-        setIsLoading(false);
+        setIsDataLoading(false);
       }
     };
 
-    loadUserData();
+    loadAlerts();
   }, [address]);
+
+  const isLoading = isAccountLoading || (isConnected && isDataLoading);
 
   useEffect(() => {
     if (!showCreateAlert) return;
@@ -207,6 +195,8 @@ export default function DashboardPage() {
           }
 
           toast.success('Alert created', `TX: ${data.txId}`);
+          playSound('success');
+          sendNotification('Alert Created', { body: `Alert "${newAlertName || alertTypes[newAlertType - 1].name}" is now active.` });
           setShowCreateAlert(false);
           setNewAlertName('');
           setNewAlertThreshold('10000');
@@ -228,10 +218,19 @@ export default function DashboardPage() {
           setIsCreating(false);
         }
       });
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error creating alert:', error);
       toast.dismiss(toastId);
-      toast.error('Failed to create alert', 'Please try again.');
+      
+      const errorMessage = error.message || String(error);
+      if (errorMessage.includes('UserRejected')) {
+        toast.error('Transaction Cancelled', 'You rejected the request in your wallet.');
+      } else if (errorMessage.includes('InsufficientFunds')) {
+        toast.error('Insufficient Funds', 'You do not have enough STX to pay for the transaction fees.');
+      } else {
+        toast.error('Failed to Create Alert', 'An unexpected error occurred. Please try again.');
+      }
+      
       setIsCreating(false);
     } finally {
       // Note: setIsCreating(false) is handled in callbacks because openContractCall is async-finish
@@ -240,31 +239,48 @@ export default function DashboardPage() {
 
   // Toggle alert on/off
   const toggleAlert = async (alertId: number) => {
+    if (syncingAlertIds.has(alertId)) return;
+    
     const existing = alerts.find((a) => a.id === alertId);
     const nextEnabled = !(existing?.enabled ?? false);
-    const toastId = toast.loading('Syncing', `Updating ${existing?.name || 'alert'}...`);
-
-    // Update local state
+    
+    setSyncingAlertIds(prev => new Set(prev).add(alertId));
+    
+    // Update local state (optimistic)
     setAlerts(prev => prev.map(a => 
       a.id === alertId ? { ...a, enabled: nextEnabled } : a
     ));
+    
+    // Toast for feedback
+    const toastId = toast.loading('Syncing', `Updating ${existing?.name || 'alert'} status...`);
 
-    // Update on server
     try {
       const serverUrl = process.env.NEXT_PUBLIC_SERVER_URL || 'https://stackpulse-b8fw.onrender.com';
-      await fetch(`${serverUrl}/api/users/${address}/alerts/${alertId}`, {
+      const res = await fetch(`${serverUrl}/api/users/${address}/alerts/${alertId}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ enabled: nextEnabled })
       });
-      toast.dismiss(toastId);
+      
+      if (!res.ok) throw new Error('Failed to update status');
+      
+      toast.success('Status Updated', `${existing?.name || 'Alert'} is now ${nextEnabled ? 'enabled' : 'disabled'}.`);
+      playSound('notification');
+      sendNotification('Status Updated', { body: `${existing?.name || 'Alert'} is now ${nextEnabled ? 'enabled' : 'disabled'}.` });
     } catch (err) {
       console.error('Error toggling alert:', err);
-      toast.dismiss(toastId);
+      // Revert optimism
       setAlerts((prev) =>
-        prev.map((a) => (a.id === alertId ? { ...a, enabled: existing?.enabled ?? a.enabled } : a))
+        prev.map((a) => (a.id === alertId ? { ...a, enabled: !nextEnabled } : a))
       );
-      toast.error('Update failed', 'Could not toggle alert. Please try again.');
+      toast.error('Sync Failed', 'Could not update alert status. Please try again.');
+    } finally {
+      toast.dismiss(toastId);
+      setSyncingAlertIds(prev => {
+        const next = new Set(prev);
+        next.delete(alertId);
+        return next;
+      });
     }
   };
 
@@ -278,7 +294,7 @@ export default function DashboardPage() {
       variant: 'danger',
       onConfirm: async () => {
         const toastId = toast.loading('Deleting', 'Removing alert from dashboard...');
-        let removedAlert: UserAlert | undefined;
+        let removedAlert: DashboardAlert | undefined;
         setAlerts((prev) => {
           removedAlert = prev.find((a) => a.id === alertId);
           return prev.filter((a) => a.id !== alertId);
@@ -300,6 +316,21 @@ export default function DashboardPage() {
           }
           toast.error('Delete failed', 'Please try again.');
         }
+      },
+    });
+  };
+
+  // Clear activity history
+  const clearHistory = () => {
+    confirm({
+      title: 'Clear activity history?',
+      message: 'This will permanently remove all past alert logs from your dashboard.',
+      confirmLabel: 'Clear All',
+      cancelLabel: 'Cancel',
+      variant: 'danger',
+      onConfirm: () => {
+        setHistory([]);
+        toast.success('Activity history cleared');
       },
     });
   };
@@ -394,55 +425,72 @@ export default function DashboardPage() {
 	            >
 	              {userData.tier === 0 ? 'Upgrade' : 'Manage Plan'}
 	            </Button>
+	            <button
+	              onClick={toggleSound}
+	              className="p-2.5 bg-gray-800 hover:bg-gray-700 rounded-xl border border-gray-700 transition-all text-purple-400"
+	              title={soundEnabled ? 'Mute sounds' : 'Unmute sounds'}
+	            >
+	              {soundEnabled ? <Volume2 className="w-5 h-5" /> : <VolumeX className="w-5 h-5 text-gray-500" />}
+	            </button>
+	            <button
+	              onClick={requestPermission}
+	              className={`p-2.5 bg-gray-800 hover:bg-gray-700 rounded-xl border border-gray-700 transition-all ${notifyPermission === 'granted' ? 'text-blue-400' : 'text-gray-500'}`}
+	              title={notifyPermission === 'granted' ? 'Notifications enabled' : 'Enable desktop notifications'}
+	            >
+	              {notifyPermission === 'granted' ? <Monitor className="w-5 h-5" /> : <MonitorOff className="w-5 h-5" />}
+	            </button>
 	          </div>
 	        </div>
 
         {/* Stats Cards */}
         <div className="grid md:grid-cols-4 gap-4 mb-8">
-          <div 
-            className="bg-gray-800 rounded-xl p-6 border border-gray-700 animate-fade-in hover:-translate-y-1 hover:shadow-lg hover:shadow-purple-500/10 transition-all"
-            style={{ animationDelay: '0ms', animationFillMode: 'both' }}
-          >
-            <div className="flex items-center gap-3 mb-2">
-              <Bell className="w-5 h-5 text-purple-400" />
-              <span className="text-gray-400">Active Alerts</span>
+          {useMemo(() => [
+            { 
+              label: 'Active Alerts', 
+              value: alerts.filter(a => a.enabled).length, 
+              sub: `of ${maxAlerts[userData.tier]} max`, 
+              icon: Bell, 
+              color: 'text-purple-400',
+              delay: '0ms'
+            },
+            { 
+              label: 'Triggers Today', 
+              value: alerts.reduce((sum, a) => sum + (a.triggerCount || 0), 0), 
+              sub: 'notifications sent', 
+              icon: Zap, 
+              color: 'text-yellow-400',
+              delay: '100ms'
+            },
+            { 
+              label: 'Alert Types', 
+              value: new Set(alerts.map(a => a.type)).size, 
+              sub: 'categories monitored', 
+              icon: Activity, 
+              color: 'text-green-400',
+              delay: '200ms'
+            },
+            { 
+              label: 'Badges Earned', 
+              value: 0, 
+              sub: 'reputation NFTs', 
+              icon: Award, 
+              color: 'text-blue-400',
+              delay: '300ms'
+            }
+          ], [alerts, userData.tier]).map((stat) => (
+            <div 
+              key={stat.label}
+              className="bg-gray-800 rounded-xl p-6 border border-gray-700 animate-fade-in hover:-translate-y-1 hover:shadow-lg hover:shadow-purple-500/10 transition-all"
+              style={{ animationDelay: stat.delay, animationFillMode: 'both' }}
+            >
+              <div className="flex items-center gap-3 mb-2">
+                <stat.icon className={`w-5 h-5 ${stat.color}`} />
+                <span className="text-gray-400">{stat.label}</span>
+              </div>
+              <p className="text-3xl font-bold text-white">{stat.value}</p>
+              <p className="text-sm text-gray-500">{stat.sub}</p>
             </div>
-            <p className="text-3xl font-bold text-white">{alerts.filter(a => a.enabled).length}</p>
-            <p className="text-sm text-gray-500">of {maxAlerts[userData.tier]} max</p>
-          </div>
-          <div 
-            className="bg-gray-800 rounded-xl p-6 border border-gray-700 animate-fade-in hover:-translate-y-1 hover:shadow-lg hover:shadow-purple-500/10 transition-all"
-            style={{ animationDelay: '100ms', animationFillMode: 'both' }}
-          >
-            <div className="flex items-center gap-3 mb-2">
-              <Zap className="w-5 h-5 text-yellow-400" />
-              <span className="text-gray-400">Triggers Today</span>
-            </div>
-            <p className="text-3xl font-bold text-white">{alerts.reduce((sum, a) => sum + a.triggerCount, 0)}</p>
-            <p className="text-sm text-gray-500">notifications sent</p>
-          </div>
-          <div 
-            className="bg-gray-800 rounded-xl p-6 border border-gray-700 animate-fade-in hover:-translate-y-1 hover:shadow-lg hover:shadow-purple-500/10 transition-all"
-            style={{ animationDelay: '200ms', animationFillMode: 'both' }}
-          >
-            <div className="flex items-center gap-3 mb-2">
-              <Activity className="w-5 h-5 text-green-400" />
-              <span className="text-gray-400">Alert Types</span>
-            </div>
-            <p className="text-3xl font-bold text-white">{new Set(alerts.map(a => a.type)).size}</p>
-            <p className="text-sm text-gray-500">categories monitored</p>
-          </div>
-          <div 
-            className="bg-gray-800 rounded-xl p-6 border border-gray-700 animate-fade-in hover:-translate-y-1 hover:shadow-lg hover:shadow-purple-500/10 transition-all"
-            style={{ animationDelay: '300ms', animationFillMode: 'both' }}
-          >
-            <div className="flex items-center gap-3 mb-2">
-              <Award className="w-5 h-5 text-blue-400" />
-              <span className="text-gray-400">Badges Earned</span>
-            </div>
-            <p className="text-3xl font-bold text-white">0</p>
-            <p className="text-sm text-gray-500">reputation NFTs</p>
-          </div>
+          ))}
         </div>
 
         {/* Alert Types Section */}
@@ -511,50 +559,69 @@ export default function DashboardPage() {
               {alerts.map((alert, index) => {
                 const alertType = alertTypes.find(t => t.id === alert.type);
                 return (
-                  <div 
-                    key={alert.id} 
-                    className="bg-gray-800 rounded-xl p-4 border border-gray-700 flex items-center justify-between animate-slide-up hover:border-purple-500/50 transition-colors"
-                    style={{ animationDelay: `${index * 100}ms`, animationFillMode: 'both' }}
-                  >
-                    <div className="flex items-center gap-4">
-                      <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${alert.enabled ? 'bg-purple-500/20' : 'bg-gray-700'}`}>
-                        {alertType && <alertType.icon className={`w-5 h-5 ${alert.enabled ? 'text-purple-400' : 'text-gray-500'}`} />}
-                      </div>
-                      <div>
-                        <h4 className={`font-semibold ${alert.enabled ? 'text-white' : 'text-gray-500'}`}>{alert.name}</h4>
-                        <p className="text-gray-500 text-sm">
-                          {alertType?.description} • {alert.triggerCount} triggers
-                        </p>
-                      </div>
-                    </div>
-	                    <div className="flex items-center gap-3">
-	                      <button
-	                        type="button"
-	                        onClick={() => toggleAlert(alert.id)}
-	                        className="p-2 hover:bg-gray-700 rounded-lg transition-all cursor-pointer focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400/90"
-	                        aria-pressed={alert.enabled}
-	                        aria-label={alert.enabled ? 'Disable alert' : 'Enable alert'}
-	                        title={alert.enabled ? 'Disable alert' : 'Enable alert'}
-	                      >
-	                        {alert.enabled ? (
-	                          <ToggleRight className="w-6 h-6 text-green-500" />
-	                        ) : (
-	                          <ToggleLeft className="w-6 h-6 text-gray-500" />
-	                        )}
-	                      </button>
-	                      <button
-	                        type="button"
-	                        onClick={() => deleteAlert(alert.id)}
-	                        className="p-2 hover:bg-red-500/20 rounded-lg transition-all cursor-pointer focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400/90"
-	                        aria-label="Delete alert"
-	                        title="Delete alert"
-	                      >
-	                        <Trash2 className="w-5 h-5 text-red-400" />
-	                      </button>
-	                    </div>
-                  </div>
+                  <AlertCard
+                    key={alert.id}
+                    alert={alert}
+                    alertType={alertType}
+                    isSyncing={syncingAlertIds.has(alert.id)}
+                    index={index}
+                    onToggle={toggleAlert}
+                    onDelete={deleteAlert}
+                  />
                 );
               })}
+            </div>
+          )}
+        </div>
+
+        {/* Recent Activity Section */}
+        <div className="mt-12 mb-8">
+          <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center gap-3">
+              <Activity className="w-6 h-6 text-purple-400" />
+              <h2 className="text-xl font-bold text-white">Recent Activity</h2>
+            </div>
+            {history.length > 0 && (
+              <button
+                onClick={clearHistory}
+                className="text-xs text-gray-500 hover:text-red-400 transition-colors flex items-center gap-1"
+              >
+                <Trash2 className="w-3 h-3" />
+                Clear History
+              </button>
+            )}
+          </div>
+
+          {isDataLoading ? (
+            <HistorySkeleton />
+          ) : history.length === 0 ? (
+            <div className="bg-gray-900/40 rounded-2xl border border-gray-800/50 p-12 text-center">
+              <div className="w-16 h-16 bg-gray-800/30 rounded-2xl flex items-center justify-center mx-auto mb-4 opacity-40">
+                <Activity className="w-8 h-8 text-gray-500" />
+              </div>
+              <p className="text-gray-500 font-medium">No recent activity detected.</p>
+              <p className="text-gray-600 text-xs mt-1">Alert triggers will appear here in real-time.</p>
+            </div>
+          ) : (
+            <div className="space-y-4">
+              {history.slice(0, visibleHistoryLimit).map((item, idx) => (
+                <ActivityItem 
+                  key={item.id} 
+                  item={item} 
+                  index={idx} 
+                />
+              ))}
+              
+              {history.length > visibleHistoryLimit && (
+                <div className="pt-2 flex justify-center">
+                  <button
+                    onClick={() => setVisibleHistoryLimit(prev => prev + 10)}
+                    className="px-6 py-2 bg-gray-800/50 hover:bg-gray-800 rounded-xl border border-gray-700/50 text-gray-400 text-xs font-bold transition-all hover:text-purple-400 active:scale-95"
+                  >
+                    Load More Activity
+                  </button>
+                </div>
+              )}
             </div>
           )}
         </div>

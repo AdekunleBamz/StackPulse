@@ -1,58 +1,67 @@
 ;; StackPulse V3 - Enhanced User Registry & Subscriptions
+;; =========================================================================
+;; This contract acts as the primary user registry for the StackPulse protocol.
+;; It manages user profiles, subscription tiers, and overall platform access.
+;;
 ;; Upgrades from V2:
 ;; - Better error handling with more descriptive error codes
-;; - Optimized gas usage with efficient data structures
-;; - Enhanced event logging for chainhooks
-;; - Added batch operations support
-;; - Improved subscription management
-;; 
-;; Flow:
-;; 1. User calls (register-and-subscribe) with profile + tier (0=free, 1-3=paid)
-;; 2. For free tier: no STX transfer, just stores profile
-;; 3. For paid tiers: transfers STX, stores profile + subscription
-;; 4. User can update profile anytime with (update-profile)
-;; 5. User can upgrade tier with (upgrade-subscription)
+;; - Optimized gas usage with efficient data structures and map operations
+;; - Enhanced event logging for detailed chainhook indexing
+;; - Added batch operations support for administrative tasks
+;; - Improved subscription management with expiration logic
+;;
+;; Operational Flow:
+;; 1. User registers via (register-and-subscribe) with profile and tier choice.
+;; 2. Free Tier: No STX transfer required, provides basic monitoring limits.
+;; 3. Paid Tiers: Transfers STX to protocol treasury, unlocks advanced features.
+;; 4. Profile Updates: Users can modify metadata (username, email) anytime.
+;; 5. Upgrades: Subscription tiers can be elevated or renewed with STX.
 
-;; ============================================
+;; =========================================================================
 ;; CONSTANTS
-;; ============================================
+;; =========================================================================
 
+;; Protocol administrative owner
 (define-constant CONTRACT-OWNER tx-sender)
-(define-constant ERR-ALREADY-REGISTERED (err u101))
-(define-constant ERR-NOT-REGISTERED (err u102))
-(define-constant ERR-INVALID-TIER (err u103))
-(define-constant ERR-TRANSFER-FAILED (err u104))
-(define-constant ERR-NOT-AUTHORIZED (err u105))
-(define-constant ERR-INVALID-USERNAME (err u106))
-(define-constant ERR-INVALID-ALERTS (err u107))
-(define-constant ERR-SUBSCRIPTION-EXPIRED (err u108))
-(define-constant ERR-SAME-TIER (err u109))
-(define-constant ERR-INVALID-HOOK-TYPE (err u110))
 
-;; Subscription duration: ~30 days in blocks (assuming 10 min blocks)
+;; ERROR CODES
+(define-constant ERR-NOT-AUTHORIZED (err u100))      ;; Identity verification failure
+(define-constant ERR-ALREADY-REGISTERED (err u101))  ;; Principal already exists in registry
+(define-constant ERR-NOT-REGISTERED (err u102))     ;; User must register first
+(define-constant ERR-INVALID-TIER (err u103))       ;; Provided tier index is out of bounds
+(define-constant ERR-TRANSFER-FAILED (err u104))    ;; Subscription payment could not be processed
+(define-constant ERR-INVALID-USERNAME (err u105))   ;; Username format or length is invalid
+(define-constant ERR-INVALID-ALERTS (err u106))     ;; Provided alert bitmask is malformed
+(define-constant ERR-SUBSCRIPTION-EXPIRED (err u107)) ;; Subscription period has lapsed
+(define-constant ERR-SAME-TIER (err u108))          ;; Upgrade target matches current level
+(define-constant ERR-INVALID-HOOK-TYPE (err u109))  ;; Trigger category is unrecognized
+(define-constant ERR-PAUSED (err u110))             ;; Protocol is in emergency pause state
+
+;; TEMPORAL CONSTANTS
+;; Standard 30-day block window (estimate)
 (define-constant BLOCKS-PER-MONTH u4320)
 
-;; Tier prices in microSTX
+;; PRICING STRUCTURE (microSTX)
 (define-constant PRICE-FREE u0)
 (define-constant PRICE-BASIC u10000)        ;; 0.01 STX
-(define-constant PRICE-PRO u50000)          ;; 0.05 STX  
+(define-constant PRICE-PRO u50000)          ;; 0.05 STX
 (define-constant PRICE-PREMIUM u200000)     ;; 0.20 STX
 
-;; Maximum valid tier
+;; SYSTEM CONSTRAINTS
 (define-constant MAX-TIER u3)
+(define-constant MAX-ALERTS-BITMASK u31)    ;; Binary 11111 (5 categories)
 
-;; Maximum alerts bitmask (all 5 alert types)
-(define-constant MAX-ALERTS-BITMASK u31)
-
-;; ============================================
+;; =========================================================================
 ;; DATA STORAGE
-;; ============================================
+;; =========================================================================
 
+;; PROTOCOL STATE
 (define-data-var total-users uint u0)
 (define-data-var total-revenue uint u0)
+(define-data-var is-paused bool false)
 (define-data-var contract-version (string-ascii 8) "v3.0.0")
 
-;; Main user profile map
+;; USER REGISTRY: Central storage for participant metadata
 (define-map users principal
   {
     user-id: uint,
@@ -63,33 +72,40 @@
     alerts-enabled: uint,    ;; Bitmask: 1=whale, 2=nft, 4=token, 8=swap, 16=contract
     created-at: uint,
     updated-at: uint,
-    total-triggers: uint     ;; V3: Track total chainhook triggers for user
+    total-triggers: uint     ;; Aggregate trigger history for user analytics
   }
 )
 
-;; ============================================
-;; READ-ONLY FUNCTIONS
-;; ============================================
+;; EVENT LOGGING: Detailed tracking for off-chain services
+(define-map chainhook-triggers { user: principal, hook-type: uint } uint)
 
+;; =========================================================================
+;; READ-ONLY FUNCTIONS
+;; =========================================================================
+
+;; Returns currently deployed contract version
 (define-read-only (get-version)
   (var-get contract-version)
 )
 
+;; Retrieves full profile metadata for a user
 (define-read-only (get-user (who principal))
   (map-get? users who)
 )
 
+;; Simple registration status check
 (define-read-only (is-registered (who principal))
   (is-some (map-get? users who))
 )
 
+;; Comprehensive subscription status reporting
 (define-read-only (get-subscription-status (who principal))
   (match (map-get? users who)
-    user-data 
+    user-data
       {
         registered: true,
         tier: (get tier user-data),
-        active: (or (is-eq (get tier user-data) u0) 
+        active: (or (is-eq (get tier user-data) u0)
                     (> (get subscription-ends user-data) block-height)),
         ends-at: (get subscription-ends user-data),
         total-triggers: (get total-triggers user-data)
@@ -98,6 +114,7 @@
   )
 )
 
+;; Maps tier indices to current microSTX prices
 (define-read-only (get-tier-price (tier uint))
   (if (is-eq tier u0) PRICE-FREE
     (if (is-eq tier u1) PRICE-BASIC
@@ -106,6 +123,7 @@
           u0))))
 )
 
+;; Global protocol health metrics
 (define-read-only (get-stats)
   {
     total-users: (var-get total-users),
@@ -114,7 +132,7 @@
   }
 )
 
-;; V3: Check if subscription is active
+;; Boolean check for active subscription state
 (define-read-only (is-subscription-active (who principal))
   (match (map-get? users who)
     user-data
@@ -124,30 +142,33 @@
   )
 )
 
-;; ============================================
+;; =========================================================================
 ;; PRIVATE HELPER FUNCTIONS
-;; ============================================
+;; =========================================================================
 
-;; V3: Validate username (non-empty, proper length)
+;; Username validation: Non-empty and within character limits
 (define-private (is-valid-username (username (string-ascii 32)))
   (let ((username-len (len username)))
     (and (>= username-len u1) (<= username-len u32))
   )
 )
 
-;; V3: Validate tier
+;; Tier validation: Ensure choice corresponds to defined pricing
 (define-private (is-valid-tier (tier uint))
   (<= tier MAX-TIER)
 )
 
-;; ============================================
+;; =========================================================================
 ;; PUBLIC FUNCTIONS
-;; ============================================
+;; =========================================================================
 
-;; Register and subscribe in one transaction
-;; tier: 0=Free, 1=Basic, 2=Pro, 3=Premium
-;; alerts: bitmask (1=whale, 2=nft, 4=token, 8=swap, 16=contract) or just pass 31 for all
-(define-public (register-and-subscribe 
+;; REGISTRATION: Onboard new user and start subscription
+;; =========================================================================
+;; @param username: Selected display name
+;; @param email: Contact information
+;; @param tier: Subscription level index [0-3]
+;; @param alerts: Enabled alert categories bitmask
+(define-public (register-and-subscribe
     (username (string-ascii 32))
     (email (string-ascii 64))
     (tier uint)
@@ -157,23 +178,24 @@
       (caller tx-sender)
       (price (get-tier-price tier))
       (user-id (+ (var-get total-users) u1))
-      (sub-ends (if (is-eq tier u0) 
-                    u0 
+      (sub-ends (if (is-eq tier u0)
+                    u0
                     (+ block-height BLOCKS-PER-MONTH)))
     )
-    ;; V3: Enhanced validation
+    ;; Protocol and input validation
+    (asserts! (not (var-get is-paused)) ERR-PAUSED)
     (asserts! (is-valid-username username) ERR-INVALID-USERNAME)
     (asserts! (is-none (map-get? users caller)) ERR-ALREADY-REGISTERED)
     (asserts! (is-valid-tier tier) ERR-INVALID-TIER)
     (asserts! (<= alerts MAX-ALERTS-BITMASK) ERR-INVALID-ALERTS)
-    
-    ;; Transfer STX for paid tiers
+
+    ;; Process STX payment for non-free tiers
     (if (> price u0)
       (try! (stx-transfer? price caller CONTRACT-OWNER))
       true
     )
-    
-    ;; Store user profile with V3 enhanced data
+
+    ;; Persist registration data
     (map-set users caller {
       user-id: user-id,
       username: username,
@@ -185,15 +207,15 @@
       updated-at: block-height,
       total-triggers: u0
     })
-    
-    ;; Update stats
+
+    ;; Update aggregate stats
     (var-set total-users user-id)
     (if (> price u0)
       (var-set total-revenue (+ (var-get total-revenue) price))
       true
     )
-    
-    ;; V3: Enhanced event with more data for chainhooks
+
+    ;; Emit event for synchronization
     (print {
       event: "user-registered",
       version: "v3",
@@ -206,13 +228,14 @@
       subscription-ends: sub-ends,
       block: block-height
     })
-    
+
     (ok user-id)
   )
 )
 
-;; Update profile (username, email, alerts) - no payment
-(define-public (update-profile 
+;; UPDATE: Modify non-monetary profile settings
+;; =========================================================================
+(define-public (update-profile
     (username (string-ascii 32))
     (email (string-ascii 64))
     (alerts uint))
@@ -221,17 +244,19 @@
       (caller tx-sender)
       (user-data (unwrap! (map-get? users caller) ERR-NOT-REGISTERED))
     )
-    ;; V3: Validate inputs
+    ;; Crisis and format check
+    (asserts! (not (var-get is-paused)) ERR-PAUSED)
     (asserts! (is-valid-username username) ERR-INVALID-USERNAME)
     (asserts! (<= alerts MAX-ALERTS-BITMASK) ERR-INVALID-ALERTS)
-    
+
+    ;; Update stored data
     (map-set users caller (merge user-data {
       username: username,
       email: email,
       alerts-enabled: alerts,
       updated-at: block-height
     }))
-    
+
     (print {
       event: "profile-updated",
       version: "v3",
@@ -240,12 +265,13 @@
       alerts: alerts,
       block: block-height
     })
-    
+
     (ok true)
   )
 )
 
-;; Upgrade or renew subscription
+;; UPGRADE: Elevate current subscription tier or renew period
+;; =========================================================================
 (define-public (upgrade-subscription (new-tier uint))
   (let
     (
@@ -258,23 +284,24 @@
                     (+ current-ends BLOCKS-PER-MONTH)
                     (+ block-height BLOCKS-PER-MONTH)))
     )
-    ;; V3: Enhanced validation
+    ;; Guard conditions
+    (asserts! (not (var-get is-paused)) ERR-PAUSED)
     (asserts! (> new-tier u0) ERR-INVALID-TIER)
     (asserts! (is-valid-tier new-tier) ERR-INVALID-TIER)
-    
+
     ;; Transfer payment
     (try! (stx-transfer? price caller CONTRACT-OWNER))
-    
-    ;; Update subscription
+
+    ;; Atomic state transition
     (map-set users caller (merge user-data {
       tier: new-tier,
       subscription-ends: new-ends,
       updated-at: block-height
     }))
-    
-    ;; Update revenue
+
+    ;; Update revenue tracking
     (var-set total-revenue (+ (var-get total-revenue) price))
-    
+
     (print {
       event: "subscription-upgraded",
       version: "v3",
@@ -285,26 +312,27 @@
       ends-at: new-ends,
       block: block-height
     })
-    
+
     (ok new-ends)
   )
 )
 
-;; Set alert preferences only
+;; PREFERENCES: Detailed alert selection update
+;; =========================================================================
 (define-public (set-alerts (alerts uint))
   (let
     (
       (caller tx-sender)
       (user-data (unwrap! (map-get? users caller) ERR-NOT-REGISTERED))
     )
-    ;; V3: Validate alerts bitmask
+    (asserts! (not (var-get is-paused)) ERR-PAUSED)
     (asserts! (<= alerts MAX-ALERTS-BITMASK) ERR-INVALID-ALERTS)
-    
+
     (map-set users caller (merge user-data {
       alerts-enabled: alerts,
       updated-at: block-height
     }))
-    
+
     (print {
       event: "alerts-updated",
       version: "v3",
@@ -312,14 +340,14 @@
       alerts: alerts,
       block: block-height
     })
-    
+
     (ok true)
   )
 )
 
-;; ============================================
-;; CHAINHOOK EVENT TRACKING (V3 Enhanced)
-;; ============================================
+;; =========================================================================
+;; SERVICE TRACKING: TRIGGER ACCOUNTING
+;; =========================================================================
 
 ;; Track chainhook triggers per user
 (define-map chainhook-triggers { user: principal, hook-type: uint } uint)
@@ -335,28 +363,29 @@
 ;; 8 = Fee Collected
 ;; 9 = Badge Earned
 
+;; Retrieves usage count for a specific feature for a user
 (define-read-only (get-trigger-count (user principal) (hook-type uint))
   (default-to u0 (map-get? chainhook-triggers { user: user, hook-type: hook-type }))
 )
 
-;; Record a chainhook trigger (called by authorized services or contracts)
+;; INTERNAL RECORDING: Increments usage metrics (called by authorized services)
 (define-public (record-chainhook-trigger (user principal) (hook-type uint))
   (let
     (
       (current-count (get-trigger-count user hook-type))
       (user-data (map-get? users user))
     )
-    ;; Only contract owner or the user themselves can record
-    (asserts! (or (is-eq tx-sender CONTRACT-OWNER) 
+    ;; Identity permission: Admin or User themselves
+    (asserts! (or (is-eq tx-sender CONTRACT-OWNER)
                   (is-eq tx-sender user)) ERR-NOT-AUTHORIZED)
-    
-    ;; V3: Validate hook type (1-9)
+
+    ;; Type validation
     (asserts! (and (>= hook-type u1) (<= hook-type u9)) ERR-INVALID-HOOK-TYPE)
-    
-    ;; Update trigger count
+
+    ;; Persist trigger increment
     (map-set chainhook-triggers { user: user, hook-type: hook-type } (+ current-count u1))
-    
-    ;; V3: Also update user's total triggers if registered
+
+    ;; Update aggregate user profile if present
     (match user-data
       data (map-set users user (merge data {
         total-triggers: (+ (get total-triggers data) u1),
@@ -364,7 +393,7 @@
       }))
       true
     )
-    
+
     (print {
       event: "chainhook-recorded",
       version: "v3",
@@ -373,12 +402,12 @@
       total-triggers: (+ current-count u1),
       block: block-height
     })
-    
+
     (ok (+ current-count u1))
   )
 )
 
-;; Get all chainhook stats for a user
+;; Aggregated usage stats for frontend display
 (define-read-only (get-user-chainhook-stats (user principal))
   {
     whale-alerts: (get-trigger-count user u1),
@@ -393,16 +422,16 @@
   }
 )
 
-;; ============================================
-;; ADMIN FUNCTIONS
-;; ============================================
+;; =========================================================================
+;; ADMIN FUNCTIONS: PROTOCOL MANAGEMENT
+;; =========================================================================
 
 ;; Withdraw collected fees (owner only)
 (define-public (withdraw-fees (amount uint) (recipient principal))
   (begin
     (asserts! (is-eq tx-sender CONTRACT-OWNER) ERR-NOT-AUTHORIZED)
     (try! (as-contract (stx-transfer? amount tx-sender recipient)))
-    
+
     (print {
       event: "fees-withdrawn",
       version: "v3",
@@ -410,12 +439,66 @@
       recipient: recipient,
       block: block-height
     })
-    
+
     (ok true)
   )
 )
 
-;; Admin grant subscription (for promotions, etc.)
+;; PAUSE: Emergency operation toggle
+(define-public (set-paused (paused bool))
+  (begin
+    (asserts! (is-eq tx-sender CONTRACT-OWNER) ERR-NOT-AUTHORIZED)
+    (var-set is-paused paused)
+    (print { event: "pause-status", status: paused, block: block-height })
+    (ok true)
+  )
+)
+
+;; BATCH: Register multiple users (Owner only)
+(define-public (batch-register-users 
+    (users-list (list 20 { u: principal, n: (string-ascii 32), e: (string-ascii 64), t: uint, a: uint })))
+  (begin
+    (asserts! (is-eq tx-sender CONTRACT-OWNER) ERR-NOT-AUTHORIZED)
+    (ok (map register-single-user users-list))
+  )
+)
+
+(define-private (register-single-user (item { u: principal, n: (string-ascii 32), e: (string-ascii 64), t: uint, a: uint }))
+  (let
+    (
+      (user-principal (get u item))
+      (username (get n item))
+      (email (get e item))
+      (tier (get t item))
+      (alerts (get a item))
+      (price (get-tier-price tier))
+      (user-id (+ (var-get total-users) u1))
+      (sub-ends (if (is-eq tier u0) u0 (+ block-height BLOCKS-PER-MONTH)))
+    )
+    (if (and 
+          (is-none (map-get? users user-principal))
+          (is-valid-username username)
+          (is-valid-tier tier)
+          (<= alerts MAX-ALERTS-BITMASK))
+      (begin
+        (map-set users user-principal {
+          user-id: user-id,
+          username: username,
+          email: email,
+          tier: tier,
+          subscription-ends: sub-ends,
+          alerts-enabled: alerts,
+          created-at: block-height,
+          updated-at: block-height,
+          total-triggers: u0
+        })
+        (var-set total-users user-id)
+        true)
+      false)
+  )
+)
+
+;; PROMOTION: Manually grant/extend subscriptions for a user
 (define-public (admin-grant-subscription (user principal) (tier uint) (duration-blocks uint))
   (let
     (
@@ -423,22 +506,13 @@
     )
     (asserts! (is-eq tx-sender CONTRACT-OWNER) ERR-NOT-AUTHORIZED)
     (asserts! (is-valid-tier tier) ERR-INVALID-TIER)
-    
+
     (map-set users user (merge user-data {
       tier: tier,
       subscription-ends: (+ block-height duration-blocks),
       updated-at: block-height
     }))
-    
-    (print {
-      event: "admin-grant",
-      version: "v3",
-      user: user,
-      tier: tier,
-      duration: duration-blocks,
-      block: block-height
-    })
-    
+
     (ok true)
   )
 )

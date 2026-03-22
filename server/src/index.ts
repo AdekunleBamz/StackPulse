@@ -7,7 +7,8 @@ import express, { Request, Response, NextFunction } from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import dotenv from 'dotenv';
-import { createLogger, format, transports } from 'winston';
+import compression from 'compression';
+import logger from './utils/logger';
 
 // Import Stacks utilities using @stacks/transactions and @stacks/connect
 import {
@@ -30,41 +31,64 @@ import {
   deleteUserPreferences,
   NotificationPayload
 } from './services/notifications';
-import { tieredApiLimiter } from './middleware/rateLimiter';
+import { apiLimiter, tieredApiLimiter } from './middleware/rateLimiter';
 import requestLogger from './middleware/requestLogger';
 import db from './services/db';
 import { clearOldData } from './services/analytics';
+import { requestTimeout } from './middleware/timeout';
+import { sanitizePayload } from './utils/webhook';
 
 // Load environment variables
 dotenv.config();
-
-// Initialize logger
-const logger = createLogger({
-  level: process.env.LOG_LEVEL || 'info',
-  format: format.combine(
-    format.timestamp(),
-    format.errors({ stack: true }),
-    format.json()
-  ),
-  transports: [
-    new transports.Console({
-      format: format.combine(
-        format.colorize(),
-        format.simple()
-      )
-    })
-  ]
-});
 
 // Initialize Express app
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// Environment validation
+const REQUIRED_ENV = [
+  'CHAINHOOK_AUTH_TOKEN',
+  'DEPLOYER_ADDRESS',
+  'REGISTRY_CONTRACT',
+  'ALERT_CONTRACT'
+];
+
+const missingEnv = REQUIRED_ENV.filter(key => !process.env[key]);
+if (missingEnv.length > 0) {
+  logger.error('❌ Missing required environment variables:', { missing: missingEnv });
+  process.exit(1);
+}
+
+logger.info('✅ Environment validation successful');
+
 // Middleware
+// CORS configuration
+const allowedOrigins = process.env.ALLOWED_ORIGINS 
+  ? process.env.ALLOWED_ORIGINS.split(',') 
+  : ['http://localhost:3000', 'https://stackpulse.vercel.app', 'https://stackpulse-v3.vercel.app'];
+
 app.use(helmet());
-app.use(cors());
+app.use(cors({
+  origin: (origin, callback) => {
+    // Allow requests with no origin (like mobile apps or curl requests)
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.indexOf(origin) !== -1 || process.env.NODE_ENV === 'development') {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true
+}));
 app.use(express.json({ limit: '10mb' }));
+app.use(compression());
+app.use(requestTimeout(30000));
 app.use(requestLogger());
+
+// Global API Rate Limiter
+app.use('/api/v1', apiLimiter);
 
 // Optional authentication middleware for chainhook endpoints
 // Note: Hiro Platform chainhooks don't always send auth headers, so we make this optional
@@ -138,16 +162,24 @@ const eventStats = {
 const processAsync = (handler: (payload: ChainhookPayload) => Promise<void>) => {
   return async (req: Request, res: Response) => {
     // Respond immediately with 202 Accepted to prevent Hiro timeout
-    res.status(202).json({ status: 'accepted', message: 'Processing async' });
+    res.status(202).json({ 
+      success: true, 
+      status: 'accepted', 
+      message: 'Event received and processing in background' 
+    });
     
     // Process in background
     try {
-      const payload: ChainhookPayload = req.body;
+      const payload: ChainhookPayload = sanitizePayload(req.body);
       if (payload && payload.apply) {
         await handler(payload);
       }
-    } catch (error) {
-      logger.error('Async processing error', { error });
+    } catch (error: any) {
+      logger.error('Async processing error', { 
+        error: error.message,
+        path: req.path,
+        requestId: req.headers['x-request-id']
+      });
     }
   };
 };
@@ -578,7 +610,9 @@ app.get('/health', (req: Request, res: Response) => {
   res.json({ 
     status: 'healthy', 
     timestamp: new Date().toISOString(),
-    version: '1.0.0'
+    version: '3.0.0',
+    uptime: process.uptime(),
+    network: process.env.NEXT_PUBLIC_STACKS_NETWORK || 'mainnet'
   });
 });
 
@@ -876,9 +910,27 @@ app.delete('/api/users/:address/alerts/:alertId', async (req: Request, res: Resp
 });
 
 // Error handling middleware
-app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
-  logger.error('Unhandled error', { error: err.message, stack: err.stack });
-  res.status(500).json({ error: 'Internal server error' });
+app.use((err: any, req: Request, res: Response, next: NextFunction) => {
+  const statusCode = err.status || err.statusCode || 500;
+  const message = err.message || 'Internal server error';
+  
+  logger.error('API Error', { 
+    error: message, 
+    stack: process.env.NODE_ENV === 'development' ? err.stack : undefined,
+    path: req.path,
+    method: req.method,
+    ip: req.ip
+  });
+
+  res.status(statusCode).json({
+    success: false,
+    error: {
+      message,
+      code: err.code || 'INTERNAL_ERROR',
+      timestamp: new Date().toISOString(),
+      path: req.path
+    }
+  });
 });
 
 // Start server
@@ -892,29 +944,27 @@ const server = app.listen(PORT, () => {
 const gracefulShutdown = (signal: string) => {
   logger.info(`${signal} received, starting graceful shutdown...`);
   
+  // Force shutdown after 10 seconds (reduced from 30 for responsiveness)
+  const forceShutdown = setTimeout(() => {
+    logger.error('Forced shutdown after timeout - some resources may not have closed cleanly');
+    process.exit(1);
+  }, 10000);
+
   // Stop accepting new connections
   server.close((err) => {
+    clearTimeout(forceShutdown);
+    
     if (err) {
       logger.error('Error during server shutdown', { error: err });
       process.exit(1);
     }
     
-    logger.info('HTTP server closed');
+    logger.info('HTTP server closed, all connections terminated');
     
-    // Save any pending data
-    logger.info('Saving pending data...');
-    
-    // Close database connections, etc.
+    // Save any pending data or close other resources here
     logger.info('Graceful shutdown complete');
-    
     process.exit(0);
   });
-  
-  // Force shutdown after 30 seconds
-  setTimeout(() => {
-    logger.error('Forced shutdown after timeout');
-    process.exit(1);
-  }, 30000);
 };
 
 // Register signal handlers
