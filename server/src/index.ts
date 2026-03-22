@@ -32,8 +32,8 @@ import {
 } from './services/notifications';
 import { tieredApiLimiter } from './middleware/rateLimiter';
 import requestLogger from './middleware/requestLogger';
-import db from './services/db';
 import { clearOldData } from './services/analytics';
+import { requestTimeout } from './middleware/timeout';
 
 // Load environment variables
 dotenv.config();
@@ -62,6 +62,7 @@ logger.info('✅ Environment validation successful');
 app.use(helmet());
 app.use(cors());
 app.use(express.json({ limit: '10mb' }));
+app.use(requestTimeout(30000));
 app.use(requestLogger());
 
 // Optional authentication middleware for chainhook endpoints

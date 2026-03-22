@@ -15,7 +15,12 @@ export function requestTimeout(timeoutMs: number = 30000) {
         });
         res.status(504).json({
           success: false,
-          error: 'Request timeout'
+          error: {
+            message: 'Request timeout',
+            code: 'TIMEOUT',
+            timestamp: new Date().toISOString(),
+            path: req.path
+          }
         });
       }
     }, timeoutMs);
