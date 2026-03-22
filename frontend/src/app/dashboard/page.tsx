@@ -39,6 +39,18 @@ import { AlertCard, ActivityItem, Breadcrumbs } from '@/components';
 
 const DEPLOYER_ADDRESS = process.env.NEXT_PUBLIC_DEPLOYER_ADDRESS || '';
 
+const tierNames: Record<number, string> = {
+  0: 'Free',
+  1: 'Basic',
+  2: 'Pro',
+};
+
+const maxAlerts: Record<number, number> = {
+  0: 1,
+  1: 5,
+  2: 20,
+};
+
 // Alert types matching the contracts and chainhooks
 const alertTypes = [
   { id: 1, name: 'Whale Transfers', icon: Wallet, description: 'Large STX transfers (>10,000 STX)', iconBgClass: 'bg-blue-500/20', iconClass: 'text-blue-400' },
@@ -78,12 +90,26 @@ interface UserData {
 }
 
 export default function DashboardPage() {
-  const { address, isConnected, connect, isRegistered, userData, isLoading: isAccountLoading } = useAccount();
+  const router = useRouter();
+  const { confirm, ConfirmDialog } = useConfirmDialog();
+  const { address, isConnected, connect, userData, isLoading: isAccountLoading } = useAccount();
   const [alerts, setAlerts] = useState<DashboardAlert[]>([]);
   const [isDataLoading, setIsDataLoading] = useState(true);
+  const [isCreating, setIsCreating] = useState(false);
   const [syncingAlertIds, setSyncingAlertIds] = useState<Set<number>>(new Set());
   const [history, setHistory] = useState<AlertHistoryItem[]>([]);
   const [visibleHistoryLimit, setVisibleHistoryLimit] = useState(5);
+  
+  // Create Alert State
+  const [showCreateAlert, setShowCreateAlert] = useState(false);
+  const [newAlertType, setNewAlertType] = useState(1);
+  const [newAlertName, setNewAlertName] = useState('');
+  const [newAlertThreshold, setNewAlertThreshold] = useState('10000');
+  
+  const createAlertTitleId = useId();
+  const createAlertDescId = useId();
+  const createAlertSelectRef = useRef<HTMLSelectElement>(null);
+
   const { enabled: soundEnabled, toggle: toggleSound, playSound } = useSound();
   const { permission: notifyPermission, requestPermission, sendNotification } = useNotifications();
   
@@ -277,7 +303,7 @@ export default function DashboardPage() {
       variant: 'danger',
       onConfirm: async () => {
         const toastId = toast.loading('Deleting', 'Removing alert from dashboard...');
-        let removedAlert: UserAlert | undefined;
+        let removedAlert: DashboardAlert | undefined;
         setAlerts((prev) => {
           removedAlert = prev.find((a) => a.id === alertId);
           return prev.filter((a) => a.id !== alertId);

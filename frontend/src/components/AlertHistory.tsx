@@ -1,8 +1,9 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useDebounce } from '@/hooks/useDebounce';
 import { NoResultsState, NoTransactionsState } from '@/components/EmptyState';
+import { ErrorState } from '@/components/ErrorState';
 import {
   History,
   Filter,
@@ -285,10 +286,10 @@ export default function AlertHistory({ userAddress }: AlertHistoryProps) {
                 </td>
               </tr>
             ) : (
-              history.map((entry) => (
+              useMemo(() => history.map((entry) => (
                 <tr 
                   key={entry.id} 
-                  className="group hover:bg-white/[0.02] transition-all duration-300 ease-out border-l-2 border-transparent hover:border-purple-500/50"
+                  className="border-b border-white/[0.04] hover:bg-white/[0.03] even:bg-white/[0.01] transition-colors group/row"
                 >
                   <td className="px-6 py-4">
                     <span className="text-white font-medium">{entry.alertName}</span>
@@ -322,7 +323,7 @@ export default function AlertHistory({ userAddress }: AlertHistoryProps) {
                     </a>
                   </td>
                 </tr>
-              ))
+              )), [history])
             )}
           </tbody>
         </table>
