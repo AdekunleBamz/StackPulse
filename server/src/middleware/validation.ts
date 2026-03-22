@@ -151,7 +151,7 @@ export function validateParams(schema: ValidationSchema) {
 }
 
 // Predefined validation schemas
-export const schemas = {
+export const schemas: Record<string, ValidationSchema> = {
   createAlert: {
     name: { type: 'string', required: true, min: 1, max: 64 },
     alertType: { type: 'number', required: true, min: 1, max: 6 },
