@@ -37,7 +37,7 @@ export default function LoadingSkeleton({
   
   const style: React.CSSProperties = {
     width: width || '100%',
-    height: height || '1rem'
+    height: height || '1.25rem'
   };
   
   return (
@@ -110,9 +110,9 @@ export function UserProfileSkeleton() {
     <div className="flex items-center gap-6">
       <LoadingSkeleton variant="circular" width={80} height={80} />
       <div className="flex-1 space-y-2">
-        <LoadingSkeleton width={150} height={24} />
-        <LoadingSkeleton width={200} height={16} />
-        <LoadingSkeleton width={100} height={14} />
+        <LoadingSkeleton width={150} height={28} />
+        <LoadingSkeleton width={200} height={20} />
+        <LoadingSkeleton width={100} height={16} />
       </div>
     </div>
   );
