@@ -14,49 +14,10 @@ interface PriceData {
   };
 }
 
+import { usePrice } from '@/hooks/usePrice';
+
 export default function PriceTracker() {
-  const [prices, setPrices] = useState<PriceData | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [lastUpdate, setLastUpdate] = useState<Date | null>(null);
-  const [refreshKey, setRefreshKey] = useState(0);
-
-  useEffect(() => {
-    const fetchPrices = async () => {
-      setLoading(true);
-      try {
-        // Using CoinGecko API for price data
-        const response = await fetch(
-          'https://api.coingecko.com/api/v3/simple/price?ids=blockstack,bitcoin&vs_currencies=usd&include_24hr_change=true'
-        );
-        
-        if (!response.ok) throw new Error('Bad response');
-        const data = await response.json();
-        setPrices({
-          stx: {
-            usd: data.blockstack?.usd || 0,
-            change24h: data.blockstack?.usd_24h_change || 0,
-          },
-          btc: {
-            usd: data.bitcoin?.usd || 0,
-            change24h: data.bitcoin?.usd_24h_change || 0,
-          },
-        });
-        setLastUpdate(new Date());
-        setError(null);
-      } catch (error) {
-        console.error('Error fetching prices:', error);
-        setError('Unable to load prices right now.');
-        setPrices(null);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchPrices();
-    const interval = setInterval(fetchPrices, 60000); // Update every minute
-    return () => clearInterval(interval);
-  }, [refreshKey]);
+  const { prices, loading, error, lastUpdate, refresh } = usePrice(60000);
 
   const formatPrice = (price: number) => {
     if (price >= 1000) {
@@ -98,7 +59,7 @@ export default function PriceTracker() {
         <span className="text-gray-400 text-sm">{error || 'Prices unavailable'}</span>
         <button
           type="button"
-          onClick={() => setRefreshKey((k) => k + 1)}
+          onClick={refresh}
           className="ml-auto text-sm text-purple-300 hover:text-purple-200 transition-colors rounded-md focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400/90"
         >
           Retry
