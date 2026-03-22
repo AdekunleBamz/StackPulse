@@ -454,6 +454,50 @@
   )
 )
 
+;; BATCH: Register multiple users (Owner only)
+(define-public (batch-register-users 
+    (users-list (list 20 { u: principal, n: (string-ascii 32), e: (string-ascii 64), t: uint, a: uint })))
+  (begin
+    (asserts! (is-eq tx-sender CONTRACT-OWNER) ERR-NOT-AUTHORIZED)
+    (ok (map register-single-user users-list))
+  )
+)
+
+(define-private (register-single-user (item { u: principal, n: (string-ascii 32), e: (string-ascii 64), t: uint, a: uint }))
+  (let
+    (
+      (user-principal (get u item))
+      (username (get n item))
+      (email (get e item))
+      (tier (get t item))
+      (alerts (get a item))
+      (price (get-tier-price tier))
+      (user-id (+ (var-get total-users) u1))
+      (sub-ends (if (is-eq tier u0) u0 (+ block-height BLOCKS-PER-MONTH)))
+    )
+    (if (and 
+          (is-none (map-get? users user-principal))
+          (is-valid-username username)
+          (is-valid-tier tier)
+          (<= alerts MAX-ALERTS-BITMASK))
+      (begin
+        (map-set users user-principal {
+          user-id: user-id,
+          username: username,
+          email: email,
+          tier: tier,
+          subscription-ends: sub-ends,
+          alerts-enabled: alerts,
+          created-at: block-height,
+          updated-at: block-height,
+          total-triggers: u0
+        })
+        (var-set total-users user-id)
+        true)
+      false)
+  )
+)
+
 ;; PROMOTION: Manually grant/extend subscriptions for a user
 (define-public (admin-grant-subscription (user principal) (tier uint) (duration-blocks uint))
   (let
