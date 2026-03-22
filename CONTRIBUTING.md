@@ -62,6 +62,16 @@ npm --prefix frontend run build
 npm --prefix shared run build
 ```
 
+## Testing guidelines
+
+Maintain high coverage for new features:
+- **Unit Tests**: Place in `tests/unit/` for pure logic (e.g., Stacks utilities, notification service).
+- **Integration Tests**: Use `tests/webhook.test.ts` for verifying end-to-end event ingestion.
+- **Contract Tests**: Add new `.clar` tests to `tests/` for any logic changes in smart contracts.
+- **Frontend Tests**: Use Vitest for hook and component logic in the `frontend` directory.
+
+All PRs should include relevant tests and pass on CI.
+
 ## Repo-specific expectations
 
 - `server/src/index.ts` is the current source of truth for mounted backend endpoints.
