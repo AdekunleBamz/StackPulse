@@ -97,8 +97,10 @@ export default function NotificationCenter({ maxNotifications = 50 }: Notificati
       <button
         onClick={() => setIsOpen(!isOpen)}
         className="relative p-2 text-gray-400 hover:text-white transition-colors rounded-lg hover:bg-gray-800"
+        aria-label={`Notifications (${unreadCount} unread)`}
+        aria-expanded={isOpen}
       >
-        <Bell className="w-5 h-5" />
+        <Bell className="w-5 h-5" aria-hidden="true" />
         {unreadCount > 0 && (
           <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">
             {unreadCount > 9 ? '9+' : unreadCount}
@@ -132,8 +134,9 @@ export default function NotificationCenter({ maxNotifications = 50 }: Notificati
                 <button
                   onClick={() => setIsOpen(false)}
                   className="p-1 text-gray-400 hover:text-white rounded"
+                  aria-label="Close notification panel"
                 >
-                  <X className="w-4 h-4" />
+                  <X className="w-4 h-4" aria-hidden="true" />
                 </button>
               </div>
             </div>
@@ -203,6 +206,7 @@ export default function NotificationCenter({ maxNotifications = 50 }: Notificati
                 <button
                   onClick={clearAll}
                   className="text-sm text-gray-400 hover:text-white"
+                  aria-label="Clear all notifications"
                 >
                   Clear all
                 </button>
