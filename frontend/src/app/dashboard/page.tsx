@@ -8,7 +8,7 @@ import { NoAlertsState } from '@/components/EmptyState';
 import { 
   DashboardSkeleton,
   StatsCardSkeleton,
-  HistorySkeleton
+  LoadingSkeleton as HistorySkeleton
 } from '@/components/LoadingSkeleton';
 import Button from '@/components/ui/Button';
 import { useAccount } from '@/hooks/useAccount';
@@ -78,12 +78,7 @@ export interface AlertHistoryItem {
   data?: any;
 }
 
-interface UserData {
-  username: string;
-  tier: number;
-  alertsEnabled: number;
-  subscriptionEnds: number;
-}
+// Dashboard component
 
 export default function DashboardPage() {
   const router = useRouter();
