@@ -38,12 +38,12 @@ const socialLinks = [
 
 export default function Footer() {
   return (
-    <footer className="relative bg-gray-950 border-t border-white/[0.02] pt-24 pb-20 sm:pt-20 sm:pb-10 px-4 sm:px-6 lg:px-8 mt-12 overflow-hidden" aria-labelledby="footer-heading">
+    <footer className="relative bg-gray-950 border-t border-white/[0.02] pt-16 pb-12 sm:pt-20 sm:pb-10 px-4 sm:px-6 lg:px-8 mt-12 overflow-hidden" aria-labelledby="footer-heading">
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-4xl h-px bg-gradient-to-r from-transparent via-purple-500/20 to-transparent" />
       <h2 id="footer-heading" className="sr-only">Footer</h2>
       
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-x-8 gap-y-12 mb-20">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-x-8 gap-y-10 mb-20">
           {/* Brand Column */}
           <div className="sm:col-span-2 lg:col-span-2 sm:pr-8">
             <Link href="/" className="flex items-center space-x-3.5 mb-10 group/footer-logo">
