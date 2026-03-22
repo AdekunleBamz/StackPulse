@@ -22,6 +22,16 @@ npm --prefix shared install
 4. Run the checks that match the area you touched.
 5. Create signed commits with clear messages.
 
+## Branch naming
+
+Use descriptive prefixes to categorize your work:
+- `feat/`: New features or significant enhancements
+- `fix/`: Bug fixes
+- `docs/`: Documentation updates
+- `refactor/`: Code structural changes without behavioral impact
+- `test/`: Adding or improving tests
+- `chore/`: Maintenance tasks (dependencies, config)
+
 ## Signed commits
 
 The repository already supports SSH commit signing. Prefer signed commits for all changes:
