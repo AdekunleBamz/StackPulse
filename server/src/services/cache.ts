@@ -29,12 +29,19 @@ class CacheService {
   }
 
   /**
-   * Set a value in cache
+   * Set a value in cache with LRU eviction
    */
   set<T>(key: string, value: T, ttlMs: number = 3600000): void {
-    if (this.cache.size >= MAX_CACHE_SIZE && !this.cache.has(key)) {
-      logger.warn('Maximum cache size reached, dropping new entry', { key });
-      return;
+    // If key exists, delete it first to move it to the end (most recent)
+    if (this.cache.has(key)) {
+      this.cache.delete(key);
+    } else if (this.cache.size >= MAX_CACHE_SIZE) {
+      // Evict the oldest entry (first item in Map iterator)
+      const oldestKey = this.cache.keys().next().value;
+      if (oldestKey !== undefined) {
+        this.cache.delete(oldestKey);
+        logger.debug('Cache entry evicted (LRU)', { key: oldestKey });
+      }
     }
     
     this.cache.set(key, {
@@ -44,109 +51,25 @@ class CacheService {
   }
 
   /**
-   * Get a value from cache
+   * Get a value from cache and update its recency
    */
   get<T>(key: string): T | null {
     const entry = this.cache.get(key);
     
-    if (!entry) {
-      return null;
-    }
+    if (!entry) return null;
 
-    // Check if expired
     if (Date.now() > entry.expiresAt) {
       this.cache.delete(key);
       return null;
     }
+
+    // Refresh recency by re-inserting
+    this.cache.delete(key);
+    this.cache.set(key, entry);
 
     return entry.value as T;
-  }
-
-  /**
-   * Check if key exists in cache
-   */
-  has(key: string): boolean {
-    const entry = this.cache.get(key);
-    
-    if (!entry) {
-      return false;
-    }
-
-    // Check if expired
-    if (Date.now() > entry.expiresAt) {
-      this.cache.delete(key);
-      return false;
-    }
-
-    return true;
-  }
-
-  /**
-   * Delete a key from cache
-   */
-  delete(key: string): boolean {
-    return this.cache.delete(key);
-  }
-
-  /**
-   * Clear all cache
-   */
-  clear(): void {
-    this.cache.clear();
-  }
-
-  /**
-   * Clean up expired entries
-   */
-  private cleanup(): void {
-    const now = Date.now();
-    for (const [key, entry] of this.cache.entries()) {
-      if (now > entry.expiresAt) {
-        this.cache.delete(key);
-      }
-    }
-  }
-
-  /**
-   * Get cache size
-   */
-  size(): number {
-    return this.cache.size;
-  }
-
-  /**
-   * Destroy cache service
-   */
-  destroy(): void {
-    if (this.cleanupInterval) { // Only clear if it was set
-      clearInterval(this.cleanupInterval);
-    }
-    logger.info('Cache cleared');
-  }
-
-  /**
-   * Cleanup expired items to prevent memory leaks
-   */
-  cleanupExpired() {
-    const now = Date.now();
-    let count = 0;
-    
-    for (const [key, entry] of this.cache.entries()) {
-      if (entry.expiresAt < now) {
-        this.cache.delete(key);
-        count++;
-      }
-    }
-    
-    if (count > 0) {
-      logger.info('Cleaned up expired cache items', { count });
-    }
   }
 }
 
 const cacheService = new CacheService();
-
-// Periodically cleanup expired items
-cacheService['cleanupInterval'] = setInterval(() => cacheService.cleanupExpired(), 600000); // Every 10 minutes
-
 export default cacheService;
