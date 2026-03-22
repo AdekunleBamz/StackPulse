@@ -586,7 +586,9 @@ app.get('/health', (req: Request, res: Response) => {
   res.json({ 
     status: 'healthy', 
     timestamp: new Date().toISOString(),
-    version: '1.0.0'
+    version: '3.0.0',
+    uptime: process.uptime(),
+    network: process.env.NEXT_PUBLIC_STACKS_NETWORK || 'mainnet'
   });
 });
 
