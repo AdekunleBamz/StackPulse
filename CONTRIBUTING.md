@@ -14,49 +14,30 @@ npm --prefix frontend install
 npm --prefix shared install
 ```
 
-## Branching Strategy
+## Day-to-day workflow
 
-We follow a feature-branch workflow:
-- `main`: Production-ready code.
-- `feat/*`: New features.
-- `fix/*`: Bug fixes.
-- `docs/*`: Documentation changes.
-- `refactor/*`: Code refactoring without functional changes.
+1. Start from a branch or worktree based on the latest `main`.
+2. Keep changes scoped to one concern when possible.
+3. Update nearby docs or READMEs when commands, routes, or file layout change.
+4. Run the checks that match the area you touched.
+5. Create signed commits with clear messages.
 
-## Pull Request Process
+## Branch naming
 
-1.  **Branch**: Create a new branch from `main`.
-2.  **Develop**: Make your changes, ensuring they follow the project's coding standards.
-3.  **Test**: Verified your changes with local tests (`npm test`, `npm run build`).
-4.  **Commit**: Create descriptive, atomic, and **GPG-signed** commits.
-5.  **Open PR**: Open a Pull Request with a clear title and description of the changes.
-6.  **Review**: Address any feedback from maintainers.
-7.  **Merge**: Once approved, your PR will be merged into `main`.
+Use descriptive prefixes to categorize your work:
+- `feat/`: New features or significant enhancements
+- `fix/`: Bug fixes
+- `docs/`: Documentation updates
+- `refactor/`: Code structural changes without behavioral impact
+- `test/`: Adding or improving tests
+- `chore/`: Maintenance tasks (dependencies, config)
 
-## Technological Focus
+## Signed commits
 
-### Frontend
-- **Framework**: Next.js (App Router)
-- **Styling**: Tailwind CSS
-- **Animations**: Framer Motion
-- **State Management**: React Hooks & Context API
-- **Web3**: Stacks.js & Stacks Connect
-
-### Backend (Server)
-- **Runtime**: Node.js
-- **API**: Express
-- **Integration**: Hiro API & Chainhooks
-
-### Contracts
-- **Language**: Clarity
-- **Tooling**: Clarinet
-
-## Signed Commits
-
-All contributions must be signed using GPG or SSH. Signing verifies the authenticity of the author.
+The repository already supports SSH commit signing. Prefer signed commits for all changes:
 
 ```bash
-git commit -S -m "feat(frontend): add real-time validation"
+git commit -S -m "docs: refresh workspace notes"
 ```
 
 ## Useful checks
@@ -73,6 +54,9 @@ npm --prefix server test
 # Frontend
 npm --prefix frontend run lint
 npm --prefix frontend run build
+
+# Shared package
+npm --prefix shared run build
 ```
 
 ## Repo-specific expectations
