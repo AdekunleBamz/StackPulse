@@ -6,7 +6,8 @@ Only the latest version of StackPulse is currently supported for security update
 
 | Version | Supported          |
 | ------- | ------------------ |
-| 1.0.x   | :white_check_mark: |
+| 3.x     | :white_check_mark: |
+| 1.0.x   | :x:                |
 
 ## Reporting a Vulnerability
 
