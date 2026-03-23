@@ -150,7 +150,10 @@ Create user notification preferences.
 ```json
 {
   "success": true,
-  "message": "Preferences updated successfully"
+  "user": {
+    "address": "SP...",
+    "enabledAlerts": ["whale", "nft"]
+  }
 }
 ```
 
