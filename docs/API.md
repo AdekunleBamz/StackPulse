@@ -132,7 +132,7 @@ Get user profile and preferences.
 }
 ```
 
-#### POST /api/users/:address/preferences
+#### POST /api/v1/users
 
 Update user notification preferences.
 
