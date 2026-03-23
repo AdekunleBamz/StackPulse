@@ -92,7 +92,7 @@ plan:
       transactions:
         - contract-publish:
             contract-name: fee-vault-v-j3
-            path: contracts/fee-vault-v3.clar
+            path: contracts/fee-vault-v-j3.clar
             anchor-block-only: true
             cost: 500000
             
