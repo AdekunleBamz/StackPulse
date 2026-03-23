@@ -25,3 +25,5 @@ Maintainers are responsible for clarifying and enforcing this code of conduct.
 They may remove, edit, or reject comments, commits, and interactions that violate it.
 
 ## Reporting Guidelines
+
+Report incidents to the repository maintainers through the primary project contact channel.
