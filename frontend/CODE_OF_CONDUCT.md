@@ -11,3 +11,4 @@ We commit to acting and interacting in ways that build an open and welcoming com
 
 - Demonstrating empathy and kindness toward other people.
 - Giving and receiving constructive feedback gracefully.
+- Respecting differing viewpoints and experiences.
