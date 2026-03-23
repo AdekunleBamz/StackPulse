@@ -21,6 +21,8 @@ The live backend routes are currently defined in `server/src/index.ts`. The list
 - `POST /api/v1/users/:address/alerts`
 - `DELETE /api/users/:address/alerts/:alertId`
 
+Note: user profile routes currently use mixed `/api` and `/api/v1` prefixes as shown above.
+
 ### Chainhook ingestion
 
 - `POST /api/v1/chainhooks/whale-transfer`
