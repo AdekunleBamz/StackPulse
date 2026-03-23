@@ -22,3 +22,4 @@ We commit to acting and interacting in ways that build an open and welcoming com
 ## Enforcement Responsibilities
 
 Maintainers are responsible for clarifying and enforcing this code of conduct.
+They may remove, edit, or reject comments, commits, and interactions that violate it.
