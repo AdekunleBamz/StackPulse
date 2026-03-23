@@ -37,3 +37,5 @@ This guide explains how to contribute safely and consistently to the Next.js fro
 - Update nearby docs when commands, routes, or env requirements change.
 
 ## Commit messages
+
+- Use concise prefixes such as `fix(frontend):`, `feat(frontend):`, or `docs(frontend):`.
