@@ -19,3 +19,5 @@ This guide explains how to contribute safely and consistently to the Next.js fro
 - Rebase or merge frequently from `main` to reduce frontend integration drift.
 
 ## Coding style
+
+- Prefer explicit TypeScript types for component props and hook return values.
