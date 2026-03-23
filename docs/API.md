@@ -160,7 +160,7 @@ Delete user preferences.
 
 ### Alerts
 
-#### GET /api/users/:address/alerts
+#### GET /api/v1/users/:address/alerts
 
 Get user's configured alerts.
 
