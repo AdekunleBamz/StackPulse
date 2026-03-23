@@ -28,3 +28,4 @@ This guide explains how to contribute safely and consistently to the Next.js fro
 
 - `npm --prefix frontend run lint` passes with no new warnings.
 - `npm --prefix frontend run build` succeeds after page-level changes.
+- Verify affected pages in both desktop and mobile viewport sizes.
