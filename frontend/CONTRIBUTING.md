@@ -49,3 +49,4 @@ This guide explains how to contribute safely and consistently to the Next.js fro
 ## Release note hygiene
 
 - Add notable UX changes to `frontend/CHANGELOG.md` in the same branch.
+- Call out backend API dependency changes when frontend request paths are updated.
