@@ -328,7 +328,7 @@ npx tsx scripts/check-chainhook-status.ts
 
 ### Contract Upgrades
 
-1. Create new contract version (e.g., `stackpulse-v4.clar`)
+1. Create new contract version (e.g., `stackpulse-v-j4.clar`)
 2. Deploy to testnet first
 3. Run comprehensive tests
 4. Deploy to mainnet
