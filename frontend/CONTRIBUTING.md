@@ -40,3 +40,5 @@ This guide explains how to contribute safely and consistently to the Next.js fro
 
 - Use concise prefixes such as `fix(frontend):`, `feat(frontend):`, or `docs(frontend):`.
 - Keep commits signed to preserve verified history for frontend changes.
+
+## Review etiquette
