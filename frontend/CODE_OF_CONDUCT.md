@@ -30,3 +30,5 @@ Report incidents to the repository maintainers through the primary project conta
 All good-faith reports are reviewed promptly and handled with as much confidentiality as possible.
 
 ## Scope
+
+This policy applies in all project spaces, including issues, pull requests, and chats tied to frontend work.
