@@ -20,3 +20,5 @@ We commit to acting and interacting in ways that build an open and welcoming com
 - Publishing others' private information without explicit permission.
 
 ## Enforcement Responsibilities
+
+Maintainers are responsible for clarifying and enforcing this code of conduct.
