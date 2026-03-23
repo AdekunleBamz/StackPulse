@@ -18,3 +18,5 @@ This changelog format follows Keep a Changelog principles.
 - None yet.
 
 ### Security
+
+- None yet.
