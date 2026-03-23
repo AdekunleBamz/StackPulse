@@ -168,8 +168,7 @@ Delete user preferences.
 **Response:**
 ```json
 {
-  "success": true,
-  "message": "User preferences deleted"
+  "success": true
 }
 ```
 
