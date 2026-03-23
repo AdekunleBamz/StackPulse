@@ -28,3 +28,9 @@ StackPulse is split across contracts, chainhooks, a backend ingestion API, a sha
 - Webhook handlers should acknowledge quickly and avoid long blocking operations.
 - Downstream notifications are best-effort and should not block persistence writes.
 - Health endpoints should report dependency status separately from process liveness.
+
+## Observability surfaces
+
+- `/health` for process and dependency health snapshots.
+- `/api/v1/stats` for event counters used by dashboards and quick verification.
+- Structured server logs for webhook validation, routing, and processing failures.
