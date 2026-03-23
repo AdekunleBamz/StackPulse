@@ -34,3 +34,5 @@ All good-faith reports are reviewed promptly and handled with as much confidenti
 This policy applies in all project spaces, including issues, pull requests, and chats tied to frontend work.
 
 ## Acknowledgment
+
+This document is informed by the Contributor Covenant and adapted for StackPulse collaboration.
