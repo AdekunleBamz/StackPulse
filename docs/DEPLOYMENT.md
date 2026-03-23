@@ -135,7 +135,7 @@ DEPLOYER_ADDRESS=SP5K2RHMSBH4PAP4PGX77MCVNK1ZEED07CWX9TJT
 REGISTRY_CONTRACT=stackpulse-v-j3
 ALERT_CONTRACT=alert-manager-v-j3
 VAULT_CONTRACT=fee-vault-v-j3
-BADGE_CONTRACT=reputation-badges-v3
+BADGE_CONTRACT=reputation-badges-v-j3
 
 # Optional: Redis for caching
 REDIS_URL=redis://...
