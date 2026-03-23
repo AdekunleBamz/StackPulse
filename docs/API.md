@@ -263,7 +263,7 @@ Receive NFT mint events.
 
 Receive new SIP-010 token deployment events.
 
-### POST /api/chainhooks/large-swap
+### POST /api/v1/chainhooks/
 
 Receive large DEX swap events.
 
