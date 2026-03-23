@@ -40,3 +40,9 @@ StackPulse is split across contracts, chainhooks, a backend ingestion API, a sha
 - Contracts are deployed with Clarinet plans under `deployments/`.
 - Backend and frontend are independently deployable and communicate over HTTP/WebSocket.
 - Chainhook registration ties manifest webhook targets to the currently deployed backend.
+
+## Change coordination
+
+- Route changes in `server/src/index.ts` should be reflected in `docs/API.md`.
+- Contract renames must update scripts, frontend constants, and deployment plans together.
+- New chainhook manifests should include matching backend handler paths before rollout.
