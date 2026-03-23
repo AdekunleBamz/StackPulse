@@ -11,14 +11,19 @@ import {
   stringAsciiCV,
   uintCV,
 } from '@stacks/transactions';
-import { generateWallet } from '@stacks/wallet-sdk';
+import { generateSecretKey, generateWallet } from '@stacks/wallet-sdk';
 import { StacksMainnet } from '@stacks/network';
 import * as fs from 'fs';
+import * as path from 'path';
+import { fileURLToPath } from 'url';
 
 const network = new StacksMainnet();
 const DEPLOYER_ADDRESS = 'SP5K2RHMSBH4PAP4PGX77MCVNK1ZEED07CWX9TJT';
 const HIRO_API_ORIGIN = 'https://api.mainnet.hiro.so';
-const DEFAULT_WALLETS_PATH = './scripts/test-wallets.json';
+const SCRIPT_DIR = path.dirname(fileURLToPath(import.meta.url));
+const DEFAULT_WALLETS_PATH = path.resolve(SCRIPT_DIR, 'test-wallets.json');
+const DEFAULT_WALLET_COUNT = 25;
+const TX_FEE_USTX = 1000; // 0.001 STX
 
 const ansi = {
   green: (s: string) => `\x1b[32m${s}\x1b[0m`,
@@ -41,6 +46,10 @@ function sleep(ms: number) {
   return new Promise((r) => setTimeout(r, ms));
 }
 
+function bumpCounter(counters: Record<string, number>, key: string) {
+  counters[key] = (counters[key] ?? 0) + 1;
+}
+
 function parseArgs(argv: string[]) {
   const args = new Map<string, string>();
   for (let i = 2; i < argv.length; i++) {
@@ -55,6 +64,31 @@ function parseArgs(argv: string[]) {
     }
   }
   return args;
+}
+
+async function ensureWalletsFile(walletsPath: string, count: number) {
+  if (fs.existsSync(walletsPath)) return;
+
+  const walletTotal = Number.isFinite(count) && count > 0 ? count : DEFAULT_WALLET_COUNT;
+  console.log(`${WARN} Wallets file not found at ${walletsPath}. Generating ${walletTotal} test wallets...`);
+
+  const wallets = [];
+  for (let i = 0; i < walletTotal; i++) {
+    const secretKey = generateSecretKey(256);
+    const wallet = await generateWallet({ secretKey, password: 'password' });
+    const account = wallet.accounts[0];
+
+    wallets.push({
+      address: getAddressFromPrivateKey(account.stxPrivateKey, TransactionVersion.Mainnet),
+      mnemonic: secretKey,
+    });
+  }
+
+  fs.mkdirSync(path.dirname(walletsPath), { recursive: true });
+  fs.writeFileSync(walletsPath, JSON.stringify({ wallets }, null, 2));
+
+  console.log(`${OK} Generated test wallets at ${walletsPath}.`);
+  console.log(`${WARN} Fund one of these wallets before running interactions.`);
 }
 
 async function getNextNonce(address: string) {
@@ -136,9 +170,11 @@ async function broadcastAndConfirm(tx: any, label: string, timeoutMs: number) {
 async function waitForTx(txid: string, label: string, timeoutMs: number) {
   const started = Date.now();
   const pollMs = 15_000;
+  let wroteProgressLine = false;
 
   while (true) {
     if (Date.now() - started > timeoutMs) {
+      if (wroteProgressLine) process.stdout.write('\n');
       throw new Error(`Timeout waiting for confirmation (${txid})`);
     }
 
@@ -151,6 +187,7 @@ async function waitForTx(txid: string, label: string, timeoutMs: number) {
     const status = data?.tx_status;
 
     if (status === 'success') {
+      if (wroteProgressLine) process.stdout.write('\n');
       console.log(`      ${OK} Confirmed: ${label} ${ansi.dim(txid)}`);
       return;
     }
@@ -163,11 +200,13 @@ async function waitForTx(txid: string, label: string, timeoutMs: number) {
       status === 'dropped_too_expensive' ||
       status === 'dropped_stale_garbage_collect'
     ) {
+      if (wroteProgressLine) process.stdout.write('\n');
       const reason = data?.tx_result?.repr || data?.tx_result || '';
       throw new Error(`Tx ${status}: ${reason || txid}`);
     }
 
     process.stdout.write(`      ${ansi.dim('…')} Waiting: ${label} (${status || 'pending'})\r`);
+    wroteProgressLine = true;
     await sleep(pollMs);
   }
 }
@@ -191,17 +230,21 @@ async function findFirstUnmintedBadgeType(recipient: string) {
 
 async function run() {
   const args = parseArgs(process.argv);
-  const walletsPath = args.get('--wallets') || process.env.WALLETS_PATH || DEFAULT_WALLETS_PATH;
-  const walletCount = Number(args.get('--count') || process.env.WALLET_COUNT || 25);
+  const requestedWalletsPath = args.get('--wallets') || process.env.WALLETS_PATH || DEFAULT_WALLETS_PATH;
+  const walletsPath = path.isAbsolute(requestedWalletsPath)
+    ? requestedWalletsPath
+    : path.resolve(process.cwd(), requestedWalletsPath);
+  const walletCount = Number(args.get('--count') || process.env.WALLET_COUNT || DEFAULT_WALLET_COUNT);
   const onlyAddress = args.get('--only-address') || process.env.ONLY_ADDRESS || null;
   const onlyIndexRaw = args.get('--only-index') || process.env.ONLY_INDEX || null;
   const onlyIndex = onlyIndexRaw ? Number(onlyIndexRaw) : null; // 1-based
-  const txFeeUstx = Number(args.get('--fee-ustx') || process.env.TX_FEE_USTX || 1000); // 0.001 STX
+  const txFeeUstx = TX_FEE_USTX;
   const tier = Number(args.get('--tier') || process.env.SUBSCRIPTION_TIER || 0);
   const confirmTimeoutMs = Number(args.get('--confirm-timeout-ms') || process.env.CONFIRM_TIMEOUT_MS || 20 * 60 * 1000);
 
   const badgeMinterMnemonic = args.get('--badge-minter-mnemonic') || process.env.BADGE_MINTER_MNEMONIC;
 
+  await ensureWalletsFile(walletsPath, walletCount);
   const data = JSON.parse(fs.readFileSync(walletsPath, 'utf8'));
   let wallets = data.wallets.slice(0, walletCount);
   if (onlyAddress) {
@@ -230,6 +273,36 @@ async function run() {
     badgeMinterAddress = getAddressFromPrivateKey(badgeMinterKey, TransactionVersion.Mainnet);
   }
 
+  const contractOrder = [
+    'stackpulse-v-j3',
+    'alert-manager-v-j3',
+    'fee-vault-v-j3',
+    'reputation-badges-v-j3',
+  ];
+  const summary = {
+    transactionsAttempted: 0,
+    successfulTxns: 0,
+    failedTxns: 0,
+    perContractAttempted: {} as Record<string, number>,
+    perContractSuccess: {} as Record<string, number>,
+    perContractFailed: {} as Record<string, number>,
+  };
+
+  const runInteraction = async (contractName: string, label: string, buildTx: () => Promise<any>) => {
+    summary.transactionsAttempted += 1;
+    bumpCounter(summary.perContractAttempted, contractName);
+    try {
+      const tx = await buildTx();
+      await broadcastAndConfirm(tx, label, confirmTimeoutMs);
+      summary.successfulTxns += 1;
+      bumpCounter(summary.perContractSuccess, contractName);
+    } catch (e) {
+      summary.failedTxns += 1;
+      bumpCounter(summary.perContractFailed, contractName);
+      throw e;
+    }
+  };
+
   for (let i = 0; i < wallets.length; i++) {
     const w = wallets[i];
     console.log(`\n[${i + 1}/${wallets.length}] Wallet: ${w.address}`);
@@ -246,7 +319,7 @@ async function run() {
 
       if (balanceUstx < requiredUstx) {
         console.log(`   ${FAIL} Insufficient STX to run interactions at tier ${tier}.`);
-        console.log(`   ${ansi.dim('Fund this wallet (or run with --tier 0 / lower --fee-ustx). Skipping.')}`);
+        console.log(`   ${ansi.dim('Fund this wallet (or run with --tier 0). Skipping.')}`);
         continue;
       }
 
@@ -259,28 +332,51 @@ async function run() {
         effectiveTier = typeof currentTier === 'number' ? currentTier : tier;
         if (typeof currentTier === 'number' && tier > currentTier) {
           console.log(`   -> 1: Upgrading StackPulse subscription (current tier ${currentTier} → ${tier})...`);
-          const upgradeTx = await makeContractCall({
-            contractAddress: DEPLOYER_ADDRESS,
-            contractName: 'stackpulse-v-j3',
-            functionName: 'upgrade-subscription',
-            functionArgs: [uintCV(tier)],
-            senderKey: privateKey,
-            network,
-            nonce: nonce++,
-            fee: txFeeUstx,
-            anchorMode: AnchorMode.Any,
-          });
-          await broadcastAndConfirm(upgradeTx, 'upgrade-subscription', confirmTimeoutMs);
+          await runInteraction('stackpulse-v-j3', 'upgrade-subscription', async () =>
+            makeContractCall({
+              contractAddress: DEPLOYER_ADDRESS,
+              contractName: 'stackpulse-v-j3',
+              functionName: 'upgrade-subscription',
+              functionArgs: [uintCV(tier)],
+              senderKey: privateKey,
+              network,
+              nonce: nonce++,
+              fee: txFeeUstx,
+              anchorMode: AnchorMode.Any,
+            })
+          );
           effectiveTier = tier;
         } else {
           console.log(`   -> 1: Already registered (err u101). Updating profile instead...`);
-          const updateTx = await makeContractCall({
+          await runInteraction('stackpulse-v-j3', 'update-profile', async () =>
+            makeContractCall({
+              contractAddress: DEPLOYER_ADDRESS,
+              contractName: 'stackpulse-v-j3',
+              functionName: 'update-profile',
+              functionArgs: [
+                stringAsciiCV(`testuser${i}`),
+                stringAsciiCV(`test${i}@stackpulse.app`),
+                uintCV(31),
+              ],
+              senderKey: privateKey,
+              network,
+              nonce: nonce++,
+              fee: txFeeUstx,
+              anchorMode: AnchorMode.Any,
+            })
+          );
+        }
+      } else {
+        console.log(`   -> 1: Registering to StackPulse v-j3...`);
+        await runInteraction('stackpulse-v-j3', 'register-and-subscribe', async () =>
+          makeContractCall({
             contractAddress: DEPLOYER_ADDRESS,
             contractName: 'stackpulse-v-j3',
-            functionName: 'update-profile',
+            functionName: 'register-and-subscribe',
             functionArgs: [
               stringAsciiCV(`testuser${i}`),
               stringAsciiCV(`test${i}@stackpulse.app`),
+              uintCV(tier),
               uintCV(31),
             ],
             senderKey: privateKey,
@@ -288,66 +384,48 @@ async function run() {
             nonce: nonce++,
             fee: txFeeUstx,
             anchorMode: AnchorMode.Any,
-          });
-          await broadcastAndConfirm(updateTx, 'update-profile', confirmTimeoutMs);
-        }
-      } else {
-        console.log(`   -> 1: Registering to StackPulse v-j3...`);
-        const tx1 = await makeContractCall({
+          })
+        );
+        effectiveTier = tier;
+      }
+
+      // 2) alert-manager-v-j3: create-alert (basic whale alert)
+      console.log(`   -> 2: Creating alert (alert-manager-v-j3)...`);
+      await runInteraction('alert-manager-v-j3', 'create-alert', async () =>
+        makeContractCall({
           contractAddress: DEPLOYER_ADDRESS,
-          contractName: 'stackpulse-v-j3',
-          functionName: 'register-and-subscribe',
+          contractName: 'alert-manager-v-j3',
+          functionName: 'create-alert',
           functionArgs: [
-            stringAsciiCV(`testuser${i}`),
-            stringAsciiCV(`test${i}@stackpulse.app`),
-            uintCV(tier),
-            uintCV(31),
+            uintCV(1),
+            stringAsciiCV('Whale Alert'),
+            noneCV(),
+            uintCV(10_000),
+            uintCV(effectiveTier),
           ],
           senderKey: privateKey,
           network,
           nonce: nonce++,
           fee: txFeeUstx,
           anchorMode: AnchorMode.Any,
-        });
-        await broadcastAndConfirm(tx1, 'register-and-subscribe', confirmTimeoutMs);
-        effectiveTier = tier;
-      }
-
-      // 2) alert-manager-v-j3: create-alert (basic whale alert)
-      console.log(`   -> 2: Creating alert (alert-manager-v-j3)...`);
-      const tx2 = await makeContractCall({
-        contractAddress: DEPLOYER_ADDRESS,
-        contractName: 'alert-manager-v-j3',
-        functionName: 'create-alert',
-        functionArgs: [
-          uintCV(1),
-          stringAsciiCV('Whale Alert'),
-          noneCV(),
-          uintCV(10_000),
-          uintCV(effectiveTier),
-        ],
-        senderKey: privateKey,
-        network,
-        nonce: nonce++,
-        fee: txFeeUstx,
-        anchorMode: AnchorMode.Any,
-      });
-      await broadcastAndConfirm(tx2, 'create-alert', confirmTimeoutMs);
+        })
+      );
 
       // 3) fee-vault-v-j3: collect-subscription-fee
       console.log(`   -> 3: Collecting subscription fee (fee-vault-v-j3)...`);
-      const tx3 = await makeContractCall({
-        contractAddress: DEPLOYER_ADDRESS,
-        contractName: 'fee-vault-v-j3',
-        functionName: 'collect-subscription-fee',
-        functionArgs: [uintCV(tier), noneCV()],
-        senderKey: privateKey,
-        network,
-        nonce: nonce++,
-        fee: txFeeUstx,
-        anchorMode: AnchorMode.Any,
-      });
-      await broadcastAndConfirm(tx3, 'collect-subscription-fee', confirmTimeoutMs);
+      await runInteraction('fee-vault-v-j3', 'collect-subscription-fee', async () =>
+        makeContractCall({
+          contractAddress: DEPLOYER_ADDRESS,
+          contractName: 'fee-vault-v-j3',
+          functionName: 'collect-subscription-fee',
+          functionArgs: [uintCV(tier), noneCV()],
+          senderKey: privateKey,
+          network,
+          nonce: nonce++,
+          fee: txFeeUstx,
+          anchorMode: AnchorMode.Any,
+        })
+      );
 
       // 4) reputation-badges-v-j3: mint-badge (requires authorized minter/owner)
       if (badgeMinterKey) {
@@ -356,19 +434,20 @@ async function run() {
         if (!badgeType) {
           console.log(`      ${WARN} No available badge types to mint (already has all 1–9). Skipping.`);
         } else {
-          const tx4 = await makeContractCall({
-            contractAddress: DEPLOYER_ADDRESS,
-            contractName: 'reputation-badges-v-j3',
-            functionName: 'mint-badge',
-            functionArgs: [principalCV(w.address), uintCV(badgeType)],
-            senderKey: badgeMinterKey,
-            network,
-            // IMPORTANT: nonce must be for the minter address, not the recipient wallet.
-            nonce: await getNextNonce(badgeMinterAddress || DEPLOYER_ADDRESS),
-            fee: txFeeUstx,
-            anchorMode: AnchorMode.Any,
-          });
-          await broadcastAndConfirm(tx4, `mint-badge (type ${badgeType})`, confirmTimeoutMs);
+          await runInteraction('reputation-badges-v-j3', `mint-badge (type ${badgeType})`, async () =>
+            makeContractCall({
+              contractAddress: DEPLOYER_ADDRESS,
+              contractName: 'reputation-badges-v-j3',
+              functionName: 'mint-badge',
+              functionArgs: [principalCV(w.address), uintCV(badgeType)],
+              senderKey: badgeMinterKey,
+              network,
+              // IMPORTANT: nonce must be for the minter address, not the recipient wallet.
+              nonce: await getNextNonce(badgeMinterAddress || DEPLOYER_ADDRESS),
+              fee: txFeeUstx,
+              anchorMode: AnchorMode.Any,
+            })
+          );
         }
       }
     } catch (e) {
@@ -376,6 +455,18 @@ async function run() {
       console.log(`   ${FAIL} Failed for ${w.address}: ${message}`);
       console.log(`   ${ansi.dim('Stopping further transactions for this wallet.')}`);
     }
+  }
+
+  console.log(`\nSummary:`);
+  console.log(`- Interactions/transactions attempted: ${summary.transactionsAttempted}`);
+  console.log(`- Successful transactions: ${summary.successfulTxns}`);
+  console.log(`- Failed transactions: ${summary.failedTxns}`);
+  console.log(`- Interactions per contract:`);
+  for (const contractName of contractOrder) {
+    const attempted = summary.perContractAttempted[contractName] ?? 0;
+    const succeeded = summary.perContractSuccess[contractName] ?? 0;
+    const failed = summary.perContractFailed[contractName] ?? 0;
+    console.log(`  ${contractName}: ${attempted} attempted | ${succeeded} succeeded | ${failed} failed`);
   }
 
   console.log(`\nDone.`);
