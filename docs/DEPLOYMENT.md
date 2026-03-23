@@ -100,7 +100,7 @@ plan:
       transactions:
         - contract-publish:
             contract-name: reputation-badges-v-j3
-            path: contracts/reputation-badges-v3.clar
+            path: contracts/reputation-badges-v-j3.clar
             anchor-block-only: true
             cost: 500000
 ```
