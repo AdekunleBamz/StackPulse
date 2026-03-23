@@ -11,6 +11,8 @@ This changelog format follows Keep a Changelog principles.
 
 ### Changed
 
+- None yet.
+
 ### Fixed
 
 ### Security
