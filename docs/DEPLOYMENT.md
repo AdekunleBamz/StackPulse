@@ -210,7 +210,7 @@ npx ts-node scripts/check-chainhook-status.ts
 | Chainhook | Endpoint |
 |-----------|----------|
 | Whale Transfer | `https://your-server.com/api/v1/chainhooks/whale-transfer` |
-| Contract Deploy | `https://your-server.com/api/chainhooks/contract-deployed` |
+| Contract Deploy | `https://your-server.com/api/v1/chainhooks/contract-deployed` |
 | NFT Mint | `https://your-server.com/api/chainhooks/nft-mint` |
 | Token Launch | `https://your-server.com/api/chainhooks/token-launch` |
 | Large Swap | `https://your-server.com/api/chainhooks/large-swap` |
