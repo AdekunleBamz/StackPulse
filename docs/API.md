@@ -55,6 +55,8 @@ Most endpoints are public. Chainhook endpoints optionally validate Bearer tokens
 Authorization: Bearer <your-token>
 ```
 
+Requests without an `Authorization` header may still be accepted for Hiro compatibility depending on deployment settings.
+
 ---
 
 ## Endpoints
