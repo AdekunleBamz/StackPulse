@@ -173,34 +173,8 @@ Get global event statistics since server start.
     "feesCollected": 567,
     "badgesEarned": 890
   },
-  "uptime": 3600.5,
+  "uptime": 3600,
   "timestamp": "2025-01-24T12:00:00.000Z"
-}
-```
-
-### GET /api/v1/chainhooks/status
-
-Get the status of registered chainhook endpoints.
-
-**Response:**
-```json
-{
-  "registered": 12,
-  "active": 12,
-  "chainhooks": [
-    "whale-transfer-alert",
-    "new-contract-deployed",
-    "nft-mint-tracker",
-    "token-launch-detector",
-    "large-swap-alert",
-    "user-subscription-created",
-    "alert-triggered",
-    "fee-collected",
-    "badge-earned",
-    "new-subscription",
-    "subscription-upgrade",
-    "alert-created"
-  ]
 }
 ```
 
