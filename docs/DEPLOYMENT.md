@@ -216,7 +216,7 @@ npx ts-node scripts/check-chainhook-status.ts
 | Large Swap | `https://your-server.com/api/v1/chainhooks/` |
 | Subscription | `https://your-server.com/api/v1/chainhooks/subscription-created` |
 | Alert Triggered | `https://your-server.com/api/v1/chainhooks/alert-triggered` |
-| Fee Collected | `https://your-server.com/api/chainhooks/fee-collected` |
+| Fee Collected | `https://your-server.com/api/v1/chainhooks/fee-collected` |
 | Badge Earned | `https://your-server.com/api/chainhooks/badge-earned` |
 
 ---
