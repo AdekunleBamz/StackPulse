@@ -215,7 +215,7 @@ Create a new alert (server-side tracking).
 
 No standalone `GET /api/notifications` route is currently mounted in `server/src/index.ts`.
 
-Get recent notifications.
+Example notification payload shape used by the notification service.
 
 **Query Parameters:**
 | Parameter | Type | Default | Description |
