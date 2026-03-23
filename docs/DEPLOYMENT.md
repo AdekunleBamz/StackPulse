@@ -84,7 +84,7 @@ plan:
       transactions:
         - contract-publish:
             contract-name: alert-manager-v-j3
-            path: contracts/alert-manager-v3.clar
+            path: contracts/alert-manager-v-j3.clar
             anchor-block-only: true
             cost: 500000
             
