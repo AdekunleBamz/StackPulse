@@ -42,3 +42,5 @@ This guide explains how to contribute safely and consistently to the Next.js fro
 - Keep commits signed to preserve verified history for frontend changes.
 
 ## Review etiquette
+
+- Respond to review feedback with follow-up commits instead of force-pushing unrelated rewrites.
