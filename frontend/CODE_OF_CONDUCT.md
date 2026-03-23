@@ -16,3 +16,4 @@ We commit to acting and interacting in ways that build an open and welcoming com
 ## Unacceptable Behavior
 
 - The use of sexualized language or imagery and unwelcome sexual attention.
+- Trolling, insulting comments, personal attacks, or political harassment.
