@@ -22,3 +22,5 @@ This changelog format follows Keep a Changelog principles.
 - None yet.
 
 ## [0.1.0] - 2026-03-23
+
+### Added
