@@ -34,3 +34,4 @@ This guide explains how to contribute safely and consistently to the Next.js fro
 
 - Summarize user-facing behavior changes in plain language.
 - Include screenshots or short recordings for visual updates.
+- Update nearby docs when commands, routes, or env requirements change.
