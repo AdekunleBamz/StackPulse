@@ -10,3 +10,4 @@ We commit to acting and interacting in ways that build an open and welcoming com
 ## Expected Behavior
 
 - Demonstrating empathy and kindness toward other people.
+- Giving and receiving constructive feedback gracefully.
