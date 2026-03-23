@@ -16,6 +16,7 @@ The live backend routes are currently defined in `server/src/index.ts`. The list
 - `POST /api/v1/users`
 - `GET /api/users`
 - `GET /api/users/:address`
+- `PUT /api/users/:address`
 - `DELETE /api/users/:address`
 - `GET /api/v1/users/:address/alerts`
 - `POST /api/v1/users/:address/alerts`
