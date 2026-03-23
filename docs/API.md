@@ -181,7 +181,7 @@ Get user's configured alerts.
 }
 ```
 
-#### POST /api/users/:address/alerts
+#### POST /api/v1/users/:address/alerts
 
 Create a new alert (server-side tracking).
 
