@@ -14,3 +14,5 @@ This guide explains how to contribute safely and consistently to the Next.js fro
 - Validate production output with `npm --prefix frontend run build` for UI-heavy changes.
 
 ## Branch strategy
+
+- Keep each branch focused on one UI behavior, bug fix, or docs concern.
