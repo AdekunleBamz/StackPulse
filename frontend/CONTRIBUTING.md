@@ -8,3 +8,5 @@ This guide explains how to contribute safely and consistently to the Next.js fro
 - Copy `frontend/.env.example` to `.env.local` and set the server/deployer values for your environment.
 
 ## Running the app
+
+- Start local dev mode with `npm --prefix frontend run dev`.
