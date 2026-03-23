@@ -16,3 +16,9 @@ StackPulse is split across contracts, chainhooks, a backend ingestion API, a sha
 2. The backend validates the webhook signature and normalizes payload details.
 3. Matching alert records are updated, then notifications are emitted to clients.
 4. The frontend fetches current state and listens to live updates where available.
+
+## Trust boundaries
+
+- Chainhooks are treated as external input and must pass auth + payload checks.
+- Smart contracts are authoritative for subscription state; backend state is derivative.
+- Frontend toggles and dashboards should tolerate backend latency and retry safely.
