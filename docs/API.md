@@ -159,6 +159,8 @@ Create user notification preferences.
 
 #### PUT /api/users/:address
 
+Update an existing user's notification preferences.
+
 #### DELETE /api/users/:address
 
 Delete user preferences.
