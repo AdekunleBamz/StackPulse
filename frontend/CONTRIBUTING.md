@@ -44,3 +44,4 @@ This guide explains how to contribute safely and consistently to the Next.js fro
 ## Review etiquette
 
 - Respond to review feedback with follow-up commits instead of force-pushing unrelated rewrites.
+- Keep review conversations focused on behavior, accessibility, and maintainability.
