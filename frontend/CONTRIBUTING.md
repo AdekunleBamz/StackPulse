@@ -47,3 +47,5 @@ This guide explains how to contribute safely and consistently to the Next.js fro
 - Keep review conversations focused on behavior, accessibility, and maintainability.
 
 ## Release note hygiene
+
+- Add notable UX changes to `frontend/CHANGELOG.md` in the same branch.
