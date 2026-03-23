@@ -56,10 +56,4 @@ export interface PaginatedResponse<T> {
   hasMore: boolean;
 }
 
-export default {
-  Alert,
-  User,
-  Notification,
-  ApiResponse,
-  PaginatedResponse,
-};
+// No default export needed for type-only files
