@@ -212,7 +212,7 @@ npx ts-node scripts/check-chainhook-status.ts
 | Whale Transfer | `https://your-server.com/api/v1/chainhooks/whale-transfer` |
 | Contract Deploy | `https://your-server.com/api/v1/chainhooks/contract-deployed` |
 | NFT Mint | `https://your-server.com/api/v1/chainhooks/nft-mint` |
-| Token Launch | `https://your-server.com/api/chainhooks/token-launch` |
+| Token Launch | `https://your-server.com/api/v1/chainhooks/token-launch` |
 | Large Swap | `https://your-server.com/api/chainhooks/large-swap` |
 | Subscription | `https://your-server.com/api/chainhooks/subscription-created` |
 | Alert Triggered | `https://your-server.com/api/chainhooks/alert-triggered` |
