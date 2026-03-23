@@ -33,3 +33,4 @@ This guide explains how to contribute safely and consistently to the Next.js fro
 ## Pull request expectations
 
 - Summarize user-facing behavior changes in plain language.
+- Include screenshots or short recordings for visual updates.
