@@ -25,3 +25,5 @@ This guide explains how to contribute safely and consistently to the Next.js fro
 - Use shared constants/types from `@stackpulse/shared` when values exist there already.
 
 ## Validation checklist
+
+- `npm --prefix frontend run lint` passes with no new warnings.
