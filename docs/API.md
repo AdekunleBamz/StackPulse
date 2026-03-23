@@ -217,7 +217,7 @@ No standalone `GET /api/notifications` route is currently mounted in `server/src
 
 Example notification payload shape used by the notification service.
 
-**Query Parameters:**
+**Fields typically returned:**
 | Parameter | Type | Default | Description |
 |-----------|------|---------|-------------|
 | limit | number | 20 | Max notifications to return |
