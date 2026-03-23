@@ -87,15 +87,19 @@ Get global event statistics.
 **Response:**
 ```json
 {
-  "whaleTransfers": 1234,
-  "contractDeployments": 567,
-  "nftMints": 8901,
-  "tokenLaunches": 234,
-  "largeSwaps": 567,
-  "subscriptions": 890,
-  "alertsTriggered": 1234,
-  "feesCollected": 567,
-  "badgesEarned": 890
+  "stats": {
+    "whaleTransfers": 1234,
+    "contractDeployments": 567,
+    "nftMints": 8901,
+    "tokenLaunches": 234,
+    "largeSwaps": 567,
+    "subscriptions": 890,
+    "alertsTriggered": 1234,
+    "feesCollected": 567,
+    "badgesEarned": 890
+  },
+  "uptime": 3600,
+  "timestamp": "2025-01-24T12:00:00.000Z"
 }
 ```
 
