@@ -27,3 +27,4 @@ This guide explains how to contribute safely and consistently to the Next.js fro
 ## Validation checklist
 
 - `npm --prefix frontend run lint` passes with no new warnings.
+- `npm --prefix frontend run build` succeeds after page-level changes.
