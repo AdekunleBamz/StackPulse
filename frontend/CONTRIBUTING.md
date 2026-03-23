@@ -17,3 +17,5 @@ This guide explains how to contribute safely and consistently to the Next.js fro
 
 - Keep each branch focused on one UI behavior, bug fix, or docs concern.
 - Rebase or merge frequently from `main` to reduce frontend integration drift.
+
+## Coding style
