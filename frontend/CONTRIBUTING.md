@@ -21,3 +21,4 @@ This guide explains how to contribute safely and consistently to the Next.js fro
 ## Coding style
 
 - Prefer explicit TypeScript types for component props and hook return values.
+- Preserve keyboard accessibility, labels, and focus states for interactive controls.
