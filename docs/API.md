@@ -255,7 +255,7 @@ Receive whale transfer events (>10,000 STX).
 
 Receive new contract deployment events.
 
-### POST /api/chainhooks/nft-mint
+### POST /api/v1/chainhooks/nft-mint
 
 Receive NFT mint events.
 
