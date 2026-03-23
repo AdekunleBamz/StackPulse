@@ -49,7 +49,7 @@ The extracted router files under `server/src/routes/` are useful module referenc
 
 ## Authentication
 
-Most endpoints are public. Chainhook endpoints use Bearer token authentication configured via `CHAINHOOK_AUTH_TOKEN` environment variable.
+Most endpoints are public. Chainhook endpoints optionally validate Bearer tokens when `CHAINHOOK_AUTH_TOKEN` is configured.
 
 ```
 Authorization: Bearer <your-token>
