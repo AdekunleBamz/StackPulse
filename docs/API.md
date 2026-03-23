@@ -172,6 +172,8 @@ Delete user preferences.
 }
 ```
 
+`GET /api/users` returns `{ users: [...], count: number }` for admin-style listing.
+
 ---
 
 ### Alerts
