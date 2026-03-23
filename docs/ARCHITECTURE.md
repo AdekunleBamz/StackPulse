@@ -9,3 +9,10 @@ StackPulse is split across contracts, chainhooks, a backend ingestion API, a sha
 - `server/`: ingestion endpoints, state mutation, analytics, and notification fan-out
 - `shared/`: shared constants, types, and format helpers for backend + frontend
 - `frontend/`: wallet UX, alert management, history, and analytics screens
+
+## Event flow
+
+1. A chainhook rule matches a Stacks event and POSTs payload data to the backend.
+2. The backend validates the webhook signature and normalizes payload details.
+3. Matching alert records are updated, then notifications are emitted to clients.
+4. The frontend fetches current state and listens to live updates where available.
