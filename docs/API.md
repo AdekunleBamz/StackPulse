@@ -463,6 +463,37 @@ Authorization: Bearer <CHAINHOOK_AUTH_TOKEN>
 
 All chainhook endpoints receive events in this format:
 
+Receive new contract deployment events.
+
+### POST /api/v1/chainhooks/nft-mint
+
+Receive NFT mint events.
+
+### POST /api/v1/chainhooks/token-launch
+
+Receive new SIP-010 token deployment events.
+
+### POST /api/v1/chainhooks/
+
+Receive large DEX swap events.
+
+### POST /api/chainhooks/subscription-created
+
+Receive StackPulse subscription events.
+
+### POST /api/chainhooks/alert-triggered
+
+Receive alert trigger events.
+
+### POST /api/chainhooks/fee-collected
+
+Receive fee collection events.
+
+### POST /api/chainhooks/badge-earned
+
+Receive badge minting events.
+
+**Common Chainhook Payload Structure:**
 ```json
 {
   "apply": [
