@@ -50,3 +50,4 @@ This guide explains how to contribute safely and consistently to the Next.js fro
 
 - Add notable UX changes to `frontend/CHANGELOG.md` in the same branch.
 - Call out backend API dependency changes when frontend request paths are updated.
+- Keep housekeeping-only commits small and clearly labeled as maintenance.
