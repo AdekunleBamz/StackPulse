@@ -34,3 +34,9 @@ StackPulse is split across contracts, chainhooks, a backend ingestion API, a sha
 - `/health` for process and dependency health snapshots.
 - `/api/v1/stats` for event counters used by dashboards and quick verification.
 - Structured server logs for webhook validation, routing, and processing failures.
+
+## Deployment split
+
+- Contracts are deployed with Clarinet plans under `deployments/`.
+- Backend and frontend are independently deployable and communicate over HTTP/WebSocket.
+- Chainhook registration ties manifest webhook targets to the currently deployed backend.
