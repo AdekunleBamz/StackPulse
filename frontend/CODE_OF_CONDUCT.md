@@ -27,3 +27,4 @@ They may remove, edit, or reject comments, commits, and interactions that violat
 ## Reporting Guidelines
 
 Report incidents to the repository maintainers through the primary project contact channel.
+All good-faith reports are reviewed promptly and handled with as much confidentiality as possible.
