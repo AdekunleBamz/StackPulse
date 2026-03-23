@@ -214,7 +214,7 @@ npx ts-node scripts/check-chainhook-status.ts
 | NFT Mint | `https://your-server.com/api/v1/chainhooks/nft-mint` |
 | Token Launch | `https://your-server.com/api/v1/chainhooks/token-launch` |
 | Large Swap | `https://your-server.com/api/v1/chainhooks/` |
-| Subscription | `https://your-server.com/api/chainhooks/subscription-created` |
+| Subscription | `https://your-server.com/api/v1/chainhooks/subscription-created` |
 | Alert Triggered | `https://your-server.com/api/chainhooks/alert-triggered` |
 | Fee Collected | `https://your-server.com/api/chainhooks/fee-collected` |
 | Badge Earned | `https://your-server.com/api/chainhooks/badge-earned` |
