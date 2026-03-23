@@ -134,7 +134,7 @@ Get user profile and preferences.
 
 #### POST /api/v1/users
 
-Update user notification preferences.
+Create user notification preferences.
 
 **Request Body:**
 ```json
