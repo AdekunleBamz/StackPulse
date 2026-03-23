@@ -124,6 +124,8 @@ When rate limited, responses include:
 Retry-After: 30
 ```
 
+Requests without an `Authorization` header may still be accepted for Hiro compatibility depending on deployment settings.
+
 ---
 
 ## Health Endpoints
