@@ -5,3 +5,4 @@ This guide explains how to contribute safely and consistently to the Next.js fro
 ## Local setup
 
 - Install dependencies from repo root with `npm install` and `npm --prefix frontend install`.
+- Copy `frontend/.env.example` to `.env.local` and set the server/deployer values for your environment.
