@@ -32,3 +32,5 @@ All good-faith reports are reviewed promptly and handled with as much confidenti
 ## Scope
 
 This policy applies in all project spaces, including issues, pull requests, and chats tied to frontend work.
+
+## Acknowledgment
