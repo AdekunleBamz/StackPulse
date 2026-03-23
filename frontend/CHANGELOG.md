@@ -7,6 +7,8 @@ This changelog format follows Keep a Changelog principles.
 
 ### Added
 
+- None yet.
+
 ### Changed
 
 ### Fixed
