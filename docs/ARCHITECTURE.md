@@ -22,3 +22,9 @@ StackPulse is split across contracts, chainhooks, a backend ingestion API, a sha
 - Chainhooks are treated as external input and must pass auth + payload checks.
 - Smart contracts are authoritative for subscription state; backend state is derivative.
 - Frontend toggles and dashboards should tolerate backend latency and retry safely.
+
+## Reliability notes
+
+- Webhook handlers should acknowledge quickly and avoid long blocking operations.
+- Downstream notifications are best-effort and should not block persistence writes.
+- Health endpoints should report dependency status separately from process liveness.
