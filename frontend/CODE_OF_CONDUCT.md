@@ -14,3 +14,5 @@ We commit to acting and interacting in ways that build an open and welcoming com
 - Respecting differing viewpoints and experiences.
 
 ## Unacceptable Behavior
+
+- The use of sexualized language or imagery and unwelcome sexual attention.
