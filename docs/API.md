@@ -72,7 +72,6 @@ Check server health status.
 {
   "status": "healthy",
   "timestamp": "2025-01-24T12:00:00.000Z",
-  "uptime": 3600,
   "version": "1.0.0"
 }
 ```
