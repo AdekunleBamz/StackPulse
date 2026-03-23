@@ -8,3 +8,5 @@ We pledge to make participation in this project a harassment-free experience for
 We commit to acting and interacting in ways that build an open and welcoming community.
 
 ## Expected Behavior
+
+- Demonstrating empathy and kindness toward other people.
