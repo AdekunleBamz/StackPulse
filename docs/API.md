@@ -211,9 +211,9 @@ Create a new alert (server-side tracking).
 
 ---
 
-### Notifications
+### Notifications (service-level)
 
-#### GET /api/notifications
+No standalone `GET /api/notifications` route is currently mounted in `server/src/index.ts`.
 
 Get recent notifications.
 
