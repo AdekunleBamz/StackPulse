@@ -38,6 +38,8 @@ Note: user profile routes currently use mixed `/api` and `/api/v1` prefixes as s
 - `POST /api/v1/chainhooks/subscription-upgrade`
 - `POST /api/v1/chainhooks/alert-created`
 
+The `/api/v1/chainhooks/` root POST currently handles large-swap detection payloads.
+
 The extracted router files under `server/src/routes/` are useful module references, but they are not the source of truth for mounted paths until they are wired into the server entrypoint.
 
 ## Base URLs
