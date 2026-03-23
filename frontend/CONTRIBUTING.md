@@ -31,3 +31,5 @@ This guide explains how to contribute safely and consistently to the Next.js fro
 - Verify affected pages in both desktop and mobile viewport sizes.
 
 ## Pull request expectations
+
+- Summarize user-facing behavior changes in plain language.
