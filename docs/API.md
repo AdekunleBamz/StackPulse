@@ -157,6 +157,8 @@ Create user notification preferences.
 }
 ```
 
+#### PUT /api/users/:address
+
 #### DELETE /api/users/:address
 
 Delete user preferences.
