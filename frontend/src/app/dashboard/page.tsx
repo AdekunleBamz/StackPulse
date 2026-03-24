@@ -85,7 +85,7 @@ export default function DashboardPage() {
       try {
         const { principalCV, cvToHex, hexToCV, cvToValue } = await import('@stacks/transactions');
 
-        // Check V3 contract for user data
+        // Check V-J3 contract for user data
         const response = await fetch(
           `https://api.mainnet.hiro.so/v2/contracts/call-read/${DEPLOYER_ADDRESS}/stackpulse-v-j3/get-user`,
           {
