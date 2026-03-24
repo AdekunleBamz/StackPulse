@@ -83,24 +83,24 @@ plan:
     - id: 1
       transactions:
         - contract-publish:
-            contract-name: alert-manager-v3
-            path: contracts/alert-manager-v3.clar
+            contract-name: alert-manager-v-j3
+            path: contracts/alert-manager-v-j3.clar
             anchor-block-only: true
             cost: 500000
             
     - id: 2
       transactions:
         - contract-publish:
-            contract-name: fee-vault-v3
-            path: contracts/fee-vault-v3.clar
+            contract-name: fee-vault-v-j3
+            path: contracts/fee-vault-v-j3.clar
             anchor-block-only: true
             cost: 500000
             
     - id: 3
       transactions:
         - contract-publish:
-            contract-name: reputation-badges-v3
-            path: contracts/reputation-badges-v3.clar
+            contract-name: reputation-badges-v-j3
+            path: contracts/reputation-badges-v-j3.clar
             anchor-block-only: true
             cost: 500000
 ```
