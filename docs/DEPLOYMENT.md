@@ -209,15 +209,15 @@ npx ts-node scripts/check-chainhook-status.ts
 
 | Chainhook | Endpoint |
 |-----------|----------|
-| Whale Transfer | `https://your-server.com/api/chainhooks/whale-transfer` |
-| Contract Deploy | `https://your-server.com/api/chainhooks/contract-deployed` |
-| NFT Mint | `https://your-server.com/api/chainhooks/nft-mint` |
-| Token Launch | `https://your-server.com/api/chainhooks/token-launch` |
-| Large Swap | `https://your-server.com/api/chainhooks/large-swap` |
-| Subscription | `https://your-server.com/api/chainhooks/subscription-created` |
-| Alert Triggered | `https://your-server.com/api/chainhooks/alert-triggered` |
-| Fee Collected | `https://your-server.com/api/chainhooks/fee-collected` |
-| Badge Earned | `https://your-server.com/api/chainhooks/badge-earned` |
+| Whale Transfer | `https://your-server.com/api/v1/chainhooks/whale-transfer` |
+| Contract Deploy | `https://your-server.com/api/v1/chainhooks/contract-deployed` |
+| NFT Mint | `https://your-server.com/api/v1/chainhooks/nft-mint` |
+| Token Launch | `https://your-server.com/api/v1/chainhooks/token-launch` |
+| Large Swap | `https://your-server.com/api/v1/chainhooks/large-swap` |
+| Subscription | `https://your-server.com/api/v1/chainhooks/subscription-created` |
+| Alert Triggered | `https://your-server.com/api/v1/chainhooks/alert-triggered` |
+| Fee Collected | `https://your-server.com/api/v1/chainhooks/fee-collected` |
+| Badge Earned | `https://your-server.com/api/v1/chainhooks/badge-earned` |
 
 ---
 
