@@ -410,8 +410,9 @@ await openContractCall({
 ### Read User Data
 
 ```javascript
+const stacksApiBase = process.env.NEXT_PUBLIC_STACKS_API_URL || 'https://api.mainnet.hiro.so';
 const response = await fetch(
-  `https://api.mainnet.hiro.so/v2/contracts/call-read/SP3FKNEZ86RG5RT7SZ5FBRGH85FZNG94ZH1MCGG6N/stackpulse-v-j3/get-user`,
+  `${stacksApiBase}/v2/contracts/call-read/SP3FKNEZ86RG5RT7SZ5FBRGH85FZNG94ZH1MCGG6N/stackpulse-v-j3/get-user`,
   {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
