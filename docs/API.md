@@ -454,14 +454,11 @@ Delete an alert.
 
 These endpoints receive blockchain events from Hiro Chainhooks. All chainhook routes require authentication.
 
-### Authentication Header
-```http
-Authorization: Bearer <CHAINHOOK_AUTH_TOKEN>
-```
+### POST /api/v1/chainhooks/whale-transfer
 
 ### Common Payload Structure
 
-All chainhook endpoints receive events in this format:
+### POST /api/v1/chainhooks/contract-deployed
 
 Receive new contract deployment events.
 
@@ -473,11 +470,11 @@ Receive NFT mint events.
 
 Receive new SIP-010 token deployment events.
 
-### POST /api/v1/chainhooks/
+### POST /api/v1/chainhooks/large-swap
 
 Receive large DEX swap events.
 
-### POST /api/chainhooks/subscription-created
+### POST /api/v1/chainhooks/subscription-created
 
 Receive StackPulse subscription events.
 
@@ -485,11 +482,11 @@ Receive StackPulse subscription events.
 
 Receive alert trigger events.
 
-### POST /api/chainhooks/fee-collected
+### POST /api/v1/chainhooks/fee-collected
 
 Receive fee collection events.
 
-### POST /api/chainhooks/badge-earned
+### POST /api/v1/chainhooks/badge-earned
 
 Receive badge minting events.
 
