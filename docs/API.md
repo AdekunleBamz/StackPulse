@@ -27,7 +27,7 @@ The live backend routes are currently defined in `server/src/index.ts`. The list
 - `POST /api/v1/chainhooks/contract-deployed`
 - `POST /api/v1/chainhooks/nft-mint`
 - `POST /api/v1/chainhooks/token-launch`
-- `POST /api/v1/chainhooks/`
+- `POST /api/v1/chainhooks/large-swap`
 - `POST /api/v1/chainhooks/subscription-created`
 - `POST /api/v1/chainhooks/alert-triggered`
 - `POST /api/v1/chainhooks/fee-collected`
