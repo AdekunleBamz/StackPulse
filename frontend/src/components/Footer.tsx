@@ -13,7 +13,7 @@ const footerLinks = {
   resources: [
     { label: 'Documentation', href: 'https://docs.hiro.so/stacks/chainhook' },
     { label: 'Stacks Network', href: 'https://stacks.co' },
-    { label: 'Hiro Explorer', href: 'https://explorer.hiro.so' },
+    { label: 'Hiro Explorer', href: 'https://explorer.hiro.so/?chain=mainnet' },
     { label: 'API Reference', href: '#' },
   ],
   company: [
