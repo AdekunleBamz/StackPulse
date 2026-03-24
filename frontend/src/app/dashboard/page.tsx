@@ -27,6 +27,7 @@ import {
 import { Breadcrumbs } from '@/components';
 
 const DEPLOYER_ADDRESS = process.env.NEXT_PUBLIC_DEPLOYER_ADDRESS || '';
+const STACKS_API_BASE = process.env.NEXT_PUBLIC_STACKS_API_URL?.replace(/\/$/, '') || 'https://api.mainnet.hiro.so';
 
 // Alert types matching the contracts and chainhooks
 const alertTypes = [
@@ -87,7 +88,7 @@ export default function DashboardPage() {
 
         // Check V3 contract for user data
         const response = await fetch(
-          `https://api.mainnet.hiro.so/v2/contracts/call-read/${DEPLOYER_ADDRESS}/stackpulse-v-j3/get-user`,
+          `${STACKS_API_BASE}/v2/contracts/call-read/${DEPLOYER_ADDRESS}/stackpulse-v-j3/get-user`,
           {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
