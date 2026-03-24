@@ -50,6 +50,7 @@ const tiers = [
 ];
 
 const DEPLOYER_ADDRESS = process.env.NEXT_PUBLIC_DEPLOYER_ADDRESS || '';
+const STACKS_API_BASE = process.env.NEXT_PUBLIC_STACKS_API_URL?.replace(/\/$/, '') || 'https://api.mainnet.hiro.so';
 
 export default function Pricing() {
   const { isConnected, connect, address } = useWallet();
@@ -98,7 +99,7 @@ export default function Pricing() {
         
         // Use V3 contract
         const response = await fetch(
-          `https://api.mainnet.hiro.so/v2/contracts/call-read/${DEPLOYER_ADDRESS}/stackpulse-v-j3/get-user`,
+          `${STACKS_API_BASE}/v2/contracts/call-read/${DEPLOYER_ADDRESS}/stackpulse-v-j3/get-user`,
           {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
