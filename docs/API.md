@@ -247,39 +247,39 @@ Get recent notifications.
 
 These endpoints receive blockchain events from Hiro Chainhooks.
 
-### POST /api/chainhooks/whale-transfer
+### POST /api/v1/chainhooks/whale-transfer
 
 Receive whale transfer events (>10,000 STX).
 
-### POST /api/chainhooks/contract-deployed
+### POST /api/v1/chainhooks/contract-deployed
 
 Receive new contract deployment events.
 
-### POST /api/chainhooks/nft-mint
+### POST /api/v1/chainhooks/nft-mint
 
 Receive NFT mint events.
 
-### POST /api/chainhooks/token-launch
+### POST /api/v1/chainhooks/token-launch
 
 Receive new SIP-010 token deployment events.
 
-### POST /api/chainhooks/large-swap
+### POST /api/v1/chainhooks/large-swap
 
 Receive large DEX swap events.
 
-### POST /api/chainhooks/subscription-created
+### POST /api/v1/chainhooks/subscription-created
 
 Receive StackPulse subscription events.
 
-### POST /api/chainhooks/alert-triggered
+### POST /api/v1/chainhooks/alert-triggered
 
 Receive alert trigger events.
 
-### POST /api/chainhooks/fee-collected
+### POST /api/v1/chainhooks/fee-collected
 
 Receive fee collection events.
 
-### POST /api/chainhooks/badge-earned
+### POST /api/v1/chainhooks/badge-earned
 
 Receive badge minting events.
 
