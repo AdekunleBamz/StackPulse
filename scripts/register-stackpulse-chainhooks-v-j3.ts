@@ -2,7 +2,7 @@
 /**
  * StackPulse V3 Chainhooks Registration Script
  * 
- * Registers chainhooks for V3 contracts on Hiro Platform
+ * Registers chainhooks for V-J3 contracts on Hiro Platform
  * Uses direct HTTP API calls with the correct Hiro Platform format
  */
 
@@ -376,7 +376,7 @@ async function main() {
   console.log('║                    V3 Migration Complete!                    ║');
   console.log('╚══════════════════════════════════════════════════════════════╝');
   console.log('\n📝 Next Steps:');
-  console.log('   1. Deploy V3 contracts to mainnet');
+  console.log('   1. Deploy V-J3 contracts to mainnet');
   console.log('   2. Update frontend environment variables');
   console.log('   3. Deploy frontend to Vercel');
   console.log('   4. Deploy backend to Render');
