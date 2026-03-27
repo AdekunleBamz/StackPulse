@@ -26,7 +26,7 @@ npm --prefix shared install
 
 # Contract checks
 npm run clarinet:check
-npm test
+npm run clarinet:test
 
 # App surfaces
 npm --prefix server run dev
