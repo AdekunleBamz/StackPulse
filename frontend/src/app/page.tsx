@@ -4,23 +4,19 @@ import Image from 'next/image';
 import { memo } from 'react';
 
 const Features = dynamic(() => import('@/components/Features'), {
-  loading: () => <div className="min-h-[400px] animate-pulse bg-gray-950/50" />,
-  ssr: false
+  loading: () => <div className="min-h-[400px] animate-pulse bg-gray-950/50" />
 });
 
 const Pricing = dynamic(() => import('@/components/Pricing'), {
-  loading: () => <div className="min-h-[600px] animate-pulse bg-gray-950/50" />,
-  ssr: false
+  loading: () => <div className="min-h-[600px] animate-pulse bg-gray-950/50" />
 });
 
 const LiveStats = dynamic(() => import('@/components/LiveStats'), {
-  loading: () => <div className="min-h-[400px] animate-pulse bg-gray-950/50" />,
-  ssr: false
+  loading: () => <div className="min-h-[400px] animate-pulse bg-gray-950/50" />
 });
 
 const Footer = dynamic(() => import('@/components/Footer'), {
-  loading: () => <div className="h-64 animate-pulse bg-gray-950/50" />,
-  ssr: false
+  loading: () => <div className="h-64 animate-pulse bg-gray-950/50" />
 });
 
 const Hero = memo(() => (

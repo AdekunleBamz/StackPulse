@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useDebounce } from '@/hooks/useDebounce';
-import { NoResultsState, NoTransactionsState } from '@/components/EmptyState';
+import { ErrorState, NoResultsState, NoTransactionsState } from '@/components/EmptyState';
 import {
   History,
   Filter,
