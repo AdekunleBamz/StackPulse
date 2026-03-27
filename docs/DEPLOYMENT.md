@@ -58,7 +58,7 @@ clarinet check
 npm test
 
 # Deploy contracts (requires wallet)
-clarinet deployments apply -p deployments/v-j4-mainnet-plan.yaml --no-dashboard
+clarinet deployments apply -p deployments/v-j3-mainnet-plan.yaml --no-dashboard
 ```
 
 ### Deployment Plan (v-j4-mainnet-plan.yaml)
