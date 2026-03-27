@@ -12,6 +12,7 @@ npm run lint
 npm test
 npm start
 npm run register-hooks
+npm run test
 ```
 
 ## Main responsibilities
