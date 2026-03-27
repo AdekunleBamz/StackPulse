@@ -6,6 +6,7 @@ import { useEffect, useId, useState } from 'react';
 import { toast } from '@/components/Toast';
 import Button from '@/components/ui/Button';
 import Link from 'next/link';
+import { stackpulseSdk } from '@/lib/stackpulse-sdk';
 
 const tiers = [
   {
@@ -49,8 +50,6 @@ const tiers = [
   },
 ];
 
-const DEPLOYER_ADDRESS = process.env.NEXT_PUBLIC_DEPLOYER_ADDRESS || '';
-
 export default function Pricing() {
   const { isConnected, connect, address } = useWallet();
   const editChannelTitleId = useId();
@@ -69,6 +68,18 @@ export default function Pricing() {
 
   const tierNames = ['Free', 'Basic', 'Pro', 'Premium'];
   const tierColors = ['gray', 'blue', 'purple', 'yellow'];
+  const channels: Array<{
+    id: 'email' | 'discord' | 'telegram';
+    icon: typeof Mail;
+    value: string;
+    label: string;
+    color: string;
+    iconColor: string;
+  }> = [
+    { id: 'email', icon: Mail, value: email, label: 'Email', color: 'bg-blue-500/10', iconColor: 'text-blue-400' },
+    { id: 'discord', icon: MessageCircle, value: discord, label: 'Discord', color: 'bg-indigo-500/10', iconColor: 'text-indigo-400' },
+    { id: 'telegram', icon: Send, value: telegram, label: 'Telegram', color: 'bg-sky-500/10', iconColor: 'text-sky-400' },
+  ];
 
   // Check registration status when wallet connects
   useEffect(() => {
@@ -85,60 +96,25 @@ export default function Pricing() {
       }
       
       // Always check contract for latest data
-      if (!DEPLOYER_ADDRESS) {
-        console.warn('DEPLOYER_ADDRESS not set!');
-        return;
-      }
-      
       try {
-        const { principalCV, cvToHex, hexToCV, cvToValue } = await import('@stacks/transactions');
-        
         console.log('Checking registration for:', address);
-        console.log('Using contract:', DEPLOYER_ADDRESS);
-        
-        // Use V3 contract
-        const response = await fetch(
-          `https://api.mainnet.hiro.so/v2/contracts/call-read/${DEPLOYER_ADDRESS}/stackpulse-v-j3/get-user`,
-          {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              sender: address,
-              arguments: [cvToHex(principalCV(address))]
-            })
-          }
-        );
-        
-        const data = await response.json();
-        console.log('Contract response:', data);
-        
-        // If result is not 0x09 (none), user is registered
-        const registered = data.result && data.result !== '0x09';
+        const userData = await stackpulseSdk.getUser(address);
+        const registered = Boolean(userData);
         setIsRegistered(registered);
         
-        // Parse user data to get tier
-        if (registered && data.result) {
-          try {
-            const cv = hexToCV(data.result);
-            const userData = cvToValue(cv);
-            console.log('Parsed user data:', userData);
-            if (userData && userData.value) {
-              const tier = Number(userData.value.tier?.value || 0);
-              const uname = userData.value.username?.value || '';
-              setCurrentTier(tier);
-              setSubscriptionEnds(Number(userData.value['subscription-ends']?.value || 0));
-              setUsername(uname);
-              
-              // Cache registration status for faster future loads
-              localStorage.setItem(`stackpulse_registered_${address}`, JSON.stringify({
-                tier,
-                username: uname,
-                timestamp: Date.now()
-              }));
-            }
-          } catch (parseErr) {
-            console.error('Error parsing user data:', parseErr);
-          }
+        if (registered && userData) {
+          const tier = Number(userData.tier ?? 0);
+          const uname = String(userData.username ?? '');
+          setCurrentTier(tier);
+          setSubscriptionEnds(Number(userData['subscription-ends'] ?? 0));
+          setUsername(uname);
+
+          // Cache registration status for faster future loads
+          localStorage.setItem(`stackpulse_registered_${address}`, JSON.stringify({
+            tier,
+            username: uname,
+            timestamp: Date.now()
+          }));
         } else {
           // Not registered - clear any cached data
           localStorage.removeItem(`stackpulse_registered_${address}`);
@@ -213,42 +189,21 @@ export default function Pricing() {
     }
 
     // Calculate price for the tier (in microSTX)
-    const tierPrices: Record<number, number> = {
-      0: 0,         // Free
-      1: 1000000,   // 1 STX for Basic
-      2: 5000000,   // 5 STX for Pro
-      3: 20000000,  // 20 STX for Premium
-    };
-    const price = tierPrices[selectedTier] || 0;    setIsLoading(true);
+    setIsLoading(true);
     setSubscribingTier(selectedTier);
     try {
       setUsername(normalizedUsername);
       const { openContractCall } = await import('@stacks/connect');
-      const { stringAsciiCV, uintCV } = await import('@stacks/transactions');
- 
-      // Post-condition: allow STX transfer for paid tiers (new v7+ format)
-      const postConditions: { type: 'stx-postcondition'; address: string; condition: 'eq'; amount: number }[] = price > 0 && address ? [
-        {
-          type: 'stx-postcondition',
-          address: address,
-          condition: 'eq',
-          amount: price
-        }
-      ] : [];
- 
-      // V3 contract: register-and-subscribe combines both steps
-      // alerts bitmask: 31 = all alerts enabled (1+2+4+8+16)
+
+      const txOptions = stackpulseSdk.buildRegisterAndSubscribeTxOptions({
+        username: normalizedUsername,
+        email: email || '',
+        tier: selectedTier,
+        alertsBitmask: 31,
+      });
+
       await openContractCall({
-        contractAddress: DEPLOYER_ADDRESS,
-        contractName: 'stackpulse-v-j3',
-        functionName: 'register-and-subscribe',
-        functionArgs: [
-          stringAsciiCV(normalizedUsername),
-          stringAsciiCV(email || ''),
-          uintCV(selectedTier),
-          uintCV(31) // Enable all alert types
-        ],
-        postConditions,
+        ...txOptions,
         onFinish: async (data: { txId: string }) => {
           console.log('Registration + Subscription submitted:', data.txId);
           
@@ -326,33 +281,15 @@ export default function Pricing() {
     }
 
     // Calculate price for the tier (in microSTX)
-    const tierPrices: Record<number, number> = {
-      1: 1000000,   // 1 STX for Basic
-      2: 5000000,   // 5 STX for Pro
-      3: 20000000,  // 20 STX for Premium
-    };
-    const price = tierPrices[tier] || 0;    setIsLoading(true);
+    setIsLoading(true);
     setSubscribingTier(tier);
     try {
       const { openContractCall } = await import('@stacks/connect');
-      const { uintCV } = await import('@stacks/transactions');
 
-      // Post-condition: allow STX transfer from user to contract owner (new v7+ format)
-      const postConditions: { type: 'stx-postcondition'; address: string; condition: 'eq'; amount: number }[] = price > 0 && address ? [
-        {
-          type: 'stx-postcondition',
-          address: address,
-          condition: 'eq',
-          amount: price
-        }
-      ] : [];
+      const txOptions = stackpulseSdk.buildUpgradeSubscriptionTxOptions(tier);
 
       await openContractCall({
-        contractAddress: DEPLOYER_ADDRESS,
-        contractName: 'stackpulse-v-j3',
-        functionName: 'upgrade-subscription',
-        functionArgs: [uintCV(tier)],
-        postConditions,
+        ...txOptions,
         onFinish: async (data: { txId: string }) => {
           console.log('Upgrade submitted:', data.txId);
           setCurrentTier(tier);
@@ -571,15 +508,11 @@ export default function Pricing() {
                     <p className="text-white text-xs font-bold mb-1">Wallet</p>
                     <p className="text-emerald-400 text-[10px] font-mono">Connected</p>
                   </div>
-                  {[
-                    { id: 'email', icon: Mail, value: email, label: 'Email', color: 'bg-blue-500/10', iconColor: 'text-blue-400' },
-                    { id: 'discord', icon: MessageCircle, value: discord, label: 'Discord', color: 'bg-indigo-500/10', iconColor: 'text-indigo-400' },
-                    { id: 'telegram', icon: Send, value: telegram, label: 'Telegram', color: 'bg-sky-500/10', iconColor: 'text-sky-400' },
-                  ].map((chan) => (
+                  {channels.map((chan) => (
                     <button
                       key={chan.id}
                       type="button"
-                      onClick={() => openEditChannel(chan.id as any)}
+                      onClick={() => openEditChannel(chan.id)}
                       className="group bg-gray-800/30 rounded-2xl p-4 text-center border border-gray-700/50 hover:border-purple-500/30 hover:bg-gray-800/50 transition-all active:scale-95"
                     >
                       <div className={`w-10 h-10 ${chan.value ? 'bg-emerald-500/10' : chan.color} rounded-xl flex items-center justify-center mx-auto mb-3 transition-colors`} aria-hidden="true">

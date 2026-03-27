@@ -6,8 +6,7 @@ import { useRouter } from 'next/navigation';
 import { toast } from '@/components/Toast';
 import TextField from '@/components/ui/TextField';
 import { Breadcrumbs } from '@/components';
-
-const DEPLOYER_ADDRESS = process.env.NEXT_PUBLIC_DEPLOYER_ADDRESS || '';
+import { stackpulseSdk } from '@/lib/stackpulse-sdk';
 
 export default function RegisterPage() {
   const { isConnected, address, connect } = useWallet();
@@ -47,20 +46,17 @@ export default function RegisterPage() {
     try {
       setLoadingStep('Connecting...');
       const { openContractCall } = await import('@stacks/connect');
-      const { stringAsciiCV, uintCV } = await import('@stacks/transactions');
- 
+
+      const txOptions = stackpulseSdk.buildRegisterAndSubscribeTxOptions({
+        username,
+        email: '',
+        tier: 0,
+        alertsBitmask: 31,
+      });
+
       setLoadingStep('Signature required...');
-      // V3 contract: register-and-subscribe in one step (tier 0 = free)
       await openContractCall({
-        contractAddress: DEPLOYER_ADDRESS,
-        contractName: 'stackpulse-v-j3',
-        functionName: 'register-and-subscribe',
-        functionArgs: [
-          stringAsciiCV(username),
-          stringAsciiCV(''), // email (optional)
-          uintCV(0), // Free tier
-          uintCV(31) // All alerts enabled
-        ],
+        ...txOptions,
         onFinish: (data: { txId: string }) => {
           setLoadingStep('Success!');
           console.log('Registration submitted:', data.txId);
