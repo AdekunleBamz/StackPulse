@@ -275,15 +275,7 @@ Get user profile and notification preferences.
 }
 ```
 
-**Response (404 Not Found):**
-```json
-{
-  "success": false,
-  "error": "User not found"
-}
-```
-
-### PUT /api/users/:address
+#### PUT /api/users/:address
 
 Update user notification preferences.
 
