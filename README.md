@@ -16,7 +16,7 @@ More detail lives in [docs/WORKSPACES.md](docs/WORKSPACES.md).
 
 ```bash
 npm install
-npm --prefix server install
+npm --prefix server ci
 npm --prefix shared install
 npm --prefix frontend install
 ```
