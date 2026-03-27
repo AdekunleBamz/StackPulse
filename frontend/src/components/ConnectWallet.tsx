@@ -5,7 +5,7 @@ import { Wallet, LogOut, ChevronDown } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import Button from '@/components/ui/Button';
 import CopyButton from '@/components/ui/CopyButton';
-import { truncateAddress } from '@shared/utils/format';
+import { truncateAddress } from '@/utils/address';
 
 export default function ConnectWallet() {
   const { isConnected, address, network, connect, disconnect, switchNetwork } = useWallet();

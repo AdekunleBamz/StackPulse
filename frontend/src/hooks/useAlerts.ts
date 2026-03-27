@@ -187,8 +187,13 @@ export function useAlerts(address: string | null): UseAlertsReturn {
   const toggleAlert = useCallback(async (id: string): Promise<boolean> => {
     if (!address) return false;
 
-    setLoading(true);
-    setError(null);
+    const existingAlert = alerts.find(a => a.id === id);
+    if (!existingAlert) return false;
+
+    // Optimistic update
+    setAlerts(prev => prev.map(a => 
+      a.id === id ? { ...a, enabled: !a.enabled } : a
+    ));
 
     try {
       const response = await fetch(`${SERVER_URL}/api/alerts/${id}/toggle?address=${address}`, {
@@ -197,33 +202,25 @@ export function useAlerts(address: string | null): UseAlertsReturn {
 
       const data = await response.json();
 
-      if (data.success) {
-        setAlerts(prev =>
-          prev.map(alert =>
-            alert.id === id
-              ? {
-                  ...data.alert,
-                  createdAt: new Date(data.alert.createdAt),
-                  lastTriggered: data.alert.lastTriggered
-                    ? new Date(data.alert.lastTriggered)
-                    : undefined,
-                }
-              : alert
-          )
-        );
-        return true;
-      } else {
+      if (!data.success) {
+        // Rollback
+        setAlerts(prev => prev.map(a => 
+          a.id === id ? { ...a, enabled: existingAlert.enabled } : a
+        ));
         setError(data.error || 'Failed to toggle alert');
         return false;
       }
+      return true;
     } catch (err) {
+      // Rollback
+      setAlerts(prev => prev.map(a => 
+        a.id === id ? { ...a, enabled: existingAlert.enabled } : a
+      ));
       setError('Network error');
       console.error('Error toggling alert:', err);
       return false;
-    } finally {
-      setLoading(false);
     }
-  }, [address]);
+  }, [address, alerts]);
 
   // Auto-fetch on mount and when address changes
   useEffect(() => {

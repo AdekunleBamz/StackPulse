@@ -16,10 +16,13 @@ The live backend routes are currently defined in `server/src/index.ts`. The list
 - `POST /api/v1/users`
 - `GET /api/users`
 - `GET /api/users/:address`
+- `PUT /api/users/:address`
 - `DELETE /api/users/:address`
 - `GET /api/v1/users/:address/alerts`
 - `POST /api/v1/users/:address/alerts`
 - `DELETE /api/users/:address/alerts/:alertId`
+
+Note: user profile routes currently use mixed `/api` and `/api/v1` prefixes as shown above.
 
 ### Chainhook ingestion
 
@@ -36,6 +39,8 @@ The live backend routes are currently defined in `server/src/index.ts`. The list
 - `POST /api/v1/chainhooks/subscription-upgrade`
 - `POST /api/v1/chainhooks/alert-created`
 
+The `/api/v1/chainhooks/` root POST currently handles large-swap detection payloads.
+
 The extracted router files under `server/src/routes/` are useful module references, but they are not the source of truth for mounted paths until they are wired into the server entrypoint.
 
 ## Base URLs
@@ -45,11 +50,13 @@ The extracted router files under `server/src/routes/` are useful module referenc
 
 ## Authentication
 
-Most endpoints are public. Chainhook endpoints use Bearer token authentication configured via `CHAINHOOK_AUTH_TOKEN` environment variable.
+Most endpoints are public. Chainhook endpoints optionally validate Bearer tokens when `CHAINHOOK_AUTH_TOKEN` is configured.
 
 ```
 Authorization: Bearer <your-token>
 ```
+
+Requests without an `Authorization` header may still be accepted for Hiro compatibility depending on deployment settings.
 
 ---
 
@@ -66,7 +73,6 @@ Check server health status.
 {
   "status": "healthy",
   "timestamp": "2025-01-24T12:00:00.000Z",
-  "uptime": 3600,
   "version": "1.0.0"
 }
 ```
@@ -75,22 +81,26 @@ Check server health status.
 
 ### Statistics
 
-#### GET /api/stats
+#### GET /api/v1/stats
 
 Get global event statistics.
 
 **Response:**
 ```json
 {
-  "whaleTransfers": 1234,
-  "contractDeployments": 567,
-  "nftMints": 8901,
-  "tokenLaunches": 234,
-  "largeSwaps": 567,
-  "subscriptions": 890,
-  "alertsTriggered": 1234,
-  "feesCollected": 567,
-  "badgesEarned": 890
+  "stats": {
+    "whaleTransfers": 1234,
+    "contractDeployments": 567,
+    "nftMints": 8901,
+    "tokenLaunches": 234,
+    "largeSwaps": 567,
+    "subscriptions": 890,
+    "alertsTriggered": 1234,
+    "feesCollected": 567,
+    "badgesEarned": 890
+  },
+  "uptime": 3600,
+  "timestamp": "2025-01-24T12:00:00.000Z"
 }
 ```
 
@@ -122,9 +132,9 @@ Get user profile and preferences.
 }
 ```
 
-#### POST /api/users/:address/preferences
+#### POST /api/v1/users
 
-Update user notification preferences.
+Create user notification preferences.
 
 **Request Body:**
 ```json
@@ -140,9 +150,16 @@ Update user notification preferences.
 ```json
 {
   "success": true,
-  "message": "Preferences updated successfully"
+  "user": {
+    "address": "SP...",
+    "enabledAlerts": ["whale", "nft"]
+  }
 }
 ```
+
+#### PUT /api/users/:address
+
+Update an existing user's notification preferences.
 
 #### DELETE /api/users/:address
 
@@ -151,16 +168,17 @@ Delete user preferences.
 **Response:**
 ```json
 {
-  "success": true,
-  "message": "User preferences deleted"
+  "success": true
 }
 ```
+
+`GET /api/users` returns `{ users: [...], count: number }` for admin-style listing.
 
 ---
 
 ### Alerts
 
-#### GET /api/users/:address/alerts
+#### GET /api/v1/users/:address/alerts
 
 Get user's configured alerts.
 
@@ -181,7 +199,7 @@ Get user's configured alerts.
 }
 ```
 
-#### POST /api/users/:address/alerts
+#### POST /api/v1/users/:address/alerts
 
 Create a new alert (server-side tracking).
 
@@ -211,13 +229,13 @@ Create a new alert (server-side tracking).
 
 ---
 
-### Notifications
+### Notifications (service-level)
 
-#### GET /api/notifications
+No standalone `GET /api/notifications` route is currently mounted in `server/src/index.ts`.
 
-Get recent notifications.
+Example notification payload shape used by the notification service.
 
-**Query Parameters:**
+**Fields typically returned:**
 | Parameter | Type | Default | Description |
 |-----------|------|---------|-------------|
 | limit | number | 20 | Max notifications to return |
@@ -247,39 +265,39 @@ Get recent notifications.
 
 These endpoints receive blockchain events from Hiro Chainhooks.
 
-### POST /api/chainhooks/whale-transfer
+### POST /api/v1/chainhooks/whale-transfer
 
 Receive whale transfer events (>10,000 STX).
 
-### POST /api/chainhooks/contract-deployed
+### POST /api/v1/chainhooks/contract-deployed
 
 Receive new contract deployment events.
 
-### POST /api/chainhooks/nft-mint
+### POST /api/v1/chainhooks/nft-mint
 
 Receive NFT mint events.
 
-### POST /api/chainhooks/token-launch
+### POST /api/v1/chainhooks/token-launch
 
 Receive new SIP-010 token deployment events.
 
-### POST /api/chainhooks/large-swap
+### POST /api/v1/chainhooks/
 
 Receive large DEX swap events.
 
-### POST /api/chainhooks/subscription-created
+### POST /api/v1/chainhooks/subscription-created
 
 Receive StackPulse subscription events.
 
-### POST /api/chainhooks/alert-triggered
+### POST /api/v1/chainhooks/alert-triggered
 
 Receive alert trigger events.
 
-### POST /api/chainhooks/fee-collected
+### POST /api/v1/chainhooks/fee-collected
 
 Receive fee collection events.
 
-### POST /api/chainhooks/badge-earned
+### POST /api/v1/chainhooks/badge-earned
 
 Receive badge minting events.
 

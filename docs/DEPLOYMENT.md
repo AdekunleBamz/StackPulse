@@ -58,15 +58,15 @@ clarinet check
 npm test
 
 # Deploy contracts (requires wallet)
-clarinet deployments apply -p deployments/v3-mainnet-plan.yaml --no-dashboard
+clarinet deployments apply -p deployments/v-j3-mainnet-plan.yaml --no-dashboard
 ```
 
-### Deployment Plan (v3-mainnet-plan.yaml)
+### Deployment Plan (v-j3-mainnet-plan.yaml)
 
 ```yaml
 ---
 id: 0
-name: StackPulse V3 Mainnet Deployment
+name: StackPulse v-j3 Mainnet Deployment
 network: mainnet
 stacks-node: "https://api.mainnet.hiro.so"
 
@@ -83,24 +83,24 @@ plan:
     - id: 1
       transactions:
         - contract-publish:
-            contract-name: alert-manager-v3
-            path: contracts/alert-manager-v3.clar
+            contract-name: alert-manager-v-j3
+            path: contracts/alert-manager-v-j3.clar
             anchor-block-only: true
             cost: 500000
             
     - id: 2
       transactions:
         - contract-publish:
-            contract-name: fee-vault-v3
-            path: contracts/fee-vault-v3.clar
+            contract-name: fee-vault-v-j3
+            path: contracts/fee-vault-v-j3.clar
             anchor-block-only: true
             cost: 500000
             
     - id: 3
       transactions:
         - contract-publish:
-            contract-name: reputation-badges-v3
-            path: contracts/reputation-badges-v3.clar
+            contract-name: reputation-badges-v-j3
+            path: contracts/reputation-badges-v-j3.clar
             anchor-block-only: true
             cost: 500000
 ```
@@ -133,9 +133,9 @@ CHAINHOOK_AUTH_TOKEN=your-secure-token
 # Contract Addresses
 DEPLOYER_ADDRESS=SP5K2RHMSBH4PAP4PGX77MCVNK1ZEED07CWX9TJT
 REGISTRY_CONTRACT=stackpulse-v-j3
-ALERT_CONTRACT=alert-manager-v3
-VAULT_CONTRACT=fee-vault-v3
-BADGE_CONTRACT=reputation-badges-v3
+ALERT_CONTRACT=alert-manager-v-j3
+VAULT_CONTRACT=fee-vault-v-j3
+BADGE_CONTRACT=reputation-badges-v-j3
 
 # Optional: Redis for caching
 REDIS_URL=redis://...
@@ -196,7 +196,7 @@ Get your Hiro Platform API key from [platform.hiro.so](https://platform.hiro.so)
 export HIRO_API_KEY=your-api-key
 
 # Run registration script
-npx ts-node scripts/register-stackpulse-chainhooks-v3.ts
+npx ts-node scripts/register-stackpulse-chainhooks-v-j3.ts
 ```
 
 ### Verify Registration
@@ -209,15 +209,15 @@ npx ts-node scripts/check-chainhook-status.ts
 
 | Chainhook | Endpoint |
 |-----------|----------|
-| Whale Transfer | `https://your-server.com/api/chainhooks/whale-transfer` |
-| Contract Deploy | `https://your-server.com/api/chainhooks/contract-deployed` |
-| NFT Mint | `https://your-server.com/api/chainhooks/nft-mint` |
-| Token Launch | `https://your-server.com/api/chainhooks/token-launch` |
-| Large Swap | `https://your-server.com/api/chainhooks/large-swap` |
-| Subscription | `https://your-server.com/api/chainhooks/subscription-created` |
-| Alert Triggered | `https://your-server.com/api/chainhooks/alert-triggered` |
-| Fee Collected | `https://your-server.com/api/chainhooks/fee-collected` |
-| Badge Earned | `https://your-server.com/api/chainhooks/badge-earned` |
+| Whale Transfer | `https://your-server.com/api/v1/chainhooks/whale-transfer` |
+| Contract Deploy | `https://your-server.com/api/v1/chainhooks/contract-deployed` |
+| NFT Mint | `https://your-server.com/api/v1/chainhooks/nft-mint` |
+| Token Launch | `https://your-server.com/api/v1/chainhooks/token-launch` |
+| Large Swap | `https://your-server.com/api/v1/chainhooks/` |
+| Subscription | `https://your-server.com/api/v1/chainhooks/subscription-created` |
+| Alert Triggered | `https://your-server.com/api/v1/chainhooks/alert-triggered` |
+| Fee Collected | `https://your-server.com/api/v1/chainhooks/fee-collected` |
+| Badge Earned | `https://your-server.com/api/v1/chainhooks/badge-earned` |
 
 ---
 
@@ -280,7 +280,7 @@ npx ts-node scripts/check-chainhook-status.ts
 
 ### Contract Upgrades
 
-1. Create new contract version (e.g., `stackpulse-v4.clar`)
+1. Create new contract version (e.g., `stackpulse-v-j4.clar`)
 2. Deploy to testnet first
 3. Run comprehensive tests
 4. Deploy to mainnet

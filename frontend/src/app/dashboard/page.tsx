@@ -8,6 +8,7 @@ import { useConfirmDialog } from '@/components/ConfirmDialog';
 import { NoAlertsState } from '@/components/EmptyState';
 import { DashboardSkeleton } from '@/components/LoadingSkeleton';
 import Button from '@/components/ui/Button';
+import { stackpulseSdk } from '@/lib/stackpulse-sdk';
 import { 
   Bell, 
   Wallet, 
@@ -25,8 +26,6 @@ import {
   ToggleRight
 } from 'lucide-react';
 import { Breadcrumbs } from '@/components';
-
-const DEPLOYER_ADDRESS = process.env.NEXT_PUBLIC_DEPLOYER_ADDRESS || '';
 
 // Alert types matching the contracts and chainhooks
 const alertTypes = [
@@ -77,44 +76,20 @@ export default function DashboardPage() {
   // Check user registration and load data
   useEffect(() => {
     const loadUserData = async () => {
-      if (!address || !DEPLOYER_ADDRESS) {
+      if (!address) {
         setIsLoading(false);
         return;
       }
 
       try {
-        const { principalCV, cvToHex, hexToCV, cvToValue } = await import('@stacks/transactions');
-
-        // Check V3 contract for user data
-        const response = await fetch(
-          `https://api.mainnet.hiro.so/v2/contracts/call-read/${DEPLOYER_ADDRESS}/stackpulse-v-j3/get-user`,
-          {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              sender: address,
-              arguments: [cvToHex(principalCV(address))]
-            })
-          }
-        );
-
-        const data = await response.json();
-        
-        if (data.result && data.result !== '0x09') {
-          try {
-            const cv = hexToCV(data.result);
-            const parsed = cvToValue(cv);
-            if (parsed && parsed.value) {
-              setUserData({
-                username: parsed.value.username?.value || '',
-                tier: Number(parsed.value.tier?.value || 0),
-                alertsEnabled: Number(parsed.value['alerts-enabled']?.value || 0),
-                subscriptionEnds: Number(parsed.value['subscription-ends']?.value || 0)
-              });
-            }
-          } catch (parseErr) {
-            console.error('Error parsing user data:', parseErr);
-          }
+        const user = await stackpulseSdk.getUser(address);
+        if (user) {
+          setUserData({
+            username: String(user.username || ''),
+            tier: Number(user.tier || 0),
+            alertsEnabled: Number(user['alerts-enabled'] || 0),
+            subscriptionEnds: Number(user['subscription-ends'] || 0)
+          });
         }
 
         // Load alerts from server
@@ -171,19 +146,17 @@ export default function DashboardPage() {
     setIsCreating(true);
     try {
       const { openContractCall } = await import('@stacks/connect');
-      const { uintCV, stringAsciiCV, noneCV } = await import('@stacks/transactions');
+
+      const txOptions = stackpulseSdk.buildCreateAlertTxOptions({
+        alertType: newAlertType,
+        name: newAlertName || alertTypes[newAlertType - 1].name,
+        targetAddress: null,
+        threshold: parseInt(newAlertThreshold) || 10000,
+        userTier: userData.tier,
+      });
 
       await openContractCall({
-        contractAddress: DEPLOYER_ADDRESS,
-        contractName: 'alert-manager-v-j3',
-        functionName: 'create-alert',
-        functionArgs: [
-          uintCV(newAlertType),
-          stringAsciiCV(newAlertName || alertTypes[newAlertType - 1].name),
-          noneCV(), // target address (optional)
-          uintCV(parseInt(newAlertThreshold) || 10000),
-          uintCV(userData.tier)
-        ],
+        ...txOptions,
         onFinish: async (data: { txId: string }) => {
           console.log('Alert created:', data.txId);
           toast.dismiss(toastId);

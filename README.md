@@ -40,9 +40,17 @@ npm --prefix frontend run lint
 npm --prefix shared run build
 ```
 
-## Key docs
-
 - [docs/API.md](docs/API.md)
 - [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md)
 - [docs/CONTRACTS.md](docs/CONTRACTS.md)
+- [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)
 - [CONTRIBUTING.md](CONTRIBUTING.md)
+
+## Features & Highlights
+
+- **Real-time Monitoring**: Sub-second ingestion of Stacks blockchain events.
+- **Tiered Alerts**: Tiered feature gating (Basic, Pro, Premium) with granular limits.
+- **Multi-Channel Delivery**: Integration with Discord, Telegram, and custom Webhooks.
+- **Live Analytics**: High-performance data windowing for responsive dashboard charts.
+- **Security First**: JWT-based authentication, SSH-signed commits, and CSP-hardened headers.
+- **Reliability**: Exponential backoff retries, LRU caching, and health-monitored subsystems.
