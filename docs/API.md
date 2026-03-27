@@ -75,7 +75,7 @@ Check server health status.
 
 ### Statistics
 
-#### GET /api/stats
+#### GET /api/v1/stats
 
 Get global event statistics.
 
