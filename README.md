@@ -102,7 +102,7 @@ npm --prefix frontend run dev
 - [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)
 - [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md)
 - [docs/CONTRACTS.md](docs/CONTRACTS.md)
-- [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)
+- [docs/WORKSPACES.md](docs/WORKSPACES.md)
 - [CONTRIBUTING.md](CONTRIBUTING.md)
 
 ## Features & Highlights
