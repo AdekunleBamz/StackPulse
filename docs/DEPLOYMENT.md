@@ -204,7 +204,7 @@ Configure Render health check:
 
 ---
 
-## 3. Frontend Deployment (Vercel)
+## 4. Frontend Deployment (Vercel)
 
 ### Setup
 
