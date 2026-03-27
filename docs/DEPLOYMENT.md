@@ -66,7 +66,7 @@ clarinet deployments apply -p deployments/v-j4-mainnet-plan.yaml --no-dashboard
 ```yaml
 ---
 id: 0
-name: StackPulse V-J4 Mainnet Deployment
+name: StackPulse V-j3 Mainnet Deployment
 network: mainnet
 stacks-node: "https://api.mainnet.hiro.so"
 
