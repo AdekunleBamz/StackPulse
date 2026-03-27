@@ -15,7 +15,7 @@ More detail lives in [docs/WORKSPACES.md](docs/WORKSPACES.md).
 ## Quick start
 
 ```bash
-npm install
+npm ci
 npm --prefix server install
 npm --prefix shared install
 npm --prefix frontend install
