@@ -18,7 +18,7 @@ More detail lives in [docs/WORKSPACES.md](docs/WORKSPACES.md).
 npm install
 npm --prefix server install
 npm --prefix shared install
-npm --prefix frontend install
+npm --prefix frontend ci
 ```
 
 ## Common commands
