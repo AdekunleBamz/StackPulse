@@ -271,7 +271,7 @@ Receive large DEX swap events.
 
 Receive StackPulse subscription events.
 
-### POST /api/chainhooks/alert-triggered
+### POST /api/v1/chainhooks/alert-triggered
 
 Receive alert trigger events.
 
