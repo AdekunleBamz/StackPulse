@@ -251,7 +251,7 @@ These endpoints receive blockchain events from Hiro Chainhooks.
 
 Receive whale transfer events (>10,000 STX).
 
-### POST /api/chainhooks/contract-deployed
+### POST /api/v1/chainhooks/contract-deployed
 
 Receive new contract deployment events.
 
