@@ -259,7 +259,7 @@ Receive new contract deployment events.
 
 Receive NFT mint events.
 
-### POST /api/chainhooks/token-launch
+### POST /api/v1/chainhooks/token-launch
 
 Receive new SIP-010 token deployment events.
 
