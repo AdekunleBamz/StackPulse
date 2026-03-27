@@ -60,8 +60,8 @@ More detail lives in [docs/WORKSPACES.md](docs/WORKSPACES.md).
 ### Installation
 
 ```bash
-npm install
-npm --prefix server ci
+npm ci
+npm --prefix server install
 npm --prefix shared install
 npm --prefix frontend install
 ```
