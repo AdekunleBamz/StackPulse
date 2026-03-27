@@ -244,7 +244,7 @@ Get your Hiro Platform API key from [platform.hiro.so](https://platform.hiro.so)
 export HIRO_API_KEY=your-api-key
 
 # Run registration script
-npx tsx scripts/register-stackpulse-chainhooks-v-j4.ts
+npx ts-node scripts/register-stackpulse-chainhooks-v-j3.ts
 ```
 
 ### Verify Registration
