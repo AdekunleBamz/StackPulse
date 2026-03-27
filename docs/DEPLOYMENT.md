@@ -61,7 +61,7 @@ npm run test
 clarinet deployments apply -p deployments/v-j4-mainnet-plan.yaml --no-dashboard
 ```
 
-### Deployment Plan (v-j4-mainnet-plan.yaml)
+### Deployment Plan (v-j3-mainnet-plan.yaml)
 
 ```yaml
 ---
