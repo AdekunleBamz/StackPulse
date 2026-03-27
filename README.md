@@ -74,8 +74,9 @@ npm --prefix frontend ci
 ### Environment Setup
 
 ```bash
-# Copy environment example
-cp .env.example .env
+# Contract checks and tests
+npm run clarinet:check
+npm run clarinet:test
 
 # Configure your environment variables
 # Required: CHAINHOOK_AUTH_TOKEN, DATABASE_URL, etc.
