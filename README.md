@@ -31,6 +31,7 @@ npm test
 # Backend
 npm --prefix server run dev
 npm --prefix server run build
+npm --prefix server run test
 
 # Frontend
 npm --prefix frontend run dev
