@@ -233,7 +233,7 @@ NEXT_PUBLIC_POSTHOG_KEY=phc_xxx
 
 ---
 
-## 4. Chainhook Registration
+## 5. Chainhook Registration
 
 ### Prerequisites
 
