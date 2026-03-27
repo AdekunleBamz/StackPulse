@@ -33,8 +33,8 @@ npm --prefix frontend run lint
 
 npm install
 npm --prefix server install
-npm --prefix frontend install
-npm --prefix shared ci
+npm --prefix frontend ci
+npm --prefix shared install
 ```
 
 ## Branching Strategy
