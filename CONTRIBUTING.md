@@ -8,7 +8,7 @@ Use small, reviewable changes and keep documentation close to the code it descri
 git clone https://github.com/YOUR_USERNAME/StackPulse.git
 cd StackPulse
 
-npm install
+npm ci
 npm --prefix server install
 npm --prefix frontend install
 npm --prefix shared install
