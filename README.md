@@ -26,7 +26,7 @@ npm --prefix frontend install
 ```bash
 # Contract checks and tests
 npm run clarinet:check
-npm test
+npm run clarinet:test
 
 # Backend
 npm --prefix server run dev
