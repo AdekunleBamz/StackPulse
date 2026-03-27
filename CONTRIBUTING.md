@@ -9,7 +9,7 @@ git clone https://github.com/YOUR_USERNAME/StackPulse.git
 cd StackPulse
 
 npm install
-npm --prefix server install
+npm --prefix server ci
 npm --prefix frontend install
 npm --prefix shared install
 ```
