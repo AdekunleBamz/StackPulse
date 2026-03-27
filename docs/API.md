@@ -267,7 +267,7 @@ Receive new SIP-010 token deployment events.
 
 Receive large DEX swap events.
 
-### POST /api/chainhooks/subscription-created
+### POST /api/v1/chainhooks/subscription-created
 
 Receive StackPulse subscription events.
 
