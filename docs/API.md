@@ -247,7 +247,7 @@ Get recent notifications.
 
 These endpoints receive blockchain events from Hiro Chainhooks.
 
-### POST /api/chainhooks/whale-transfer
+### POST /api/v1/chainhooks/whale-transfer
 
 Receive whale transfer events (>10,000 STX).
 
