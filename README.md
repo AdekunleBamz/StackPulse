@@ -43,6 +43,7 @@ npm --prefix shared run build
 ## Key docs
 
 - [docs/API.md](docs/API.md)
+- [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)
 - [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md)
 - [docs/CONTRACTS.md](docs/CONTRACTS.md)
 - [CONTRIBUTING.md](CONTRIBUTING.md)
