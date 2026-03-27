@@ -45,6 +45,7 @@ npm --prefix shared run build
 - [docs/API.md](docs/API.md)
 - [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md)
 - [docs/CONTRACTS.md](docs/CONTRACTS.md)
+- [docs/WORKSPACES.md](docs/WORKSPACES.md)
 - [CONTRIBUTING.md](CONTRIBUTING.md)
 
 ## Community & Support
