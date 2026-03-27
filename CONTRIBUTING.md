@@ -87,7 +87,7 @@ git commit -S -m "feat(frontend): add real-time validation"
 ```bash
 # Contracts
 npm run clarinet:check
-npm test
+npm run clarinet:test
 
 # Server
 npm --prefix server run build
