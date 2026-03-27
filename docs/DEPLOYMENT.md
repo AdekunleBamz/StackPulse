@@ -2,7 +2,7 @@
 
 ## Current repo note
 
-Some examples below describe older `v3` naming. The active deployment artifacts in this repository today are the files under `deployments/`, especially the `v-j3` plans:
+Some examples below describe older `v2`/`v3` naming. The active deployment artifacts in this repository today are the files under `deployments/`, especially the `v-j3` plans:
 
 - `deployments/v-j3-mainnet-plan.yaml`
 - `deployments/v-j3-fix-plan.yaml`
