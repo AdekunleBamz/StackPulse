@@ -41,6 +41,33 @@ function sleep(ms: number) {
   return new Promise((r) => setTimeout(r, ms));
 }
 
+async function fetchJsonWithRetry(url: string, label: string, maxAttempts = 6) {
+  let attempt = 1;
+
+  while (attempt <= maxAttempts) {
+    const res = await fetch(url);
+
+    if (res.ok) {
+      return res.json();
+    }
+
+    const retryable = res.status === 429 || res.status >= 500;
+    if (!retryable || attempt === maxAttempts) {
+      throw new Error(`${label} failed: ${res.status}`);
+    }
+
+    const waitMs = Math.min(3000 * attempt, 20000);
+    await sleep(waitMs);
+    attempt++;
+  }
+
+  throw new Error(`${label} failed: exhausted retries`);
+}
+
+function isMaxAlertsReachedError(message: string) {
+  return message.includes('(err u103)') || message.includes('ERR-MAX-ALERTS-REACHED');
+}
+
 function parseArgs(argv: string[]) {
   const args = new Map<string, string>();
   for (let i = 2; i < argv.length; i++) {
@@ -58,18 +85,20 @@ function parseArgs(argv: string[]) {
 }
 
 async function getNextNonce(address: string) {
-  const res = await fetch(`${HIRO_API_ORIGIN}/extended/v1/address/${address}/nonces`);
-  if (!res.ok) throw new Error(`Nonce fetch failed: ${res.status}`);
-  const data: any = await res.json();
+  const data: any = await fetchJsonWithRetry(
+    `${HIRO_API_ORIGIN}/extended/v1/address/${address}/nonces`,
+    'Nonce fetch'
+  );
   const nonce = data?.possible_next_nonce;
   if (typeof nonce !== 'number') throw new Error('Nonce missing in response');
   return nonce;
 }
 
 async function getBalanceUstx(address: string) {
-  const res = await fetch(`${HIRO_API_ORIGIN}/extended/v1/address/${address}/balances`);
-  if (!res.ok) throw new Error(`Balance fetch failed: ${res.status}`);
-  const data: any = await res.json();
+  const data: any = await fetchJsonWithRetry(
+    `${HIRO_API_ORIGIN}/extended/v1/address/${address}/balances`,
+    'Balance fetch'
+  );
   const balance = Number(data?.stx?.balance ?? NaN);
   if (!Number.isFinite(balance)) throw new Error('Balance missing in response');
   return balance;
@@ -332,7 +361,15 @@ async function run() {
         fee: txFeeUstx,
         anchorMode: AnchorMode.Any,
       });
-      await broadcastAndConfirm(tx2, 'create-alert', confirmTimeoutMs);
+      try {
+        await broadcastAndConfirm(tx2, 'create-alert', confirmTimeoutMs);
+      } catch (e) {
+        const message = e instanceof Error ? e.message : String(e);
+        if (!isMaxAlertsReachedError(message)) {
+          throw e;
+        }
+        console.log(`      ${WARN} Max alerts reached for this wallet; skipping create-alert.`);
+      }
 
       // 3) fee-vault-v-j3: collect-subscription-fee
       console.log(`   -> 3: Collecting subscription fee (fee-vault-v-j3)...`);
