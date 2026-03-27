@@ -27,7 +27,7 @@ npm --prefix shared ci
 
 # Contract checks
 npm run clarinet:check
-npm run test
+npm run clarinet:test
 
 # App surfaces
 npm --prefix server run dev
