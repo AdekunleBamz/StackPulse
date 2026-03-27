@@ -68,6 +68,22 @@ function isMaxAlertsReachedError(message: string) {
   return message.includes('(err u103)') || message.includes('ERR-MAX-ALERTS-REACHED');
 }
 
+function parseUintLike(value: unknown, label: string) {
+  if (typeof value === 'number' && Number.isFinite(value)) {
+    return value;
+  }
+
+  if (typeof value === 'bigint') {
+    return Number(value);
+  }
+
+  if (typeof value === 'string' && /^\d+$/.test(value)) {
+    return Number(value);
+  }
+
+  throw new Error(`${label} missing in response`);
+}
+
 function parseArgs(argv: string[]) {
   const args = new Map<string, string>();
   for (let i = 2; i < argv.length; i++) {
@@ -142,6 +158,32 @@ async function getStackpulseTier(address: string) {
   return Number.isFinite(tier) ? tier : null;
 }
 
+async function getUserAlertCount(address: string) {
+  const ro: any = await callReadOnlyFunction({
+    contractAddress: DEPLOYER_ADDRESS,
+    contractName: 'alert-manager-v-j3',
+    functionName: 'get-user-alert-count',
+    functionArgs: [principalCV(address)],
+    network,
+    senderAddress: address,
+  });
+
+  return parseUintLike(cvToValue(ro), 'Alert count');
+}
+
+async function getMaxAlertsForTier(tier: number, senderAddress: string) {
+  const ro: any = await callReadOnlyFunction({
+    contractAddress: DEPLOYER_ADDRESS,
+    contractName: 'alert-manager-v-j3',
+    functionName: 'get-max-alerts-for-tier',
+    functionArgs: [uintCV(tier)],
+    network,
+    senderAddress,
+  });
+
+  return parseUintLike(cvToValue(ro), 'Max alerts');
+}
+
 async function broadcastAndConfirm(tx: any, label: string, timeoutMs: number) {
   const result: any = await broadcastTransaction(tx, network);
 
@@ -162,6 +204,31 @@ async function broadcastAndConfirm(tx: any, label: string, timeoutMs: number) {
   return txid;
 }
 
+async function getTxStatus(txid: string, maxAttempts = 4) {
+  let attempt = 1;
+
+  while (attempt <= maxAttempts) {
+    const res = await fetch(`${HIRO_API_ORIGIN}/extended/v1/tx/${txid}`);
+    if (res.ok) {
+      return await res.json();
+    }
+
+    if (res.status === 404) {
+      return null;
+    }
+
+    const retryable = res.status === 429 || res.status >= 500;
+    if (!retryable || attempt === maxAttempts) {
+      return null;
+    }
+
+    await sleep(Math.min(1500 * attempt, 6000));
+    attempt++;
+  }
+
+  return null;
+}
+
 async function waitForTx(txid: string, label: string, timeoutMs: number) {
   const started = Date.now();
   const pollMs = 15_000;
@@ -171,12 +238,11 @@ async function waitForTx(txid: string, label: string, timeoutMs: number) {
       throw new Error(`Timeout waiting for confirmation (${txid})`);
     }
 
-    const res = await fetch(`${HIRO_API_ORIGIN}/extended/v1/tx/${txid}`);
-    if (!res.ok) {
+    const data: any = await getTxStatus(txid);
+    if (!data) {
       await sleep(pollMs);
       continue;
     }
-    const data: any = await res.json();
     const status = data?.tx_status;
 
     if (status === 'success') {
@@ -343,32 +409,40 @@ async function run() {
       }
 
       // 2) alert-manager-v-j3: create-alert (basic whale alert)
-      console.log(`   -> 2: Creating alert (alert-manager-v-j3)...`);
-      const tx2 = await makeContractCall({
-        contractAddress: DEPLOYER_ADDRESS,
-        contractName: 'alert-manager-v-j3',
-        functionName: 'create-alert',
-        functionArgs: [
-          uintCV(1),
-          stringAsciiCV('Whale Alert'),
-          noneCV(),
-          uintCV(10_000),
-          uintCV(effectiveTier),
-        ],
-        senderKey: privateKey,
-        network,
-        nonce: nonce++,
-        fee: txFeeUstx,
-        anchorMode: AnchorMode.Any,
-      });
-      try {
-        await broadcastAndConfirm(tx2, 'create-alert', confirmTimeoutMs);
-      } catch (e) {
-        const message = e instanceof Error ? e.message : String(e);
-        if (!isMaxAlertsReachedError(message)) {
-          throw e;
+      const currentAlertCount = await getUserAlertCount(w.address);
+      const maxAlertsAllowed = await getMaxAlertsForTier(effectiveTier, w.address);
+      if (currentAlertCount >= maxAlertsAllowed) {
+        console.log(
+          `   -> 2: Skipping create-alert (alert limit reached: ${currentAlertCount}/${maxAlertsAllowed}).`
+        );
+      } else {
+        console.log(`   -> 2: Creating alert (alert-manager-v-j3)...`);
+        const tx2 = await makeContractCall({
+          contractAddress: DEPLOYER_ADDRESS,
+          contractName: 'alert-manager-v-j3',
+          functionName: 'create-alert',
+          functionArgs: [
+            uintCV(1),
+            stringAsciiCV('Whale Alert'),
+            noneCV(),
+            uintCV(10_000),
+            uintCV(effectiveTier),
+          ],
+          senderKey: privateKey,
+          network,
+          nonce: nonce++,
+          fee: txFeeUstx,
+          anchorMode: AnchorMode.Any,
+        });
+        try {
+          await broadcastAndConfirm(tx2, 'create-alert', confirmTimeoutMs);
+        } catch (e) {
+          const message = e instanceof Error ? e.message : String(e);
+          if (!isMaxAlertsReachedError(message)) {
+            throw e;
+          }
+          console.log(`      ${WARN} Max alerts reached for this wallet; skipping create-alert.`);
         }
-        console.log(`      ${WARN} Max alerts reached for this wallet; skipping create-alert.`);
       }
 
       // 3) fee-vault-v-j3: collect-subscription-fee
