@@ -25,6 +25,7 @@ npm --prefix frontend ci
 
 ```bash
 # Contract checks and tests
+npm run check
 npm run clarinet:check
 npm test
 
