@@ -40,6 +40,18 @@ npm --prefix frontend run lint
 npm --prefix shared run build
 ```
 
+## Local workflow
+
+Run backend and frontend in separate terminals for end-to-end local development:
+
+```bash
+# Terminal 1
+npm --prefix server run dev
+
+# Terminal 2
+npm --prefix frontend run dev
+```
+
 ## Key docs
 
 - [docs/API.md](docs/API.md)
