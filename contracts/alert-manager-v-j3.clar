@@ -27,6 +27,7 @@
 (define-constant ERR-INVALID-NAME (err u105))
 (define-constant ERR-ALERT-DISABLED (err u106))
 (define-constant ERR-DUPLICATE-ALERT (err u107))
+(define-constant ERR-SUBSCRIPTION-INACTIVE (err u108))
 
 ;; Max alerts per tier
 (define-constant MAX-ALERTS-FREE u3)
@@ -147,17 +148,22 @@
     (alert-type uint)
     (name (string-ascii 64))
     (target-address (optional principal))
-    (threshold uint)
-    (user-tier uint))
+    (threshold uint))
   (let
     (
       (caller tx-sender)
+      ;; Pull user tier and subscription state from stackpulse-v-j3.
+      ;; This prevents callers from spoofing a higher tier.
+      (subscription-status (contract-call? .stackpulse-v-j3 get-subscription-status caller))
+      (user-tier (get tier subscription-status))
       (alert-id (var-get next-alert-id))
       (current-count (get-user-alert-count caller))
       (max-allowed (get-max-alerts-for-tier user-tier))
       (type-count (get-user-alert-type-count caller alert-type))
     )
     ;; V3: Enhanced validation
+    (asserts! (get registered subscription-status) ERR-NOT-REGISTERED)
+    (asserts! (get active subscription-status) ERR-SUBSCRIPTION-INACTIVE)
     (asserts! (is-valid-alert-type alert-type) ERR-INVALID-ALERT-TYPE)
     (asserts! (is-valid-name name) ERR-INVALID-NAME)
     (asserts! (< current-count max-allowed) ERR-MAX-ALERTS-REACHED)
