@@ -36,6 +36,10 @@ interface UseAlertsReturn {
 }
 
 const SERVER_URL = process.env.NEXT_PUBLIC_SERVER_URL || 'https://stackpulse-b8fw.onrender.com';
+type AlertApiRecord = Omit<Alert, 'createdAt' | 'lastTriggered'> & {
+  createdAt: string;
+  lastTriggered?: string;
+};
 
 export function useAlerts(address: string | null): UseAlertsReturn {
   const [alerts, setAlerts] = useState<Alert[]>([]);
@@ -56,8 +60,9 @@ export function useAlerts(address: string | null): UseAlertsReturn {
       const data = await response.json();
 
       if (data.success) {
+        const rawAlerts = (data.alerts as AlertApiRecord[]) || [];
         setAlerts(
-          data.alerts.map((alert: any) => ({
+          rawAlerts.map((alert) => ({
             ...alert,
             createdAt: new Date(alert.createdAt),
             lastTriggered: alert.lastTriggered ? new Date(alert.lastTriggered) : undefined,
