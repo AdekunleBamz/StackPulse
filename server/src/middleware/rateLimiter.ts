@@ -14,6 +14,12 @@ interface RateLimitEntry {
 
 const rateLimitStore = new Map<string, RateLimitEntry>();
 
+type TierRequest = Request & {
+  user?: {
+    tier?: number;
+  };
+};
+
 // Clean up expired entries every minute
 setInterval(() => {
   const now = Date.now();
@@ -107,7 +113,7 @@ export const tieredApiLimiter = rateLimiter({
   maxRequests: 100, // Default
   maxRequestsGenerator: (req) => {
     // In a real app, fetch tier from user store
-    const userTier = (req as any).user?.tier || 0;
+    const userTier = (req as TierRequest).user?.tier || 0;
     const limits = [100, 1000, 5000, 20000]; // Defined earlier in tier.ts
     return limits[userTier] || 100;
   }
