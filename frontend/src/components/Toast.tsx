@@ -42,11 +42,11 @@ const toastStyles = {
     progress: 'bg-gradient-to-r from-sky-600 to-sky-400',
   },
   loading: {
-    bg: 'bg-purple-950/60',
-    border: 'border-purple-500/20',
+    bg: 'bg-indigo-950/60',
+    border: 'border-indigo-500/20',
     icon: Loader2,
-    iconColor: 'text-purple-400 animate-spin',
-    progress: 'bg-gradient-to-r from-purple-600 to-purple-400',
+    iconColor: 'text-indigo-400 animate-spin',
+    progress: 'bg-gradient-to-r from-indigo-600 to-indigo-400',
   },
 };
 
