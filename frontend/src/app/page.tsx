@@ -108,7 +108,7 @@ const Hero = memo(() => (
           { label: 'NFT Mints', value: '5,678+' },
           { label: 'Token Launches', value: '89+' },
           { label: 'Active Alerts', value: '456' },
-        ].map((stat, index) => (
+        ].map((stat) => (
           <div 
             key={stat.label}
             className="bg-gray-900/40 border border-white/5 rounded-2xl p-4 lg:p-6 transition-colors hover:border-purple-500/20 group/stat"
