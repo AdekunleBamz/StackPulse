@@ -27,7 +27,14 @@ export default function NetworkStatus({ refreshInterval = 30000 }: NetworkStatus
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
   const [refreshing, setRefreshing] = useState(false);
   const hasStatsRef = useRef(false);
+  const isMountedRef = useRef(true);
   const safeRefreshInterval = Number.isFinite(refreshInterval) ? Math.max(5000, Math.floor(refreshInterval)) : 30000;
+
+  useEffect(() => {
+    return () => {
+      isMountedRef.current = false;
+    };
+  }, []);
 
   const fetchNetworkStats = useCallback(async () => {
     setRefreshing(true);
@@ -43,6 +50,9 @@ export default function NetworkStatus({ refreshInterval = 30000 }: NetworkStatus
       }
 
       const [info, core] = await Promise.all([infoRes.json(), coreRes.json()]);
+      if (!isMountedRef.current) {
+        return;
+      }
 
       setStats({
         blockHeight: core.stacks_tip_height || 0,
@@ -59,12 +69,17 @@ export default function NetworkStatus({ refreshInterval = 30000 }: NetworkStatus
       setNetworkHealth('healthy');
       setError(null);
     } catch (err) {
+      if (!isMountedRef.current) {
+        return;
+      }
       logger.error('Error fetching network stats:', err);
       setError('Failed to fetch network data');
       setNetworkHealth(hasStatsRef.current ? 'degraded' : 'down');
     } finally {
-      setLoading(false);
-      setRefreshing(false);
+      if (isMountedRef.current) {
+        setLoading(false);
+        setRefreshing(false);
+      }
     }
   }, []);
 
