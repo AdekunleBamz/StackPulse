@@ -859,7 +859,7 @@ app.put('/api/users/:address/alerts/:alertId', async (req: Request, res: Respons
     const updates = req.body as UpdateAlertRequestBody;
     
     const alerts = userAlerts.get(address) || [];
-    const alertIndex = alerts.findIndex(a => a.id === parseInt(alertId));
+    const alertIndex = alerts.findIndex(a => a.id === Number.parseInt(alertId, 10));
     
     if (alertIndex === -1) {
       return res.status(404).json({ error: 'Alert not found' });
@@ -883,7 +883,7 @@ app.delete('/api/users/:address/alerts/:alertId', async (req: Request, res: Resp
     const { address, alertId } = req.params;
     
     const alerts = userAlerts.get(address) || [];
-    const filteredAlerts = alerts.filter(a => a.id !== parseInt(alertId));
+    const filteredAlerts = alerts.filter(a => a.id !== Number.parseInt(alertId, 10));
     
     if (filteredAlerts.length === alerts.length) {
       return res.status(404).json({ error: 'Alert not found' });
