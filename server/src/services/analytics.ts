@@ -65,7 +65,8 @@ export function trackEvent(
 
   if (userAddress) {
     const currentCount = analytics.userEventCounts.get(userAddress) || 0;
-    const limit = MAX_EVENTS_PER_USER.get(tier) || 1000;
+    const normalizedTier = Number.isInteger(tier) ? tier : 0;
+    const limit = MAX_EVENTS_PER_USER.get(normalizedTier) ?? MAX_EVENTS_PER_USER.get(0)!;
     
     if (currentCount >= limit) {
       logger.debug('User analytics limit reached', { userAddress, tier, limit, eventType });
