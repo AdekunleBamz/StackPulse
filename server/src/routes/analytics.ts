@@ -59,7 +59,7 @@ router.post('/track', (req: Request, res: Response) => {
       error: 'eventType is required',
     });
   }
-  if (metadata != null && typeof metadata !== 'object') {
+  if (metadata != null && (typeof metadata !== 'object' || Array.isArray(metadata))) {
     return res.status(400).json({
       success: false,
       error: 'metadata must be an object',
