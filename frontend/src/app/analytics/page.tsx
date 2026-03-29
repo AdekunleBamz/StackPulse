@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useWallet } from '@/context/WalletContext';
 import Link from 'next/link';
 import { StatsCardSkeleton } from '@/components/LoadingSkeleton';
 import { ErrorState } from '@/components/EmptyState';
@@ -17,6 +16,7 @@ import {
   ArrowDownRight,
   Clock,
   Zap,
+  type LucideIcon,
 } from 'lucide-react';
 import { Breadcrumbs } from '@/components';
 import { NoResultsState } from '@/components/EmptyState';
@@ -54,7 +54,7 @@ const StatCard = ({
   title: string; 
   value: string | number; 
   change?: number; 
-  icon: any; 
+  icon: LucideIcon; 
   color: string;
 }) => (
   <div className="bg-gray-800/50 border border-gray-700 rounded-xl p-6 hover:border-purple-500/30 transition-all">
@@ -114,7 +114,6 @@ const EventTypeCard = ({
 };
 
 export default function AnalyticsPage() {
-  const { isConnected, address } = useWallet();
   const [analytics, setAnalytics] = useState<AnalyticsData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
