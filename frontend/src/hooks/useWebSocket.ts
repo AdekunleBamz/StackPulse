@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { WS_URL } from '@/lib/env';
+import logger from '@/lib/logger';
 
 interface UseWebSocketOptions {
   url?: string;
@@ -89,12 +90,12 @@ export function useWebSocket(options: UseWebSocketOptions = {}): UseWebSocketRet
           setLastMessage(data);
           onMessage?.(data);
         } catch (error) {
-          console.error('Failed to parse WebSocket message:', error);
+          logger.error('Failed to parse WebSocket message:', error);
         }
       };
     } catch (error) {
       setIsConnecting(false);
-      console.error('Failed to create WebSocket:', error);
+      logger.error('Failed to create WebSocket:', error);
     }
   }, [url, reconnect, reconnectInterval, maxReconnectAttempts, onOpen, onClose, onError, onMessage, isConnecting]);
 
