@@ -296,7 +296,7 @@ npx ts-node scripts/check-chainhook-status.ts
 
 ### Chainhooks
 
-- [ ] All 9 chainhooks registered
+- [ ] All 12 chainhooks registered
 - [ ] Webhook endpoints reachable
 - [ ] Test events being received
 
