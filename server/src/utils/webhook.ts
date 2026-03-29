@@ -46,13 +46,9 @@ export function verifySignature(
   signature: string,
   secret: string
 ): boolean {
-  if (!/^[a-f0-9]+$/i.test(signature)) {
-    return false;
-  }
-
   const expectedSignature = generateSignature(payload, secret);
-  const providedSignature = Buffer.from(signature, 'hex');
-  const expectedSignatureBuffer = Buffer.from(expectedSignature, 'hex');
+  const providedSignature = Buffer.from(signature, 'utf8');
+  const expectedSignatureBuffer = Buffer.from(expectedSignature, 'utf8');
 
   if (providedSignature.length !== expectedSignatureBuffer.length) {
     return false;
@@ -67,13 +63,10 @@ export function verifySignature(
 /**
  * Validate webhook payload structure
  */
-export function validateWebhookPayload(data: unknown): { payload: WebhookPayload | null; error?: string } {
-  if (!data || typeof data !== 'object') return { payload: null, error: 'Empty payload' };
-
-  const payloadRecord = data as Record<string, unknown>;
-  const event = payloadRecord.event;
-  const payloadData = payloadRecord.data;
-  const timestamp = payloadRecord.timestamp;
+export function validateWebhookPayload(data: any): { payload: WebhookPayload | null; error?: string } {
+  if (!data) return { payload: null, error: 'Empty payload' };
+  
+  const { event, data: payloadData, timestamp } = data;
   
   if (!event || typeof event !== 'string') {
     return { payload: null, error: 'Missing or invalid event type' };
@@ -83,13 +76,13 @@ export function validateWebhookPayload(data: unknown): { payload: WebhookPayload
     return { payload: null, error: 'Missing payload data' };
   }
   
-  if (typeof timestamp !== 'number' || !Number.isFinite(timestamp)) {
+  if (!timestamp || typeof timestamp !== 'number') {
     return { payload: null, error: 'Missing or invalid timestamp' };
   }
   
   // Check if timestamp is within acceptable range (5 minutes)
   const now = Date.now();
-  if (Math.abs(now - timestamp) > WEBHOOK_REPLAY_WINDOW_MS) {
+  if (Math.abs(now - timestamp) > 300000) {
     return { payload: null, error: 'Webhook timestamp expired' };
   }
   
