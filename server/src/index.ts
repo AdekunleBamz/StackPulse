@@ -410,32 +410,47 @@ app.post('/api/v1/chainhooks/alert-triggered', authenticateWebhook, processAsync
       const events = tx.metadata.receipt.events || [];
       
       for (const event of events) {
-        if (event.type === 'SmartContractEvent') {
-          const printData = event.data?.value;
-          
-          if (printData?.event === 'alert-triggered') {
-            logger.info('🔔 Alert Triggered', {
-              alertId: printData['alert-id'],
-              owner: printData.owner,
-              alertType: printData['alert-type'],
-              txHash: tx.transaction_identifier.hash
-            });
-            
-            await broadcastNotification({
-              title: '🔔 Your Alert Was Triggered!',
-              message: `Alert #${printData['alert-id']} (${printData['alert-type']}) has been triggered.`,
-              type: 'alert',
-              data: {
-                'Alert ID': printData['alert-id'],
-                'Type': printData['alert-type']
-              },
-              txHash: tx.transaction_identifier.hash,
-              blockHeight: block.block_identifier.index
-            }, [printData.owner]);
-            
-            eventStats.alertsTriggered++;
-          }
+        const printData = getPrintEventData(event);
+        if (!printData) continue;
+
+        const eventName = getStringField(printData, 'event');
+        if (eventName !== 'alert-triggered') continue;
+
+        const owner = getStringField(printData, 'owner');
+        const alertId = getNumberField(printData, 'alert-id');
+        const alertTypeRaw = printData['alert-type'];
+        const alertType =
+          typeof alertTypeRaw === 'string' || typeof alertTypeRaw === 'number'
+            ? String(alertTypeRaw)
+            : null;
+
+        if (!owner || alertId == null || !alertType) {
+          logger.warn('Skipping malformed alert-triggered print event', {
+            txHash: tx.transaction_identifier.hash,
+          });
+          continue;
         }
+
+        logger.info('🔔 Alert Triggered', {
+          alertId,
+          owner,
+          alertType,
+          txHash: tx.transaction_identifier.hash
+        });
+        
+        await broadcastNotification({
+          title: '🔔 Your Alert Was Triggered!',
+          message: `Alert #${alertId} (${alertType}) has been triggered.`,
+          type: 'alert',
+          data: {
+            'Alert ID': alertId,
+            'Type': alertType
+          },
+          txHash: tx.transaction_identifier.hash,
+          blockHeight: block.block_identifier.index
+        }, [owner]);
+        
+        eventStats.alertsTriggered++;
       }
     }
   }
