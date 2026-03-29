@@ -10,6 +10,8 @@ export default function RegisterError({
   error: Error & { digest?: string };
   reset: () => void;
 }) {
+  void error;
+
   const router = useRouter();
 
   return (
