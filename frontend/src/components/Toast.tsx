@@ -241,16 +241,17 @@ interface ToastContainerProps {
 
 export function ToastContainer({ position = 'top-right', maxToasts = 5 }: ToastContainerProps) {
   const [currentToasts, setCurrentToasts] = useState<ToastData[]>([]);
+  const safeMaxToasts = Number.isFinite(maxToasts) ? Math.max(1, Math.floor(maxToasts)) : 5;
 
   useEffect(() => {
     const listener = (newToasts: ToastData[]) => {
-      setCurrentToasts(newToasts.slice(-maxToasts));
+      setCurrentToasts(newToasts.slice(-safeMaxToasts));
     };
     toastListeners.add(listener);
     return () => {
       toastListeners.delete(listener);
     };
-  }, [maxToasts]);
+  }, [safeMaxToasts]);
 
   const handleClose = (id: string) => {
     toast.dismiss(id);
