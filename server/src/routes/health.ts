@@ -5,6 +5,11 @@ import HealthService from '../services/health';
 
 const router = Router();
 
+router.use((req: Request, res: Response, next) => {
+  res.setHeader('Cache-Control', 'no-store');
+  next();
+});
+
 interface HealthCheckResult {
   status: 'healthy' | 'unhealthy' | 'degraded';
   timestamp: string;
