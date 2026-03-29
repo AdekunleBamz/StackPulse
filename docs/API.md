@@ -403,6 +403,8 @@ ws.onopen = () => {
 
 ws.onmessage = (event) => {
   const data = JSON.parse(event.data);
-  console.log('Received:', data);
+  if (data.type === 'notification') {
+    // handle notification payload
+  }
 };
 ```
