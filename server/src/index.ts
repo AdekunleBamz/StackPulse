@@ -742,7 +742,7 @@ interface StoredAlert {
   enabled: boolean;
   triggerCount: number;
   txId?: string;
-  createdAt: Date;
+  createdAt: string;
 }
 
 interface CreateAlertRequestBody {
@@ -814,7 +814,7 @@ app.post('/api/v1/users/:address/alerts', async (req: Request, res: Response) =>
       enabled: true,
       triggerCount: 0,
       txId,
-      createdAt: new Date()
+      createdAt: new Date().toISOString()
     };
     
     alerts.push(newAlert);
