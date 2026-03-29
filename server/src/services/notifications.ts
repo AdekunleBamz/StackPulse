@@ -40,6 +40,16 @@ const userPreferencesStore: Map<string, UserPreferences> = new Map();
 class NotificationsService {
   private notifications: Map<string, Notification[]> = new Map();
 
+  private getAlertName(alertData: unknown): string {
+    if (alertData && typeof alertData === 'object' && 'name' in alertData) {
+      const rawName = (alertData as { name?: unknown }).name;
+      if (typeof rawName === 'string' && rawName.trim().length > 0) {
+        return rawName;
+      }
+    }
+    return 'Unnamed Alert';
+  }
+
   /**
    * Create a notification
    */
@@ -134,12 +144,13 @@ class NotificationsService {
   /**
    * Send alert notification
    */
-  sendAlertNotification(userAddress: string, alertData: any, priority: Notification['priority'] = 'high'): Notification {
+  sendAlertNotification(userAddress: string, alertData: unknown, priority: Notification['priority'] = 'high'): Notification {
+    const alertName = this.getAlertName(alertData);
     return this.createNotification(
       userAddress,
       'alert',
       'Alert Triggered',
-      `Your alert "${alertData.name}" has been triggered.`,
+      `Your alert "${alertName}" has been triggered.`,
       priority
     );
   }
