@@ -2,6 +2,7 @@
 
 import { createContext, useContext, useState, useEffect, ReactNode, useCallback } from 'react';
 import { STACKS_MAINNET, STACKS_TESTNET } from '@stacks/network';
+import logger from '@/lib/logger';
 
 // Types for @stacks/connect - we'll dynamically import the actual module
 type UserSession = {
@@ -60,7 +61,7 @@ export function WalletProvider({ children }: { children: ReactNode }) {
           setAddress(userData.profile?.stxAddress?.mainnet);
         }
       } catch (error) {
-        console.error('Failed to initialize wallet:', error);
+        logger.error('Failed to initialize wallet:', error);
       }
     };
     
@@ -105,7 +106,7 @@ export function WalletProvider({ children }: { children: ReactNode }) {
         userSession: session,
       });
     } catch (error) {
-      console.error('Connection error:', error);
+      logger.error('Connection error:', error);
     }
   }, [isClient, network]);
 
@@ -119,7 +120,7 @@ export function WalletProvider({ children }: { children: ReactNode }) {
       setIsConnected(false);
       setAddress(null);
     } catch (error) {
-      console.error('Disconnect error:', error);
+      logger.error('Disconnect error:', error);
     }
   }, [isClient, userSession]);
 
