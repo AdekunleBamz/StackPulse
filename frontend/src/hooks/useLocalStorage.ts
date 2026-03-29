@@ -13,7 +13,11 @@ export function useLocalStorage<T>(key: string, initialValue: T): [T, (value: T 
     }
     try {
       const item = window.localStorage.getItem(key);
-      return item ? JSON.parse(item) : initialValue;
+      if (!item) {
+        return initialValue;
+      }
+      const parsed = JSON.parse(item) as T | undefined;
+      return parsed === undefined ? initialValue : parsed;
     } catch (error) {
       logger.error('Error reading from localStorage:', error);
       return initialValue;
