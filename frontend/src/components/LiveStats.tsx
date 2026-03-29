@@ -2,7 +2,6 @@
 
 import { Activity, ExternalLink } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import { useMetrics } from '@/hooks/useMetrics';
 import { StatsCardSkeleton } from './LoadingSkeleton';
 
 interface EventStats {
@@ -19,10 +18,36 @@ interface EventStats {
 
 const SERVER_URL = process.env.NEXT_PUBLIC_SERVER_URL || 'https://stackpulse-b8fw.onrender.com';
 
-import { useStats } from '../hooks/useStats';
-
 export default function LiveStats() {
-  const { stats, loading, error, lastUpdated, refresh } = useStats(30000);
+  const [stats, setStats] = useState<EventStats | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
+  const [refreshKey, setRefreshKey] = useState(0);
+
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        const res = await fetch(`${SERVER_URL}/api/stats`);
+        if (!res.ok) throw new Error('Bad response');
+        const data = await res.json();
+        const payload = data?.stats ?? data;
+        if (!payload) throw new Error('Missing stats');
+        setStats(payload);
+        setLastUpdated(new Date());
+        setError(null);
+      } catch (error) {
+        console.error('Failed to fetch stats:', error);
+        setError('Unable to load live stats right now.');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchStats();
+    const interval = setInterval(fetchStats, 30000); // Refresh every 30s
+    return () => clearInterval(interval);
+  }, [refreshKey]);
 
   const statItems = stats ? [
     { label: 'Whale Transfers', value: stats.whaleTransfers, color: 'text-blue-400', glow: 'from-blue-400/20' },
@@ -79,43 +104,36 @@ export default function LiveStats() {
     >
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(16,185,129,0.03),transparent_70%)] pointer-events-none" />
       <div className="max-w-7xl mx-auto relative z-10">
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-6 mb-16">
-          <div className="flex items-center gap-4">
-            <div className="relative group/activity">
-              <div className="w-12 h-12 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center transition-all duration-500 group-hover/activity:scale-110 group-hover/activity:rotate-12">
-                <Activity className="w-6 h-6 text-emerald-500 shadow-[0_0_15px_rgba(16,185,129,0.5)]" aria-hidden="true" />
-              </div>
-              <div className="absolute inset-0 bg-emerald-500/20 blur-2xl rounded-full animate-pulse pointer-events-none" />
+        <div className="flex items-center justify-center gap-4 mb-12">
+          <div className="relative group/activity">
+            <div className="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center transition-all duration-500 group-hover/activity:scale-110 group-hover/activity:rotate-12">
+              <Activity className="w-5 h-5 text-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.5)]" aria-hidden="true" />
             </div>
-            <div className="flex flex-col">
-              <span className="text-gray-300 font-black tracking-[0.3em] uppercase text-[12px] drop-shadow-sm">Live Network Pulse</span>
-              <div className="flex items-center gap-2 mt-1.5">
-                <span className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse shadow-[0_0_10px_rgba(16,185,129,0.9)]" />
-                <span className="text-[11px] text-emerald-500/90 font-black uppercase tracking-widest italic">Real-time Stream</span>
-              </div>
-            </div>
+            <div className="absolute inset-0 bg-emerald-500/20 blur-xl rounded-full animate-pulse pointer-events-none" />
           </div>
-          
-          <div className="flex items-center gap-3 px-4 py-2 bg-white/[0.02] border border-white/5 rounded-full backdrop-blur-md">
-            {lastUpdated && (
-              <span className="text-[11px] text-gray-500 font-bold tracking-tight uppercase" aria-live="polite">
-                Last Sync: {lastUpdated.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
-              </span>
-            )}
-            <div className="w-px h-3 bg-gray-800" />
-            <a
-              href={`${SERVER_URL}/health`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="group/link flex items-center gap-1.5 text-[11px] text-gray-500 hover:text-emerald-400 transition-all font-bold uppercase tracking-tight"
-              aria-label="Open server health check"
-              title="Health Check"
-            >
-              Status
-              <ExternalLink className="w-3 h-3 group-hover/link:translate-x-0.5 group-hover/link:-translate-y-0.5 transition-transform" />
-            </a>
+          <div className="flex flex-col">
+            <span className="text-gray-300 font-black tracking-[0.25em] uppercase text-[11px] drop-shadow-sm">Live Network Pulse</span>
+            <div className="flex items-center gap-2 mt-1">
+              <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse shadow-[0_0_8px_rgba(16,185,129,0.8)]" />
+              <span className="text-[10px] text-emerald-500/80 font-black uppercase tracking-widest">Real-time Stream</span>
+            </div>
           </div>
         </div>
+          {lastUpdated && (
+            <span className="hidden sm:inline text-[10px] text-gray-500 font-medium" aria-live="polite">
+              • UPDATED {lastUpdated.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+            </span>
+          )}
+          <a
+            href={`${SERVER_URL}/health`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-gray-500 hover:text-purple-400 transition-colors rounded-md focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400/90 ml-1"
+            aria-label="Open server health endpoint"
+            title="Open server health endpoint"
+          >
+            <ExternalLink className="w-3.5 h-3.5" />
+          </a>
 
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
           {statItems.map((item, index) => (
@@ -123,13 +141,13 @@ export default function LiveStats() {
               key={index}
               className="group relative bg-white/[0.03] border border-white/5 rounded-2xl p-6 text-center hover:bg-white/[0.06] hover:border-white/10 transition-all duration-500 hover:-translate-y-1.5 hover:shadow-[0_20px_40px_-15px_rgba(0,0,0,0.5)] overflow-hidden"
             >
-              <div className={`text-4xl font-extrabold tracking-tight ${item.color} mb-1 group-hover:scale-110 transition-transform duration-500 relative z-10`}>
+              <div className={`text-3xl font-black tracking-tighter ${item.color} mb-1 group-hover:scale-110 transition-transform duration-500 relative z-10`}>
                 {item.value.toLocaleString()}
               </div>
-              <div className="text-gray-400 text-[10px] font-semibold uppercase tracking-[0.15em] mt-2 group-hover:text-gray-200 transition-colors relative z-10">{item.label}</div>
+              <div className="text-gray-400 text-[10px] font-bold uppercase tracking-widest mt-2 group-hover:text-gray-200 transition-colors relative z-10">{item.label}</div>
               
               {/* Subtle background glow on hover */}
-              <div className={`absolute inset-0 opacity-0 group-hover:opacity-25 transition-opacity duration-500 bg-gradient-to-br ${item.glow} to-transparent pointer-events-none blur-2xl`} />
+              <div className={`absolute inset-0 opacity-0 group-hover:opacity-20 transition-opacity duration-500 bg-gradient-to-br ${item.glow} to-transparent pointer-events-none blur-xl`} />
             </div>
           ))}
         </div>
