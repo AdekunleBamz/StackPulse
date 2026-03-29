@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { apiUrl } from '@/lib/env';
+import logger from '@/lib/logger';
 
 interface User {
   address: string;
@@ -62,7 +63,7 @@ export function useUser(address: string | null, options: UseUserOptions = {}): U
       }
     } catch (err) {
       setError('Network error');
-      console.error('Error fetching user:', err);
+      logger.error('Error fetching user:', err);
     } finally {
       setLoading(false);
     }
@@ -95,7 +96,7 @@ export function useUser(address: string | null, options: UseUserOptions = {}): U
       }
     } catch (err) {
       setError('Network error');
-      console.error('Error registering user:', err);
+      logger.error('Error registering user:', err);
       return false;
     } finally {
       setLoading(false);
@@ -130,7 +131,7 @@ export function useUser(address: string | null, options: UseUserOptions = {}): U
       }
     } catch (err) {
       setError('Network error');
-      console.error('Error upgrading user:', err);
+      logger.error('Error upgrading user:', err);
       return false;
     } finally {
       setLoading(false);
