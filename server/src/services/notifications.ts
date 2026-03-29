@@ -103,7 +103,7 @@ class NotificationsService {
    * Get unread notification count
    */
   getUnreadCount(userAddress: string): number {
-    const userNotifications = this.notifications.get(userAddress) || [];
+    const userNotifications = this.getUserNotificationList(userAddress);
     return userNotifications.filter(n => !n.read).length;
   }
 
