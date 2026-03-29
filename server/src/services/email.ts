@@ -26,7 +26,7 @@ interface EmailOptions {
 class EmailService {
   private config: EmailConfig | null = null;
 
-  initialize(config: EmailConfig) {
+  initialize(config: EmailConfig): void {
     this.config = config;
     logger.info('Email service initialized');
   }
