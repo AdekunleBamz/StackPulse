@@ -41,6 +41,10 @@ const userPreferencesStore: Map<string, UserPreferences> = new Map();
 class NotificationsService {
   private notifications: Map<string, Notification[]> = new Map();
 
+  private getUserNotificationList(userAddress: string): Notification[] {
+    return this.notifications.get(userAddress) || [];
+  }
+
   private getAlertName(alertData: unknown): string {
     if (alertData && typeof alertData === 'object' && 'name' in alertData) {
       const rawName = (alertData as { name?: unknown }).name;
