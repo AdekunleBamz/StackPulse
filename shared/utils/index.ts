@@ -8,7 +8,7 @@
  */
 export function formatStxAmount(microStx: string | number): string {
   const amount = typeof microStx === 'string' ? parseFloat(microStx) : microStx;
-  const stx = amount / 1000000;
+  const stx = (Number.isFinite(amount) ? amount : 0) / 1000000;
   return stx.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 6 });
 }
 
