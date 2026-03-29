@@ -4,6 +4,7 @@
  */
 
 import { Request, Response, NextFunction } from 'express';
+import logger from '../utils/logger';
 
 export interface AppError extends Error {
   statusCode?: number;
@@ -33,9 +34,9 @@ export function errorHandler(
   const message = err.isOperational ? err.message : 'Internal server error';
 
   // Log error
-  console.error(`[Error] ${statusCode}: ${err.message}`);
+  logger.error(`[Error] ${statusCode}: ${err.message}`);
   if (!err.isOperational) {
-    console.error(err.stack);
+    logger.error(err.stack || 'No stack trace available');
   }
 
   res.status(statusCode).json({
