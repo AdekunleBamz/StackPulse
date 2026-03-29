@@ -733,27 +733,39 @@ import path from 'path';
 const ALERTS_FILE = path.join(__dirname, '../data/alerts.json');
 const DATA_DIR = path.join(__dirname, '../data');
 
+interface StoredAlert {
+  id: number;
+  type: number;
+  name: string;
+  threshold: number;
+  targetAddress: string | null;
+  enabled: boolean;
+  triggerCount: number;
+  txId?: string;
+  createdAt: Date;
+}
+
 // Ensure data directory exists
 if (!fs.existsSync(DATA_DIR)) {
   fs.mkdirSync(DATA_DIR, { recursive: true });
 }
 
 // Load alerts from file
-const loadAlerts = (): Map<string, any[]> => {
+const loadAlerts = (): Map<string, StoredAlert[]> => {
   try {
     if (fs.existsSync(ALERTS_FILE)) {
       const data = fs.readFileSync(ALERTS_FILE, 'utf-8');
-      const obj = JSON.parse(data);
-      return new Map(Object.entries(obj));
+      const obj = JSON.parse(data) as Record<string, StoredAlert[]>;
+      return new Map<string, StoredAlert[]>(Object.entries(obj));
     }
   } catch (error) {
     logger.error('Error loading alerts from file', { error });
   }
-  return new Map();
+  return new Map<string, StoredAlert[]>();
 };
 
 // Save alerts to file
-const saveAlerts = (alerts: Map<string, any[]>) => {
+const saveAlerts = (alerts: Map<string, StoredAlert[]>) => {
   try {
     const obj = Object.fromEntries(alerts);
     fs.writeFileSync(ALERTS_FILE, JSON.stringify(obj, null, 2), 'utf-8');
@@ -762,7 +774,7 @@ const saveAlerts = (alerts: Map<string, any[]>) => {
   }
 };
 
-const userAlerts: Map<string, any[]> = loadAlerts();
+const userAlerts: Map<string, StoredAlert[]> = loadAlerts();
 
 // Get user's alerts
 app.get('/api/v1/users/:address/alerts', async (req: Request, res: Response) => {
