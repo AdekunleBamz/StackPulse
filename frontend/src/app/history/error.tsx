@@ -3,6 +3,7 @@
 import { useEffect } from 'react';
 import { ErrorState } from '@/components/EmptyState';
 import Button from '@/components/ui/Button';
+import logger from '@/lib/logger';
 
 export default function HistoryError({
   error,
@@ -13,7 +14,7 @@ export default function HistoryError({
 }) {
   useEffect(() => {
     // Log the error to an error reporting service
-    console.error('History route error:', error);
+    logger.error('History route error:', error);
   }, [error]);
 
   return (
