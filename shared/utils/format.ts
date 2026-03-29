@@ -32,6 +32,9 @@ export function formatStxAmount(microStx: number | string): string {
  */
 export function formatNumber(num: number | string): string {
   const n = typeof num === 'string' ? parseFloat(num) : num;
+  if (!Number.isFinite(n)) {
+    return '0';
+  }
   return n.toLocaleString('en-US');
 }
 
