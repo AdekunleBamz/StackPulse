@@ -419,7 +419,7 @@ app.post(CHAINHOOK_ENDPOINTS.subscriptionCreated, authenticateWebhook, processAs
 }));
 
 // 7. Alert Triggered
-app.post('/api/v1/chainhooks/alert-triggered', authenticateWebhook, processAsync(async (payload) => {
+app.post(CHAINHOOK_ENDPOINTS.alertTriggered, authenticateWebhook, processAsync(async (payload) => {
   for (const block of payload.apply) {
     for (const tx of block.transactions) {
       const events = tx.metadata.receipt.events || [];
