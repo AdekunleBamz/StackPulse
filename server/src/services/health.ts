@@ -1,62 +1,62 @@
 /**
  * Health Check Service
- * Monitors system health, resource usage, and subsystem status
+ * Monitors system health and resource usage
  */
+
 import logger from '../utils/logger';
 import os from 'os';
 
-export interface SystemStatus {
+interface SystemHealth {
   status: 'ok' | 'degraded' | 'critical';
-  timestamp: string;
   uptime: number;
-  process: {
-    memory: NodeJS.MemoryUsage;
-    pid: number;
+  memory: {
+    free: number;
+    total: number;
+    usagePercent: number;
   };
-  system: {
+  cpu: {
     loadAvg: number[];
-    freeMem: string;
-    totalMem: string;
   };
-  subsystems: Record<string, 'up' | 'down'>;
+  components: {
+    [key: string]: { status: 'up' | 'down'; details?: any };
+  };
+  timestamp: number;
 }
 
 class HealthService {
-  private startTime: number = Date.now();
-
   /**
-   * Get granular health metrics
+   * Get system health metrics
    */
-  getHealth(): SystemStatus {
-    const memory = process.memoryUsage();
-    const freeMem = os.freemem();
-    const totalMem = os.totalmem();
-    const usagePercent = ((totalMem - freeMem) / totalMem) * 100;
+  getHealth(): SystemHealth {
+    const totalMemory = os.totalmem();
+    const freeMemory = os.freemem();
+    const usagePercent = ((totalMemory - freeMemory) / totalMemory) * 100;
 
-    const status: SystemStatus = {
+    const health: SystemHealth = {
       status: usagePercent > 90 ? 'degraded' : 'ok',
-      timestamp: new Date().toISOString(),
-      uptime: Math.floor((Date.now() - this.startTime) / 1000),
-      process: {
-        memory,
-        pid: process.pid
+      uptime: os.uptime(),
+      memory: {
+        free: freeMemory,
+        total: totalMemory,
+        usagePercent
       },
-      system: {
-        loadAvg: os.loadavg(),
-        freeMem: Math.round(freeMem / 1024 / 1024) + 'MB',
-        totalMem: Math.round(totalMem / 1024 / 1024) + 'MB'
+      cpu: {
+        loadAvg: os.loadavg()
       },
-      subsystems: {
-        database: 'up',
-        cache: 'up',
-        indexer: 'up'
-      }
+      components: {
+        database: { status: 'up' },
+        cache: { status: 'up' },
+        notifications: { status: 'up' }
+      },
+      timestamp: Date.now()
     };
 
-    if (usagePercent > 95) status.status = 'critical';
+    if (usagePercent > 95) {
+      health.status = 'critical';
+      logger.error('System memory usage critical', { usagePercent });
+    }
 
-    logger.debug('System health report generated', { status: status.status });
-    return status;
+    return health;
   }
 }
 
