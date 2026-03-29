@@ -745,6 +745,14 @@ interface StoredAlert {
   createdAt: Date;
 }
 
+interface CreateAlertRequestBody {
+  type: number;
+  name: string;
+  threshold?: number;
+  targetAddress?: string;
+  txId?: string;
+}
+
 // Ensure data directory exists
 if (!fs.existsSync(DATA_DIR)) {
   fs.mkdirSync(DATA_DIR, { recursive: true });
@@ -792,7 +800,7 @@ app.get('/api/v1/users/:address/alerts', async (req: Request, res: Response) => 
 app.post('/api/v1/users/:address/alerts', async (req: Request, res: Response) => {
   try {
     const { address } = req.params;
-    const { type, name, threshold, targetAddress, txId } = req.body;
+    const { type, name, threshold, targetAddress, txId } = req.body as CreateAlertRequestBody;
     
     const alerts = userAlerts.get(address) || [];
     const newAlert = {
