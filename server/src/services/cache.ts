@@ -12,7 +12,7 @@ interface CacheEntry<T> {
 const MAX_CACHE_SIZE = 10000;
 
 class CacheService {
-  private cache: Map<string, CacheEntry<any>> = new Map();
+  private cache: Map<string, CacheEntry<unknown>> = new Map();
   private cleanupInterval: NodeJS.Timeout;
 
   constructor() {
