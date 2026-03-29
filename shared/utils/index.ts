@@ -46,9 +46,8 @@ export function formatRelativeTime(timestamp: number): string {
  */
 export function isValidStacksAddress(address: string): boolean {
   if (!address) return false;
-  // Mainnet: SP, Testnet: ST
-  const validPrefix = address.startsWith('SP') || address.startsWith('ST');
-  return validPrefix && address.length >= 40 && address.length <= 42;
+  // Mainnet: SP..., Testnet: ST...
+  return /^S[PT][A-Z0-9]{38,40}$/.test(address);
 }
 
 /**
