@@ -576,7 +576,7 @@ app.post(CHAINHOOK_ENDPOINTS.badgeEarned, authenticateWebhook, processAsync(asyn
 // Additional endpoints for contract_call chainhooks
 
 // 10. New Subscription (contract_call: register-and-subscribe)
-app.post('/api/v1/chainhooks/new-subscription', authenticateWebhook, processAsync(async (payload) => {
+app.post(CHAINHOOK_ENDPOINTS.newSubscription, authenticateWebhook, processAsync(async (payload) => {
   for (const block of payload.apply) {
     for (const tx of block.transactions) {
       logger.info('✨ New Subscription Call', {
