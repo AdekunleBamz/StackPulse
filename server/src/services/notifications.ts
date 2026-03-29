@@ -111,7 +111,7 @@ class NotificationsService {
    * Mark notification as read
    */
   markAsRead(userAddress: string, notificationId: string): boolean {
-    const userNotifications = this.notifications.get(userAddress) || [];
+    const userNotifications = this.getUserNotificationList(userAddress);
     const notification = userNotifications.find(n => n.id === notificationId);
     
     if (notification) {
