@@ -420,7 +420,7 @@ router.post(
 );
 
 /**
- * GET /api/alerts/stats
+ * GET /api/alerts/stats/summary
  * Get alert statistics
  */
 router.get(
