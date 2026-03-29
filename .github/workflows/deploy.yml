@@ -94,7 +94,9 @@ jobs:
         run: npm ci
 
       - name: Register chainhooks
-        run: npx tsx scripts/register-chainhooks.ts
+        run: |
+          cd server && npm ci
+          cd .. && npx --prefix server tsx scripts/register-chainhooks.ts
         env:
           CHAINHOOK_API_TOKEN: ${{ secrets.CHAINHOOK_API_TOKEN }}
           SERVER_URL: ${{ vars.SERVER_URL }}
