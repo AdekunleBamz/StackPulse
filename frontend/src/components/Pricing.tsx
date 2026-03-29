@@ -7,6 +7,7 @@ import { toast } from '@/components/Toast';
 import Button from '@/components/ui/Button';
 import Link from 'next/link';
 import { apiUrl, DEPLOYER_ADDRESS } from '@/lib/env';
+import logger from '@/lib/logger';
 
 const tiers = [
   {
@@ -85,15 +86,15 @@ export default function Pricing() {
       
       // Always check contract for latest data
       if (!DEPLOYER_ADDRESS) {
-        console.warn('DEPLOYER_ADDRESS not set!');
+        logger.warn('DEPLOYER_ADDRESS not set');
         return;
       }
       
       try {
         const { principalCV, cvToHex, hexToCV, cvToValue } = await import('@stacks/transactions');
         
-        console.log('Checking registration for:', address);
-        console.log('Using contract:', DEPLOYER_ADDRESS);
+        logger.debug('Checking registration for:', address);
+        logger.debug('Using contract:', DEPLOYER_ADDRESS);
         
         // Use V3 contract
         const response = await fetch(
@@ -109,7 +110,7 @@ export default function Pricing() {
         );
         
         const data = await response.json();
-        console.log('Contract response:', data);
+        logger.debug('Contract response:', data);
         
         // If result is not 0x09 (none), user is registered
         const registered = data.result && data.result !== '0x09';
@@ -120,7 +121,7 @@ export default function Pricing() {
           try {
             const cv = hexToCV(data.result);
             const userData = cvToValue(cv);
-            console.log('Parsed user data:', userData);
+            logger.debug('Parsed user data:', userData);
             if (userData && userData.value) {
               const tier = Number(userData.value.tier?.value || 0);
               const uname = userData.value.username?.value || '';
@@ -135,7 +136,7 @@ export default function Pricing() {
               }));
             }
           } catch (parseErr) {
-            console.error('Error parsing user data:', parseErr);
+            logger.error('Error parsing user data:', parseErr);
           }
         } else {
           // Not registered - clear any cached data
@@ -156,11 +157,11 @@ export default function Pricing() {
               }
             }
           } catch (err) {
-            console.error('Failed to fetch user preferences:', err);
+            logger.error('Failed to fetch user preferences:', err);
           }
         }
       } catch (error) {
-        console.error('Error checking registration:', error);
+        logger.error('Error checking registration:', error);
       }
     };
 
@@ -247,7 +248,7 @@ export default function Pricing() {
         ],
         postConditions,
         onFinish: async (data: { txId: string }) => {
-          console.log('Registration + Subscription submitted:', data.txId);
+          logger.info('Registration + Subscription submitted:', data.txId);
           
           // Save notification preferences to server
           try {
@@ -264,9 +265,9 @@ export default function Pricing() {
                 enabledAlerts: ['whale', 'contract', 'nft', 'token', 'swap', 'alert', 'badge']
               })
             });
-            console.log('User preferences saved to server');
+            logger.debug('User preferences saved to server');
           } catch (err) {
-            console.error('Failed to save preferences:', err);
+            logger.error('Failed to save preferences:', err);
             toast.warning('Registered', 'Saved on-chain but failed to sync preferences.');
           }
           
@@ -286,12 +287,12 @@ export default function Pricing() {
           setCurrentTier(selectedTier);
         },
         onCancel: () => {
-          console.log('Registration cancelled');
+          logger.debug('Registration cancelled');
           setSubscribingTier(null);
         },
       });
     } catch (error) {
-      console.error('Registration error:', error);
+      logger.error('Registration error:', error);
       toast.error('Registration failed', 'Please try again.');
       setSubscribingTier(null);
     } finally {
@@ -350,7 +351,7 @@ export default function Pricing() {
         functionArgs: [uintCV(tier)],
         postConditions,
         onFinish: async (data: { txId: string }) => {
-          console.log('Upgrade submitted:', data.txId);
+          logger.info('Upgrade submitted:', data.txId);
           setCurrentTier(tier);
           // Update cache
           if (address) {
@@ -368,12 +369,12 @@ export default function Pricing() {
           setSubscribingTier(null);
         },
         onCancel: () => {
-          console.log('Upgrade cancelled');
+          logger.debug('Upgrade cancelled');
           setSubscribingTier(null);
         },
       });
     } catch (error) {
-      console.error('Subscription error:', error);
+      logger.error('Subscription error:', error);
       toast.error('Upgrade failed', 'Please try again.');
       setSubscribingTier(null);
     } finally {
@@ -420,7 +421,7 @@ export default function Pricing() {
       setTempValue('');
       toast.success('Saved');
     } catch (error) {
-      console.error('Failed to save channel:', error);
+      logger.error('Failed to save channel:', error);
       toast.error('Save failed', 'Please try again.');
     } finally {
       setIsSaving(false);
