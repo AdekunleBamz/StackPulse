@@ -753,6 +753,8 @@ interface CreateAlertRequestBody {
   txId?: string;
 }
 
+type UpdateAlertRequestBody = Partial<Pick<StoredAlert, 'name' | 'threshold' | 'targetAddress' | 'enabled'>>;
+
 // Ensure data directory exists
 if (!fs.existsSync(DATA_DIR)) {
   fs.mkdirSync(DATA_DIR, { recursive: true });
@@ -854,7 +856,7 @@ runMaintenanceTask();
 app.put('/api/users/:address/alerts/:alertId', async (req: Request, res: Response) => {
   try {
     const { address, alertId } = req.params;
-    const updates = req.body;
+    const updates = req.body as UpdateAlertRequestBody;
     
     const alerts = userAlerts.get(address) || [];
     const alertIndex = alerts.findIndex(a => a.id === parseInt(alertId));
