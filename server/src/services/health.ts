@@ -18,7 +18,7 @@ interface SystemHealth {
     loadAvg: number[];
   };
   components: {
-    [key: string]: { status: 'up' | 'down'; details?: any };
+    [key: string]: { status: 'up' | 'down'; details?: unknown };
   };
   timestamp: number;
 }
