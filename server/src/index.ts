@@ -158,6 +158,21 @@ const eventStats = {
 // CHAINHOOK ENDPOINTS
 // ============================================
 
+const CHAINHOOK_ENDPOINTS = {
+  whaleTransfer: '/api/v1/chainhooks/whale-transfer',
+  contractDeployed: '/api/v1/chainhooks/contract-deployed',
+  nftMint: '/api/v1/chainhooks/nft-mint',
+  tokenLaunch: '/api/v1/chainhooks/token-launch',
+  largeSwapAlert: '/api/v1/chainhooks/large-swap-alert',
+  subscriptionCreated: '/api/v1/chainhooks/subscription-created',
+  alertTriggered: '/api/v1/chainhooks/alert-triggered',
+  feeCollected: '/api/v1/chainhooks/fee-collected',
+  badgeEarned: '/api/v1/chainhooks/badge-earned',
+  newSubscription: '/api/v1/chainhooks/new-subscription',
+  subscriptionUpgrade: '/api/v1/chainhooks/subscription-upgrade',
+  alertCreated: '/api/v1/chainhooks/alert-created',
+} as const;
+
 // Helper: Process chainhook async and respond immediately to prevent timeout
 const processAsync = (handler: (payload: ChainhookPayload) => Promise<void>) => {
   return async (req: Request, res: Response) => {
