@@ -306,7 +306,7 @@ app.post('/api/v1/chainhooks/', tieredApiLimiter, authenticateWebhook, processAs
   for (const block of payload.apply) {
     for (const tx of block.transactions) {
       const events = tx.metadata.receipt.events || [];
-      const ftEvents = events.filter((e: any) => e.type === 'FTTransferEvent');
+      const ftEvents = events.filter((e) => e.type === 'FTTransferEvent');
       
       if (ftEvents.length >= 2) {
         logger.info('💱 Large Swap Detected', {
