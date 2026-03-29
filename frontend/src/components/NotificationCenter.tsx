@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from 'react';
 import { Bell, X, Check, ExternalLink } from 'lucide-react';
-import { formatRelativeTime } from '../utils/date';
 
 interface Notification {
   id: string;
@@ -79,6 +78,18 @@ export default function NotificationCenter({ maxNotifications = 50 }: Notificati
     setNotifications([]);
   };
 
+  const formatTime = (date: Date) => {
+    const now = new Date();
+    const diffMs = now.getTime() - date.getTime();
+    const diffMins = Math.floor(diffMs / 60000);
+    const diffHours = Math.floor(diffMins / 60);
+    const diffDays = Math.floor(diffHours / 24);
+
+    if (diffMins < 1) return 'Just now';
+    if (diffMins < 60) return `${diffMins}m ago`;
+    if (diffHours < 24) return `${diffHours}h ago`;
+    return `${diffDays}d ago`;
+  };
 
   return (
     <div className="relative">
@@ -166,7 +177,7 @@ export default function NotificationCenter({ maxNotifications = 50 }: Notificati
                           </p>
                           <div className="flex items-center gap-2 mt-2">
                             <span className="text-gray-500 text-xs">
-                              {formatRelativeTime(notification.timestamp)}
+                              {formatTime(notification.timestamp)}
                             </span>
                             {notification.txHash && (
                               <a
