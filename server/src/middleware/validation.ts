@@ -15,6 +15,19 @@ interface ValidationSchema {
   };
 }
 
+function matchesType(
+  value: unknown,
+  expectedType: ValidationSchema[string]['type']
+): boolean {
+  if (expectedType === 'array') {
+    return Array.isArray(value);
+  }
+  if (expectedType === 'object') {
+    return typeof value === 'object' && value !== null && !Array.isArray(value);
+  }
+  return typeof value === expectedType;
+}
+
 /**
  * Validate request body against schema
  */
@@ -37,7 +50,7 @@ export function validateBody(schema: ValidationSchema) {
       }
 
       // Check type
-      if (typeof value !== rules.type) {
+      if (!matchesType(value, rules.type)) {
         errors.push(`Field '${field}' must be of type ${rules.type}`);
       }
 
