@@ -305,7 +305,7 @@ app.post(CHAINHOOK_ENDPOINTS.nftMint, tieredApiLimiter, authenticateWebhook, pro
 }));
 
 // 4. Token Launch Detector
-app.post('/api/v1/chainhooks/token-launch', authenticateWebhook, processAsync(async (payload) => {
+app.post(CHAINHOOK_ENDPOINTS.tokenLaunch, authenticateWebhook, processAsync(async (payload) => {
   for (const block of payload.apply) {
     for (const tx of block.transactions) {
       if (tx.metadata.kind?.type === 'ContractDeployment') {
