@@ -69,6 +69,9 @@ export function rateLimiter(options: RateLimitOptions = defaultOptions) {
         resetTime: now + windowMs
       };
       rateLimitStore.set(key, entry);
+      res.setHeader('X-RateLimit-Limit', effectiveMaxRequests.toString());
+      res.setHeader('X-RateLimit-Remaining', (effectiveMaxRequests - entry.count).toString());
+      res.setHeader('X-RateLimit-Reset', entry.resetTime.toString());
       return next();
     }
 
