@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { ArrowLeft, History, Filter, Download, Search, ExternalLink } from 'lucide-react';
+import { ArrowLeft, History, Download, ExternalLink } from 'lucide-react';
 import AlertHistory from '@/components/AlertHistory';
 import { Breadcrumbs } from '@/components';
 
@@ -45,6 +45,8 @@ const recentTriggers = [
 
 export default function HistoryPage() {
   const [timeRange, setTimeRange] = useState('7d');
+  const [renderNow] = useState(() => Date.now());
+  const [currentHour] = useState(() => new Date().getHours());
 
   // Stats
   const stats = {
@@ -136,7 +138,7 @@ export default function HistoryPage() {
             >
               {recentTriggers.map((trigger) => {
                 const typeInfo = alertTypeInfo.find(t => t.id === trigger.type);
-                const timeAgo = Math.floor((Date.now() - trigger.triggeredAt.getTime()) / 60000);
+                const timeAgo = Math.floor((renderNow - trigger.triggeredAt.getTime()) / 60000);
 
                 return (
                   <div
@@ -186,7 +188,7 @@ export default function HistoryPage() {
             <h2 className="text-xl font-semibold mb-6">Triggers by Type</h2>
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
               {alertTypeInfo.map((type) => {
-                const count = Math.floor(Math.random() * 200) + 50;
+                const count = ((type.id * 137 + stats.totalTriggers) % 200) + 50;
                 const percentage = Math.floor((count / stats.totalTriggers) * 100);
 
                 return (
@@ -218,8 +220,8 @@ export default function HistoryPage() {
             <div className="bg-gray-900/50 border border-gray-800 rounded-xl p-6">
               <div className="h-40 flex items-end gap-1">
                 {Array.from({ length: 24 }).map((_, i) => {
-                  const height = Math.random() * 80 + 20;
-                  const hour = (new Date().getHours() - 23 + i + 24) % 24;
+                  const height = ((i * 29 + 47) % 80) + 20;
+                  const hour = (currentHour - 23 + i + 24) % 24;
 
                   return (
                     <div key={i} className="flex-1 flex flex-col items-center">
