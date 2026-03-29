@@ -1,11 +1,17 @@
 import { Request, Response, NextFunction } from 'express';
 import logger from '../utils/logger';
 
+type TierRequest = Request & {
+  user?: {
+    tier?: number;
+  };
+};
+
 /**
  * Validate body payload size based on tier
  */
 export function validatePayloadSize(req: Request, res: Response, next: NextFunction) {
-  const userTier = (req as any).user?.tier || 0;
+  const userTier = (req as TierRequest).user?.tier || 0;
   const limits = [10240, 102400, 1048576, 10485760]; // 10K, 100K, 1M, 10M
   const limit = limits[userTier] || 10240;
   
