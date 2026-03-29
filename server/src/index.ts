@@ -371,7 +371,7 @@ app.post(CHAINHOOK_ENDPOINTS.largeSwapAlert, tieredApiLimiter, authenticateWebho
 }));
 
 // 6. User Subscription Created
-app.post('/api/v1/chainhooks/subscription-created', authenticateWebhook, processAsync(async (payload) => {
+app.post(CHAINHOOK_ENDPOINTS.subscriptionCreated, authenticateWebhook, processAsync(async (payload) => {
   for (const block of payload.apply) {
     for (const tx of block.transactions) {
       const events = tx.metadata.receipt.events || [];
