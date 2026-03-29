@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback, useRef } from 'react';
+import { WS_URL } from '@/lib/env';
 
 interface UseWebSocketOptions {
   url?: string;
@@ -25,11 +26,9 @@ interface UseWebSocketReturn {
   disconnect: () => void;
 }
 
-const DEFAULT_WS_URL = process.env.NEXT_PUBLIC_WS_URL || 'wss://stackpulse-b8fw.onrender.com/ws';
-
 export function useWebSocket(options: UseWebSocketOptions = {}): UseWebSocketReturn {
   const {
-    url = DEFAULT_WS_URL,
+    url = WS_URL,
     reconnect = true,
     reconnectInterval = 5000,
     maxReconnectAttempts = 10,
