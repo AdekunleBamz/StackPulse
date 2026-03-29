@@ -10,22 +10,16 @@ interface CacheEntry<T> {
 }
 
 const MAX_CACHE_SIZE = 10000;
-const MAX_CACHE_SIZE_PER_USER = new Map<number, number>([
-  [0, 100],     // FREE
-  [1, 1000],    // PRO
-  [2, 10000],   // WHALE
-  [3, 100000]   // EXCHANGE
-]);
 
 class CacheService {
   private cache: Map<string, CacheEntry<any>> = new Map();
   private cleanupInterval: NodeJS.Timeout;
 
   constructor() {
-    // Clean up expired entries every 5 minutes
+    // Clean up expired entries every 10 minutes
     this.cleanupInterval = setInterval(() => {
-      this.cleanup();
-    }, 300000);
+      this.cleanupExpired();
+    }, 600000);
   }
 
   /**
@@ -96,18 +90,6 @@ class CacheService {
   }
 
   /**
-   * Clean up expired entries
-   */
-  private cleanup(): void {
-    const now = Date.now();
-    for (const [key, entry] of this.cache.entries()) {
-      if (now > entry.expiresAt) {
-        this.cache.delete(key);
-      }
-    }
-  }
-
-  /**
    * Get cache size
    */
   size(): number {
@@ -145,8 +127,5 @@ class CacheService {
 }
 
 const cacheService = new CacheService();
-
-// Periodically cleanup expired items
-cacheService['cleanupInterval'] = setInterval(() => cacheService.cleanupExpired(), 600000); // Every 10 minutes
 
 export default cacheService;
