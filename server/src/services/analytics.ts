@@ -41,7 +41,12 @@ const analytics: AnalyticsData = {
 };
 
 // Track an event
-export function trackEvent(eventType: string, metadata?: Record<string, any>, userAddress?: string, tier: number = 0): void {
+export function trackEvent(
+  eventType: string,
+  metadata?: Record<string, unknown>,
+  userAddress?: string,
+  tier: number = 0
+): void {
   if (analytics.events.size >= MAX_EVENT_TYPES && !analytics.events.has(eventType)) {
     logger.warn('Maximum event types reached, dropping new event type', { eventType });
     return;
