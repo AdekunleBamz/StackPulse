@@ -55,11 +55,3 @@ export interface PaginatedResponse<T> {
   pageSize: number;
   hasMore: boolean;
 }
-
-export default {
-  Alert,
-  User,
-  Notification,
-  ApiResponse,
-  PaginatedResponse,
-};
