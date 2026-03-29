@@ -3,20 +3,8 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { ArrowLeft, History, Filter, Download, Search, ExternalLink } from 'lucide-react';
-import dynamic from 'next/dynamic';
+import AlertHistory from '@/components/AlertHistory';
 import { Breadcrumbs } from '@/components';
-
-const AlertHistory = dynamic(() => import('@/components/AlertHistory'), {
-  loading: () => (
-    <div className="w-full h-96 bg-gray-900/50 border border-gray-800 rounded-2xl animate-pulse flex items-center justify-center">
-      <div className="flex flex-col items-center gap-4">
-        <div className="w-12 h-12 border-4 border-purple-500/30 border-t-purple-500 rounded-full animate-spin" />
-        <p className="text-gray-500 font-medium">Loading history...</p>
-      </div>
-    </div>
-  ),
-  ssr: false,
-});
 
 const alertTypeInfo = [
   { id: 1, name: 'Whale Transfer', icon: '🐋', color: 'blue' },
@@ -75,7 +63,6 @@ export default function HistoryPage() {
             <div className="flex items-center gap-4">
               <Link
                 href="/dashboard"
-                prefetch={true}
                 className="p-2 text-gray-400 hover:text-white hover:bg-gray-800 rounded-lg transition-all"
               >
                 <ArrowLeft className="w-5 h-5" />
