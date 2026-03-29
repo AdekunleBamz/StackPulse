@@ -9,6 +9,7 @@ import { NoAlertsState } from '@/components/EmptyState';
 import { DashboardSkeleton } from '@/components/LoadingSkeleton';
 import Button from '@/components/ui/Button';
 import { apiUrl, DEPLOYER_ADDRESS } from '@/lib/env';
+import logger from '@/lib/logger';
 import { 
   Bell, 
   Wallet, 
@@ -111,7 +112,7 @@ export default function DashboardPage() {
               });
             }
           } catch (parseErr) {
-            console.error('Error parsing user data:', parseErr);
+            logger.error('Error parsing user data:', parseErr);
           }
         }
 
@@ -125,11 +126,11 @@ export default function DashboardPage() {
             }
           }
         } catch (err) {
-          console.error('Error loading alerts:', err);
+          logger.error('Error loading alerts:', err);
         }
 
       } catch (error) {
-        console.error('Error loading user data:', error);
+        logger.error('Error loading user data:', error);
       } finally {
         setIsLoading(false);
       }
@@ -181,7 +182,7 @@ export default function DashboardPage() {
           uintCV(parseInt(newAlertThreshold) || 10000)
         ],
         onFinish: async (data: { txId: string }) => {
-          console.log('Alert created:', data.txId);
+          logger.info('Alert created:', data.txId);
           toast.dismiss(toastId);
           
           // Save to server too
@@ -197,7 +198,7 @@ export default function DashboardPage() {
               })
             });
           } catch (err) {
-            console.error('Error saving alert to server:', err);
+            logger.error('Error saving alert to server:', err);
             toast.warning('Alert created', 'Saved on-chain but failed to sync to server.');
           }
 
@@ -218,13 +219,13 @@ export default function DashboardPage() {
           setIsCreating(false);
         },
         onCancel: () => {
-          console.log('Alert creation cancelled');
+          logger.debug('Alert creation cancelled');
           toast.dismiss(toastId);
           setIsCreating(false);
         }
       });
     } catch (error) {
-      console.error('Error creating alert:', error);
+      logger.error('Error creating alert:', error);
       toast.dismiss(toastId);
       toast.error('Failed to create alert', 'Please try again.');
       setIsCreating(false);
@@ -253,7 +254,7 @@ export default function DashboardPage() {
       });
       toast.dismiss(toastId);
     } catch (err) {
-      console.error('Error toggling alert:', err);
+      logger.error('Error toggling alert:', err);
       toast.dismiss(toastId);
       setAlerts((prev) =>
         prev.map((a) => (a.id === alertId ? { ...a, enabled: existing?.enabled ?? a.enabled } : a))
@@ -286,7 +287,7 @@ export default function DashboardPage() {
           toast.dismiss(toastId);
           toast.success('Alert deleted');
         } catch (err) {
-          console.error('Error deleting alert:', err);
+          logger.error('Error deleting alert:', err);
           toast.dismiss(toastId);
           if (removedAlert) {
             setAlerts((prev) => [removedAlert!, ...prev]);
