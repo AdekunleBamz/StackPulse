@@ -50,6 +50,17 @@ const alertTypeNames: Record<number, string> = {
   6: 'Address Watch',
 };
 
+function parsePositiveInt(value: string | undefined, fallback: number): number {
+  if (!value) {
+    return fallback;
+  }
+  const parsed = Number.parseInt(value, 10);
+  if (!Number.isFinite(parsed) || parsed <= 0) {
+    return fallback;
+  }
+  return parsed;
+}
+
 /**
  * GET /api/alerts
  * List all alerts for a user
@@ -83,8 +94,8 @@ router.get(
       .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
 
     // Pagination
-    const page = parseInt(req.query.page as string) || 1;
-    const limit = parseInt(req.query.limit as string) || 10;
+    const page = parsePositiveInt(req.query.page as string | undefined, 1);
+    const limit = parsePositiveInt(req.query.limit as string | undefined, 10);
     const sortBy = req.query.sortBy as string || 'createdAt';
     const sortOrder = req.query.sortOrder as string || 'desc';
 
