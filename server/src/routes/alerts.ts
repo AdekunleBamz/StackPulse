@@ -50,13 +50,16 @@ const alertTypeNames: Record<number, string> = {
   6: 'Address Watch',
 };
 
-function parsePositiveInt(value: string | undefined, fallback: number): number {
+function parsePositiveInt(value: string | undefined, fallback: number, max?: number): number {
   if (!value) {
     return fallback;
   }
   const parsed = Number.parseInt(value, 10);
   if (!Number.isFinite(parsed) || parsed <= 0) {
     return fallback;
+  }
+  if (typeof max === 'number') {
+    return Math.min(parsed, max);
   }
   return parsed;
 }
@@ -95,7 +98,7 @@ router.get(
 
     // Pagination
     const page = parsePositiveInt(req.query.page as string | undefined, 1);
-    const limit = parsePositiveInt(req.query.limit as string | undefined, 10);
+    const limit = parsePositiveInt(req.query.limit as string | undefined, 10, 100);
     const sortBy = req.query.sortBy as string || 'createdAt';
     const sortOrder = req.query.sortOrder as string || 'desc';
 
