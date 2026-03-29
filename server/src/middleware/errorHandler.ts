@@ -1,67 +1,80 @@
+/**
+ * Error Handler Middleware
+ * Global error handling
+ */
+
 import { Request, Response, NextFunction } from 'express';
-import logger from '../utils/logger';
 
-/**
- * Custom application error classes
- */
-export class AppError extends Error {
-  constructor(
-    public message: string,
-    public statusCode: number = 500,
-    public isOperational: boolean = true
-  ) {
-    super(message);
-    Object.setPrototypeOf(this, new.target.prototype);
-    Error.captureStackTrace(this, this.constructor);
-  }
-}
-
-export class BadRequestError extends AppError {
-  constructor(message: string = 'Bad request') {
-    super(message, 400);
-  }
-}
-
-export class NotFoundError extends AppError {
-  constructor(message: string = 'Resource not found') {
-    super(message, 404);
-  }
+export interface AppError extends Error {
+  statusCode?: number;
+  isOperational?: boolean;
 }
 
 /**
- * Global error handler middleware
+ * Create an operational error
  */
-export const errorHandler = (
-  err: Error | AppError,
+export function createError(message: string, statusCode: number): AppError {
+  const error: AppError = new Error(message);
+  error.statusCode = statusCode;
+  error.isOperational = true;
+  return error;
+}
+
+/**
+ * Error handler middleware
+ */
+export function errorHandler(
+  err: AppError,
   req: Request,
   res: Response,
   next: NextFunction
-) => {
-  const statusCode = err instanceof AppError ? err.statusCode : 500;
-  const isOperational = err instanceof AppError ? err.isOperational : false;
-  const message = isOperational ? err.message : 'An unexpected error occurred';
+) {
+  const statusCode = err.statusCode || 500;
+  const message = err.isOperational ? err.message : 'Internal server error';
 
-  // Log error with context
-  logger.error(`${req.method} ${req.path} - ${statusCode}: ${err.message}`, {
-    stack: !isOperational ? err.stack : undefined,
-    operational: isOperational
-  });
+  // Log error
+  console.error(`[Error] ${statusCode}: ${err.message}`);
+  if (!err.isOperational) {
+    console.error(err.stack);
+  }
 
   res.status(statusCode).json({
     success: false,
     error: {
       message,
       statusCode,
-      type: err.constructor.name
+      ...(process.env.NODE_ENV === 'development' && { stack: err.stack })
     }
   });
-};
+}
 
 /**
- * Async handler wrapper to catch errors in promises
+ * Async handler wrapper
  */
-export const asyncHandler = (fn: Function) => (req: Request, res: Response, next: NextFunction) => {
-  Promise.resolve(fn(req, res, next)).catch(next);
-};
+export function asyncHandler(
+  fn: (req: Request, res: Response, next: NextFunction) => Promise<any>
+) {
+  return (req: Request, res: Response, next: NextFunction) => {
+    Promise.resolve(fn(req, res, next)).catch(next);
+  };
+}
 
-export default { AppError, BadRequestError, NotFoundError, errorHandler, asyncHandler };
+/**
+ * Not found handler
+ */
+export function notFoundHandler(req: Request, res: Response) {
+  res.status(404).json({
+    success: false,
+    error: {
+      message: `Route ${req.method} ${req.originalUrl} not found`,
+      statusCode: 404
+    }
+  });
+}
+
+export default {
+  createError,
+  errorHandler,
+  asyncHandler,
+  notFoundHandler
+};
