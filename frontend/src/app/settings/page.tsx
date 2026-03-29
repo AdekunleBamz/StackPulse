@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useWallet } from '@/context/WalletContext';
 import Link from 'next/link';
 import {
@@ -15,7 +15,6 @@ import {
   Zap,
   Save,
   Check,
-  X,
   ChevronRight,
   type LucideIcon,
 } from 'lucide-react';
@@ -139,7 +138,7 @@ export default function SettingsPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const loadSettings = async () => {
+  const loadSettings = useCallback(async () => {
     if (!address) {
       setIsLoading(false);
       return;
@@ -172,11 +171,11 @@ export default function SettingsPage() {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [address]);
 
   useEffect(() => {
     loadSettings();
-  }, [address]);
+  }, [loadSettings]);
 
   const handleSave = async () => {
     if (!address) return;
@@ -191,7 +190,7 @@ export default function SettingsPage() {
         body: JSON.stringify({
           ...settings.profile,
           enabledAlerts: Object.entries(settings.alertTypes)
-            .filter(([_, enabled]) => enabled)
+            .filter(([, enabled]) => enabled)
             .map(([type]) => type),
         }),
       });
