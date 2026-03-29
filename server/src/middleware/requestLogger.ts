@@ -6,6 +6,7 @@
 import { Request, Response, NextFunction } from 'express';
 import logger from '../utils/logger';
 import MetricsService from '../services/metrics';
+import { randomUUID } from 'crypto';
 
 export interface RequestLogOptions {
   logBody?: boolean;
@@ -38,7 +39,7 @@ export function requestLogger(options: RequestLogOptions = defaultOptions) {
     }
 
     const startTime = process.hrtime();
-    const requestId = Math.random().toString(36).substring(7);
+    const requestId = randomUUID();
 
     // Log request
     logger.info('Incoming request', {
