@@ -664,6 +664,7 @@ app.get('/api/v1/ping', (req: Request, res: Response) => {
 
 // HEAD request for lightweight keep-alive
 app.head('/api/v1/ping', (req: Request, res: Response) => {
+  res.setHeader('Cache-Control', 'no-store');
   res.status(200).end();
 });
 
