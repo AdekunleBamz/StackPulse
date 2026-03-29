@@ -17,6 +17,7 @@ import {
   Check,
   X,
   ChevronRight,
+  type LucideIcon,
 } from 'lucide-react';
 import CopyButton from '@/components/ui/CopyButton';
 import { toast } from '@/components/Toast';
@@ -85,7 +86,7 @@ const SettingsSection = ({
 }: {
   title: string;
   description: string;
-  icon: any;
+  icon: LucideIcon;
   children: React.ReactNode;
 }) => (
   <div className="bg-gray-800/50 border border-gray-700 rounded-xl p-6">
