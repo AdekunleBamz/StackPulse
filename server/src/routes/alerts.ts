@@ -95,9 +95,7 @@ router.get(
     }
 
     // Filter alerts by user
-    let userAlerts = Array.from(alerts.values())
-      .filter(alert => alert.userId === address)
-      .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+    let userAlerts = Array.from(alerts.values()).filter((alert) => alert.userId === address);
 
     // Pagination
     const page = parsePositiveInt(req.query.page as string | undefined, 1);
