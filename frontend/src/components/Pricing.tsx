@@ -57,7 +57,6 @@ export default function Pricing() {
   const editChannelTitleId = useId();
   const [isRegistered, setIsRegistered] = useState(false);
   const [currentTier, setCurrentTier] = useState(0);
-  const [subscriptionEnds, setSubscriptionEnds] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [subscribingTier, setSubscribingTier] = useState<number | null>(null);
@@ -69,7 +68,6 @@ export default function Pricing() {
   const [tempValue, setTempValue] = useState('');
 
   const tierNames = ['Free', 'Basic', 'Pro', 'Premium'];
-  const tierColors = ['gray', 'blue', 'purple', 'yellow'];
 
   // Check registration status when wallet connects
   useEffect(() => {
@@ -127,7 +125,6 @@ export default function Pricing() {
               const tier = Number(userData.value.tier?.value || 0);
               const uname = userData.value.username?.value || '';
               setCurrentTier(tier);
-              setSubscriptionEnds(Number(userData.value['subscription-ends']?.value || 0));
               setUsername(uname);
               
               // Cache registration status for faster future loads
