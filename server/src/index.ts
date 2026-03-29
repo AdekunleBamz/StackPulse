@@ -53,7 +53,7 @@ const logger = createLogger({
 
 // Initialize Express app
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = Number.parseInt(process.env.PORT || '3000', 10);
 
 // Middleware
 app.use(helmet());
