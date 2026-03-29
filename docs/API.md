@@ -402,9 +402,13 @@ ws.onopen = () => {
 };
 
 ws.onmessage = (event) => {
-  const data = JSON.parse(event.data);
-  if (data.type === 'notification') {
-    // handle notification payload
+  try {
+    const data = JSON.parse(event.data);
+    if (data.type === 'notification') {
+      // handle notification payload
+    }
+  } catch {
+    // ignore malformed events
   }
 };
 ```
