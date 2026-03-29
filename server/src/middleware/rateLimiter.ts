@@ -45,7 +45,7 @@ const defaultOptions: RateLimitOptions = {
  * Rate limiter middleware factory
  */
 export function rateLimiter(options: RateLimitOptions = defaultOptions) {
-  const { windowMs, maxRequests, message, keyGenerator } = { ...defaultOptions, ...options };
+  const { windowMs, maxRequests, message, keyGenerator, maxRequestsGenerator } = { ...defaultOptions, ...options };
 
   return (req: Request, res: Response, next: NextFunction) => {
     const key = keyGenerator!(req);
