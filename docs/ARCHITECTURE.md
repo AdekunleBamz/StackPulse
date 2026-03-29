@@ -13,7 +13,7 @@ This document describes the high-level architecture of the StackPulse ecosystem,
 ### 2. Processing Layer (Server)
 - **Inbound Registry**: Validates and routes chainhook payloads.
 - **Alert Engine**: Matches events against user-defined thresholds and addresses.
-- **Notification Service**: Deliveries alerts via Webhooks, Discord, and Telegram with exponential backoff retries.
+- **Notification Service**: Delivers alerts via Webhooks, Discord, and Telegram with exponential backoff retries.
 - **WebSocket Gateway**: Pushes real-time "Network Pulse" metrics to connected frontend clients.
 
 ### 3. State Layer (Database & Cache)
