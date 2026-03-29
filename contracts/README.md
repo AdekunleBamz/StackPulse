@@ -4,10 +4,10 @@ This directory contains the current Clarity contract set plus earlier archived i
 
 ## Active contracts
 
-- `stackpulse-v-j3.clar`: user registration, profile data, and subscription state
-- `alert-manager-v-j3.clar`: alert creation, toggling, limits, and trigger tracking
-- `fee-vault-v-j3.clar`: subscription fee collection and treasury flows
-- `reputation-badges-v-j3.clar`: badge and achievement logic
+- `stackpulse-v-j4.clar`: user registration, profile data, and subscription state
+- `alert-manager-v-j4.clar`: alert creation, toggling, limits, and trigger tracking
+- `fee-vault-v-j4.clar`: subscription fee collection and treasury flows
+- `reputation-badges-v-j4.clar`: badge and achievement logic
 
 ## Archived contracts
 

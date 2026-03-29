@@ -4,10 +4,10 @@
 
 The active contract files in this repository are:
 
-- `contracts/stackpulse-v-j3.clar`
-- `contracts/alert-manager-v-j3.clar`
-- `contracts/fee-vault-v-j3.clar`
-- `contracts/reputation-badges-v-j3.clar`
+- `contracts/stackpulse-v-j4.clar`
+- `contracts/alert-manager-v-j4.clar`
+- `contracts/fee-vault-v-j4.clar`
+- `contracts/reputation-badges-v-j4.clar`
 
 Earlier versions remain in `contracts/archive/`. When this document references older names or deployment eras, treat the files above as the current source of truth for ongoing maintenance work.
 
@@ -15,16 +15,16 @@ Earlier versions remain in `contracts/archive/`. When this document references o
 
 StackPulse consists of four main smart contracts deployed on the Stacks blockchain:
 
-1. **stackpulse-v-j3** - User registry and subscription management
-2. **alert-manager-v-j3** - Alert creation and triggering
-3. **fee-vault-v-j3** - Fee collection and referral system
-4. **reputation-badges-v-j3** - NFT achievement badges (SIP-009)
+1. **stackpulse-v-j4** - User registry and subscription management
+2. **alert-manager-v-j4** - Alert creation and triggering
+3. **fee-vault-v-j4** - Fee collection and referral system
+4. **reputation-badges-v-j4** - NFT achievement badges (SIP-009)
 
 All contracts are deployed by: `SP3FKNEZ86RG5RT7SZ5FBRGH85FZNG94ZH1MCGG6N`
 
 ---
 
-## StackPulse Registry (stackpulse-v-j3)
+## StackPulse Registry (stackpulse-v-j4)
 
 ### Overview
 
@@ -135,7 +135,7 @@ Upgrade to a higher subscription tier.
 
 ---
 
-## Alert Manager (alert-manager-v-j3)
+## Alert Manager (alert-manager-v-j4)
 
 ### Overview
 
@@ -170,8 +170,7 @@ Manages user alerts and tracks trigger events.
     (alert-type uint)
     (name (string-ascii 64))
     (target-address (optional principal))
-    (threshold uint)
-    (user-tier uint))
+    (threshold uint))
   ...)
 ```
 
@@ -231,7 +230,7 @@ Manages user alerts and tracks trigger events.
 
 ---
 
-## Fee Vault (fee-vault-v-j3)
+## Fee Vault (fee-vault-v-j4)
 
 ### Overview
 
@@ -249,9 +248,9 @@ Handles subscription payments, platform fees, and referral rewards.
 | Tier | Price (STX) |
 |------|-------------|
 | Free | 0 |
-| Basic | 5 |
-| Pro | 15 |
-| Premium | 45 |
+| Basic | 0.01 |
+| Pro | 0.05 |
+| Premium | 0.20 |
 
 ### Public Functions
 
@@ -304,7 +303,7 @@ Handles subscription payments, platform fees, and referral rewards.
 
 ---
 
-## Reputation Badges (reputation-badges-v-j3)
+## Reputation Badges (reputation-badges-v-j4)
 
 ### Overview
 
@@ -377,7 +376,7 @@ import { stringAsciiCV, uintCV } from '@stacks/transactions';
 
 await openContractCall({
   contractAddress: 'SP3FKNEZ86RG5RT7SZ5FBRGH85FZNG94ZH1MCGG6N',
-  contractName: 'stackpulse-v-j3',
+  contractName: 'stackpulse-v-j4',
   functionName: 'register-and-subscribe',
   functionArgs: [
     stringAsciiCV('username'),
@@ -394,14 +393,13 @@ await openContractCall({
 ```javascript
 await openContractCall({
   contractAddress: 'SP3FKNEZ86RG5RT7SZ5FBRGH85FZNG94ZH1MCGG6N',
-  contractName: 'alert-manager-v-j3',
+  contractName: 'alert-manager-v-j4',
   functionName: 'create-alert',
   functionArgs: [
     uintCV(1), // Whale transfer
     stringAsciiCV('Whale Watch'),
     noneCV(), // No target address
-    uintCV(10000000000), // 10,000 STX threshold
-    uintCV(1) // User tier
+    uintCV(10000000000) // 10,000 STX threshold
   ],
   onFinish: (data) => console.log('Alert created:', data.txId)
 });
@@ -411,7 +409,7 @@ await openContractCall({
 
 ```javascript
 const response = await fetch(
-  `https://api.mainnet.hiro.so/v2/contracts/call-read/SP3FKNEZ86RG5RT7SZ5FBRGH85FZNG94ZH1MCGG6N/stackpulse-v-j3/get-user`,
+  `https://api.mainnet.hiro.so/v2/contracts/call-read/SP3FKNEZ86RG5RT7SZ5FBRGH85FZNG94ZH1MCGG6N/stackpulse-v-j4/get-user`,
   {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
