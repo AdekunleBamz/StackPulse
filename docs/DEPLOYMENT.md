@@ -204,7 +204,7 @@ Configure Render health check:
 
 ---
 
-## 3. Frontend Deployment (Vercel)
+## 4. Frontend Deployment (Vercel)
 
 ### Setup
 
@@ -233,7 +233,7 @@ NEXT_PUBLIC_POSTHOG_KEY=phc_xxx
 
 ---
 
-## 4. Chainhook Registration
+## 5. Chainhook Registration
 
 ### Prerequisites
 
@@ -271,7 +271,7 @@ npx ts-node scripts/check-chainhook-status.ts
 
 ---
 
-## 5. Post-Deployment Checklist
+## 6. Post-Deployment Checklist
 
 ### Smart Contracts
 
@@ -302,7 +302,7 @@ npx ts-node scripts/check-chainhook-status.ts
 
 ---
 
-## 6. Monitoring & Maintenance
+## 7. Monitoring & Maintenance
 
 ### Logs
 
@@ -326,7 +326,7 @@ npx ts-node scripts/check-chainhook-status.ts
 
 ---
 
-## 7. Upgrade Process
+## 8. Upgrade Process
 
 ### Contract Upgrades
 
