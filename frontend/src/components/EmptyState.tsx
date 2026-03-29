@@ -2,7 +2,7 @@ import { ComponentType } from 'react';
 import { Bell, Users, History, Search, AlertTriangle, PlusCircle, BellOff } from 'lucide-react';
 
 interface EmptyStateProps {
-  icon: ComponentType<any>;
+  icon: ComponentType<{ className?: string; strokeWidth?: number }>;
   title: string;
   description: string;
   className?: string;
