@@ -605,7 +605,7 @@ app.post(CHAINHOOK_ENDPOINTS.newSubscription, authenticateWebhook, processAsync(
 }));
 
 // 11. Subscription Upgrade (contract_call: upgrade-subscription)
-app.post('/api/v1/chainhooks/subscription-upgrade', authenticateWebhook, processAsync(async (payload) => {
+app.post(CHAINHOOK_ENDPOINTS.subscriptionUpgrade, authenticateWebhook, processAsync(async (payload) => {
   for (const block of payload.apply) {
     for (const tx of block.transactions) {
       logger.info('⬆️ Subscription Upgrade', {
