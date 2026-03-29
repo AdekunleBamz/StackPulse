@@ -2,11 +2,11 @@
 
 ## Current repo note
 
-Some examples below describe older `v3` naming. The active deployment artifacts in this repository today are the files under `deployments/`, especially the `v-j3` plans:
+Some examples below describe older `v3` naming. The active deployment artifacts in this repository today are the files under `deployments/`, especially the `v-j4` plans:
 
-- `deployments/v-j3-mainnet-plan.yaml`
-- `deployments/v-j3-fix-plan.yaml`
-- `deployments/badges-v-j3.mainnet-plan.yaml`
+- `deployments/v-j4-mainnet-plan.yaml`
+- `deployments/v-j4-fix-plan.yaml`
+- `deployments/badges-v-j4.mainnet-plan.yaml`
 
 The repo also includes helper scripts for hook registration and checks under `scripts/` and `server/src/scripts/`. Prefer those current files over older command examples when you are performing a fresh deployment.
 
@@ -58,7 +58,7 @@ clarinet check
 npm test
 
 # Deploy contracts (requires wallet)
-clarinet deployments apply -p deployments/v3-mainnet-plan.yaml --no-dashboard
+clarinet deployments apply -p deployments/v-j4-mainnet-plan.yaml --no-dashboard
 ```
 
 ### Deployment Plan (v3-mainnet-plan.yaml)
