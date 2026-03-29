@@ -913,9 +913,13 @@ app.delete('/api/users/:address/alerts/:alertId', async (req: Request, res: Resp
     if (!address || address.trim().length === 0) {
       return res.status(400).json({ error: 'Address is required' });
     }
+    const parsedAlertId = Number.parseInt(alertId, 10);
+    if (!Number.isInteger(parsedAlertId) || parsedAlertId < 1) {
+      return res.status(400).json({ error: 'Invalid alert id' });
+    }
     
     const alerts = userAlerts.get(address) || [];
-    const filteredAlerts = alerts.filter(a => a.id !== Number.parseInt(alertId, 10));
+    const filteredAlerts = alerts.filter(a => a.id !== parsedAlertId);
     
     if (filteredAlerts.length === alerts.length) {
       return res.status(404).json({ error: 'Alert not found' });
