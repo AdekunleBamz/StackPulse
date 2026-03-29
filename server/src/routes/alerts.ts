@@ -268,6 +268,13 @@ router.patch(
       Pick<Alert, 'name' | 'threshold' | 'targetAddress' | 'webhookUrl' | 'enabled'>
     >;
 
+    if (!address || typeof address !== 'string') {
+      return res.status(400).json({
+        success: false,
+        error: 'Address is required',
+      });
+    }
+
     const alert = alerts.get(id);
 
     if (!alert) {
