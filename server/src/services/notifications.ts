@@ -96,7 +96,8 @@ class NotificationsService {
    */
   getNotifications(userAddress: string, limit: number = 50): Notification[] {
     const userNotifications = this.getUserNotificationList(userAddress);
-    return userNotifications.slice(0, limit);
+    const safeLimit = Number.isFinite(limit) ? Math.max(1, Math.floor(limit)) : 50;
+    return userNotifications.slice(0, safeLimit);
   }
 
   /**
