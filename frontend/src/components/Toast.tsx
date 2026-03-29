@@ -106,7 +106,9 @@ function Toast({ id, type, title, message, duration = 5000, onClose }: ToastProp
   const pause = () => {
     if (timerRef.current == null) return;
     window.clearTimeout(timerRef.current);
-    window.clearInterval(progressIntervalRef.current!);
+    if (progressIntervalRef.current != null) {
+      window.clearInterval(progressIntervalRef.current);
+    }
     timerRef.current = null;
     progressIntervalRef.current = null;
     
