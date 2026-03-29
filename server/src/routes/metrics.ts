@@ -106,7 +106,7 @@ router.get('/', (req: Request, res: Response) => {
     },
     requests: {
       total: totalRequests,
-      byEndpoint: requestsByEndpoint
+      byEndpoint: { ...requestsByEndpoint }
     }
   };
   
