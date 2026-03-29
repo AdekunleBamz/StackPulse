@@ -290,17 +290,9 @@ export default function BadgeShowcase({ userBadges = [] }: BadgeShowcaseProps) {
       </div>
 
       {filteredBadges.length === 0 && (
-        <div className="flex flex-col items-center justify-center py-16 px-4 bg-gray-800/10 border border-dashed border-gray-700/50 rounded-2xl animate-in fade-in zoom-in-95 duration-500">
-          <div className="relative mb-4">
-            <Lock className="w-12 h-12 text-gray-700 opacity-50" />
-            <div className="absolute inset-0 bg-purple-500/5 blur-xl rounded-full" />
-          </div>
-          <h3 className="text-white font-bold text-sm mb-1">No {filter} badges</h3>
-          <p className="text-gray-500 text-xs text-center max-w-[200px] leading-relaxed">
-            {filter === 'earned' 
-              ? "Start participating in the ecosystem to unlock your first badge!" 
-              : "You've earned all available badges in this category. Impressive!"}
-          </p>
+        <div className="text-center py-12 text-gray-500">
+          <Lock className="w-12 h-12 mx-auto mb-2 opacity-50" />
+          <p>No badges in this category yet</p>
         </div>
       )}
 
@@ -358,7 +350,7 @@ export default function BadgeShowcase({ userBadges = [] }: BadgeShowcaseProps) {
 
             {selectedBadge.earned && selectedBadge.tokenId && (
               <a
-                href={`https://explorer.hiro.so/txid/SP5K2RHMSBH4PAP4PGX77MCVNK1ZEED07CWX9TJT.reputation-badges-v-j3?chain=mainnet`}
+                href={`https://explorer.hiro.so/txid/SP1THTSTZ8RQGD8R3GKPGK3ABQ908BD8X85P3J6X9.reputation-badges-v-j4?chain=mainnet`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-full flex items-center justify-center gap-2 py-3 bg-purple-600 hover:bg-purple-500 rounded-lg text-white font-medium transition-all focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 focus:ring-offset-gray-900"
