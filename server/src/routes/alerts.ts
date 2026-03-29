@@ -50,6 +50,9 @@ const alertTypeNames: Record<number, string> = {
   6: 'Address Watch',
 };
 
+const VALID_ALERT_SORT_FIELDS = new Set(['createdAt', 'name', 'alertType', 'enabled', 'triggerCount']);
+const VALID_SORT_ORDERS = new Set(['asc', 'desc']);
+
 function parsePositiveInt(value: string | undefined, fallback: number, max?: number): number {
   if (!value) {
     return fallback;
@@ -99,8 +102,10 @@ router.get(
     // Pagination
     const page = parsePositiveInt(req.query.page as string | undefined, 1);
     const limit = parsePositiveInt(req.query.limit as string | undefined, 10, 100);
-    const sortBy = req.query.sortBy as string || 'createdAt';
-    const sortOrder = req.query.sortOrder as string || 'desc';
+    const sortByInput = typeof req.query.sortBy === 'string' ? req.query.sortBy : 'createdAt';
+    const sortOrderInput = typeof req.query.sortOrder === 'string' ? req.query.sortOrder : 'desc';
+    const sortBy = VALID_ALERT_SORT_FIELDS.has(sortByInput) ? sortByInput : 'createdAt';
+    const sortOrder = VALID_SORT_ORDERS.has(sortOrderInput) ? sortOrderInput : 'desc';
 
     // Apply sorting
     userAlerts.sort((a, b) => {
