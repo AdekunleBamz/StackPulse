@@ -11,6 +11,8 @@ interface MetricValue {
   labels?: Record<string, string>;
 }
 
+const MAX_METRIC_ENTRIES = 1000;
+
 class MetricsService {
   private metrics: Map<string, MetricValue[]> = new Map();
   private errorCounts: Map<string, number> = new Map();
@@ -33,8 +35,8 @@ class MetricsService {
     const values = this.metrics.get(name) || [];
     values.push(entry);
 
-    // Keep last 1000 entries per metric
-    if (values.length > 1000) {
+    // Keep last N entries per metric
+    if (values.length > MAX_METRIC_ENTRIES) {
       values.shift();
     }
 
