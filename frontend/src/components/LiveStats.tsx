@@ -3,6 +3,7 @@
 import { Activity, ExternalLink } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { StatsCardSkeleton } from './LoadingSkeleton';
+import { apiUrl } from '@/lib/env';
 
 interface EventStats {
   whaleTransfers: number;
@@ -16,8 +17,6 @@ interface EventStats {
   badgesEarned: number;
 }
 
-const SERVER_URL = process.env.NEXT_PUBLIC_SERVER_URL || 'https://stackpulse-b8fw.onrender.com';
-
 export default function LiveStats() {
   const [stats, setStats] = useState<EventStats | null>(null);
   const [loading, setLoading] = useState(true);
@@ -28,7 +27,7 @@ export default function LiveStats() {
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        const res = await fetch(`${SERVER_URL}/api/stats`);
+        const res = await fetch(apiUrl('/api/stats'));
         if (!res.ok) throw new Error('Bad response');
         const data = await res.json();
         const payload = data?.stats ?? data;
@@ -125,7 +124,7 @@ export default function LiveStats() {
             </span>
           )}
           <a
-            href={`${SERVER_URL}/health`}
+            href={apiUrl('/health')}
             target="_blank"
             rel="noopener noreferrer"
             className="text-gray-500 hover:text-purple-400 transition-colors rounded-md focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400/90 ml-1"
