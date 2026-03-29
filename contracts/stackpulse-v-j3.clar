@@ -1,4 +1,4 @@
-;; StackPulse V3 - Enhanced User Registry & Subscriptions
+;; StackPulse V-J3 - Enhanced User Registry & Subscriptions
 ;; Upgrades from V2:
 ;; - Better error handling with more descriptive error codes
 ;; - Optimized gas usage with efficient data structures
