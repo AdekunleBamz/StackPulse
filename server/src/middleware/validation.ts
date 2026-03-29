@@ -13,9 +13,10 @@ type TierRequest = Request & {
 export function validatePayloadSize(req: Request, res: Response, next: NextFunction) {
   const userTier = (req as TierRequest).user?.tier || 0;
   const limits = [10240, 102400, 1048576, 10485760]; // 10K, 100K, 1M, 10M
-  const limit = limits[userTier] || 10240;
+  const safeTier = Number.isInteger(userTier) && userTier >= 0 ? userTier : 0;
+  const limit = limits[safeTier] || 10240;
   
-  const contentLength = parseInt(req.headers['content-length'] || '0');
+  const contentLength = Number.parseInt(req.headers['content-length'] || '0', 10);
   if (contentLength > limit) {
     logger.warn('Payload size limit exceeded', { userTier, limit, contentLength });
     return res.status(413).json({
