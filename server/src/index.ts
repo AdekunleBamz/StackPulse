@@ -164,29 +164,23 @@ app.post('/api/v1/chainhooks/whale-transfer', tieredApiLimiter, authenticateWebh
         const transferData = parseWhaleTransfer(event);
         
         if (transferData) {
-          const isMicroWhale = parseFloat(transferData.amountSTX) < 100000;
-          const emoji = isMicroWhale ? '🦐' : '🐋';
-          const title = `${emoji} ${isMicroWhale ? 'Large' : 'Whale'} Transfer Detected`;
-
-          logger.info(title, {
+          logger.info('🐋 Whale Transfer Detected', {
             amount: transferData.amountFormatted,
             amountSTX: transferData.amountSTX,
             sender: transferData.sender,
             recipient: transferData.recipient,
             txHash: tx.transaction_identifier.hash,
-            block: block.block_identifier.index,
-            isWhale: !isMicroWhale
+            block: block.block_identifier.index
           });
           
           await broadcastNotification({
-            title,
-            message: `${transferData.amountSTX} STX moved from ${transferData.sender.slice(0, 8)}... to ${transferData.recipient.slice(0, 8)}...`,
+            title: '🐋 Whale Transfer Detected',
+            message: `${transferData.amountSTX} STX transferred from ${transferData.sender.slice(0, 8)}... to ${transferData.recipient.slice(0, 8)}...`,
             type: 'whale',
             data: {
-              'Transfer Amount': `${transferData.amountSTX} STX`,
-              'Sender': transferData.sender,
-              'Recipient': transferData.recipient,
-              'Scale': isMicroWhale ? 'High Volume' : 'Ultra High Volume'
+              Amount: transferData.amountSTX + ' STX',
+              Sender: transferData.sender,
+              Recipient: transferData.recipient
             },
             txHash: tx.transaction_identifier.hash,
             blockHeight: block.block_identifier.index
