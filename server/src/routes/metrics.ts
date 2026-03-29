@@ -17,7 +17,8 @@ const metricsLimiter = rateLimiter({
   maxRequestsGenerator: (req) => {
     const userTier = (req as TierRequest).user?.tier || 0;
     const limits = [10, 100, 500, 2000];
-    return limits[userTier] || 10;
+    const safeTier = Number.isInteger(userTier) && userTier >= 0 ? userTier : 0;
+    return limits[safeTier] || 10;
   }
 });
 
