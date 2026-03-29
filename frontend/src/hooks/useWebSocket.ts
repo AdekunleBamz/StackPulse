@@ -47,9 +47,8 @@ export function useWebSocket(options: UseWebSocketOptions = {}): UseWebSocketRet
   const reconnectAttemptsRef = useRef(0);
   const reconnectTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const manualDisconnectRef = useRef(false);
-  const connectRef = useRef<() => void>(() => {});
 
-  const connect = useCallback(() => {
+  const connect = useCallback(function connectSocket() {
     if (wsRef.current?.readyState === WebSocket.OPEN) return;
     if (isConnecting) return;
 
@@ -76,7 +75,7 @@ export function useWebSocket(options: UseWebSocketOptions = {}): UseWebSocketRet
         if (!manualDisconnectRef.current && reconnect && reconnectAttemptsRef.current < maxReconnectAttempts) {
           reconnectTimeoutRef.current = setTimeout(() => {
             reconnectAttemptsRef.current++;
-            connectRef.current();
+            connectSocket();
           }, reconnectInterval);
         }
       };
@@ -99,8 +98,6 @@ export function useWebSocket(options: UseWebSocketOptions = {}): UseWebSocketRet
       console.error('Failed to create WebSocket:', error);
     }
   }, [url, reconnect, reconnectInterval, maxReconnectAttempts, onOpen, onClose, onError, onMessage, isConnecting]);
-
-  connectRef.current = connect;
 
   const disconnect = useCallback(() => {
     manualDisconnectRef.current = true;
