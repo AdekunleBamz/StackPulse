@@ -75,8 +75,8 @@ plan:
     - id: 0
       transactions:
         - contract-publish:
-            contract-name: stackpulse-v-j3
-            path: contracts/stackpulse-v-j3.clar
+            contract-name: stackpulse-v-j4
+            path: contracts/stackpulse-v-j4.clar
             anchor-block-only: true
             cost: 500000
             
@@ -182,7 +182,7 @@ CHAINHOOK_AUTH_TOKEN=your-secure-token
 
 # Contract Addresses
 DEPLOYER_ADDRESS=SP5K2RHMSBH4PAP4PGX77MCVNK1ZEED07CWX9TJT
-REGISTRY_CONTRACT=stackpulse-v-j3
+REGISTRY_CONTRACT=stackpulse-v-j4
 ALERT_CONTRACT=alert-manager-v3
 VAULT_CONTRACT=fee-vault-v3
 BADGE_CONTRACT=reputation-badges-v3
