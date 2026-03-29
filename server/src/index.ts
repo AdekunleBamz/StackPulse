@@ -362,32 +362,42 @@ app.post('/api/v1/chainhooks/subscription-created', authenticateWebhook, process
       const events = tx.metadata.receipt.events || [];
       
       for (const event of events) {
-        if (event.type === 'SmartContractEvent') {
-          const printData = event.data?.value;
-          
-          if (printData?.event === 'subscription-created') {
-            logger.info('✨ New Subscription', {
-              user: printData.user,
-              tier: printData.tier,
-              price: printData.price,
-              txHash: tx.transaction_identifier.hash
-            });
-            
-            await broadcastNotification({
-              title: '✨ Subscription Activated',
-              message: `Welcome to StackPulse! Your tier ${printData.tier} subscription is now active.`,
-              type: 'subscription',
-              data: {
-                'Tier': printData.tier,
-                'Price': formatSTX(printData.price) + ' STX'
-              },
-              txHash: tx.transaction_identifier.hash,
-              blockHeight: block.block_identifier.index
-            }, [printData.user]);
-            
-            eventStats.subscriptions++;
-          }
+        const printData = getPrintEventData(event);
+        if (!printData) continue;
+
+        const eventName = getStringField(printData, 'event');
+        if (eventName !== 'subscription-created') continue;
+
+        const user = getStringField(printData, 'user');
+        const tierValue = getNumberField(printData, 'tier');
+        const priceValue = getNumberField(printData, 'price');
+        if (!user || tierValue == null || priceValue == null) {
+          logger.warn('Skipping malformed subscription-created print event', {
+            txHash: tx.transaction_identifier.hash,
+          });
+          continue;
         }
+
+        logger.info('✨ New Subscription', {
+          user,
+          tier: tierValue,
+          price: priceValue,
+          txHash: tx.transaction_identifier.hash
+        });
+        
+        await broadcastNotification({
+          title: '✨ Subscription Activated',
+          message: `Welcome to StackPulse! Your tier ${tierValue} subscription is now active.`,
+          type: 'subscription',
+          data: {
+            'Tier': tierValue,
+            'Price': formatSTX(priceValue) + ' STX'
+          },
+          txHash: tx.transaction_identifier.hash,
+          blockHeight: block.block_identifier.index
+        }, [user]);
+        
+        eventStats.subscriptions++;
       }
     }
   }
