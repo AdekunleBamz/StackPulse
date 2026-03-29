@@ -16,7 +16,26 @@ interface Notification {
   read: boolean;
 }
 
+export interface NotificationPayload {
+  title: string;
+  message: string;
+  type: string;
+  data?: Record<string, unknown>;
+  txHash?: string;
+  blockHeight?: number;
+}
+
+export interface UserPreferences {
+  address: string;
+  username?: string;
+  email?: string;
+  discord?: string;
+  telegram?: string;
+  enabledAlerts?: string[];
+}
+
 const MAX_NOTIFICATIONS_PER_USER = 100;
+const userPreferencesStore: Map<string, UserPreferences> = new Map();
 
 class NotificationsService {
   private notifications: Map<string, Notification[]> = new Map();
@@ -196,4 +215,60 @@ class NotificationsService {
   }
 }
 
-export default new NotificationsService();
+const notificationsService = new NotificationsService();
+
+function normalizeNotificationType(type: string): Notification['type'] {
+  if (type === 'alert' || type === 'badge' || type === 'subscription' || type === 'system') {
+    return type;
+  }
+  return 'system';
+}
+
+export function saveUserPreferences(input: UserPreferences): UserPreferences {
+  const existing = userPreferencesStore.get(input.address) || { address: input.address };
+  const merged: UserPreferences = {
+    ...existing,
+    ...input,
+    address: input.address,
+  };
+  userPreferencesStore.set(input.address, merged);
+  return merged;
+}
+
+export function getUserPreferences(address: string): UserPreferences | undefined {
+  return userPreferencesStore.get(address);
+}
+
+export function getAllUsers(): UserPreferences[] {
+  return Array.from(userPreferencesStore.values());
+}
+
+export function deleteUserPreferences(address: string): boolean {
+  return userPreferencesStore.delete(address);
+}
+
+export async function broadcastNotification(payload: NotificationPayload, recipients?: string[]): Promise<void> {
+  const targets = recipients && recipients.length > 0
+    ? recipients
+    : Array.from(userPreferencesStore.keys());
+
+  const normalizedType = normalizeNotificationType(payload.type);
+
+  for (const address of targets) {
+    notificationsService.createNotification(
+      address,
+      normalizedType,
+      payload.title,
+      payload.message,
+      normalizedType === 'alert' ? 'high' : 'normal'
+    );
+  }
+
+  logger.info('Notification broadcast queued', {
+    recipients: targets.length,
+    type: payload.type,
+    txHash: payload.txHash,
+  });
+}
+
+export default notificationsService;
