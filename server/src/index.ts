@@ -878,6 +878,9 @@ runMaintenanceTask();
 app.put('/api/users/:address/alerts/:alertId', async (req: Request, res: Response) => {
   try {
     const { address, alertId } = req.params;
+    if (!address || address.trim().length === 0) {
+      return res.status(400).json({ error: 'Address is required' });
+    }
     const updates = req.body as UpdateAlertRequestBody;
     
     const alerts = userAlerts.get(address) || [];
