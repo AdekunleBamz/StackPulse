@@ -13,7 +13,8 @@
  */
 export function formatStxAmount(microStx: number | string): string {
   const amount = typeof microStx === 'string' ? parseFloat(microStx) : microStx;
-  const stx = amount / 1000000;
+  const safeAmount = Number.isFinite(amount) ? amount : 0;
+  const stx = safeAmount / 1000000;
   
   if (stx >= 1000000) {
     return `${(stx / 1000000).toFixed(2)}M STX`;
