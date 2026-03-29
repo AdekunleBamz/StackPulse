@@ -1,6 +1,7 @@
 'use client';
 
 import { Component, ReactNode, useState } from 'react';
+import Link from 'next/link';
 
 interface Props {
   children: ReactNode;
@@ -66,7 +67,7 @@ export default class ErrorBoundary extends Component<Props, State> {
               </h2>
               
               <p className="text-gray-400 mb-8 leading-relaxed font-medium">
-                We've encountered an unexpected pulse error. Don't worry, your data is safe. Please try refreshing or return home.
+                We&apos;ve encountered an unexpected pulse error. Don&apos;t worry, your data is safe. Please try refreshing or return home.
               </p>
 
               {this.state.error && (
@@ -87,13 +88,13 @@ export default class ErrorBoundary extends Component<Props, State> {
                   Try Again
                 </button>
                 
-                <a
+                <Link
                   href="/"
                   className="px-8 py-3 bg-white/5 hover:bg-white/10 text-white rounded-2xl font-bold transition-all duration-300 hover:scale-105 active:scale-95 border border-white/5 focus:outline-none focus:ring-2 focus:ring-white/20 focus:ring-offset-2 focus:ring-offset-gray-900"
                   aria-label="Go back to home page"
                 >
                   Go Home
-                </a>
+                </Link>
               </div>
             </div>
           </div>
