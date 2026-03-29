@@ -29,8 +29,9 @@
 ;; Subscription prices in microSTX
 (define-constant PRICE-FREE u0)
 (define-constant PRICE-BASIC u10000)         ;; 0.01 STX
-(define-constant PRICE-PRO u150000)          ;; 0.15 STX  
-(define-constant PRICE-PREMIUM u450000)      ;; 0.45 STX
+;; Keep tier prices aligned with stackpulse-v-j3 to avoid inconsistent billing.
+(define-constant PRICE-PRO u50000)           ;; 0.05 STX
+(define-constant PRICE-PREMIUM u200000)      ;; 0.20 STX
 
 ;; Platform fee percentage (10%)
 (define-constant PLATFORM-FEE-BPS u1000)     ;; 10% in basis points (1000/10000)
