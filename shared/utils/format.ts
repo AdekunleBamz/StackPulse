@@ -156,7 +156,8 @@ export function formatFileSize(bytes: number): string {
  * @returns A formatted string (e.g., "1d 2h", "5m 30s", or "10s").
  */
 export function formatDuration(ms: number): string {
-  const seconds = Math.floor(ms / 1000);
+  const safeMs = Number.isFinite(ms) ? Math.max(0, ms) : 0;
+  const seconds = Math.floor(safeMs / 1000);
   const minutes = Math.floor(seconds / 60);
   const hours = Math.floor(minutes / 60);
   const days = Math.floor(hours / 24);
