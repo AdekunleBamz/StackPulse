@@ -331,6 +331,13 @@ router.delete(
     const { id } = req.params;
     const { address } = req.query;
 
+    if (!address || typeof address !== 'string') {
+      return res.status(400).json({
+        success: false,
+        error: 'Address is required',
+      });
+    }
+
     const alert = alerts.get(id);
 
     if (!alert) {
