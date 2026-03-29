@@ -186,6 +186,7 @@ router.get('/health', (req: Request, res: Response) => {
   
   res.json({
     status: 'healthy',
+    uptime: process.uptime(),
     timestamp: new Date().toISOString()
   });
 });
