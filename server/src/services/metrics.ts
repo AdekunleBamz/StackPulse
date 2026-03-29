@@ -20,12 +20,12 @@ class MetricsService {
   /**
    * Record an error metric
    */
-  recordError(type: string) {
+  recordError(type: string): void {
     const current = this.errorCounts.get(type) || 0;
     this.errorCounts.set(type, current + 1);
     logger.error(`Error recorded: ${type}`, { count: current + 1 });
   }
-  recordMetric(name: string, value: number, labels?: Record<string, string>) {
+  recordMetric(name: string, value: number, labels?: Record<string, string>): void {
     const entry: MetricValue = {
       value,
       timestamp: Date.now(),
@@ -65,7 +65,7 @@ class MetricsService {
   /**
    * Monitor performance and log warnings
    */
-  monitorPerformance() {
+  monitorPerformance(): void {
     const avgDuration = this.getAverage('http_request_duration');
     if (avgDuration > 500) {
       logger.warn('Performance degraded: high average request duration', { avgDuration: `${avgDuration.toFixed(2)}ms` });
