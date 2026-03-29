@@ -1,7 +1,5 @@
 import { Router, Request, Response } from 'express';
 import os from 'os';
-import logger from '../utils/logger';
-import MetricsService from '../services/metrics';
 import { rateLimiter } from '../middleware/rateLimiter';
 
 const router = Router();
