@@ -52,7 +52,7 @@ export function requestLogger(options: RequestLogOptions = defaultOptions) {
 
     // Capture response
     const originalSend = res.send;
-    res.send = function (body: any) {
+    res.send = function (body: unknown) {
       const diff = process.hrtime(startTime);
       const duration = (diff[0] * 1e3 + diff[1] * 1e-6).toFixed(2);
       
