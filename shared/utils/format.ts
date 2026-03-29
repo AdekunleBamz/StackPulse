@@ -176,7 +176,7 @@ export function parseStxAmount(amount: string): number {
   const cleaned = amount.replace(/[^\d.]/g, '');
   const stx = parseFloat(cleaned);
   if (isNaN(stx)) return 0;
-  return Math.floor(stx * 1000000);
+  return Math.max(0, Math.floor(stx * 1000000));
 }
 
 /**
