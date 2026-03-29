@@ -95,7 +95,7 @@ class NotificationsService {
    * Get user notifications
    */
   getNotifications(userAddress: string, limit: number = 50): Notification[] {
-    const userNotifications = this.notifications.get(userAddress) || [];
+    const userNotifications = this.getUserNotificationList(userAddress);
     return userNotifications.slice(0, limit);
   }
 
