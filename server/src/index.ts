@@ -192,7 +192,7 @@ const processAsync = (handler: (payload: ChainhookPayload) => Promise<void>) => 
 };
 
 // 1. Whale Transfer Alert
-app.post('/api/v1/chainhooks/whale-transfer', tieredApiLimiter, authenticateWebhook, processAsync(async (payload) => {
+app.post(CHAINHOOK_ENDPOINTS.whaleTransfer, tieredApiLimiter, authenticateWebhook, processAsync(async (payload) => {
   for (const block of payload.apply) {
     for (const tx of block.transactions) {
       const events = tx.metadata.receipt.events || [];
