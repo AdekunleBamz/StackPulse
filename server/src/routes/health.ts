@@ -72,11 +72,12 @@ router.get('/full', (req: Request, res: Response) => {
   const memUsage = process.memoryUsage();
   const heapUsedPercent = (memUsage.heapUsed / memUsage.heapTotal) * 100;
   const loadAvg = os.loadavg();
+  const cpuCount = Math.max(1, os.cpus().length);
   
   let status: 'healthy' | 'unhealthy' | 'degraded' = 'healthy';
-  if (heapUsedPercent > 90 || loadAvg[0] > os.cpus().length * 0.8) {
+  if (heapUsedPercent > 90 || loadAvg[0] > cpuCount * 0.8) {
     status = 'unhealthy';
-  } else if (heapUsedPercent > 70 || loadAvg[0] > os.cpus().length * 0.5) {
+  } else if (heapUsedPercent > 70 || loadAvg[0] > cpuCount * 0.5) {
     status = 'degraded';
   }
   
@@ -90,7 +91,7 @@ router.get('/full', (req: Request, res: Response) => {
         usage: heapUsedPercent
       },
       cpu: {
-        status: loadAvg[0] > os.cpus().length * 0.8 ? 'error' : loadAvg[0] > os.cpus().length * 0.5 ? 'warning' : 'ok',
+        status: loadAvg[0] > cpuCount * 0.8 ? 'error' : loadAvg[0] > cpuCount * 0.5 ? 'warning' : 'ok',
         load: loadAvg
       }
     }
