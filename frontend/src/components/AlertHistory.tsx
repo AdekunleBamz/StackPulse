@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useDebounce } from '@/hooks/useDebounce';
 import { ErrorState, NoResultsState, NoTransactionsState } from '@/components/EmptyState';
+import logger from '@/lib/logger';
 import {
   History,
   Filter,
@@ -97,7 +98,7 @@ export default function AlertHistory({ userAddress }: AlertHistoryProps) {
       setTotalItems(filtered.length);
       setTotalPages(Math.ceil(filtered.length / pageSize));
     } catch (err) {
-      console.error('Error fetching history:', err);
+      logger.error('Error fetching history:', err);
       setError('Failed to load alert history. Please try again.');
     } finally {
       setLoading(false);
