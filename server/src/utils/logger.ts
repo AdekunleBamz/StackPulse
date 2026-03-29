@@ -22,33 +22,28 @@ const logger = createLogger({
   ),
   defaultMeta: { service: 'stackpulse' },
   transports: [
-    // Console transport for development
+    // Console transport
     new transports.Console({
       format: format.combine(
         format.colorize(),
         format.printf(({ timestamp, level, message, ...meta }) => {
-          const { service, ...rest } = meta;
-          const metaStr = Object.keys(rest).length ? ` ${JSON.stringify(rest)}` : '';
+          const metaStr = Object.keys(meta).length ? ` ${JSON.stringify(meta)}` : '';
           return `${timestamp} ${level}: ${message}${metaStr}`;
         })
       )
     }),
-    // Error logs with rotation
+    // Error log file
     new transports.File({
       filename: path.join(logDir, 'error.log'),
       level: 'error',
-      maxsize: 10485760, // 10MB
-      maxFiles: 7,
-      tailable: true,
-      zippedArchive: true
+      maxsize: 5242880, // 5MB
+      maxFiles: 5
     }),
-    // Combined logs with rotation
+    // Combined log file
     new transports.File({
       filename: path.join(logDir, 'combined.log'),
-      maxsize: 10485760,
-      maxFiles: 7,
-      tailable: true,
-      zippedArchive: true
+      maxsize: 5242880,
+      maxFiles: 5
     })
   ]
 });
