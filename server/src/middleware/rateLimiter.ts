@@ -13,6 +13,7 @@ interface RateLimitEntry {
 }
 
 const rateLimitStore = new Map<string, RateLimitEntry>();
+const RATE_LIMIT_CLEANUP_INTERVAL_MS = 60000;
 
 type TierRequest = Request & {
   user?: {
@@ -21,14 +22,15 @@ type TierRequest = Request & {
 };
 
 // Clean up expired entries every minute
-setInterval(() => {
+const cleanupInterval = setInterval(() => {
   const now = Date.now();
   for (const [key, entry] of rateLimitStore.entries()) {
     if (now > entry.resetTime) {
       rateLimitStore.delete(key);
     }
   }
-}, 60000);
+}, RATE_LIMIT_CLEANUP_INTERVAL_MS);
+cleanupInterval.unref();
 
 export interface RateLimitOptions {
   windowMs: number;
