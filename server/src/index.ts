@@ -472,7 +472,7 @@ app.post(CHAINHOOK_ENDPOINTS.alertTriggered, authenticateWebhook, processAsync(a
 }));
 
 // 8. Fee Collected
-app.post('/api/v1/chainhooks/fee-collected', authenticateWebhook, processAsync(async (payload) => {
+app.post(CHAINHOOK_ENDPOINTS.feeCollected, authenticateWebhook, processAsync(async (payload) => {
   for (const block of payload.apply) {
     for (const tx of block.transactions) {
       const events = tx.metadata.receipt.events || [];
