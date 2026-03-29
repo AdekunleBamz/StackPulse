@@ -185,34 +185,3 @@ export async function getBlockTransactions(
     return [];
   }
 }
-/**
- * Execute a blockchain operation with exponential backoff and jitter
- */
-export async function withRetry<T>(
-  operation: () => Promise<T>,
-  maxRetries: number = 3,
-  baseDelay: number = 1000
-): Promise<T> {
-  let lastError: any;
-  
-  for (let attempt = 1; attempt <= maxRetries; attempt++) {
-    try {
-      return await operation();
-    } catch (error: any) {
-      lastError = error;
-      if (attempt < maxRetries) {
-        const delay = baseDelay * Math.pow(2, attempt - 1);
-        const jitter = delay * 0.2 * (Math.random() * 2 - 1);
-        const finalDelay = Math.max(0, delay + jitter);
-        
-        logger.warn(`Stacks API call failed (attempt ${attempt}/${maxRetries}). Retrying in ${Math.round(finalDelay)}ms...`, {
-          error: error.message
-        });
-        
-        await new Promise(resolve => setTimeout(resolve, finalDelay));
-      }
-    }
-  }
-  
-  throw lastError;
-}
