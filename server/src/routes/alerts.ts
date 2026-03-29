@@ -65,9 +65,8 @@ router.get(
     if (cached) {
       return res.json({
         success: true,
-        data: { alerts: cached },
+        alerts: cached,
         fromCache: true,
-        message: 'Alerts retrieved from cache'
       });
     }
 
@@ -126,18 +125,15 @@ router.get(
 
     res.json({
       success: true,
-      data: {
-        alerts: paginatedAlerts,
-        pagination: {
-          page,
-          limit,
-          total,
-          totalPages,
-          hasNext: page < totalPages,
-          hasPrev: page > 1
-        }
-      },
-      message: 'Alerts retrieved successfully'
+      alerts: paginatedAlerts,
+      pagination: {
+        page,
+        limit,
+        total,
+        totalPages,
+        hasNext: page < totalPages,
+        hasPrev: page > 1
+      }
     });
   })
 );
@@ -162,8 +158,7 @@ router.get(
 
     res.json({
       success: true,
-      data: { alert },
-      message: 'Alert retrieved successfully'
+      alert,
     });
   })
 );
@@ -229,7 +224,7 @@ router.post(
 
     res.status(201).json({
       success: true,
-      data: { alert },
+      alert,
       message: `${alertTypeNames[body.alertType]} alert created successfully`,
     });
   })
