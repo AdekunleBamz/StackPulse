@@ -658,6 +658,7 @@ app.get('/health', (req: Request, res: Response) => {
 
 // Keep-alive ping endpoint (for cron services to prevent Render cold starts)
 app.get('/api/v1/ping', (req: Request, res: Response) => {
+  res.setHeader('Cache-Control', 'no-store');
   res.status(200).send('pong');
 });
 
