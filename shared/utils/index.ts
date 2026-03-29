@@ -55,7 +55,11 @@ export function isValidStacksAddress(address: string): boolean {
  */
 export function generateId(length: number = 8): string {
   const safeLength = Math.max(1, Math.floor(length));
-  return Math.random().toString(36).substring(2, 2 + safeLength);
+  let id = '';
+  while (id.length < safeLength) {
+    id += Math.random().toString(36).slice(2);
+  }
+  return id.slice(0, safeLength);
 }
 
 /**
