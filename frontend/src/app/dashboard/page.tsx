@@ -12,7 +12,6 @@ import {
   Bell, 
   Wallet, 
   Plus, 
-  Settings, 
   Activity,
   Zap,
   FileCode,
