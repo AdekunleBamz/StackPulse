@@ -27,6 +27,7 @@ export default function NetworkStatus({ refreshInterval = 30000 }: NetworkStatus
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
   const [refreshing, setRefreshing] = useState(false);
   const hasStatsRef = useRef(false);
+  const safeRefreshInterval = Number.isFinite(refreshInterval) ? Math.max(5000, Math.floor(refreshInterval)) : 30000;
 
   const fetchNetworkStats = useCallback(async () => {
     setRefreshing(true);
@@ -69,9 +70,9 @@ export default function NetworkStatus({ refreshInterval = 30000 }: NetworkStatus
 
   useEffect(() => {
     fetchNetworkStats();
-    const interval = setInterval(fetchNetworkStats, refreshInterval);
+    const interval = setInterval(fetchNetworkStats, safeRefreshInterval);
     return () => clearInterval(interval);
-  }, [fetchNetworkStats, refreshInterval]);
+  }, [fetchNetworkStats, safeRefreshInterval]);
 
   const healthColor = useMemo(() => {
     switch (networkHealth) {
