@@ -6,12 +6,18 @@ import { rateLimiter } from '../middleware/rateLimiter';
 
 const router = Router();
 
+type TierRequest = Request & {
+  user?: {
+    tier?: number;
+  };
+};
+
 // Tiered rate limiter for metrics ingestion
 const metricsLimiter = rateLimiter({
   windowMs: 60000,
   maxRequests: 10, // Default
   maxRequestsGenerator: (req) => {
-    const userTier = (req as any).user?.tier || 0;
+    const userTier = (req as TierRequest).user?.tier || 0;
     const limits = [10, 100, 500, 2000];
     return limits[userTier] || 10;
   }
