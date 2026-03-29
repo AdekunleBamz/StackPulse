@@ -271,7 +271,7 @@ export function deleteUserPreferences(address: string): boolean {
 
 export async function broadcastNotification(payload: NotificationPayload, recipients?: string[]): Promise<void> {
   const targets = recipients && recipients.length > 0
-    ? recipients
+    ? Array.from(new Set(recipients))
     : Array.from(userPreferencesStore.keys());
 
   const normalizedType = normalizeNotificationType(payload.type);
