@@ -4,10 +4,14 @@
  */
 const DEFAULT_SERVER_URL = 'https://stackpulse-b8fw.onrender.com';
 
-/**
- * Removes trailing slashes from a URL string.
- */
-const trimTrailingSlashes = (value: string): string => value.replace(/\/+$/, '');
+function toWebSocketProtocol(url: string): string {
+  return url.replace(/^https?:\/\//, (match) => (match === 'https://' ? 'wss://' : 'ws://'));
+}
+
+export const SERVER_URL = (process.env.NEXT_PUBLIC_SERVER_URL || DEFAULT_SERVER_URL).replace(/\/+$/, '');
+export const DEPLOYER_ADDRESS = process.env.NEXT_PUBLIC_DEPLOYER_ADDRESS || '';
+export const WS_URL =
+  (process.env.NEXT_PUBLIC_WS_URL || `${toWebSocketProtocol(SERVER_URL)}/ws`).replace(/\/+$/, '');
 
 /**
  * Converts an HTTP(S) URL to a WebSocket URL.
