@@ -244,6 +244,36 @@ function buildWalletQuotas(target: number, walletCount: number) {
   return Array.from({ length: walletCount }, (_, index) => base + (index < remainder ? 1 : 0));
 }
 
+function redistributeQuotaAwayFromIndex(quotas: number[], excludedIndex: number) {
+  if (excludedIndex < 0 || excludedIndex >= quotas.length) {
+    return 0;
+  }
+
+  const moved = quotas[excludedIndex] ?? 0;
+  if (moved <= 0) {
+    return 0;
+  }
+
+  const recipientIndexes: number[] = [];
+  for (let i = 0; i < quotas.length; i++) {
+    if (i !== excludedIndex) {
+      recipientIndexes.push(i);
+    }
+  }
+
+  quotas[excludedIndex] = 0;
+  if (recipientIndexes.length === 0) {
+    return moved;
+  }
+
+  for (let i = 0; i < moved; i++) {
+    const targetIndex = recipientIndexes[i % recipientIndexes.length];
+    quotas[targetIndex] += 1;
+  }
+
+  return moved;
+}
+
 function createStats(): InteractionStats {
   return {
     stackpulse: { success: 0, failed: 0, skipped: 0 },
@@ -690,6 +720,22 @@ async function run() {
     feeVault: buildWalletQuotas(targetPerContract, wallets.length),
     badges: includeBadges ? buildWalletQuotas(targetPerContract, wallets.length) : wallets.map(() => 0),
   };
+
+  if (includeBadges && badgeMinterAddress) {
+    const minterIndex = wallets.findIndex((wallet) => wallet.address === badgeMinterAddress);
+    if (minterIndex >= 0) {
+      const moved = redistributeQuotaAwayFromIndex(quotas.badges, minterIndex);
+      if (moved > 0 && wallets.length > 1) {
+        console.log(
+          `${WARN} Badge minter wallet is part of test wallets (index ${minterIndex + 1}). Reassigned ${moved} badge tx to other wallets to avoid self-transfer (err u2).`
+        );
+      } else if (moved > 0) {
+        console.log(
+          `${WARN} Only minter wallet selected; badge transfers cannot run because sender and recipient would be the same principal.`
+        );
+      }
+    }
+  }
 
   const stackpulsePrice = getStackpulseTierPriceUstx(tier);
   const feeVaultPrice = getFeeVaultTierPriceUstx(tier);
