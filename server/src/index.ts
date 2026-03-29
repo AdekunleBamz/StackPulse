@@ -173,6 +173,21 @@ const CHAINHOOK_ENDPOINTS = {
   alertCreated: '/api/v1/chainhooks/alert-created',
 } as const;
 
+const REGISTERED_CHAINHOOK_NAMES = [
+  'whale-transfer-alert',
+  'new-contract-deployed',
+  'nft-mint-tracker',
+  'token-launch-detector',
+  'large-swap-alert',
+  'user-subscription-created',
+  'alert-triggered',
+  'fee-collected',
+  'badge-earned',
+  'new-subscription',
+  'subscription-upgrade',
+  'alert-created',
+] as const;
+
 // Helper: Process chainhook async and respond immediately to prevent timeout
 const processAsync = (handler: (payload: ChainhookPayload) => Promise<void>) => {
   return async (req: Request, res: Response) => {
@@ -695,22 +710,9 @@ app.get('/api/v1/stats', (req: Request, res: Response) => {
 // Get chainhook status
 app.get('/api/v1/chainhooks/status', (req: Request, res: Response) => {
   res.json({
-    registered: 12,
-    active: 12,
-    chainhooks: [
-      'whale-transfer-alert',
-      'new-contract-deployed',
-      'nft-mint-tracker',
-      'token-launch-detector',
-      'large-swap-alert',
-      'user-subscription-created',
-      'alert-triggered',
-      'fee-collected',
-      'badge-earned',
-      'new-subscription',
-      'subscription-upgrade',
-      'alert-created'
-    ]
+    registered: REGISTERED_CHAINHOOK_NAMES.length,
+    active: REGISTERED_CHAINHOOK_NAMES.length,
+    chainhooks: [...REGISTERED_CHAINHOOK_NAMES]
   });
 });
 
