@@ -15,6 +15,8 @@ interface PriceData {
   };
 }
 
+const PRICE_REFRESH_INTERVAL_MS = 60000;
+
 export default function PriceTracker() {
   const [prices, setPrices] = useState<PriceData | null>(null);
   const [loading, setLoading] = useState(true);
@@ -55,7 +57,7 @@ export default function PriceTracker() {
     };
 
     fetchPrices();
-    const interval = setInterval(fetchPrices, 60000); // Update every minute
+    const interval = setInterval(fetchPrices, PRICE_REFRESH_INTERVAL_MS);
     return () => clearInterval(interval);
   }, [refreshKey]);
 
