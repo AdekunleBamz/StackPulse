@@ -187,6 +187,9 @@ export function parseStxAmount(amount: string): number {
  */
 export function formatBalance(balance: number | string, decimals: number = 6): string {
   const bal = typeof balance === 'string' ? parseFloat(balance) : balance;
+  if (!Number.isFinite(bal)) {
+    return (0).toFixed(decimals);
+  }
   return bal.toFixed(decimals);
 }
 
