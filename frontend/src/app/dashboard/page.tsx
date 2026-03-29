@@ -8,6 +8,7 @@ import { useConfirmDialog } from '@/components/ConfirmDialog';
 import { NoAlertsState } from '@/components/EmptyState';
 import { DashboardSkeleton } from '@/components/LoadingSkeleton';
 import Button from '@/components/ui/Button';
+import { apiUrl, DEPLOYER_ADDRESS } from '@/lib/env';
 import { 
   Bell, 
   Wallet, 
@@ -24,8 +25,6 @@ import {
   ToggleRight
 } from 'lucide-react';
 import { Breadcrumbs } from '@/components';
-
-const DEPLOYER_ADDRESS = process.env.NEXT_PUBLIC_DEPLOYER_ADDRESS || '';
 
 // Alert types matching the contracts and chainhooks
 const alertTypes = [
@@ -118,8 +117,7 @@ export default function DashboardPage() {
 
         // Load alerts from server
         try {
-          const serverUrl = process.env.NEXT_PUBLIC_SERVER_URL || 'https://stackpulse-b8fw.onrender.com';
-          const alertsResponse = await fetch(`${serverUrl}/api/users/${address}/alerts`);
+          const alertsResponse = await fetch(apiUrl(`/api/users/${address}/alerts`));
           if (alertsResponse.ok) {
             const alertsData = await alertsResponse.json();
             if (alertsData.alerts) {
@@ -188,8 +186,7 @@ export default function DashboardPage() {
           
           // Save to server too
           try {
-            const serverUrl = process.env.NEXT_PUBLIC_SERVER_URL || 'https://stackpulse-b8fw.onrender.com';
-            await fetch(`${serverUrl}/api/users/${address}/alerts`, {
+            await fetch(apiUrl(`/api/users/${address}/alerts`), {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({
@@ -249,8 +246,7 @@ export default function DashboardPage() {
 
     // Update on server
     try {
-      const serverUrl = process.env.NEXT_PUBLIC_SERVER_URL || 'https://stackpulse-b8fw.onrender.com';
-      await fetch(`${serverUrl}/api/users/${address}/alerts/${alertId}`, {
+      await fetch(apiUrl(`/api/users/${address}/alerts/${alertId}`), {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ enabled: nextEnabled })
@@ -283,8 +279,7 @@ export default function DashboardPage() {
         });
 
         try {
-          const serverUrl = process.env.NEXT_PUBLIC_SERVER_URL || 'https://stackpulse-b8fw.onrender.com';
-          const res = await fetch(`${serverUrl}/api/users/${address}/alerts/${alertId}`, {
+          const res = await fetch(apiUrl(`/api/users/${address}/alerts/${alertId}`), {
             method: 'DELETE',
           });
           if (!res.ok) throw new Error('Delete failed');
