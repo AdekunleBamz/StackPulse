@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Users, Activity, AlertTriangle, TrendingUp } from 'lucide-react';
+import logger from '@/lib/logger';
 
 interface NetworkStats {
   blockHeight: number;
@@ -57,7 +58,7 @@ export default function NetworkStatus({ refreshInterval = 30000 }: NetworkStatus
       setNetworkHealth('healthy');
       setError(null);
     } catch (err) {
-      console.error('Error fetching network stats:', err);
+      logger.error('Error fetching network stats:', err);
       setError('Failed to fetch network data');
       setNetworkHealth(hasStatsRef.current ? 'degraded' : 'down');
     } finally {
