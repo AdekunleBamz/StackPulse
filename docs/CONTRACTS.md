@@ -36,9 +36,9 @@ Manages user registration, profiles, and subscription tiers.
 |------|-------|-------------|
 | BLOCKS-PER-MONTH | 4320 | ~30 days at 10 min blocks |
 | PRICE-FREE | 0 | Free tier price |
-| PRICE-BASIC | 1,000,000 | 1 STX in microSTX |
-| PRICE-PRO | 5,000,000 | 5 STX in microSTX |
-| PRICE-PREMIUM | 20,000,000 | 20 STX in microSTX |
+| PRICE-BASIC | 10,000 | 0.01 STX in microSTX |
+| PRICE-PRO | 50,000 | 0.05 STX in microSTX |
+| PRICE-PREMIUM | 200,000 | 0.20 STX in microSTX |
 
 ### Error Codes
 
