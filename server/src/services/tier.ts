@@ -46,8 +46,8 @@ export const TIER_LIMITS: Record<UserTier, TierLimits> = {
 
 const tierCache = new Map<string, UserTier>();
 
-export function getTierLimits(tier: UserTier): TierLimits {
-  return TIER_LIMITS[tier] || TIER_LIMITS[UserTier.FREE];
+export function getTierLimits(tier: number): TierLimits {
+  return TIER_LIMITS[tier as UserTier] ?? TIER_LIMITS[UserTier.FREE];
 }
 
 export function getUserTier(address: string): UserTier {
