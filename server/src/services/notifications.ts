@@ -36,9 +36,6 @@ export interface UserPreferences {
 }
 
 const MAX_NOTIFICATIONS_PER_USER = 100;
-const DEFAULT_NOTIFICATION_RETRIES = 3;
-const RETRY_BACKOFF_BASE_MS = 1000;
-const NOTIFICATIONS_DEFAULT_FETCH_LIMIT = 50;
 const userPreferencesStore: Map<string, UserPreferences> = new Map();
 
 class NotificationsService {
@@ -249,14 +246,14 @@ function normalizeNotificationType(type: string): Notification['type'] {
   return 'system';
 }
 
-export function saveUserPreferences(preferences: UserPreferences): UserPreferences {
-  const existing = userPreferencesStore.get(preferences.address) || { address: preferences.address };
+export function saveUserPreferences(input: UserPreferences): UserPreferences {
+  const existing = userPreferencesStore.get(input.address) || { address: input.address };
   const merged: UserPreferences = {
     ...existing,
-    ...preferences,
-    address: preferences.address,
+    ...input,
+    address: input.address,
   };
-  userPreferencesStore.set(preferences.address, merged);
+  userPreferencesStore.set(input.address, merged);
   return merged;
 }
 
@@ -274,7 +271,7 @@ export function deleteUserPreferences(address: string): boolean {
 
 export async function broadcastNotification(payload: NotificationPayload, recipients?: string[]): Promise<void> {
   const targets = recipients && recipients.length > 0
-    ? Array.from(new Set(recipients))
+    ? recipients
     : Array.from(userPreferencesStore.keys());
 
   const normalizedType = normalizeNotificationType(payload.type);
