@@ -3,6 +3,7 @@
 import { useEffect } from 'react';
 import { ErrorState } from '@/components/EmptyState';
 import Button from '@/components/ui/Button';
+import logger from '@/lib/logger';
 
 export default function DashboardError({
   error,
@@ -13,7 +14,7 @@ export default function DashboardError({
 }) {
   useEffect(() => {
     // Log the error to an error reporting service
-    console.error('Dashboard route error:', error);
+    logger.error('Dashboard route error:', error);
   }, [error]);
 
   return (
