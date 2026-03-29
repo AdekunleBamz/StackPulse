@@ -61,12 +61,12 @@ npm test
 clarinet deployments apply -p deployments/v-j4-mainnet-plan.yaml --no-dashboard
 ```
 
-### Deployment Plan (v3-mainnet-plan.yaml)
+### Deployment Plan (v-j4-mainnet-plan.yaml)
 
 ```yaml
 ---
 id: 0
-name: StackPulse V3 Mainnet Deployment
+name: StackPulse V-J4 Mainnet Deployment
 network: mainnet
 stacks-node: "https://api.mainnet.hiro.so"
 
@@ -83,24 +83,24 @@ plan:
     - id: 1
       transactions:
         - contract-publish:
-            contract-name: alert-manager-v3
-            path: contracts/alert-manager-v3.clar
+            contract-name: alert-manager-v-j4
+            path: contracts/alert-manager-v-j4.clar
             anchor-block-only: true
             cost: 500000
             
     - id: 2
       transactions:
         - contract-publish:
-            contract-name: fee-vault-v3
-            path: contracts/fee-vault-v3.clar
+            contract-name: fee-vault-v-j4
+            path: contracts/fee-vault-v-j4.clar
             anchor-block-only: true
             cost: 500000
             
     - id: 3
       transactions:
         - contract-publish:
-            contract-name: reputation-badges-v3
-            path: contracts/reputation-badges-v3.clar
+            contract-name: reputation-badges-v-j4
+            path: contracts/reputation-badges-v-j4.clar
             anchor-block-only: true
             cost: 500000
 ```
