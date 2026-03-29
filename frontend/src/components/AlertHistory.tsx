@@ -38,6 +38,8 @@ interface AlertHistoryProps {
 }
 
 export default function AlertHistory({ userAddress }: AlertHistoryProps) {
+  void userAddress;
+
   const [history, setHistory] = useState<AlertHistoryEntry[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
