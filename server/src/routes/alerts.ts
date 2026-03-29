@@ -4,6 +4,7 @@ import { asyncHandler } from '../middleware/errorHandler';
 import cache from '../services/cache';
 import logger from '../utils/logger';
 import { getTierLimits, UserTier } from '../services/tier';
+import { randomUUID } from 'crypto';
 
 const router = Router();
 
@@ -206,7 +207,7 @@ router.post(
 
     // Create alert
     const alert: Alert = {
-      id: `alert-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+      id: `alert-${randomUUID()}`,
       userId: address,
       name: body.name,
       alertType: body.alertType,
