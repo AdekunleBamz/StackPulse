@@ -36,28 +36,28 @@ describe('StackPulse V3 Registry', () => {
       expect(email.length).toBeLessThanOrEqual(64);
     });
 
-    it('should register a user with Basic tier (1 STX)', async () => {
+    it('should register a user with Basic tier (0.01 STX)', async () => {
       const tier = 1;
-      const expectedPrice = 1000000; // 1 STX in microSTX
+      const expectedPrice = 10000; // 0.01 STX in microSTX
       
       expect(tier).toBe(1);
-      expect(expectedPrice).toBe(1000000);
+      expect(expectedPrice).toBe(10000);
     });
 
-    it('should register a user with Pro tier (5 STX)', async () => {
+    it('should register a user with Pro tier (0.05 STX)', async () => {
       const tier = 2;
-      const expectedPrice = 5000000; // 5 STX in microSTX
+      const expectedPrice = 50000; // 0.05 STX in microSTX
       
       expect(tier).toBe(2);
-      expect(expectedPrice).toBe(5000000);
+      expect(expectedPrice).toBe(50000);
     });
 
-    it('should register a user with Premium tier (20 STX)', async () => {
+    it('should register a user with Premium tier (0.20 STX)', async () => {
       const tier = 3;
-      const expectedPrice = 20000000; // 20 STX in microSTX
+      const expectedPrice = 200000; // 0.20 STX in microSTX
       
       expect(tier).toBe(3);
-      expect(expectedPrice).toBe(20000000);
+      expect(expectedPrice).toBe(200000);
     });
 
     it('should reject duplicate registration', async () => {
@@ -182,15 +182,15 @@ describe('StackPulse V3 Registry', () => {
     it('should return correct tier prices', async () => {
       const prices = {
         free: 0,
-        basic: 1000000,
-        pro: 5000000,
-        premium: 20000000,
+        basic: 10000,
+        pro: 50000,
+        premium: 200000,
       };
       
       expect(prices.free).toBe(0);
-      expect(prices.basic).toBe(1000000);
-      expect(prices.pro).toBe(5000000);
-      expect(prices.premium).toBe(20000000);
+      expect(prices.basic).toBe(10000);
+      expect(prices.pro).toBe(50000);
+      expect(prices.premium).toBe(200000);
     });
 
     it('should return contract version', async () => {

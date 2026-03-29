@@ -18,28 +18,28 @@ describe('Fee Vault V3', () => {
       expect(expectedPrice).toBe(0);
     });
 
-    it('should collect 5 STX for Basic tier', async () => {
+    it('should collect 0.01 STX for Basic tier', async () => {
       const tier = 1;
-      const expectedPrice = 5000000; // 5 STX in microSTX
+      const expectedPrice = 10000; // 0.01 STX in microSTX
       
       expect(tier).toBe(1);
-      expect(expectedPrice).toBe(5000000);
+      expect(expectedPrice).toBe(10000);
     });
 
-    it('should collect 15 STX for Pro tier', async () => {
+    it('should collect 0.05 STX for Pro tier', async () => {
       const tier = 2;
-      const expectedPrice = 15000000; // 15 STX in microSTX
+      const expectedPrice = 50000; // 0.05 STX in microSTX
       
       expect(tier).toBe(2);
-      expect(expectedPrice).toBe(15000000);
+      expect(expectedPrice).toBe(50000);
     });
 
-    it('should collect 45 STX for Premium tier', async () => {
+    it('should collect 0.20 STX for Premium tier', async () => {
       const tier = 3;
-      const expectedPrice = 45000000; // 45 STX in microSTX
+      const expectedPrice = 200000; // 0.20 STX in microSTX
       
       expect(tier).toBe(3);
-      expect(expectedPrice).toBe(45000000);
+      expect(expectedPrice).toBe(200000);
     });
 
     it('should reject invalid tier', async () => {
@@ -52,10 +52,10 @@ describe('Fee Vault V3', () => {
 
     it('should increment total collected on payment', async () => {
       const oldTotal = 100000000;
-      const payment = 5000000;
+      const payment = 10000;
       const newTotal = oldTotal + payment;
       
-      expect(newTotal).toBe(105000000);
+      expect(newTotal).toBe(100010000);
     });
 
     it('should increment subscription count', async () => {
@@ -66,9 +66,9 @@ describe('Fee Vault V3', () => {
     });
 
     it('should track revenue per tier', async () => {
-      const tier1Revenue = 50000000;
-      const tier2Revenue = 150000000;
-      const tier3Revenue = 450000000;
+      const tier1Revenue = 100000;
+      const tier2Revenue = 500000;
+      const tier3Revenue = 2000000;
       
       expect(tier1Revenue).toBeLessThan(tier2Revenue);
       expect(tier2Revenue).toBeLessThan(tier3Revenue);
@@ -89,11 +89,11 @@ describe('Fee Vault V3', () => {
 
   describe('Referral System', () => {
     it('should pay 5% referral bonus', async () => {
-      const paymentAmount = 15000000; // 15 STX
+      const paymentAmount = 50000; // 0.05 STX
       const referralBPS = 500; // 5% in basis points
       const expectedBonus = (paymentAmount * referralBPS) / 10000;
       
-      expect(expectedBonus).toBe(750000); // 0.75 STX
+      expect(expectedBonus).toBe(2500); // 0.0025 STX
     });
 
     it('should track referrer of user', async () => {
@@ -152,11 +152,11 @@ describe('Fee Vault V3', () => {
 
   describe('Platform Fee Calculation', () => {
     it('should calculate 10% platform fee', async () => {
-      const paymentAmount = 45000000; // 45 STX
+      const paymentAmount = 200000; // 0.20 STX
       const platformFeeBPS = 1000; // 10% in basis points
       const expectedFee = (paymentAmount * platformFeeBPS) / 10000;
       
-      expect(expectedFee).toBe(4500000); // 4.5 STX
+      expect(expectedFee).toBe(20000); // 0.02 STX
     });
 
     it('should track total fees collected', async () => {
@@ -224,15 +224,15 @@ describe('Fee Vault V3', () => {
     it('should return subscription price for tier', async () => {
       const prices = {
         0: 0,
-        1: 5000000,
-        2: 15000000,
-        3: 45000000,
+        1: 10000,
+        2: 50000,
+        3: 200000,
       };
       
       expect(prices[0]).toBe(0);
-      expect(prices[1]).toBe(5000000);
-      expect(prices[2]).toBe(15000000);
-      expect(prices[3]).toBe(45000000);
+      expect(prices[1]).toBe(10000);
+      expect(prices[2]).toBe(50000);
+      expect(prices[3]).toBe(200000);
     });
 
     it('should return tier revenue', async () => {
