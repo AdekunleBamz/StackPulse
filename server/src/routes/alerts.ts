@@ -83,7 +83,8 @@ router.get(
 
     // Apply sorting
     userAlerts.sort((a, b) => {
-      let aVal: any, bVal: any;
+      let aVal: number | string;
+      let bVal: number | string;
       
       switch (sortBy) {
         case 'name':
