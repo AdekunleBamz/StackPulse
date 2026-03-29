@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
+import { apiUrl } from '@/lib/env';
 
 interface User {
   address: string;
@@ -30,8 +31,6 @@ interface UseUserReturn {
   refetch: () => Promise<void>;
 }
 
-const SERVER_URL = process.env.NEXT_PUBLIC_SERVER_URL || 'https://stackpulse-b8fw.onrender.com';
-
 export function useUser(address: string | null, options: UseUserOptions = {}): UseUserReturn {
   const { autoFetch = true } = options;
 
@@ -49,7 +48,7 @@ export function useUser(address: string | null, options: UseUserOptions = {}): U
     setError(null);
 
     try {
-      const response = await fetch(`${SERVER_URL}/api/users/${address}`);
+      const response = await fetch(apiUrl(`/api/users/${address}`));
       const data = await response.json();
 
       if (data.success) {
@@ -76,7 +75,7 @@ export function useUser(address: string | null, options: UseUserOptions = {}): U
     setError(null);
 
     try {
-      const response = await fetch(`${SERVER_URL}/api/users/register`, {
+      const response = await fetch(apiUrl('/api/users/register'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ address, referrer }),
@@ -110,7 +109,7 @@ export function useUser(address: string | null, options: UseUserOptions = {}): U
     setError(null);
 
     try {
-      const response = await fetch(`${SERVER_URL}/api/users/${address}/upgrade`, {
+      const response = await fetch(apiUrl(`/api/users/${address}/upgrade`), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ tier, txId }),
