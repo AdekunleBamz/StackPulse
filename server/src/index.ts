@@ -675,6 +675,10 @@ app.put('/api/users/:address', async (req: Request, res: Response) => {
   try {
     const { address } = req.params;
     const { username, email, discord, telegram, enabledAlerts } = req.body;
+
+    if (!address || address.trim().length === 0) {
+      return res.status(400).json({ error: 'Address is required' });
+    }
     
     const prefs = saveUserPreferences({
       address,
