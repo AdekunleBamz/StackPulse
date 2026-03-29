@@ -11,6 +11,7 @@
 import { IncomingMessage } from 'http';
 import { Server as HTTPServer } from 'http';
 import { WebSocket, WebSocketServer } from 'ws';
+import { randomUUID } from 'crypto';
 import logger from '../utils/logger';
 
 interface WSClient {
@@ -202,7 +203,7 @@ function handleMessage(client: WSClient, message: WSMessage): void {
 }
 
 function generateClientId(): string {
-  return `ws_${Date.now()}_${Math.random().toString(36).slice(2, 11)}`;
+  return `ws_${randomUUID()}`;
 }
 
 export function getClientCount(): number {
