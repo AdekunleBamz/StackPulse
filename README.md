@@ -15,10 +15,10 @@ More detail lives in [docs/WORKSPACES.md](docs/WORKSPACES.md).
 ## Quick start
 
 ```bash
-npm ci
-npm --prefix server ci
-npm --prefix shared ci
-npm --prefix frontend ci
+npm install
+npm --prefix server install
+npm --prefix shared install
+npm --prefix frontend install
 ```
 
 ## Common commands
