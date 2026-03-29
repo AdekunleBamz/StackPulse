@@ -35,7 +35,10 @@ class DatabaseService {
     
     try {
       // In a real app, we would stream data to a file
-      fs.writeFileSync(backupPath, JSON.stringify({ version: '1.0.0', timestamp: Date.now() }));
+      fs.writeFileSync(
+        backupPath,
+        JSON.stringify({ version: '1.0.0', timestamp: new Date().toISOString() })
+      );
       logger.info('Database backup completed successfully', { backupPath });
       return backupPath;
     } catch (error) {
