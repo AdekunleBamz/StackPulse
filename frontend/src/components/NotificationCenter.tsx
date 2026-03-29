@@ -54,10 +54,15 @@ export default function NotificationCenter({ maxNotifications = 50 }: Notificati
         if (response.ok) {
           const data = await response.json();
           if (data.notifications) {
-            setNotifications((data.notifications as NotificationApiItem[]).map((n) => ({
-              ...n,
-              timestamp: Number.isNaN(new Date(n.timestamp).getTime()) ? new Date() : new Date(n.timestamp),
-            })));
+            setNotifications(
+              (data.notifications as NotificationApiItem[]).map((n) => {
+                const timestamp = new Date(n.timestamp);
+                return {
+                  ...n,
+                  timestamp: Number.isNaN(timestamp.getTime()) ? new Date() : timestamp,
+                };
+              })
+            );
           }
         }
       } catch (error) {
