@@ -14,6 +14,7 @@ StackPulse is organized as a small monorepo. Each top-level package owns a diffe
 | `shared/` | Shared TypeScript constants, types, and formatting helpers |
 | `docs/` | Project docs for API, deployment, contracts, and workspace notes |
 | `deployments/` | Clarinet deployment plans for different contract release stages |
+| `scripts/` | Operational scripts for deployment, wallet distribution, and interaction testing |
 
 ## Common local workflow
 
