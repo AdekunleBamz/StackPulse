@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { TrendingUp, ArrowUp, ArrowDown, Minus } from 'lucide-react';
 import logger from '@/lib/logger';
 
@@ -23,6 +23,13 @@ export default function PriceTracker() {
   const [error, setError] = useState<string | null>(null);
   const [lastUpdate, setLastUpdate] = useState<Date | null>(null);
   const [refreshKey, setRefreshKey] = useState(0);
+  const isMountedRef = useRef(true);
+
+  useEffect(() => {
+    return () => {
+      isMountedRef.current = false;
+    };
+  }, []);
 
   useEffect(() => {
     const fetchPrices = async () => {
@@ -36,6 +43,9 @@ export default function PriceTracker() {
         
         if (!response.ok) throw new Error('Bad response');
         const data = await response.json();
+        if (!isMountedRef.current) {
+          return;
+        }
         setPrices({
           stx: {
             usd: data.blockstack?.usd || 0,
@@ -49,11 +59,16 @@ export default function PriceTracker() {
         setLastUpdate(new Date());
         setError(null);
       } catch (error) {
+        if (!isMountedRef.current) {
+          return;
+        }
         logger.error('Error fetching prices:', error);
         setError('Unable to load prices right now.');
         setPrices(null);
       } finally {
-        setLoading(false);
+        if (isMountedRef.current) {
+          setLoading(false);
+        }
       }
     };
 
