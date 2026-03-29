@@ -46,6 +46,10 @@ export const TIER_LIMITS: Record<UserTier, TierLimits> = {
 
 const tierCache = new Map<string, UserTier>();
 
+function isValidTier(tier: number): tier is UserTier {
+  return Number.isInteger(tier) && tier >= UserTier.FREE && tier <= UserTier.EXCHANGE;
+}
+
 export function getTierLimits(tier: number): TierLimits {
   return TIER_LIMITS[tier as UserTier] ?? TIER_LIMITS[UserTier.FREE];
 }
@@ -55,7 +59,7 @@ export function getUserTier(address: string): UserTier {
 }
 
 export function setUserTier(address: string, tier: UserTier): void {
-  tierCache.set(address, tier);
+  tierCache.set(address, isValidTier(tier) ? tier : UserTier.FREE);
 }
 
 export default {
