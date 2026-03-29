@@ -10,17 +10,17 @@ interface UseWebSocketOptions {
   onOpen?: (event: Event) => void;
   onClose?: (event: CloseEvent) => void;
   onError?: (event: Event) => void;
-  onMessage?: (data: any) => void;
+  onMessage?: (data: unknown) => void;
 }
 
 interface UseWebSocketReturn {
   isConnected: boolean;
   isConnecting: boolean;
-  lastMessage: any;
+  lastMessage: unknown;
   subscribe: (channel: string) => void;
   unsubscribe: (channel: string) => void;
   authenticate: (address: string) => void;
-  send: (message: any) => void;
+  send: (message: unknown) => void;
   reconnect: () => void;
   disconnect: () => void;
 }
@@ -41,12 +41,13 @@ export function useWebSocket(options: UseWebSocketOptions = {}): UseWebSocketRet
 
   const [isConnected, setIsConnected] = useState(false);
   const [isConnecting, setIsConnecting] = useState(false);
-  const [lastMessage, setLastMessage] = useState<any>(null);
+  const [lastMessage, setLastMessage] = useState<unknown>(null);
   
   const wsRef = useRef<WebSocket | null>(null);
   const reconnectAttemptsRef = useRef(0);
   const reconnectTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const manualDisconnectRef = useRef(false);
+  const connectRef = useRef<() => void>(() => {});
 
   const connect = useCallback(() => {
     if (wsRef.current?.readyState === WebSocket.OPEN) return;
@@ -75,7 +76,7 @@ export function useWebSocket(options: UseWebSocketOptions = {}): UseWebSocketRet
         if (!manualDisconnectRef.current && reconnect && reconnectAttemptsRef.current < maxReconnectAttempts) {
           reconnectTimeoutRef.current = setTimeout(() => {
             reconnectAttemptsRef.current++;
-            connect();
+            connectRef.current();
           }, reconnectInterval);
         }
       };
@@ -99,6 +100,8 @@ export function useWebSocket(options: UseWebSocketOptions = {}): UseWebSocketRet
     }
   }, [url, reconnect, reconnectInterval, maxReconnectAttempts, onOpen, onClose, onError, onMessage, isConnecting]);
 
+  connectRef.current = connect;
+
   const disconnect = useCallback(() => {
     manualDisconnectRef.current = true;
     if (reconnectTimeoutRef.current) {
@@ -113,7 +116,7 @@ export function useWebSocket(options: UseWebSocketOptions = {}): UseWebSocketRet
     setIsConnecting(false);
   }, []);
 
-  const send = useCallback((message: any) => {
+  const send = useCallback((message: unknown) => {
     if (wsRef.current?.readyState === WebSocket.OPEN) {
       wsRef.current.send(JSON.stringify(message));
     }
