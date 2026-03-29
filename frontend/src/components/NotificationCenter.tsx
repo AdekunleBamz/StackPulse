@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { Bell, X, ExternalLink } from 'lucide-react';
+import { apiUrl } from '@/lib/env';
 
 interface Notification {
   id: string;
@@ -45,8 +46,7 @@ export default function NotificationCenter({ maxNotifications = 50 }: Notificati
   useEffect(() => {
     const fetchNotifications = async () => {
       try {
-        const serverUrl = process.env.NEXT_PUBLIC_SERVER_URL || 'https://stackpulse-b8fw.onrender.com';
-        const response = await fetch(`${serverUrl}/api/notifications?limit=${maxNotifications}`);
+        const response = await fetch(apiUrl(`/api/notifications?limit=${maxNotifications}`));
         if (response.ok) {
           const data = await response.json();
           if (data.notifications) {
