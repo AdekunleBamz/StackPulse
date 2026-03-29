@@ -882,9 +882,13 @@ app.put('/api/users/:address/alerts/:alertId', async (req: Request, res: Respons
       return res.status(400).json({ error: 'Address is required' });
     }
     const updates = req.body as UpdateAlertRequestBody;
+    const parsedAlertId = Number.parseInt(alertId, 10);
+    if (!Number.isInteger(parsedAlertId) || parsedAlertId < 1) {
+      return res.status(400).json({ error: 'Invalid alert id' });
+    }
     
     const alerts = userAlerts.get(address) || [];
-    const alertIndex = alerts.findIndex(a => a.id === Number.parseInt(alertId, 10));
+    const alertIndex = alerts.findIndex(a => a.id === parsedAlertId);
     
     if (alertIndex === -1) {
       return res.status(404).json({ error: 'Alert not found' });
