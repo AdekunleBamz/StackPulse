@@ -34,8 +34,8 @@ export default function NetworkStatus({ refreshInterval = 30000 }: NetworkStatus
     try {
       // Fetch from Stacks API
       const [infoRes, coreRes] = await Promise.all([
-        fetch('https://api.mainnet.hiro.so/extended/v1/info'),
-        fetch('https://api.mainnet.hiro.so/v2/info'),
+        fetch('https://api.mainnet.hiro.so/extended/v1/info', { headers: { Accept: 'application/json' } }),
+        fetch('https://api.mainnet.hiro.so/v2/info', { headers: { Accept: 'application/json' } }),
       ]);
 
       if (!infoRes.ok || !coreRes.ok) {
