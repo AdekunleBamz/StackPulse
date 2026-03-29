@@ -80,13 +80,11 @@ router.post('/', (req: Request, res: Response) => {
   });
 });
 
-import { validate, schemas } from '../middleware/validation';
-
 /**
  * PATCH /api/users/:address
- * Update user profile
+ * Update user
  */
-router.patch('/:address', validate(schemas.registration), (req: Request, res: Response) => {
+router.patch('/:address', (req: Request, res: Response) => {
   const { address } = req.params;
   const user = users.get(address);
   
@@ -98,24 +96,20 @@ router.patch('/:address', validate(schemas.registration), (req: Request, res: Re
   }
   
   const updates = req.body;
-  const updatedUser = { 
-    ...user, 
-    ...updates,
-    updatedAt: Date.now()
-  };
-  
+  const updatedUser = { ...user, ...updates };
   users.set(address, updatedUser);
-  logger.info('User profile updated', { address, fields: Object.keys(updates) });
-  
+
+  logger.info('User updated', { address, updates: Object.keys(updates) });
+
   res.json({
     success: true,
-    data: { user: updatedUser }
+    user: updatedUser
   });
 });
 
 /**
  * POST /api/users/:address/upgrade
- * Upgrade user tier with validation
+ * Upgrade user tier
  */
 router.post('/:address/upgrade', (req: Request, res: Response) => {
   const { address } = req.params;
@@ -129,26 +123,21 @@ router.post('/:address/upgrade', (req: Request, res: Response) => {
     });
   }
   
-  const targetTier = parseInt(tier);
-  if (isNaN(targetTier) || targetTier < 0 || targetTier > 3) {
+  if (tier === undefined || tier < 0 || tier > 3) {
     return res.status(400).json({
       success: false,
-      error: 'Invalid tier'
+      error: 'Invalid tier specified'
     });
   }
   
-  const updatedUser = { 
-    ...user, 
-    tier: targetTier,
-    upgradedAt: Date.now()
-  };
-  
+  const updatedUser = { ...user, tier };
   users.set(address, updatedUser);
-  logger.info('User tier upgraded', { address, tier: targetTier });
+  
+  logger.info('User tier upgraded', { address, oldTier: user.tier, newTier: tier });
   
   res.json({
     success: true,
-    data: { user: updatedUser }
+    user: updatedUser
   });
 });
 
