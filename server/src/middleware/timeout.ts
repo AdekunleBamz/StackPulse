@@ -21,8 +21,9 @@ export function requestTimeout(timeoutMs: number = 30000) {
     }, timeoutMs);
     timer.unref();
 
-    res.on('finish', () => clearTimeout(timer));
-    res.on('close', () => clearTimeout(timer));
+    const clearTimer = () => clearTimeout(timer);
+    res.once('finish', clearTimer);
+    res.once('close', clearTimer);
     next();
   };
 }
