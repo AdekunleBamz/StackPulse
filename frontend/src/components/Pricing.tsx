@@ -6,6 +6,7 @@ import { useEffect, useId, useState } from 'react';
 import { toast } from '@/components/Toast';
 import Button from '@/components/ui/Button';
 import Link from 'next/link';
+import { apiUrl, DEPLOYER_ADDRESS } from '@/lib/env';
 
 const tiers = [
   {
@@ -49,7 +50,6 @@ const tiers = [
   },
 ];
 
-const DEPLOYER_ADDRESS = process.env.NEXT_PUBLIC_DEPLOYER_ADDRESS || '';
 type ChannelId = 'email' | 'discord' | 'telegram';
 
 export default function Pricing() {
@@ -145,8 +145,7 @@ export default function Pricing() {
         // If registered, fetch saved notification preferences from server
         if (registered) {
           try {
-            const serverUrl = process.env.NEXT_PUBLIC_SERVER_URL || 'https://stackpulse-b8fw.onrender.com';
-            const prefsResponse = await fetch(`${serverUrl}/api/users/${address}`);
+            const prefsResponse = await fetch(apiUrl(`/api/users/${address}`));
             if (prefsResponse.ok) {
               const prefsData = await prefsResponse.json();
               if (prefsData.user) {
@@ -252,8 +251,7 @@ export default function Pricing() {
           
           // Save notification preferences to server
           try {
-            const serverUrl = process.env.NEXT_PUBLIC_SERVER_URL || 'https://stackpulse-b8fw.onrender.com';
-            await fetch(`${serverUrl}/api/users`, {
+            await fetch(apiUrl('/api/users'), {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({
@@ -409,8 +407,7 @@ export default function Pricing() {
       if (editingChannel === 'telegram') setTelegram(value);
       
       // Save to server
-      const serverUrl = process.env.NEXT_PUBLIC_SERVER_URL || 'https://stackpulse-b8fw.onrender.com';
-      const res = await fetch(`${serverUrl}/api/users/${address}`, {
+      const res = await fetch(apiUrl(`/api/users/${address}`), {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
