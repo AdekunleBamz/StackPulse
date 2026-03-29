@@ -46,9 +46,13 @@ export function verifySignature(
   signature: string,
   secret: string
 ): boolean {
+  if (!/^[a-f0-9]+$/i.test(signature)) {
+    return false;
+  }
+
   const expectedSignature = generateSignature(payload, secret);
-  const providedSignature = Buffer.from(signature, 'utf8');
-  const expectedSignatureBuffer = Buffer.from(expectedSignature, 'utf8');
+  const providedSignature = Buffer.from(signature, 'hex');
+  const expectedSignatureBuffer = Buffer.from(expectedSignature, 'hex');
 
   if (providedSignature.length !== expectedSignatureBuffer.length) {
     return false;
