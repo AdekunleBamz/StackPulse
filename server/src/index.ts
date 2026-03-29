@@ -800,6 +800,9 @@ const userAlerts: Map<string, StoredAlert[]> = loadAlerts();
 app.get('/api/v1/users/:address/alerts', async (req: Request, res: Response) => {
   try {
     const { address } = req.params;
+    if (!address || address.trim().length === 0) {
+      return res.status(400).json({ error: 'Address is required' });
+    }
     const alerts = userAlerts.get(address) || [];
     res.json({ alerts, count: alerts.length });
   } catch (error) {
