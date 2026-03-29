@@ -51,7 +51,7 @@ export function securityHeaders(req: Request, res: Response, next: NextFunction)
  */
 export function corsMiddleware(req: Request, res: Response, next: NextFunction) {
   const allowedOrigins = process.env.ALLOWED_ORIGINS 
-    ? process.env.ALLOWED_ORIGINS.split(',') 
+    ? process.env.ALLOWED_ORIGINS.split(',').map((origin) => origin.trim()).filter(Boolean)
     : ['http://localhost:3000', 'http://localhost:3001'];
   
   const origin = req.headers.origin;
