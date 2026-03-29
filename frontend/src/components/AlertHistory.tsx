@@ -106,7 +106,7 @@ export default function AlertHistory({ userAddress, initialPage = 1 }: AlertHist
     } finally {
       setLoading(false);
     }
-  }, [debouncedSearchQuery, filter, page, userAddress]);
+  }, [debouncedSearchQuery, filter, page]);
 
   useEffect(() => {
     fetchHistory();
