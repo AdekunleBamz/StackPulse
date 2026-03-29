@@ -134,7 +134,7 @@ class NotificationsService {
    * Delete a notification
    */
   deleteNotification(userAddress: string, notificationId: string): boolean {
-    const userNotifications = this.notifications.get(userAddress) || [];
+    const userNotifications = this.getUserNotificationList(userAddress);
     const index = userNotifications.findIndex(n => n.id === notificationId);
     
     if (index !== -1) {
