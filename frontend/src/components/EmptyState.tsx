@@ -5,9 +5,7 @@ import { Bell, Users, History, Search, AlertTriangle, PlusCircle, BellOff } from
  * Props for the EmptyState component.
  */
 interface EmptyStateProps {
-  /** Icon component to display (from lucide-react) */
   icon: ComponentType<{ className?: string; strokeWidth?: number }>;
-  /** Title text for the empty state */
   title: string;
   /** Description text explaining the empty state */
   description: string;
