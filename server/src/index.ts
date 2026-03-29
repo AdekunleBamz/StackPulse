@@ -632,7 +632,7 @@ app.post(CHAINHOOK_ENDPOINTS.subscriptionUpgrade, authenticateWebhook, processAs
 }));
 
 // 12. Alert Created (contract_call: create-alert)
-app.post('/api/v1/chainhooks/alert-created', authenticateWebhook, processAsync(async (payload) => {
+app.post(CHAINHOOK_ENDPOINTS.alertCreated, authenticateWebhook, processAsync(async (payload) => {
   for (const block of payload.apply) {
     for (const tx of block.transactions) {
       logger.info('🔔 Alert Created', {
