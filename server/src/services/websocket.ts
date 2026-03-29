@@ -32,6 +32,7 @@ interface WSMessage {
 const clients: Map<string, WSClient> = new Map();
 const MAX_CLIENTS = 1000;
 const MAX_SUBS_PER_CLIENT = 50;
+const WS_PING_INTERVAL_MS = 30000;
 
 function getChannel(message: WSMessage): string | undefined {
   return message.channel || message.subscription;
@@ -103,6 +104,15 @@ export function initWebSocket(server: HTTPServer): WebSocketServer {
     clients.set(clientId, client);
     logger.info('WebSocket client connected', { clientId, ip: req.socket.remoteAddress });
 
+    const pingInterval = setInterval(() => {
+      if (ws.readyState === WebSocket.OPEN) {
+        ws.ping();
+      } else {
+        clearInterval(pingInterval);
+      }
+    }, WS_PING_INTERVAL_MS);
+    pingInterval.unref();
+
     ws.send(
       JSON.stringify({
         type: 'notification',
@@ -125,22 +135,16 @@ export function initWebSocket(server: HTTPServer): WebSocketServer {
     });
 
     ws.on('close', () => {
+      clearInterval(pingInterval);
       clients.delete(clientId);
       logger.info('WebSocket client disconnected', { clientId });
     });
 
     ws.on('error', (error: Error) => {
+      clearInterval(pingInterval);
       logger.error('WebSocket error', { clientId, error });
       clients.delete(clientId);
     });
-
-    const pingInterval = setInterval(() => {
-      if (ws.readyState === WebSocket.OPEN) {
-        ws.ping();
-      } else {
-        clearInterval(pingInterval);
-      }
-    }, 30000);
   });
 
   logger.info('WebSocket server initialized');
