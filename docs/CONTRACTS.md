@@ -384,7 +384,10 @@ await openContractCall({
     uintCV(1), // Basic tier
     uintCV(31) // All alerts enabled
   ],
-  onFinish: (data) => console.log('TX:', data.txId)
+  onFinish: (data) => {
+    const txId = data.txId;
+    // Save txId or show success UI here.
+  }
 });
 ```
 
@@ -401,7 +404,10 @@ await openContractCall({
     noneCV(), // No target address
     uintCV(10000000000) // 10,000 STX threshold
   ],
-  onFinish: (data) => console.log('Alert created:', data.txId)
+  onFinish: (data) => {
+    const txId = data.txId;
+    // Save txId or show success UI here.
+  }
 });
 ```
 
