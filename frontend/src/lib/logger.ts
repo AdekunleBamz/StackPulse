@@ -1,0 +1,41 @@
+type LogLevel = 'debug' | 'info' | 'warn' | 'error';
+
+const isProduction = process.env.NODE_ENV === 'production';
+const debugLogsEnabled = !isProduction || process.env.NEXT_PUBLIC_DEBUG_LOGS === 'true';
+
+function shouldLog(level: LogLevel): boolean {
+  if (level === 'warn' || level === 'error') {
+    return true;
+  }
+  return debugLogsEnabled;
+}
+
+function writeLog(level: LogLevel, ...args: unknown[]): void {
+  if (!shouldLog(level)) {
+    return;
+  }
+
+  switch (level) {
+    case 'debug':
+      console.debug(...args);
+      break;
+    case 'info':
+      console.info(...args);
+      break;
+    case 'warn':
+      console.warn(...args);
+      break;
+    case 'error':
+      console.error(...args);
+      break;
+  }
+}
+
+export const logger = {
+  debug: (...args: unknown[]) => writeLog('debug', ...args),
+  info: (...args: unknown[]) => writeLog('info', ...args),
+  warn: (...args: unknown[]) => writeLog('warn', ...args),
+  error: (...args: unknown[]) => writeLog('error', ...args),
+};
+
+export default logger;
