@@ -509,34 +509,50 @@ app.post('/api/v1/chainhooks/badge-earned', authenticateWebhook, processAsync(as
       const events = tx.metadata.receipt.events || [];
       
       for (const event of events) {
-        if (event.type === 'SmartContractEvent') {
-          const printData = event.data?.value;
-          
-          if (printData?.event === 'badge-minted') {
-            logger.info('🏆 Badge Earned', {
-              tokenId: printData['token-id'],
-              recipient: printData.recipient,
-              badgeType: printData['badge-type'],
-              badgeName: printData['badge-name'],
-              txHash: tx.transaction_identifier.hash
-            });
-            
-            await broadcastNotification({
-              title: '🏆 You Earned a Badge!',
-              message: `Congratulations! You earned the "${printData['badge-name']}" badge.`,
-              type: 'badge',
-              data: {
-                'Badge': printData['badge-name'],
-                'Type': printData['badge-type'],
-                'Token ID': printData['token-id']
-              },
-              txHash: tx.transaction_identifier.hash,
-              blockHeight: block.block_identifier.index
-            }, [printData.recipient]);
-            
-            eventStats.badgesEarned++;
-          }
+        const printData = getPrintEventData(event);
+        if (!printData) continue;
+
+        const eventName = getStringField(printData, 'event');
+        if (eventName !== 'badge-minted') continue;
+
+        const recipient = getStringField(printData, 'recipient');
+        const badgeName = getStringField(printData, 'badge-name');
+        const tokenId = getNumberField(printData, 'token-id');
+        const badgeTypeRaw = printData['badge-type'];
+        const badgeType =
+          typeof badgeTypeRaw === 'string' || typeof badgeTypeRaw === 'number'
+            ? String(badgeTypeRaw)
+            : null;
+
+        if (!recipient || !badgeName || tokenId == null || !badgeType) {
+          logger.warn('Skipping malformed badge-minted print event', {
+            txHash: tx.transaction_identifier.hash,
+          });
+          continue;
         }
+
+        logger.info('🏆 Badge Earned', {
+          tokenId,
+          recipient,
+          badgeType,
+          badgeName,
+          txHash: tx.transaction_identifier.hash
+        });
+        
+        await broadcastNotification({
+          title: '🏆 You Earned a Badge!',
+          message: `Congratulations! You earned the "${badgeName}" badge.`,
+          type: 'badge',
+          data: {
+            'Badge': badgeName,
+            'Type': badgeType,
+            'Token ID': tokenId
+          },
+          txHash: tx.transaction_identifier.hash,
+          blockHeight: block.block_identifier.index
+        }, [recipient]);
+        
+        eventStats.badgesEarned++;
       }
     }
   }
