@@ -78,6 +78,7 @@ router.get('/', (req: Request, res: Response) => {
   const totalMemory = os.totalmem();
   const freeMemory = os.freemem();
   const usedMemory = totalMemory - freeMemory;
+  const memoryUsage = process.memoryUsage();
   
   const metrics: MetricsData = {
     server: {
@@ -98,9 +99,9 @@ router.get('/', (req: Request, res: Response) => {
       },
       process: {
         memory: {
-          heapTotal: process.memoryUsage().heapTotal,
-          heapUsed: process.memoryUsage().heapUsed,
-          rss: process.memoryUsage().rss
+          heapTotal: memoryUsage.heapTotal,
+          heapUsed: memoryUsage.heapUsed,
+          rss: memoryUsage.rss
         }
       }
     },
