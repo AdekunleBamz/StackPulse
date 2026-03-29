@@ -117,7 +117,8 @@ export const tieredApiLimiter = rateLimiter({
     // In a real app, fetch tier from user store
     const userTier = (req as TierRequest).user?.tier || 0;
     const limits = [100, 1000, 5000, 20000]; // Defined earlier in tier.ts
-    return limits[userTier] || 100;
+    const safeTier = Number.isInteger(userTier) && userTier >= 0 ? userTier : 0;
+    return limits[safeTier] || 100;
   }
 });
 
