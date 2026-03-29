@@ -19,6 +19,7 @@ export function requestTimeout(timeoutMs: number = 30000) {
         });
       }
     }, timeoutMs);
+    timer.unref();
 
     res.on('finish', () => clearTimeout(timer));
     res.on('close', () => clearTimeout(timer));
