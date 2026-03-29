@@ -704,6 +704,9 @@ app.put('/api/users/:address', async (req: Request, res: Response) => {
 app.delete('/api/users/:address', async (req: Request, res: Response) => {
   try {
     const { address } = req.params;
+    if (!address || address.trim().length === 0) {
+      return res.status(400).json({ error: 'Address is required' });
+    }
     const deleted = deleteUserPreferences(address);
     
     if (!deleted) {
