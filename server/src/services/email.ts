@@ -89,8 +89,8 @@ class EmailService {
 
   private validateTemplate(options: EmailOptions): boolean {
     if (!options.to || (Array.isArray(options.to) && options.to.length === 0)) return false;
-    if (!options.subject || options.subject.length < 3) return false;
-    if (!options.body || options.body.length < 10) return false;
+    if (!options.subject || options.subject.trim().length < 3) return false;
+    if (!options.body || options.body.trim().length < 10) return false;
     return true;
   }
 }
