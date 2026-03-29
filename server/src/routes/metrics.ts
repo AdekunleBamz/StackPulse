@@ -161,7 +161,7 @@ router.get('/prometheus', (req: Request, res: Response) => {
   output += `# TYPE http_requests_total counter\n`;
   output += `http_requests_total ${totalRequests}\n`;
   
-  res.set('Content-Type', 'text/plain');
+  res.set('Content-Type', 'text/plain; version=0.0.4; charset=utf-8');
   res.send(output);
 });
 
