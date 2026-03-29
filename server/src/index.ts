@@ -632,7 +632,7 @@ app.post('/api/v1/users', async (req: Request, res: Response) => {
   try {
     const { address, username, email, discord, telegram, enabledAlerts } = req.body;
     
-    if (!address) {
+    if (!address || typeof address !== 'string' || address.trim().length === 0) {
       return res.status(400).json({ error: 'Address is required' });
     }
     
