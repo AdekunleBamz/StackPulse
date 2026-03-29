@@ -14,36 +14,6 @@ interface MetricValue {
 class MetricsService {
   private metrics: Map<string, MetricValue[]> = new Map();
   private errorCounts: Map<string, number> = new Map();
-  private histograms: Map<string, Record<string, number>> = new Map();
-
-  /**
-   * Record a value into a histogram bucket
-   */
-  recordHistogram(name: string, value: number) {
-    const buckets = this.histograms.get(name) || {
-      '0-50ms': 0, '50-100ms': 0, '100-250ms': 0, '250-500ms': 0, '500ms-1s': 0, '>1s': 0
-    };
-
-    if (value <= 50) buckets['0-50ms']++;
-    else if (value <= 100) buckets['50-100ms']++;
-    else if (value <= 250) buckets['100-250ms']++;
-    else if (value <= 500) buckets['250-500ms']++;
-    else if (value <= 1000) buckets['500ms-1s']++;
-    else buckets['>1s']++;
-
-    this.histograms.set(name, buckets);
-    logger.debug(`Histogram recorded: ${name}`, { value });
-  }
-
-  recordMetric(name: string, value: number, labels?: Record<string, string>) {
-    const values = this.metrics.get(name) || [];
-    values.push({ value, timestamp: Date.now(), labels });
-    if (values.length > 1000) values.shift();
-    this.metrics.set(name, values);
-    
-    // Also record as histogram if it's a duration
-    if (name.includes('duration')) this.recordHistogram(name, value);
-  }
 
   /**
    * Record an error metric
@@ -51,7 +21,32 @@ class MetricsService {
   recordError(type: string) {
     const current = this.errorCounts.get(type) || 0;
     this.errorCounts.set(type, current + 1);
-    logger.error('Error metric recorded', { type, count: current + 1 });
+    logger.error(`Error recorded: ${type}`, { count: current + 1 });
+  }
+  recordMetric(name: string, value: number, labels?: Record<string, string>) {
+    const entry: MetricValue = {
+      value,
+      timestamp: Date.now(),
+      labels
+    };
+
+    const values = this.metrics.get(name) || [];
+    values.push(entry);
+
+    // Keep last 1000 entries per metric
+    if (values.length > 1000) {
+      values.shift();
+    }
+
+    this.metrics.set(name, values);
+    logger.debug(`Metric recorded: ${name}`, { value, labels });
+  }
+
+  /**
+   * Get metrics by name
+   */
+  getMetrics(name: string): MetricValue[] {
+    return this.metrics.get(name) || [];
   }
 
   /**
@@ -59,7 +54,20 @@ class MetricsService {
    */
   getAverage(name: string): number {
     const values = this.metrics.get(name) || [];
-    return values.length ? values.reduce((acc, curr) => acc + curr.value, 0) / values.length : 0;
+    if (values.length === 0) return 0;
+    
+    const sum = values.reduce((acc, curr) => acc + curr.value, 0);
+    return sum / values.length;
+  }
+
+  /**
+   * Monitor performance and log warnings
+   */
+  monitorPerformance() {
+    const avgDuration = this.getAverage('http_request_duration');
+    if (avgDuration > 500) {
+      logger.warn('Performance degraded: high average request duration', { avgDuration: `${avgDuration.toFixed(2)}ms` });
+    }
   }
 }
 
