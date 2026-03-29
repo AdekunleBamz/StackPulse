@@ -76,7 +76,7 @@ export function validateWebhookPayload(data: any): { payload: WebhookPayload | n
     return { payload: null, error: 'Missing payload data' };
   }
   
-  if (!timestamp || typeof timestamp !== 'number') {
+  if (typeof timestamp !== 'number' || !Number.isFinite(timestamp)) {
     return { payload: null, error: 'Missing or invalid timestamp' };
   }
   
