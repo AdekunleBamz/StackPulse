@@ -1,32 +1,30 @@
-import { useState, useEffect } from 'react';
+import { useSyncExternalStore } from 'react';
 
 /**
  * useMediaQuery hook
  * Track media query matches
  */
 export function useMediaQuery(query: string): boolean {
-  const [matches, setMatches] = useState<boolean>(() => {
+  const subscribe = (onStoreChange: () => void) => {
+    if (typeof window === 'undefined') {
+      return () => {};
+    }
+
+    const mediaQuery = window.matchMedia(query);
+    const listener = () => onStoreChange();
+    mediaQuery.addEventListener('change', listener);
+
+    return () => mediaQuery.removeEventListener('change', listener);
+  };
+
+  const getSnapshot = () => {
     if (typeof window === 'undefined') {
       return false;
     }
     return window.matchMedia(query).matches;
-  });
+  };
 
-  useEffect(() => {
-    if (typeof window === 'undefined') {
-      return;
-    }
-
-    const mediaQuery = window.matchMedia(query);
-    const handler = (event: MediaQueryListEvent) => setMatches(event.matches);
-
-    setMatches(mediaQuery.matches);
-    mediaQuery.addEventListener('change', handler);
-
-    return () => mediaQuery.removeEventListener('change', handler);
-  }, [query]);
-
-  return matches;
+  return useSyncExternalStore(subscribe, getSnapshot, () => false);
 }
 
 // Predefined breakpoints
