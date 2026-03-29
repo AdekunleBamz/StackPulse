@@ -2,7 +2,7 @@
 
 import { useMemo } from 'react';
 import Link from 'next/link';
-import { Award, ArrowLeft, Share2, ExternalLink } from 'lucide-react';
+import { Award, ArrowLeft, Share2, Check, ExternalLink } from 'lucide-react';
 import BadgeShowcase from '@/components/BadgeShowcase';
 import { toast } from '@/components/Toast';
 import { Breadcrumbs } from '@/components';
