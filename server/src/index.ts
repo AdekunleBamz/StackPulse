@@ -463,31 +463,40 @@ app.post('/api/v1/chainhooks/fee-collected', authenticateWebhook, processAsync(a
       const events = tx.metadata.receipt.events || [];
       
       for (const event of events) {
-        if (event.type === 'SmartContractEvent') {
-          const printData = event.data?.value;
-          
-          if (printData?.event === 'fee-collected') {
-            logger.info('💰 Fee Collected', {
-              source: printData.source,
-              amount: printData.amount,
-              txHash: tx.transaction_identifier.hash
-            });
-            
-            await broadcastNotification({
-              title: '💰 Fee Collected',
-              message: `${formatSTX(printData.amount)} STX collected from ${printData.source}`,
-              type: 'fee',
-              data: {
-                'Source': printData.source,
-                'Amount': formatSTX(printData.amount) + ' STX'
-              },
-              txHash: tx.transaction_identifier.hash,
-              blockHeight: block.block_identifier.index
-            });
-            
-            eventStats.feesCollected++;
-          }
+        const printData = getPrintEventData(event);
+        if (!printData) continue;
+
+        const eventName = getStringField(printData, 'event');
+        if (eventName !== 'fee-collected') continue;
+
+        const source = getStringField(printData, 'source');
+        const amount = getNumberField(printData, 'amount');
+        if (!source || amount == null) {
+          logger.warn('Skipping malformed fee-collected print event', {
+            txHash: tx.transaction_identifier.hash,
+          });
+          continue;
         }
+
+        logger.info('💰 Fee Collected', {
+          source,
+          amount,
+          txHash: tx.transaction_identifier.hash
+        });
+        
+        await broadcastNotification({
+          title: '💰 Fee Collected',
+          message: `${formatSTX(amount)} STX collected from ${source}`,
+          type: 'fee',
+          data: {
+            'Source': source,
+            'Amount': formatSTX(amount) + ' STX'
+          },
+          txHash: tx.transaction_identifier.hash,
+          blockHeight: block.block_identifier.index
+        });
+        
+        eventStats.feesCollected++;
       }
     }
   }
