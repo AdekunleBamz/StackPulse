@@ -66,7 +66,8 @@ export function debounce<T extends (...args: unknown[]) => unknown>(
   func: T,
   wait: number
 ): (...args: Parameters<T>) => void {
-  let timeout: NodeJS.Timeout | null = null;
+  let timeout: ReturnType<typeof setTimeout> | null = null;
+  const safeWait = Number.isFinite(wait) ? Math.max(0, wait) : 0;
   
   return function executedFunction(...args: Parameters<T>) {
     const later = () => {
@@ -75,7 +76,7 @@ export function debounce<T extends (...args: unknown[]) => unknown>(
     };
     
     if (timeout) clearTimeout(timeout);
-    timeout = setTimeout(later, wait);
+    timeout = setTimeout(later, safeWait);
   };
 }
 
