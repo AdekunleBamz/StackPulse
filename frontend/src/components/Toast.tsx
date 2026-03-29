@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { CheckCircle, AlertCircle, Info, AlertTriangle, X, Loader2 } from 'lucide-react';
 
 interface ToastProps {
@@ -62,7 +62,7 @@ function Toast({ id, type, title, message, duration = 5000, onClose }: ToastProp
   const leavingTimerRef = useRef<number | null>(null);
   const progressIntervalRef = useRef<number | null>(null);
 
-  const clearTimers = () => {
+  const clearTimers = useCallback(() => {
     if (timerRef.current != null) window.clearTimeout(timerRef.current);
     if (leavingTimerRef.current != null) window.clearTimeout(leavingTimerRef.current);
     if (progressIntervalRef.current != null) window.clearInterval(progressIntervalRef.current);
@@ -70,9 +70,9 @@ function Toast({ id, type, title, message, duration = 5000, onClose }: ToastProp
     leavingTimerRef.current = null;
     progressIntervalRef.current = null;
     startTimeRef.current = null;
-  };
+  }, []);
 
-  const scheduleDismiss = () => {
+  const scheduleDismiss = useCallback(() => {
     if (duration <= 0) return;
     clearTimers();
 
@@ -89,13 +89,13 @@ function Toast({ id, type, title, message, duration = 5000, onClose }: ToastProp
         setProgress(newProgress);
       }
     }, 16);
-  };
+  }, [clearTimers, duration, id, onClose]);
 
   useEffect(() => {
     remainingMsRef.current = duration;
     scheduleDismiss();
     return () => clearTimers();
-  }, [id, duration, onClose]);
+  }, [clearTimers, duration, scheduleDismiss]);
 
   const handleClose = () => {
     clearTimers();
