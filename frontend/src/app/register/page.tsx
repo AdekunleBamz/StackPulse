@@ -7,10 +7,12 @@ import { toast } from '@/components/Toast';
 import TextField from '@/components/ui/TextField';
 import { Breadcrumbs } from '@/components';
 import { DEPLOYER_ADDRESS } from '@/lib/env';
+import logger from '@/lib/logger';
 
 export default function RegisterPage() {
-  const { isConnected, connect } = useWallet();
+  const { isConnected, connect, address } = useWallet();
   const [username, setUsername] = useState('');
+  const [referrer, setReferrer] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [usernameError, setUsernameError] = useState('');
   const [submitError, setSubmitError] = useState('');
@@ -61,21 +63,21 @@ export default function RegisterPage() {
         ],
         onFinish: (data: { txId: string }) => {
           setLoadingStep('Success!');
-          console.log('Registration submitted:', data.txId);
+          logger.info('Registration submitted:', data.txId);
           toast.dismiss(toastId);
           toast.success('Registration submitted', `TX: ${data.txId}`);
           // Redirect to pricing after a delay
           setTimeout(() => router.push('/#pricing'), 2000);
         },
         onCancel: () => {
-          console.log('Registration cancelled');
+          logger.debug('Registration cancelled');
           toast.dismiss(toastId);
           setIsLoading(false);
           setLoadingStep('');
         },
       });
     } catch (err) {
-      console.error('Registration error:', err);
+      logger.error('Registration error:', err);
       toast.dismiss(toastId);
       toast.error('Registration failed', 'Please try again.');
       setSubmitError('Failed to submit registration. Please try again.');
