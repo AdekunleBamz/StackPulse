@@ -275,7 +275,7 @@ Receive StackPulse subscription events.
 
 Receive alert trigger events.
 
-### POST /api/chainhooks/fee-collected
+### POST /api/v1/chainhooks/fee-collected
 
 Receive fee collection events.
 
