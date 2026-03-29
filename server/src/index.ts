@@ -906,6 +906,9 @@ app.put('/api/users/:address/alerts/:alertId', async (req: Request, res: Respons
 app.delete('/api/users/:address/alerts/:alertId', async (req: Request, res: Response) => {
   try {
     const { address, alertId } = req.params;
+    if (!address || address.trim().length === 0) {
+      return res.status(400).json({ error: 'Address is required' });
+    }
     
     const alerts = userAlerts.get(address) || [];
     const filteredAlerts = alerts.filter(a => a.id !== Number.parseInt(alertId, 10));
