@@ -196,9 +196,10 @@ class NotificationsService {
     priority: Notification['priority'] = 'normal',
     retries: number = 3
   ): Promise<Notification | null> {
+    const safeRetries = Number.isFinite(retries) ? Math.max(1, Math.floor(retries)) : 3;
     let lastError: unknown;
     
-    for (let i = 0; i < retries; i++) {
+    for (let i = 0; i < safeRetries; i++) {
       try {
         // In a real app, this might involve an external push service
         return this.createNotification(userAddress, type, title, message, priority);
@@ -209,7 +210,7 @@ class NotificationsService {
       }
     }
     
-    logger.error('Failed to send notification after retries', { userAddress, retries, lastError });
+    logger.error('Failed to send notification after retries', { userAddress, retries: safeRetries, lastError });
     return null;
   }
 
