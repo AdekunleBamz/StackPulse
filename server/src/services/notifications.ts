@@ -190,7 +190,7 @@ class NotificationsService {
     priority: Notification['priority'] = 'normal',
     retries: number = 3
   ): Promise<Notification | null> {
-    let lastError: any;
+    let lastError: unknown;
     
     for (let i = 0; i < retries; i++) {
       try {
