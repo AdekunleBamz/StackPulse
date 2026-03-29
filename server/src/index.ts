@@ -518,7 +518,7 @@ app.post(CHAINHOOK_ENDPOINTS.feeCollected, authenticateWebhook, processAsync(asy
 }));
 
 // 9. Badge Earned
-app.post('/api/v1/chainhooks/badge-earned', authenticateWebhook, processAsync(async (payload) => {
+app.post(CHAINHOOK_ENDPOINTS.badgeEarned, authenticateWebhook, processAsync(async (payload) => {
   for (const block of payload.apply) {
     for (const tx of block.transactions) {
       const events = tx.metadata.receipt.events || [];
