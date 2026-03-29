@@ -182,13 +182,15 @@ interface ToastData {
 }
 
 // Global toast state
-let toastListeners: ((toasts: ToastData[]) => void)[] = [];
+const toastListeners = new Set<(toasts: ToastData[]) => void>();
 let toasts: ToastData[] = [];
 
 const createToastId = () => `toast-${Date.now()}-${Math.random().toString(36).slice(2, 11)}`;
 
 const notifyListeners = () => {
-  toastListeners.forEach((listener) => listener([...toasts]));
+  for (const listener of toastListeners) {
+    listener([...toasts]);
+  }
 };
 
 export const toast = {
@@ -244,9 +246,9 @@ export function ToastContainer({ position = 'top-right', maxToasts = 5 }: ToastC
     const listener = (newToasts: ToastData[]) => {
       setCurrentToasts(newToasts.slice(-maxToasts));
     };
-    toastListeners.push(listener);
+    toastListeners.add(listener);
     return () => {
-      toastListeners = toastListeners.filter((l) => l !== listener);
+      toastListeners.delete(listener);
     };
   }, [maxToasts]);
 
