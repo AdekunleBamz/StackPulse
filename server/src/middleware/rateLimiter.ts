@@ -67,11 +67,7 @@ const defaultOptions: RateLimitOptions = {
  * Rate limiter middleware factory
  */
 export function rateLimiter(options: RateLimitOptions = defaultOptions) {
-  const { windowMs, maxRequests, message, keyGenerator, maxRequestsGenerator } = { ...defaultOptions, ...options };
-  const safeWindowMs = Number.isFinite(windowMs) ? Math.max(1000, Math.floor(windowMs)) : DEFAULT_RATE_LIMIT_WINDOW_MS;
-  const safeMaxRequests = Number.isFinite(maxRequests)
-    ? Math.max(1, Math.floor(maxRequests))
-    : DEFAULT_RATE_LIMIT_MAX_REQUESTS;
+  const { windowMs, maxRequests, message, keyGenerator } = { ...defaultOptions, ...options };
 
   return (req: Request, res: Response, next: NextFunction) => {
     const key = keyGenerator!(req);
@@ -121,7 +117,7 @@ export function rateLimiter(options: RateLimitOptions = defaultOptions) {
 
     // Set rate limit headers
     res.setHeader('X-RateLimit-Limit', effectiveMaxRequests.toString());
-    res.setHeader('X-RateLimit-Remaining', Math.max(0, effectiveMaxRequests - entry.count).toString());
+    res.setHeader('X-RateLimit-Remaining', (effectiveMaxRequests - entry.count).toString());
     res.setHeader('X-RateLimit-Reset', entry.resetTime.toString());
 
     next();
