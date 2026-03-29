@@ -231,7 +231,7 @@ app.post(CHAINHOOK_ENDPOINTS.whaleTransfer, tieredApiLimiter, authenticateWebhoo
 }));
 
 // 2. New Contract Deployed
-app.post('/api/v1/chainhooks/contract-deployed', authenticateWebhook, processAsync(async (payload) => {
+app.post(CHAINHOOK_ENDPOINTS.contractDeployed, authenticateWebhook, processAsync(async (payload) => {
   for (const block of payload.apply) {
     for (const tx of block.transactions) {
       const deploymentData = parseContractDeployment(tx);
