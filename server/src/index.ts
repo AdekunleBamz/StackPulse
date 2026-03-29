@@ -167,7 +167,7 @@ const processAsync = (handler: (payload: ChainhookPayload) => Promise<void>) => 
     // Process in background
     try {
       const payload: ChainhookPayload = req.body;
-      if (payload && payload.apply) {
+      if (payload && Array.isArray(payload.apply)) {
         await handler(payload);
       }
     } catch (error) {
