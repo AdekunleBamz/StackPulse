@@ -56,7 +56,7 @@ export default function NotificationCenter({ maxNotifications = 50 }: Notificati
           if (data.notifications) {
             setNotifications((data.notifications as NotificationApiItem[]).map((n) => ({
               ...n,
-              timestamp: new Date(n.timestamp),
+              timestamp: Number.isNaN(new Date(n.timestamp).getTime()) ? new Date() : new Date(n.timestamp),
             })));
           }
         }
