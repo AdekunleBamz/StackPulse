@@ -187,8 +187,20 @@ export function validateParams(schema: ValidationSchema) {
       }
 
       // Check type
-      if (value && typeof value !== rules.type) {
-        errors.push(`Parameter '${field}' must be of type ${rules.type}`);
+      if (!value) {
+        continue;
+      }
+
+      if (rules.type === 'number') {
+        const parsed = Number.parseFloat(value);
+        if (!Number.isFinite(parsed)) {
+          errors.push(`Parameter '${field}' must be a valid number`);
+        }
+        continue;
+      }
+
+      if (rules.type === 'boolean' && value !== 'true' && value !== 'false') {
+        errors.push(`Parameter '${field}' must be "true" or "false"`);
       }
     }
 
