@@ -4,8 +4,21 @@ import { UserTier } from '../services/tier';
 
 const router = Router();
 
+interface UserRecord {
+  address: string;
+  displayName: string;
+  tier: UserTier;
+  createdAt: number;
+  alertCount: number;
+  username?: string;
+  email?: string;
+  discord?: string;
+  telegram?: string;
+  enabledAlerts?: string[];
+}
+
 // In-memory user store
-const users = new Map();
+const users = new Map<string, UserRecord>();
 
 /**
  * GET /api/users
@@ -48,7 +61,7 @@ router.get('/:address', (req: Request, res: Response) => {
 router.post('/', (req: Request, res: Response) => {
   const { address, displayName } = req.body;
   
-  if (!address) {
+  if (!address || typeof address !== 'string') {
     return res.status(400).json({
       success: false,
       error: 'Address is required'
@@ -62,9 +75,9 @@ router.post('/', (req: Request, res: Response) => {
     });
   }
   
-  const user = {
+  const user: UserRecord = {
     address,
-    displayName: displayName || address.slice(0, 8),
+    displayName: typeof displayName === 'string' && displayName.trim() ? displayName : address.slice(0, 8),
     tier: UserTier.FREE,
     createdAt: Date.now(),
     alertCount: 0
@@ -95,8 +108,13 @@ router.patch('/:address', (req: Request, res: Response) => {
     });
   }
   
-  const updates = req.body;
-  const updatedUser = { ...user, ...updates };
+  const updates = req.body as Partial<UserRecord>;
+  const updatedUser: UserRecord = {
+    ...user,
+    ...updates,
+    address: user.address,
+    createdAt: user.createdAt,
+  };
   users.set(address, updatedUser);
 
   logger.info('User updated', { address, updates: Object.keys(updates) });
