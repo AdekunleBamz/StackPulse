@@ -40,6 +40,16 @@ const analytics: AnalyticsData = {
   userEventCounts: new Map(),
 };
 
+function trimOldestEntries<T>(map: Map<number, T>, maxEntries: number): void {
+  while (map.size > maxEntries) {
+    const oldestKey = map.keys().next().value;
+    if (oldestKey === undefined) {
+      break;
+    }
+    map.delete(oldestKey);
+  }
+}
+
 // Track an event
 export function trackEvent(
   eventType: string,
@@ -90,6 +100,7 @@ export function trackEvent(
   }
   const hourMap = analytics.hourly.get(hour)!;
   hourMap.set(eventType, (hourMap.get(eventType) || 0) + 1);
+  trimOldestEntries(analytics.hourly, MAX_HOURLY_ENTRIES);
   
   // Update daily aggregation
   if (!analytics.daily.has(day)) {
@@ -97,6 +108,7 @@ export function trackEvent(
   }
   const dayMap = analytics.daily.get(day)!;
   dayMap.set(eventType, (dayMap.get(eventType) || 0) + 1);
+  trimOldestEntries(analytics.daily, MAX_DAILY_ENTRIES);
   
   logger.debug('Event tracked', { eventType, metadata });
 }
