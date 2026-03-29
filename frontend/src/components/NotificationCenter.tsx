@@ -42,12 +42,15 @@ interface NotificationCenterProps {
 export default function NotificationCenter({ maxNotifications = 50 }: NotificationCenterProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [notifications, setNotifications] = useState<Notification[]>([]);
+  const safeMaxNotifications = Number.isFinite(maxNotifications)
+    ? Math.max(1, Math.floor(maxNotifications))
+    : 50;
 
   // Fetch notifications from server
   useEffect(() => {
     const fetchNotifications = async () => {
       try {
-        const response = await fetch(apiUrl(`/api/notifications?limit=${maxNotifications}`));
+        const response = await fetch(apiUrl(`/api/notifications?limit=${safeMaxNotifications}`));
         if (response.ok) {
           const data = await response.json();
           if (data.notifications) {
@@ -66,7 +69,7 @@ export default function NotificationCenter({ maxNotifications = 50 }: Notificati
     // Poll for new notifications every 30 seconds
     const interval = setInterval(fetchNotifications, 30000);
     return () => clearInterval(interval);
-  }, [maxNotifications]);
+  }, [safeMaxNotifications]);
 
   const unreadCount = notifications.filter(n => !n.read).length;
 
