@@ -240,7 +240,9 @@ router.patch(
   asyncHandler(async (req: Request, res: Response) => {
     const { id } = req.params;
     const { address } = req.query;
-    const updates = req.body;
+    const updates = req.body as Partial<
+      Pick<Alert, 'name' | 'threshold' | 'targetAddress' | 'webhookUrl' | 'enabled'>
+    >;
 
     const alert = alerts.get(id);
 
@@ -260,11 +262,20 @@ router.patch(
     }
 
     // Apply updates (only allowed fields)
-    const allowedUpdates = ['name', 'threshold', 'targetAddress', 'webhookUrl', 'enabled'];
-    for (const key of allowedUpdates) {
-      if (key in updates) {
-        (alert as any)[key] = updates[key];
-      }
+    if (typeof updates.name === 'string') {
+      alert.name = updates.name;
+    }
+    if (typeof updates.threshold === 'number') {
+      alert.threshold = updates.threshold;
+    }
+    if (typeof updates.targetAddress === 'string' || updates.targetAddress === undefined) {
+      alert.targetAddress = updates.targetAddress;
+    }
+    if (typeof updates.webhookUrl === 'string' || updates.webhookUrl === undefined) {
+      alert.webhookUrl = updates.webhookUrl;
+    }
+    if (typeof updates.enabled === 'boolean') {
+      alert.enabled = updates.enabled;
     }
 
     alerts.set(id, alert);
