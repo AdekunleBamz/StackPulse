@@ -135,8 +135,26 @@ export function validateQuery(schema: ValidationSchema) {
       }
 
       // Check type
-      const parsedValue = rules.type === 'number' ? parseFloat(value as string) : value;
-      if (typeof parsedValue !== rules.type) {
+      const rawValue = Array.isArray(value) ? value[0] : value;
+      if (typeof rawValue !== 'string') {
+        errors.push(`Query parameter '${field}' must be a string value`);
+        continue;
+      }
+
+      if (rules.type === 'number') {
+        const parsedValue = Number.parseFloat(rawValue);
+        if (!Number.isFinite(parsedValue)) {
+          errors.push(`Query parameter '${field}' must be a valid number`);
+        }
+        continue;
+      }
+
+      if (rules.type === 'boolean' && rawValue !== 'true' && rawValue !== 'false') {
+        errors.push(`Query parameter '${field}' must be "true" or "false"`);
+        continue;
+      }
+
+      if (rules.type !== 'string' && rules.type !== 'array' && rules.type !== 'object') {
         errors.push(`Query parameter '${field}' must be of type ${rules.type}`);
       }
     }
