@@ -134,7 +134,10 @@ export async function sendWebhook(
   try {
     const response = await fetch(url, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Webhook-Rate-Limit': String(rateLimit),
+      },
       body: JSON.stringify(payload)
     });
 
