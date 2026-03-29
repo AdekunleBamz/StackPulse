@@ -302,7 +302,7 @@ app.post('/api/v1/chainhooks/token-launch', authenticateWebhook, processAsync(as
 }));
 
 // 5. Large Swap Alert
-app.post('/api/v1/chainhooks/', tieredApiLimiter, authenticateWebhook, processAsync(async (payload) => {
+app.post('/api/v1/chainhooks/large-swap-alert', tieredApiLimiter, authenticateWebhook, processAsync(async (payload) => {
   for (const block of payload.apply) {
     for (const tx of block.transactions) {
       const events = tx.metadata.receipt.events || [];
