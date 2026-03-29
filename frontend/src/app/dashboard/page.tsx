@@ -8,7 +8,6 @@ import { useConfirmDialog } from '@/components/ConfirmDialog';
 import { NoAlertsState } from '@/components/EmptyState';
 import { DashboardSkeleton } from '@/components/LoadingSkeleton';
 import Button from '@/components/ui/Button';
-import { useAccount } from '@/hooks/useAccount';
 import { 
   Bell, 
   Wallet, 
@@ -23,8 +22,7 @@ import {
   Award,
   Trash2,
   ToggleLeft,
-  ToggleRight,
-  Loader2
+  ToggleRight
 } from 'lucide-react';
 import { Breadcrumbs } from '@/components';
 
@@ -40,7 +38,7 @@ const alertTypes = [
   { id: 6, name: 'Address Watch', icon: Activity, description: 'Monitor specific addresses', iconBgClass: 'bg-orange-500/20', iconClass: 'text-orange-300' },
 ];
 
-export interface DashboardAlert {
+interface UserAlert {
   id: number;
   type: number;
   name: string;
@@ -48,17 +46,6 @@ export interface DashboardAlert {
   threshold?: number;
   targetAddress?: string;
   triggerCount: number;
-  createdAt?: string;
-}
-
-export interface AlertHistoryItem {
-  id: string;
-  alertId: number;
-  type: number;
-  message: string;
-  timestamp: string;
-  txId?: string;
-  data?: any;
 }
 
 interface UserData {
@@ -69,35 +56,90 @@ interface UserData {
 }
 
 export default function DashboardPage() {
-  const { address, isConnected, connect, isRegistered, userData, isLoading: isAccountLoading } = useAccount();
-  const [alerts, setAlerts] = useState<DashboardAlert[]>([]);
-  const [isDataLoading, setIsDataLoading] = useState(true);
-  const [syncingAlertIds, setSyncingAlertIds] = useState<Set<number>>(new Set());
-  
-  // Load alerts from server when address changes
+  const { isConnected, address, connect } = useWallet();
+  const router = useRouter();
+  const { confirm, ConfirmDialog } = useConfirmDialog();
+  const createAlertTitleId = useId();
+  const createAlertDescId = useId();
+  const createAlertSelectRef = useRef<HTMLSelectElement>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [userData, setUserData] = useState<UserData | null>(null);
+  const [alerts, setAlerts] = useState<UserAlert[]>([]);
+  const [showCreateAlert, setShowCreateAlert] = useState(false);
+  const [newAlertType, setNewAlertType] = useState(1);
+  const [newAlertName, setNewAlertName] = useState('');
+  const [newAlertThreshold, setNewAlertThreshold] = useState('10000');
+  const [isCreating, setIsCreating] = useState(false);
+
+  const tierNames = ['Free', 'Basic', 'Pro', 'Premium'];
+  const maxAlerts = [3, 10, 25, 999];
+
+  // Check user registration and load data
   useEffect(() => {
-    const loadAlerts = async () => {
-      if (!address) return;
+    const loadUserData = async () => {
+      if (!address || !DEPLOYER_ADDRESS) {
+        setIsLoading(false);
+        return;
+      }
+
       try {
-        const serverUrl = process.env.NEXT_PUBLIC_SERVER_URL || 'https://stackpulse-b8fw.onrender.com';
-        const alertsResponse = await fetch(`${serverUrl}/api/users/${address}/alerts`);
-        if (alertsResponse.ok) {
-          const alertsData = await alertsResponse.json();
-          if (alertsData.alerts) {
-            setAlerts(alertsData.alerts);
+        const { principalCV, cvToHex, hexToCV, cvToValue } = await import('@stacks/transactions');
+
+        // Check V3 contract for user data
+        const response = await fetch(
+          `https://api.mainnet.hiro.so/v2/contracts/call-read/${DEPLOYER_ADDRESS}/stackpulse-v-j4/get-user`,
+          {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              sender: address,
+              arguments: [cvToHex(principalCV(address))]
+            })
+          }
+        );
+
+        const data = await response.json();
+        
+        if (data.result && data.result !== '0x09') {
+          try {
+            const cv = hexToCV(data.result);
+            const parsed = cvToValue(cv);
+            if (parsed && parsed.value) {
+              setUserData({
+                username: parsed.value.username?.value || '',
+                tier: Number(parsed.value.tier?.value || 0),
+                alertsEnabled: Number(parsed.value['alerts-enabled']?.value || 0),
+                subscriptionEnds: Number(parsed.value['subscription-ends']?.value || 0)
+              });
+            }
+          } catch (parseErr) {
+            console.error('Error parsing user data:', parseErr);
           }
         }
-      } catch (err) {
-        console.error('Error loading alerts:', err);
+
+        // Load alerts from server
+        try {
+          const serverUrl = process.env.NEXT_PUBLIC_SERVER_URL || 'https://stackpulse-b8fw.onrender.com';
+          const alertsResponse = await fetch(`${serverUrl}/api/users/${address}/alerts`);
+          if (alertsResponse.ok) {
+            const alertsData = await alertsResponse.json();
+            if (alertsData.alerts) {
+              setAlerts(alertsData.alerts);
+            }
+          }
+        } catch (err) {
+          console.error('Error loading alerts:', err);
+        }
+
+      } catch (error) {
+        console.error('Error loading user data:', error);
       } finally {
-        setIsDataLoading(false);
+        setIsLoading(false);
       }
     };
 
-    loadAlerts();
+    loadUserData();
   }, [address]);
-
-  const isLoading = isAccountLoading || (isConnected && isDataLoading);
 
   useEffect(() => {
     if (!showCreateAlert) return;
@@ -133,14 +175,13 @@ export default function DashboardPage() {
 
       await openContractCall({
         contractAddress: DEPLOYER_ADDRESS,
-        contractName: 'alert-manager-v-j3',
+        contractName: 'alert-manager-v-j4',
         functionName: 'create-alert',
         functionArgs: [
           uintCV(newAlertType),
           stringAsciiCV(newAlertName || alertTypes[newAlertType - 1].name),
           noneCV(), // target address (optional)
-          uintCV(parseInt(newAlertThreshold) || 10000),
-          uintCV(userData.tier)
+          uintCV(parseInt(newAlertThreshold) || 10000)
         ],
         onFinish: async (data: { txId: string }) => {
           console.log('Alert created:', data.txId);
@@ -186,19 +227,10 @@ export default function DashboardPage() {
           setIsCreating(false);
         }
       });
-    } catch (error: any) {
+    } catch (error) {
       console.error('Error creating alert:', error);
       toast.dismiss(toastId);
-      
-      const errorMessage = error.message || String(error);
-      if (errorMessage.includes('UserRejected')) {
-        toast.error('Transaction Cancelled', 'You rejected the request in your wallet.');
-      } else if (errorMessage.includes('InsufficientFunds')) {
-        toast.error('Insufficient Funds', 'You do not have enough STX to pay for the transaction fees.');
-      } else {
-        toast.error('Failed to Create Alert', 'An unexpected error occurred. Please try again.');
-      }
-      
+      toast.error('Failed to create alert', 'Please try again.');
       setIsCreating(false);
     } finally {
       // Note: setIsCreating(false) is handled in callbacks because openContractCall is async-finish
@@ -207,46 +239,31 @@ export default function DashboardPage() {
 
   // Toggle alert on/off
   const toggleAlert = async (alertId: number) => {
-    if (syncingAlertIds.has(alertId)) return;
-    
     const existing = alerts.find((a) => a.id === alertId);
     const nextEnabled = !(existing?.enabled ?? false);
-    
-    setSyncingAlertIds(prev => new Set(prev).add(alertId));
-    
-    // Update local state (optimistic)
+    const toastId = toast.loading('Syncing', `Updating ${existing?.name || 'alert'}...`);
+
+    // Update local state
     setAlerts(prev => prev.map(a => 
       a.id === alertId ? { ...a, enabled: nextEnabled } : a
     ));
-    
-    // Toast for feedback
-    const toastId = toast.loading('Syncing', `Updating ${existing?.name || 'alert'} status...`);
 
+    // Update on server
     try {
       const serverUrl = process.env.NEXT_PUBLIC_SERVER_URL || 'https://stackpulse-b8fw.onrender.com';
-      const res = await fetch(`${serverUrl}/api/users/${address}/alerts/${alertId}`, {
+      await fetch(`${serverUrl}/api/users/${address}/alerts/${alertId}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ enabled: nextEnabled })
       });
-      
-      if (!res.ok) throw new Error('Failed to update status');
-      
-      toast.success('Status Updated', `${existing?.name || 'Alert'} is now ${nextEnabled ? 'enabled' : 'disabled'}.`);
+      toast.dismiss(toastId);
     } catch (err) {
       console.error('Error toggling alert:', err);
-      // Revert optimism
-      setAlerts((prev) =>
-        prev.map((a) => (a.id === alertId ? { ...a, enabled: !nextEnabled } : a))
-      );
-      toast.error('Sync Failed', 'Could not update alert status. Please try again.');
-    } finally {
       toast.dismiss(toastId);
-      setSyncingAlertIds(prev => {
-        const next = new Set(prev);
-        next.delete(alertId);
-        return next;
-      });
+      setAlerts((prev) =>
+        prev.map((a) => (a.id === alertId ? { ...a, enabled: existing?.enabled ?? a.enabled } : a))
+      );
+      toast.error('Update failed', 'Could not toggle alert. Please try again.');
     }
   };
 
@@ -380,50 +397,58 @@ export default function DashboardPage() {
 	        </div>
 
         {/* Stats Cards */}
-        <div className="grid md:grid-cols-4 gap-4 mb-8">
+        <div className="grid md:grid-cols-4 gap-4 mb-8" role="region" aria-label="Quick Statistics">
           <div 
             className="bg-gray-800 rounded-xl p-6 border border-gray-700 animate-fade-in hover:-translate-y-1 hover:shadow-lg hover:shadow-purple-500/10 transition-all"
             style={{ animationDelay: '0ms', animationFillMode: 'both' }}
+            role="status"
+            aria-label={`${alerts.filter(a => a.enabled).length} Active Alerts`}
           >
-            <div className="flex items-center gap-3 mb-2">
+            <div className="flex items-center gap-3 mb-2" aria-hidden="true">
               <Bell className="w-5 h-5 text-purple-400" />
               <span className="text-gray-400">Active Alerts</span>
             </div>
             <p className="text-3xl font-bold text-white">{alerts.filter(a => a.enabled).length}</p>
-            <p className="text-sm text-gray-500">of {maxAlerts[userData.tier]} max</p>
+            <p className="text-sm text-gray-400">of {maxAlerts[userData.tier]} max</p>
           </div>
           <div 
             className="bg-gray-800 rounded-xl p-6 border border-gray-700 animate-fade-in hover:-translate-y-1 hover:shadow-lg hover:shadow-purple-500/10 transition-all"
             style={{ animationDelay: '100ms', animationFillMode: 'both' }}
+            role="status"
+            aria-label={`${alerts.reduce((sum, a) => sum + a.triggerCount, 0)} Total Triggers Today`}
           >
-            <div className="flex items-center gap-3 mb-2">
+            <div className="flex items-center gap-3 mb-2" aria-hidden="true">
               <Zap className="w-5 h-5 text-yellow-400" />
               <span className="text-gray-400">Triggers Today</span>
             </div>
             <p className="text-3xl font-bold text-white">{alerts.reduce((sum, a) => sum + a.triggerCount, 0)}</p>
-            <p className="text-sm text-gray-500">notifications sent</p>
+            <p className="text-sm text-gray-400">notifications sent</p>
           </div>
           <div 
             className="bg-gray-800 rounded-xl p-6 border border-gray-700 animate-fade-in hover:-translate-y-1 hover:shadow-lg hover:shadow-purple-500/10 transition-all"
             style={{ animationDelay: '200ms', animationFillMode: 'both' }}
+            role="status"
+            aria-label={`${new Set(alerts.map(a => a.type)).size} Alert Types Monitored`}
           >
-            <div className="flex items-center gap-3 mb-2">
+            <div className="flex items-center gap-3 mb-2" aria-hidden="true">
               <Activity className="w-5 h-5 text-green-400" />
               <span className="text-gray-400">Alert Types</span>
             </div>
             <p className="text-3xl font-bold text-white">{new Set(alerts.map(a => a.type)).size}</p>
-            <p className="text-sm text-gray-500">categories monitored</p>
+            <p className="text-sm text-gray-400">categories monitored</p>
           </div>
           <div 
             className="bg-gray-800 rounded-xl p-6 border border-gray-700 animate-fade-in hover:-translate-y-1 hover:shadow-lg hover:shadow-purple-500/10 transition-all"
             style={{ animationDelay: '300ms', animationFillMode: 'both' }}
+            role="status"
+            aria-label="0 Badges Earned"
           >
-            <div className="flex items-center gap-3 mb-2">
+            <div className="flex items-center gap-3 mb-2" aria-hidden="true">
               <Award className="w-5 h-5 text-blue-400" />
               <span className="text-gray-400">Badges Earned</span>
             </div>
             <p className="text-3xl font-bold text-white">0</p>
-            <p className="text-sm text-gray-500">reputation NFTs</p>
+            <p className="text-sm text-gray-400">reputation NFTs</p>
           </div>
         </div>
 
@@ -489,7 +514,7 @@ export default function DashboardPage() {
 	              <NoAlertsState onCreateAlert={() => setShowCreateAlert(true)} />
 	            </div>
 	          ) : (
-            <div className="space-y-3">
+            <div className="space-y-3" role="list">
               {alerts.map((alert, index) => {
                 const alertType = alertTypes.find(t => t.id === alert.type);
                 return (
@@ -497,14 +522,16 @@ export default function DashboardPage() {
                     key={alert.id} 
                     className="bg-gray-800 rounded-xl p-4 border border-gray-700 flex items-center justify-between animate-slide-up hover:border-purple-500/50 transition-colors"
                     style={{ animationDelay: `${index * 100}ms`, animationFillMode: 'both' }}
+                    role="listitem"
+                    aria-label={`Alert: ${alert.name}, ${alert.enabled ? 'Enabled' : 'Disabled'}`}
                   >
                     <div className="flex items-center gap-4">
                       <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${alert.enabled ? 'bg-purple-500/20' : 'bg-gray-700'}`}>
                         {alertType && <alertType.icon className={`w-5 h-5 ${alert.enabled ? 'text-purple-400' : 'text-gray-500'}`} />}
                       </div>
                       <div>
-                        <h4 className={`font-semibold ${alert.enabled ? 'text-white' : 'text-gray-500'}`}>{alert.name}</h4>
-                        <p className="text-gray-500 text-sm">
+                        <h4 className={`font-semibold ${alert.enabled ? 'text-white' : 'text-gray-400'}`}>{alert.name}</h4>
+                        <p className="text-gray-400 text-sm">
                           {alertType?.description} • {alert.triggerCount} triggers
                         </p>
                       </div>
@@ -518,9 +545,7 @@ export default function DashboardPage() {
 	                        aria-label={alert.enabled ? 'Disable alert' : 'Enable alert'}
 	                        title={alert.enabled ? 'Disable alert' : 'Enable alert'}
 	                      >
-	                        {syncingAlertIds.has(alert.id) ? (
-	                          <Loader2 className="w-6 h-6 animate-spin text-purple-500" />
-	                        ) : alert.enabled ? (
+	                        {alert.enabled ? (
 	                          <ToggleRight className="w-6 h-6 text-green-500" />
 	                        ) : (
 	                          <ToggleLeft className="w-6 h-6 text-gray-500" />
