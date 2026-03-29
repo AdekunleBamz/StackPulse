@@ -10,6 +10,7 @@ interface CacheEntry<T> {
 }
 
 const MAX_CACHE_SIZE = 10000;
+const CACHE_CLEANUP_INTERVAL_MS = 600000;
 
 class CacheService {
   private cache: Map<string, CacheEntry<unknown>> = new Map();
@@ -19,7 +20,8 @@ class CacheService {
     // Clean up expired entries every 10 minutes
     this.cleanupInterval = setInterval(() => {
       this.cleanupExpired();
-    }, 600000);
+    }, CACHE_CLEANUP_INTERVAL_MS);
+    this.cleanupInterval.unref();
   }
 
   /**
