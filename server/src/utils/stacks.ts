@@ -138,7 +138,10 @@ export async function getContractSource(
 /**
  * Get block info
  */
-export async function getBlock(blockHeight: number, network: 'mainnet' | 'testnet' = 'mainnet'): Promise<any | null> {
+export async function getBlock(
+  blockHeight: number,
+  network: 'mainnet' | 'testnet' = 'mainnet'
+): Promise<GenericJsonObject | null> {
   const baseUrl = getStacksApiUrl(network);
   
   try {
