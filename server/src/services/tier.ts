@@ -15,7 +15,6 @@ export interface TierLimits {
   maxWebhooks: number;
   rateLimit: number;
   priorityNotifications: boolean;
-  features: string[];
 }
 
 export const TIER_LIMITS: Record<UserTier, TierLimits> = {
@@ -23,29 +22,25 @@ export const TIER_LIMITS: Record<UserTier, TierLimits> = {
     maxAlerts: 5,
     maxWebhooks: 1,
     rateLimit: 100,
-    priorityNotifications: false,
-    features: ['api_access', 'basic_analytics']
+    priorityNotifications: false
   },
   [UserTier.PRO]: {
     maxAlerts: 50,
     maxWebhooks: 10,
     rateLimit: 1000,
-    priorityNotifications: true,
-    features: ['api_access', 'advanced_analytics', 'custom_webhooks']
+    priorityNotifications: true
   },
   [UserTier.WHALE]: {
     maxAlerts: 500,
     maxWebhooks: 100,
     rateLimit: 5000,
-    priorityNotifications: true,
-    features: ['api_access', 'advanced_analytics', 'custom_webhooks', 'batch_notifications']
+    priorityNotifications: true
   },
   [UserTier.EXCHANGE]: {
     maxAlerts: 5000,
     maxWebhooks: 1000,
     rateLimit: 20000,
-    priorityNotifications: true,
-    features: ['api_access', 'advanced_analytics', 'custom_webhooks', 'batch_notifications', 'priority_support', 'dedicated_indexing']
+    priorityNotifications: true
   }
 };
 
