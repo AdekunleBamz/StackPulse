@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useDebounce } from '@/hooks/useDebounce';
 import { ErrorState, NoResultsState, NoTransactionsState } from '@/components/EmptyState';
 import {
@@ -51,7 +51,7 @@ export default function AlertHistory({ userAddress }: AlertHistoryProps) {
 
   const pageSize = 10;
 
-  const fetchHistory = async () => {
+  const fetchHistory = useCallback(async () => {
     setLoading(true);
     setError(null);
     try {
@@ -100,11 +100,11 @@ export default function AlertHistory({ userAddress }: AlertHistoryProps) {
     } finally {
       setLoading(false);
     }
-  };
+  }, [debouncedSearchQuery, filter, page, userAddress]);
 
   useEffect(() => {
     fetchHistory();
-  }, [page, filter, debouncedSearchQuery, userAddress]);
+  }, [fetchHistory]);
 
   useEffect(() => {
     setPage(1);
