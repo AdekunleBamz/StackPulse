@@ -36,6 +36,11 @@ function getChannel(message: WSMessage): string | undefined {
   return message.channel || message.subscription;
 }
 
+function getNotificationType(notification: Record<string, unknown>): string | undefined {
+  const value = notification.type;
+  return typeof value === 'string' ? value : undefined;
+}
+
 export function broadcastNotification(notification: Record<string, unknown>): void {
   const message: WSMessage = { type: 'notification', data: notification };
   const payload = JSON.stringify(message);
@@ -46,7 +51,7 @@ export function broadcastNotification(notification: Record<string, unknown>): vo
     }
   });
 
-  logger.debug('Broadcast notification', { type: (notification as any)?.type });
+  logger.debug('Broadcast notification', { type: getNotificationType(notification) });
 }
 
 export function broadcastStats(stats: Record<string, unknown>): void {
