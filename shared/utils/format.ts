@@ -4,35 +4,34 @@
 
 /**
  * Formats a micro-STX amount into a human-readable STX string.
- * Uses Intl.NumberFormat for locale-aware formatting.
+ * @param microStx - The amount in micro-STX (1 STX = 1,000,000 micro-STX).
+ * @returns A formatted string with appropriate units (STX, K STX, or M STX).
+ * @example
+ * formatStxAmount(1000000) // "1.000000 STX"
+ * formatStxAmount(1500000000) // "1.50K STX"
+ * formatStxAmount("2000000000000") // "2.00M STX"
  */
-export function formatStxAmount(microStx: number | string, decimals: number = 6): string {
+export function formatStxAmount(microStx: number | string): string {
   const amount = typeof microStx === 'string' ? parseFloat(microStx) : microStx;
   const stx = amount / 1000000;
   
-  return new Intl.NumberFormat('en-US', {
-    minimumFractionDigits: 0,
-    maximumFractionDigits: decimals
-  }).format(stx) + ' STX';
+  if (stx >= 1000000) {
+    return `${(stx / 1000000).toFixed(2)}M STX`;
+  }
+  if (stx >= 1000) {
+    return `${(stx / 1000).toFixed(2)}K STX`;
+  }
+  return `${stx.toFixed(6)} STX`;
 }
 
 /**
- * Formats a value as currency (default USD).
- */
-export function formatCurrency(amount: number | string, currency: string = 'USD'): string {
-  const val = typeof amount === 'string' ? parseFloat(amount) : amount;
-  return new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency
-  }).format(val);
-}
-
-/**
- * Formats a number with thousand separators.
+ * Formats a number with thousand separators for better readability.
+ * @param num - The number or string representation to format.
+ * @returns A formatted string (e.g., "1,234.56").
  */
 export function formatNumber(num: number | string): string {
   const n = typeof num === 'string' ? parseFloat(num) : num;
-  return new Intl.NumberFormat('en-US').format(n);
+  return n.toLocaleString('en-US');
 }
 
 /**
