@@ -126,7 +126,7 @@ class NotificationsService {
    * Mark all notifications as read
    */
   markAllAsRead(userAddress: string): void {
-    const userNotifications = this.notifications.get(userAddress) || [];
+    const userNotifications = this.getUserNotificationList(userAddress);
     userNotifications.forEach(n => n.read = true);
   }
 
