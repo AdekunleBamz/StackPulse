@@ -100,17 +100,23 @@ interface ChainhookPayload {
         success: boolean;
         sender: string;
         fee: number;
-        kind: any;
+        kind: {
+          type?: string;
+          data?: Record<string, unknown>;
+        };
         receipt: {
-          events: any[];
+          events: Array<{
+            type?: string;
+            data?: Record<string, unknown>;
+          }>;
         };
       };
     }>;
   }>;
-  rollback?: any[];
+  rollback?: Array<Record<string, unknown>>;
   chainhook: {
     uuid: string;
-    predicate: any;
+    predicate: Record<string, unknown>;
   };
 }
 
