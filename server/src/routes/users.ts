@@ -110,12 +110,19 @@ router.patch('/:address', (req: Request, res: Response) => {
     });
   }
   
-  const updates = req.body as Partial<UserRecord>;
+  const updates = req.body as Partial<
+    Pick<UserRecord, 'displayName' | 'username' | 'email' | 'discord' | 'telegram' | 'enabledAlerts'>
+  >;
+  const normalizedDisplayName =
+    typeof updates.displayName === 'string' ? updates.displayName.trim().slice(0, 64) : undefined;
   const updatedUser: UserRecord = {
     ...user,
     ...updates,
+    displayName: normalizedDisplayName || user.displayName,
     address: user.address,
     createdAt: user.createdAt,
+    tier: user.tier,
+    alertCount: user.alertCount,
   };
   users.set(address, updatedUser);
 
