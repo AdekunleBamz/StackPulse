@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Bell, X, Check, ExternalLink } from 'lucide-react';
+import { Bell, X, ExternalLink } from 'lucide-react';
 
 interface Notification {
   id: string;
