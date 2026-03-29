@@ -9,19 +9,8 @@ interface CacheEntry<T> {
   expiresAt: number;
 }
 
-const MAX_CACHE_SIZE = 10_000;
-const CACHE_CLEANUP_INTERVAL_MS = 600_000;
-const CACHE_DEFAULT_TTL_MS = 3600_000;
-
-/**
- * Standard TTL values in milliseconds
- */
-export const CACHE_TTL = {
-  SHORT: 60 * 1000,         // 1 minute
-  MEDIUM: 5 * 60 * 1000,    // 5 minutes
-  LONG: 60 * 60 * 1000,     // 1 hour
-  DAY: 24 * 60 * 60 * 1000, // 24 hours
-} as const;
+const MAX_CACHE_SIZE = 10000;
+const CACHE_CLEANUP_INTERVAL_MS = 600000;
 
 class CacheService {
   private cache: Map<string, CacheEntry<unknown>> = new Map();
