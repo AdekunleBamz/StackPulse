@@ -8,7 +8,7 @@ import logger from './logger';
 
 interface WebhookPayload {
   event: string;
-  data: any;
+  data: unknown;
   timestamp: number;
 }
 
@@ -59,10 +59,13 @@ export function verifySignature(
 /**
  * Validate webhook payload structure
  */
-export function validateWebhookPayload(data: any): { payload: WebhookPayload | null; error?: string } {
-  if (!data) return { payload: null, error: 'Empty payload' };
-  
-  const { event, data: payloadData, timestamp } = data;
+export function validateWebhookPayload(data: unknown): { payload: WebhookPayload | null; error?: string } {
+  if (!data || typeof data !== 'object') return { payload: null, error: 'Empty payload' };
+
+  const payloadRecord = data as Record<string, unknown>;
+  const event = payloadRecord.event;
+  const payloadData = payloadRecord.data;
+  const timestamp = payloadRecord.timestamp;
   
   if (!event || typeof event !== 'string') {
     return { payload: null, error: 'Missing or invalid event type' };
@@ -95,7 +98,7 @@ export function validateWebhookPayload(data: any): { payload: WebhookPayload | n
  * Process webhook request
  */
 export function processWebhook(
-  body: any,
+  body: unknown,
   signature: string | undefined,
   config: WebhookConfig
 ): { valid: boolean; payload?: WebhookPayload; error?: string } {
