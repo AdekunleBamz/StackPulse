@@ -29,9 +29,11 @@ export default function ConfirmDialog({
   const cancelButtonRef = useRef<HTMLButtonElement>(null);
   const previouslyFocusedRef = useRef<HTMLElement | null>(null);
 
-  if (!isOpen) return null;
-
   useEffect(() => {
+    if (!isOpen) {
+      return;
+    }
+
     previouslyFocusedRef.current = document.activeElement as HTMLElement | null;
     cancelButtonRef.current?.focus();
     const previousOverflow = document.body.style.overflow;
@@ -41,7 +43,7 @@ export default function ConfirmDialog({
       previouslyFocusedRef.current?.focus?.();
       previouslyFocusedRef.current = null;
     };
-  }, []);
+  }, [isOpen]);
 
   const handleConfirm = async () => {
     setIsLoading(true);
@@ -71,6 +73,8 @@ export default function ConfirmDialog({
   };
 
   const styles = variantStyles[variant];
+
+  if (!isOpen) return null;
 
   return (
     <div
