@@ -61,7 +61,7 @@ export default function ConnectWallet() {
   return (
     <div ref={wrapperRef} className="relative">
       <Button
-        onClick={() => setShowDropdown(!showDropdown)}
+        onClick={() => setShowDropdown((prev) => !prev)}
         variant="secondary"
         size="md"
         aria-haspopup="menu"
