@@ -1,8 +1,8 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import Link from 'next/link';
-import { Award, ArrowLeft, Share2, Twitter, Download, Lock, Check, ExternalLink } from 'lucide-react';
+import { Award, ArrowLeft, Share2, ExternalLink } from 'lucide-react';
 import BadgeShowcase from '@/components/BadgeShowcase';
 import { toast } from '@/components/Toast';
 import { Breadcrumbs } from '@/components';
@@ -110,7 +110,6 @@ const rarityColors = {
 };
 
 export default function BadgesPage() {
-  const [selectedBadge, setSelectedBadge] = useState<typeof badgeDetails[0] | null>(null);
   const { address, isConnected } = useWallet();
 
   const userBadges = useMemo(() => {
