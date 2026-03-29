@@ -110,7 +110,7 @@ class CacheService {
   /**
    * Cleanup expired items to prevent memory leaks
    */
-  cleanupExpired() {
+  cleanupExpired(): void {
     const now = Date.now();
     let count = 0;
     
