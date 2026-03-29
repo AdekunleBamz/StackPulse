@@ -30,7 +30,8 @@ export default function PriceTracker() {
       try {
         // Using CoinGecko API for price data
         const response = await fetch(
-          'https://api.coingecko.com/api/v3/simple/price?ids=blockstack,bitcoin&vs_currencies=usd&include_24hr_change=true'
+          'https://api.coingecko.com/api/v3/simple/price?ids=blockstack,bitcoin&vs_currencies=usd&include_24hr_change=true',
+          { headers: { Accept: 'application/json' } }
         );
         
         if (!response.ok) throw new Error('Bad response');
