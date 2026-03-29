@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { TrendingUp, ArrowUp, ArrowDown, Minus } from 'lucide-react';
+import logger from '@/lib/logger';
 
 interface PriceData {
   stx: {
@@ -45,7 +46,7 @@ export default function PriceTracker() {
         setLastUpdate(new Date());
         setError(null);
       } catch (error) {
-        console.error('Error fetching prices:', error);
+        logger.error('Error fetching prices:', error);
         setError('Unable to load prices right now.');
         setPrices(null);
       } finally {
