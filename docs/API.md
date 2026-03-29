@@ -384,7 +384,7 @@ Real-time notifications via WebSocket at `wss://stackpulse-b8fw.onrender.com/ws`
 ```typescript
 interface WebSocketMessage {
   type: 'notification' | 'stats' | 'alert';
-  data: any;
+  data: Record<string, unknown>;
 }
 ```
 
