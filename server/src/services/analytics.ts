@@ -14,20 +14,25 @@ interface EventCount {
   lastSeen: number;
 }
 
-interface AggregateMetric {
-  count: number;
-  sum: number;
-  max: number;
-}
-
 interface AnalyticsData {
   events: Map<string, EventCount>;
   hourly: Map<number, Map<string, number>>;
-  daily: Map<number, Map<string, AggregateMetric>>;
+  daily: Map<number, Map<string, number>>;
   userEventCounts: Map<string, number>;
 }
 
-// ... existing storage ...
+// Memory safety limits
+const MAX_EVENT_TYPES = 50;
+const MAX_HOURLY_ENTRIES = 24 * 7; // 1 week of hourly data
+const MAX_DAILY_ENTRIES = 365; // 1 year of daily data
+const MAX_EVENTS_PER_USER = new Map<number, number>([
+  [0, 1000],  // FREE
+  [1, 10000], // PRO
+  [2, 100000], // WHALE
+  [3, 1000000] // EXCHANGE
+]);
+
+// In-memory storage for analytics data
 const analytics: AnalyticsData = {
   events: new Map(),
   hourly: new Map(),
@@ -35,34 +40,60 @@ const analytics: AnalyticsData = {
   userEventCounts: new Map(),
 };
 
-/**
- * Track events with volume-based aggregation
- */
+// Track an event
 export function trackEvent(eventType: string, metadata?: Record<string, any>, userAddress?: string, tier: number = 0): void {
-  const amount = metadata?.amount || 0;
-  const now = Date.now();
-  const day = Math.floor(now / 86400000);
+  if (analytics.events.size >= MAX_EVENT_TYPES && !analytics.events.has(eventType)) {
+    logger.warn('Maximum event types reached, dropping new event type', { eventType });
+    return;
+  }
 
-  // Update daily multi-metric aggregates
+  if (userAddress) {
+    const currentCount = analytics.userEventCounts.get(userAddress) || 0;
+    const limit = MAX_EVENTS_PER_USER.get(tier) || 1000;
+    
+    if (currentCount >= limit) {
+      logger.debug('User analytics limit reached', { userAddress, tier, limit, eventType });
+      return;
+    }
+    
+    analytics.userEventCounts.set(userAddress, currentCount + 1);
+  }
+
+  const now = Date.now();
+  const hour = Math.floor(now / 3600000);
+  const day = Math.floor(now / 86400000);
+  
+  // Update event count
+  const existing = analytics.events.get(eventType);
+  if (existing) {
+    analytics.events.set(eventType, {
+      count: existing.count + 1,
+      firstSeen: existing.firstSeen,
+      lastSeen: now
+    });
+  } else {
+    analytics.events.set(eventType, {
+      count: 1,
+      firstSeen: now,
+      lastSeen: now
+    });
+  }
+  
+  // Update hourly aggregation
+  if (!analytics.hourly.has(hour)) {
+    analytics.hourly.set(hour, new Map());
+  }
+  const hourMap = analytics.hourly.get(hour)!;
+  hourMap.set(eventType, (hourMap.get(eventType) || 0) + 1);
+  
+  // Update daily aggregation
   if (!analytics.daily.has(day)) {
     analytics.daily.set(day, new Map());
   }
   const dayMap = analytics.daily.get(day)!;
-  const current = dayMap.get(eventType) || { count: 0, sum: 0, max: 0 };
+  dayMap.set(eventType, (dayMap.get(eventType) || 0) + 1);
   
-  dayMap.set(eventType, {
-    count: current.count + 1,
-    sum: current.sum + amount,
-    max: Math.max(current.max, amount)
-  });
-
-  logger.debug('Analytics updated with volume info', { eventType, amount });
-  
-  // Call internal count-only trackers
-  const hour = Math.floor(now / 3600000);
-  if (!analytics.hourly.has(hour)) analytics.hourly.set(hour, new Map());
-  const hourMap = analytics.hourly.get(hour)!;
-  hourMap.set(eventType, (hourMap.get(eventType) || 0) + 1);
+  logger.debug('Event tracked', { eventType, metadata });
 }
 
 // Get event counts
