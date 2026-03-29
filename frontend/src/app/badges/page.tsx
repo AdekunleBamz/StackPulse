@@ -197,7 +197,7 @@ export default function BadgesPage() {
 	            </p>
 	            <div className="flex justify-center gap-4">
 		            <a
-		              href="https://explorer.hiro.so/address/SP5K2RHMSBH4PAP4PGX77MCVNK1ZEED07CWX9TJT.reputation-badges-v-j3?chain=mainnet"
+		              href="https://explorer.hiro.so/address/SP1THTSTZ8RQGD8R3GKPGK3ABQ908BD8X85P3J6X9.reputation-badges-v-j4?chain=mainnet"
 		              target="_blank"
 		              rel="noopener noreferrer"
 		              className="flex items-center gap-2 px-6 py-3 bg-purple-600 hover:bg-purple-500 rounded-lg font-medium transition-all focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400/90"

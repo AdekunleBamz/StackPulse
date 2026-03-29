@@ -6,7 +6,7 @@
     "mainnet": {
       "if_this": {
         "scope": "print_event",
-        "contract_identifier": "SP5K2RHMSBH4PAP4PGX77MCVNK1ZEED07CWX9TJT.reputation-badges-v-j3",
+        "contract_identifier": "SP1THTSTZ8RQGD8R3GKPGK3ABQ908BD8X85P3J6X9.reputation-badges-v-j4",
         "contains": "badge-minted"
       },
       "then_that": {
