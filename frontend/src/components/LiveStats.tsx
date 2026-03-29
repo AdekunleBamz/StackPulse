@@ -4,6 +4,7 @@ import { Activity, ExternalLink } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { StatsCardSkeleton } from './LoadingSkeleton';
 import { apiUrl } from '@/lib/env';
+import logger from '@/lib/logger';
 
 interface EventStats {
   whaleTransfers: number;
@@ -36,7 +37,7 @@ export default function LiveStats() {
         setLastUpdated(new Date());
         setError(null);
       } catch (error) {
-        console.error('Failed to fetch stats:', error);
+        logger.error('Failed to fetch stats:', error);
         setError('Unable to load live stats right now.');
       } finally {
         setLoading(false);
