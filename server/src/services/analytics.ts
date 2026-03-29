@@ -152,7 +152,7 @@ export function getHourlyBreakdown(eventType: string, hours: number = 24): Recor
   const startHour = Math.floor(now / 3600000) - hours;
   const result: Record<string, number> = {};
   
-  for (let i = startHour; i <= startHour + hours; i++) {
+  for (let i = startHour; i < startHour + hours; i++) {
     const hourMap = analytics.hourly.get(i);
     if (hourMap) {
       const count = hourMap.get(eventType) || 0;
@@ -171,7 +171,7 @@ export function getDailyBreakdown(eventType: string, days: number = 30): Record<
   const startDay = Math.floor(now / 86400000) - days;
   const result: Record<string, number> = {};
   
-  for (let i = startDay; i <= startDay + days; i++) {
+  for (let i = startDay; i < startDay + days; i++) {
     const dayMap = analytics.daily.get(i);
     if (dayMap) {
       const count = dayMap.get(eventType) || 0;
