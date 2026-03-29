@@ -62,25 +62,14 @@ class EmailService {
   }
 
   async sendAlertNotification(email: string, alertName: string, details: any): Promise<boolean> {
-    const txHash = details.txHash || '';
-    const explorerUrl = `https://explorer.hiro.so/txid/${txHash}?chain=mainnet`;
-    
     return this.send({
       to: email,
-      subject: `🔔 Alert Triggered: ${alertName}`,
-      body: `Your alert "${alertName}" has been triggered.\n\nView on Explorer: ${explorerUrl}`,
+      subject: `Alert Triggered: ${alertName}`,
+      body: `Your alert "${alertName}" has been triggered.\n\nDetails: ${JSON.stringify(details, null, 2)}`,
       html: `
-        <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e2e8f0; border-radius: 12px;">
-          <h2 style="color: #7c3aed; margin-top: 0;">Alert Triggered</h2>
-          <p>Your alert <strong>${alertName}</strong> has been triggered on the Stacks network.</p>
-          <div style="background-color: #f8fafc; padding: 15px; border-radius: 8px; margin: 20px 0;">
-            <pre style="margin: 0; font-size: 13px; color: #334155;">${JSON.stringify(details, null, 2)}</pre>
-          </div>
-          <a href="${explorerUrl}" style="display: inline-block; background-color: #7c3aed; color: white; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: bold;">View on Explorer</a>
-          <p style="margin-top: 25px; font-size: 12px; color: #64748b; border-top: 1px solid #e2e8f0; padding-top: 15px;">
-            Sent by StackPulse • <a href="https://stackpulse.app/settings" style="color: #7c3aed;">Manage Notifications</a>
-          </p>
-        </div>
+        <h2>Alert Triggered</h2>
+        <p>Your alert <strong>${alertName}</strong> has been triggered.</p>
+        <pre>${JSON.stringify(details, null, 2)}</pre>
       `
     });
   }
@@ -88,15 +77,12 @@ class EmailService {
   async sendWelcomeEmail(email: string, address: string): Promise<boolean> {
     return this.send({
       to: email,
-      subject: '✨ Welcome to StackPulse',
-      body: `Welcome! Your address ${address} has been registered with StackPulse.`,
+      subject: 'Welcome to StackPulse',
+      body: `Welcome! Your address ${address} has been registered.`,
       html: `
-        <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e2e8f0; border-radius: 12px;">
-          <h2 style="color: #7c3aed; margin-top: 0;">Welcome to StackPulse!</h2>
-          <p>Your wallet address <code>${address}</code> has been successfully registered.</p>
-          <p>You can now start creating custom alerts to monitor whales, contract deployments, and NFT mints in real-time.</p>
-          <a href="https://stackpulse.app/dashboard" style="display: inline-block; background-color: #7c3aed; color: white; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: bold; margin-top: 10px;">Go to Dashboard</a>
-        </div>
+        <h2>Welcome to StackPulse!</h2>
+        <p>Your wallet address <code>${address}</code> has been registered.</p>
+        <p>Start creating alerts to monitor blockchain events.</p>
       `
     });
   }
