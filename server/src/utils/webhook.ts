@@ -35,85 +35,85 @@ export function generateSignature(payload: string, secret: string): string {
 }
 
 /**
- * Verify webhook signature with secret rotation support
+ * Verify webhook signature
  */
 export function verifySignature(
   payload: string,
   signature: string,
-  secrets: string | string[]
+  secret: string
 ): boolean {
-  const secretList = Array.isArray(secrets) ? secrets : [secrets];
+  const expectedSignature = generateSignature(payload, secret);
   const providedSignature = Buffer.from(signature, 'utf8');
+  const expectedSignatureBuffer = Buffer.from(expectedSignature, 'utf8');
 
-  for (const secret of secretList) {
-    const expectedSignature = generateSignature(payload, secret);
-    const expectedSignatureBuffer = Buffer.from(expectedSignature, 'utf8');
-
-    if (
-      providedSignature.length === expectedSignatureBuffer.length &&
-      crypto.timingSafeEqual(providedSignature, expectedSignatureBuffer)
-    ) {
-      return true;
-    }
+  if (providedSignature.length !== expectedSignatureBuffer.length) {
+    return false;
   }
 
-  return false;
+  return crypto.timingSafeEqual(
+    providedSignature,
+    expectedSignatureBuffer
+  );
 }
 
 /**
- * Validate webhook payload structure with strict type checks
+ * Validate webhook payload structure
  */
 export function validateWebhookPayload(data: any): { payload: WebhookPayload | null; error?: string } {
-  if (!data || typeof data !== 'object') {
-    return { payload: null, error: 'Invalid or missing payload object' };
-  }
+  if (!data) return { payload: null, error: 'Empty payload' };
   
   const { event, data: payloadData, timestamp } = data;
   
   if (!event || typeof event !== 'string') {
-    return { payload: null, error: 'Event type must be a valid string' };
+    return { payload: null, error: 'Missing or invalid event type' };
   }
   
-  if (!payloadData || typeof payloadData !== 'object') {
-    return { payload: null, error: 'Payload data must be a valid object' };
+  if (!payloadData) {
+    return { payload: null, error: 'Missing payload data' };
   }
   
-  if (typeof timestamp !== 'number' || isNaN(timestamp)) {
-    return { payload: null, error: 'Timestamp must be a valid unix numeric value' };
+  if (!timestamp || typeof timestamp !== 'number') {
+    return { payload: null, error: 'Missing or invalid timestamp' };
   }
   
-  // Strict 5-minute window check for replay protection
+  // Check if timestamp is within acceptable range (5 minutes)
   const now = Date.now();
   if (Math.abs(now - timestamp) > 300000) {
-    return { payload: null, error: 'Webhook signature expired (5min window)' };
+    return { payload: null, error: 'Webhook timestamp expired' };
   }
   
   return {
-    payload: { event, data: payloadData, timestamp }
+    payload: {
+      event,
+      data: payloadData,
+      timestamp
+    }
   };
 }
 
 /**
- * Process authenticated webhook request
+ * Process webhook request
  */
 export function processWebhook(
   body: any,
   signature: string | undefined,
-  config: WebhookConfig & { alternateSecrets?: string[] }
+  config: WebhookConfig
 ): { valid: boolean; payload?: WebhookPayload; error?: string } {
+  // Verify signature if provided
   if (config.signatureHeader && signature) {
-    const bodyString = typeof body === 'string' ? body : JSON.stringify(body);
-    const allSecrets = [config.secret, ...(config.alternateSecrets || [])];
-    
-    if (!verifySignature(bodyString, signature, allSecrets)) {
-      logger.warn('Webhook signature verification failed', { signatureExists: !!signature });
-      return { valid: false, error: 'Unauthorized: Invalid signature' };
+    const bodyString = JSON.stringify(body);
+    if (!verifySignature(bodyString, signature, config.secret)) {
+      return { valid: false, error: 'Invalid signature' };
     }
   }
   
-  return validateWebhookPayload(body).payload 
-    ? { valid: true, payload: body } 
-    : { valid: false, error: 'Malformed payload structure' };
+  // Validate payload
+  const { payload, error } = validateWebhookPayload(body);
+  if (!payload) {
+    return { valid: false, error: error || 'Invalid payload' };
+  }
+  
+  return { valid: true, payload };
 }
 
 /**
