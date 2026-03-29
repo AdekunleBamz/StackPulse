@@ -6,13 +6,11 @@ import { useRouter } from 'next/navigation';
 import { toast } from '@/components/Toast';
 import TextField from '@/components/ui/TextField';
 import { Breadcrumbs } from '@/components';
-
-const DEPLOYER_ADDRESS = process.env.NEXT_PUBLIC_DEPLOYER_ADDRESS || '';
+import { DEPLOYER_ADDRESS } from '@/lib/env';
 
 export default function RegisterPage() {
-  const { isConnected, address, connect } = useWallet();
+  const { isConnected, connect } = useWallet();
   const [username, setUsername] = useState('');
-  const [referrer, setReferrer] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [usernameError, setUsernameError] = useState('');
   const [submitError, setSubmitError] = useState('');
