@@ -61,7 +61,7 @@ class EmailService {
     }
   }
 
-  async sendAlertNotification(email: string, alertName: string, details: any): Promise<boolean> {
+  async sendAlertNotification(email: string, alertName: string, details: unknown): Promise<boolean> {
     return this.send({
       to: email,
       subject: `Alert Triggered: ${alertName}`,
