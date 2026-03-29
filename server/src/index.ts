@@ -678,8 +678,8 @@ app.get('/api/v1/stats', (req: Request, res: Response) => {
 // Get chainhook status
 app.get('/api/v1/chainhooks/status', (req: Request, res: Response) => {
   res.json({
-    registered: 9,
-    active: 9,
+    registered: 12,
+    active: 12,
     chainhooks: [
       'whale-transfer-alert',
       'new-contract-deployed',
@@ -689,7 +689,10 @@ app.get('/api/v1/chainhooks/status', (req: Request, res: Response) => {
       'user-subscription-created',
       'alert-triggered',
       'fee-collected',
-      'badge-earned'
+      'badge-earned',
+      'new-subscription',
+      'subscription-upgrade',
+      'alert-created'
     ]
   });
 });
