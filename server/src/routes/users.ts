@@ -141,17 +141,19 @@ router.post('/:address/upgrade', (req: Request, res: Response) => {
     });
   }
   
-  if (tier === undefined || tier < 0 || tier > 3) {
+  const parsedTier =
+    typeof tier === 'number' ? tier : typeof tier === 'string' ? Number.parseInt(tier, 10) : Number.NaN;
+  if (!Number.isInteger(parsedTier) || parsedTier < UserTier.FREE || parsedTier > UserTier.EXCHANGE) {
     return res.status(400).json({
       success: false,
       error: 'Invalid tier specified'
     });
   }
   
-  const updatedUser = { ...user, tier };
+  const updatedUser = { ...user, tier: parsedTier as UserTier };
   users.set(address, updatedUser);
   
-  logger.info('User tier upgraded', { address, oldTier: user.tier, newTier: tier });
+  logger.info('User tier upgraded', { address, oldTier: user.tier, newTier: parsedTier });
   
   res.json({
     success: true,
