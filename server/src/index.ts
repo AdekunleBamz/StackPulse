@@ -265,7 +265,7 @@ app.post(CHAINHOOK_ENDPOINTS.contractDeployed, authenticateWebhook, processAsync
 }));
 
 // 3. NFT Mint Tracker
-app.post('/api/v1/chainhooks/nft-mint', tieredApiLimiter, authenticateWebhook, processAsync(async (payload) => {
+app.post(CHAINHOOK_ENDPOINTS.nftMint, tieredApiLimiter, authenticateWebhook, processAsync(async (payload) => {
   for (const block of payload.apply) {
     for (const tx of block.transactions) {
       const events = tx.metadata.receipt.events || [];
