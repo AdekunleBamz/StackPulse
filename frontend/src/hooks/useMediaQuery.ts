@@ -12,9 +12,19 @@ export function useMediaQuery(query: string): boolean {
 
     const mediaQuery = window.matchMedia(query);
     const listener = () => onStoreChange();
-    mediaQuery.addEventListener('change', listener);
+    if (typeof mediaQuery.addEventListener === 'function') {
+      mediaQuery.addEventListener('change', listener);
+    } else {
+      mediaQuery.addListener(listener);
+    }
 
-    return () => mediaQuery.removeEventListener('change', listener);
+    return () => {
+      if (typeof mediaQuery.removeEventListener === 'function') {
+        mediaQuery.removeEventListener('change', listener);
+      } else {
+        mediaQuery.removeListener(listener);
+      }
+    };
   };
 
   const getSnapshot = () => {
