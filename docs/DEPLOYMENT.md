@@ -179,11 +179,11 @@ LOG_LEVEL=info
 CHAINHOOK_AUTH_TOKEN=your-secure-token
 
 # Contract Addresses
-DEPLOYER_ADDRESS=<YOUR_DEPLOYER_ADDRESS>
+DEPLOYER_ADDRESS=SP5K2RHMSBH4PAP4PGX77MCVNK1ZEED07CWX9TJT
 REGISTRY_CONTRACT=stackpulse-v-j4
-ALERT_CONTRACT=alert-manager-v-j4
-VAULT_CONTRACT=fee-vault-v-j4
-BADGE_CONTRACT=reputation-badges-v-j4
+ALERT_CONTRACT=alert-manager-v3
+VAULT_CONTRACT=fee-vault-v3
+BADGE_CONTRACT=reputation-badges-v3
 
 # Optional: Redis for caching
 REDIS_URL=redis://...
