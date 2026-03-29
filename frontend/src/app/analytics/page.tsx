@@ -20,6 +20,7 @@ import {
 } from 'lucide-react';
 import { Breadcrumbs } from '@/components';
 import { NoResultsState } from '@/components/EmptyState';
+import { apiUrl } from '@/lib/env';
 
 interface AnalyticsData {
   totalUsers: number;
@@ -125,8 +126,7 @@ export default function AnalyticsPage() {
     const fetchAnalytics = async () => {
       try {
         setError(null);
-        const serverUrl = process.env.NEXT_PUBLIC_SERVER_URL || 'https://stackpulse-b8fw.onrender.com';
-        const response = await fetch(`${serverUrl}/api/stats`);
+        const response = await fetch(apiUrl('/api/stats'));
         
         if (response.ok) {
           const data = await response.json();
