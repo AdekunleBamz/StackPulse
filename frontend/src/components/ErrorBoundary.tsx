@@ -2,6 +2,7 @@
 
 import { Component, ReactNode, useState } from 'react';
 import Link from 'next/link';
+import logger from '@/lib/logger';
 
 interface Props {
   children: ReactNode;
@@ -28,7 +29,7 @@ export default class ErrorBoundary extends Component<Props, State> {
   }
 
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo): void {
-    console.error('ErrorBoundary caught an error:', error, errorInfo);
+    logger.error('ErrorBoundary caught an error:', error, errorInfo);
   }
 
   handleRetry = (): void => {
@@ -113,7 +114,7 @@ export function useErrorHandler() {
   const [error, setError] = useState<Error | null>(null);
   
   const handleError = (err: Error) => {
-    console.error('Error caught by handler:', err);
+    logger.error('Error caught by handler:', err);
     setError(err);
   };
   
