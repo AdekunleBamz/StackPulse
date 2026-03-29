@@ -50,6 +50,7 @@ const tiers = [
 ];
 
 const DEPLOYER_ADDRESS = process.env.NEXT_PUBLIC_DEPLOYER_ADDRESS || '';
+type ChannelId = 'email' | 'discord' | 'telegram';
 
 export default function Pricing() {
   const { isConnected, connect, address } = useWallet();
@@ -571,15 +572,15 @@ export default function Pricing() {
                     <p className="text-white text-xs font-bold mb-1">Wallet</p>
                     <p className="text-emerald-400 text-[10px] font-mono">Connected</p>
                   </div>
-                  {[
+                  {([
                     { id: 'email', icon: Mail, value: email, label: 'Email', color: 'bg-blue-500/10', iconColor: 'text-blue-400' },
                     { id: 'discord', icon: MessageCircle, value: discord, label: 'Discord', color: 'bg-indigo-500/10', iconColor: 'text-indigo-400' },
                     { id: 'telegram', icon: Send, value: telegram, label: 'Telegram', color: 'bg-sky-500/10', iconColor: 'text-sky-400' },
-                  ].map((chan) => (
+                  ] as const).map((chan: { id: ChannelId; icon: typeof Mail; value: string; label: string; color: string; iconColor: string }) => (
                     <button
                       key={chan.id}
                       type="button"
-                      onClick={() => openEditChannel(chan.id as any)}
+                      onClick={() => openEditChannel(chan.id)}
                       className="group bg-gray-800/30 rounded-2xl p-4 text-center border border-gray-700/50 hover:border-purple-500/30 hover:bg-gray-800/50 transition-all active:scale-95"
                     >
                       <div className={`w-10 h-10 ${chan.value ? 'bg-emerald-500/10' : chan.color} rounded-xl flex items-center justify-center mx-auto mb-3 transition-colors`} aria-hidden="true">
