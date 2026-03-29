@@ -819,6 +819,12 @@ app.post('/api/v1/users/:address/alerts', async (req: Request, res: Response) =>
       return res.status(400).json({ error: 'Address is required' });
     }
     const { type, name, threshold, targetAddress, txId } = req.body as CreateAlertRequestBody;
+    if (!Number.isInteger(type) || type < 1 || type > 6) {
+      return res.status(400).json({ error: 'Invalid alert type' });
+    }
+    if (!name || typeof name !== 'string' || name.trim().length === 0) {
+      return res.status(400).json({ error: 'Alert name is required' });
+    }
     
     const alerts = userAlerts.get(address) || [];
     const newAlert = {
