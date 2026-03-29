@@ -13,6 +13,16 @@ interface Notification {
   read: boolean;
 }
 
+interface NotificationApiItem {
+  id: string;
+  type: Notification['type'];
+  title: string;
+  message: string;
+  txHash?: string;
+  timestamp: string;
+  read: boolean;
+}
+
 const notificationIcons: Record<string, string> = {
   whale: '🐋',
   contract: '📜',
@@ -30,7 +40,6 @@ interface NotificationCenterProps {
 export default function NotificationCenter({ maxNotifications = 50 }: NotificationCenterProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [notifications, setNotifications] = useState<Notification[]>([]);
-  const [unreadCount, setUnreadCount] = useState(0);
 
   // Fetch notifications from server
   useEffect(() => {
@@ -41,7 +50,7 @@ export default function NotificationCenter({ maxNotifications = 50 }: Notificati
         if (response.ok) {
           const data = await response.json();
           if (data.notifications) {
-            setNotifications(data.notifications.map((n: any) => ({
+            setNotifications((data.notifications as NotificationApiItem[]).map((n) => ({
               ...n,
               timestamp: new Date(n.timestamp),
             })));
@@ -58,11 +67,7 @@ export default function NotificationCenter({ maxNotifications = 50 }: Notificati
     return () => clearInterval(interval);
   }, [maxNotifications]);
 
-  // Update unread count
-  useEffect(() => {
-    const unread = notifications.filter(n => !n.read).length;
-    setUnreadCount(unread);
-  }, [notifications]);
+  const unreadCount = notifications.filter(n => !n.read).length;
 
   const markAsRead = (id: string) => {
     setNotifications(prev =>
@@ -147,7 +152,7 @@ export default function NotificationCenter({ maxNotifications = 50 }: Notificati
                 <div className="p-8 text-center text-gray-500">
                   <Bell className="w-12 h-12 mx-auto mb-2 opacity-50" />
                   <p>No notifications yet</p>
-                  <p className="text-sm">We'll notify you of blockchain events</p>
+                  <p className="text-sm">We&apos;ll notify you of blockchain events</p>
                 </div>
               ) : (
                 <div className="divide-y divide-gray-800">
