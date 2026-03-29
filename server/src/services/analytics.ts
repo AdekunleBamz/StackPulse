@@ -25,6 +25,7 @@ interface AnalyticsData {
 const MAX_EVENT_TYPES = 50;
 const MAX_HOURLY_ENTRIES = 24 * 7; // 1 week of hourly data
 const MAX_DAILY_ENTRIES = 365; // 1 year of daily data
+const ANALYTICS_CLEANUP_INTERVAL_MS = 3600000;
 const MAX_EVENTS_PER_USER = new Map<number, number>([
   [0, 1000],  // FREE
   [1, 10000], // PRO
@@ -256,5 +257,6 @@ export function clearOldData(maxAgeDays: number = 30): void {
   });
 }
 
-// Initialize cleanup interval (every hour)
-setInterval(() => clearOldData(30), 3600000);
+// Initialize cleanup interval (every hour) without holding the process open.
+const cleanupInterval = setInterval(() => clearOldData(30), ANALYTICS_CLEANUP_INTERVAL_MS);
+cleanupInterval.unref();
