@@ -279,7 +279,7 @@ Receive alert trigger events.
 
 Receive fee collection events.
 
-### POST /api/chainhooks/badge-earned
+### POST /api/v1/chainhooks/badge-earned
 
 Receive badge minting events.
 
