@@ -139,7 +139,7 @@ export function truncateString(str: string, maxLength: number): string {
  */
 export function formatFileSize(bytes: number): string {
   const units = ['B', 'KB', 'MB', 'GB', 'TB'];
-  let size = bytes;
+  let size = Number.isFinite(bytes) ? Math.max(0, bytes) : 0;
   let unitIndex = 0;
   
   while (size >= 1024 && unitIndex < units.length - 1) {
