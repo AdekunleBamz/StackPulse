@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { apiUrl } from '@/lib/env';
+import logger from '@/lib/logger';
 
 interface Alert {
   id: string;
@@ -73,7 +74,7 @@ export function useAlerts(address: string | null): UseAlertsReturn {
       }
     } catch (err) {
       setError('Network error');
-      console.error('Error fetching alerts:', err);
+      logger.error('Error fetching alerts:', err);
     } finally {
       setLoading(false);
     }
@@ -110,7 +111,7 @@ export function useAlerts(address: string | null): UseAlertsReturn {
       }
     } catch (err) {
       setError('Network error');
-      console.error('Error creating alert:', err);
+      logger.error('Error creating alert:', err);
       return false;
     } finally {
       setLoading(false);
@@ -153,7 +154,7 @@ export function useAlerts(address: string | null): UseAlertsReturn {
       }
     } catch (err) {
       setError('Network error');
-      console.error('Error updating alert:', err);
+      logger.error('Error updating alert:', err);
       return false;
     } finally {
       setLoading(false);
@@ -182,7 +183,7 @@ export function useAlerts(address: string | null): UseAlertsReturn {
       }
     } catch (err) {
       setError('Network error');
-      console.error('Error deleting alert:', err);
+      logger.error('Error deleting alert:', err);
       return false;
     } finally {
       setLoading(false);
@@ -223,7 +224,7 @@ export function useAlerts(address: string | null): UseAlertsReturn {
       }
     } catch (err) {
       setError('Network error');
-      console.error('Error toggling alert:', err);
+      logger.error('Error toggling alert:', err);
       return false;
     } finally {
       setLoading(false);
