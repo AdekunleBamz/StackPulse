@@ -1,4 +1,4 @@
-;; StackPulse Alert Manager V3
+;; StackPulse Alert Manager V-J4
 ;; Upgrades from V2:
 ;; - Enhanced error handling with descriptive codes
 ;; - Optimized gas usage
