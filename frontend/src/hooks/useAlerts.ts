@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
+import { apiUrl } from '@/lib/env';
 
 interface Alert {
   id: string;
@@ -35,7 +36,6 @@ interface UseAlertsReturn {
   refetch: () => Promise<void>;
 }
 
-const SERVER_URL = process.env.NEXT_PUBLIC_SERVER_URL || 'https://stackpulse-b8fw.onrender.com';
 type AlertApiRecord = Omit<Alert, 'createdAt' | 'lastTriggered'> & {
   createdAt: string;
   lastTriggered?: string;
@@ -56,7 +56,7 @@ export function useAlerts(address: string | null): UseAlertsReturn {
     setError(null);
 
     try {
-      const response = await fetch(`${SERVER_URL}/api/alerts?address=${address}`);
+      const response = await fetch(apiUrl(`/api/alerts?address=${address}`));
       const data = await response.json();
 
       if (data.success) {
@@ -86,7 +86,7 @@ export function useAlerts(address: string | null): UseAlertsReturn {
     setError(null);
 
     try {
-      const response = await fetch(`${SERVER_URL}/api/alerts?address=${address}`, {
+      const response = await fetch(apiUrl(`/api/alerts?address=${address}`), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(input),
@@ -124,7 +124,7 @@ export function useAlerts(address: string | null): UseAlertsReturn {
     setError(null);
 
     try {
-      const response = await fetch(`${SERVER_URL}/api/alerts/${id}?address=${address}`, {
+      const response = await fetch(apiUrl(`/api/alerts/${id}?address=${address}`), {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(updates),
@@ -167,7 +167,7 @@ export function useAlerts(address: string | null): UseAlertsReturn {
     setError(null);
 
     try {
-      const response = await fetch(`${SERVER_URL}/api/alerts/${id}?address=${address}`, {
+      const response = await fetch(apiUrl(`/api/alerts/${id}?address=${address}`), {
         method: 'DELETE',
       });
 
@@ -196,7 +196,7 @@ export function useAlerts(address: string | null): UseAlertsReturn {
     setError(null);
 
     try {
-      const response = await fetch(`${SERVER_URL}/api/alerts/${id}/toggle?address=${address}`, {
+      const response = await fetch(apiUrl(`/api/alerts/${id}/toggle?address=${address}`), {
         method: 'POST',
       });
 
