@@ -19,6 +19,12 @@ const defaultOptions: RequestLogOptions = {
   excludePaths: ['/health', '/health/ready', '/health/live']
 };
 
+function getLogLevel(statusCode: number): 'error' | 'warn' | 'info' {
+  if (statusCode >= 500) return 'error';
+  if (statusCode >= 400) return 'warn';
+  return 'info';
+}
+
 /**
  * Request logger middleware
  */
