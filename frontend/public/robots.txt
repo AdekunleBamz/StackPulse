@@ -2,8 +2,10 @@
 User-agent: *
 Allow: /
 
-# Host
-Host: https://stackpulse.app
-
-# Sitemaps
+# Sitemap
 Sitemap: https://stackpulse.app/sitemap.xml
+
+# Disallow admin and private routes
+Disallow: /api/
+Disallow: /dashboard/
+Disallow: /settings/
