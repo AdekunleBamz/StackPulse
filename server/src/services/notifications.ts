@@ -77,7 +77,7 @@ class NotificationsService {
     };
 
     // Store notification
-    const userNotifications = this.notifications.get(userAddress) || [];
+    const userNotifications = this.getUserNotificationList(userAddress);
     userNotifications.unshift(notification);
     
     // Enforce limit
