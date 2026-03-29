@@ -3,8 +3,12 @@
  * Helper functions for interacting with Stacks blockchain
  */
 
-import { API_URLS } from '@stackpulse/shared/constants';
 import logger from './logger';
+
+const API_URLS = {
+  STACKS_API: 'https://stacks-node-api.mainnet.stacks.co',
+  STACKS_API_TESTNET: 'https://stacks-node-api.testnet.stacks.co',
+} as const;
 
 interface Transaction {
   tx_id: string;
@@ -16,8 +20,28 @@ interface Transaction {
 interface ContractCall {
   contract_id: string;
   function_name: string;
-  function_args: any[];
+  function_args: unknown[];
 }
+
+interface AddressBalanceResponse {
+  stx?: {
+    balance?: string;
+  };
+}
+
+interface PaginatedTransactionsResponse {
+  results?: Transaction[];
+}
+
+interface ContractSourceResponse {
+  source: string;
+}
+
+interface CoreApiInfoResponse {
+  stx_tip_height: number;
+}
+
+type GenericJsonObject = Record<string, unknown>;
 
 /**
  * Get Stacks API URL based on network
@@ -37,7 +61,7 @@ export async function getTransaction(txId: string, network: 'mainnet' | 'testnet
   try {
     const response = await fetch(`${baseUrl}/extended/v1/tx/${txId}`);
     if (!response.ok) return null;
-    return await response.json();
+    return (await response.json()) as Transaction;
   } catch (error) {
     logger.error('Error fetching transaction', { txId, network, error });
     return null;
@@ -53,10 +77,11 @@ export async function getAccountBalance(address: string, network: 'mainnet' | 't
   try {
     const response = await fetch(`${baseUrl}/extended/v1/address/${address}/balances`);
     if (!response.ok) return null;
-    const data = await response.json();
+    const data = (await response.json()) as AddressBalanceResponse;
+    const stxBalance = data.stx?.balance || '0';
     return {
-      balance: parseInt(data.stx.balance || '0'),
-      stx: data.stx.balance || '0'
+      balance: parseInt(stxBalance, 10),
+      stx: stxBalance
     };
   } catch (error) {
     logger.error('Error fetching account balance', { address, network, error });
@@ -80,7 +105,7 @@ export async function getAccountTransactions(
       `${baseUrl}/extended/v1/address/${address}/transactions?limit=${limit}&offset=${offset}`
     );
     if (!response.ok) return [];
-    const data = await response.json();
+    const data = (await response.json()) as PaginatedTransactionsResponse;
     return data.results || [];
   } catch (error) {
     logger.error('Error fetching account transactions', { address, network, error });
@@ -95,7 +120,7 @@ export async function getContractSource(
   contractAddress: string,
   contractName: string,
   network: 'mainnet' | 'testnet' = 'mainnet'
-): Promise<{ source: string; } | null> {
+): Promise<ContractSourceResponse | null> {
   const baseUrl = getStacksApiUrl(network);
   
   try {
@@ -103,7 +128,7 @@ export async function getContractSource(
       `${baseUrl}/v2/contracts/source/${contractAddress}/${contractName}`
     );
     if (!response.ok) return null;
-    return await response.json();
+    return (await response.json()) as ContractSourceResponse;
   } catch (error) {
     logger.error('Error fetching contract source', { contractAddress, contractName, network, error });
     return null;
@@ -119,7 +144,7 @@ export async function getBlock(blockHeight: number, network: 'mainnet' | 'testne
   try {
     const response = await fetch(`${baseUrl}/extended/v1/block/${blockHeight}`);
     if (!response.ok) return null;
-    return await response.json();
+    return (await response.json()) as GenericJsonObject;
   } catch (error) {
     logger.error('Error fetching block', { blockHeight, network, error });
     return null;
@@ -140,7 +165,7 @@ export async function getMempoolTransactions(
       `${baseUrl}/extended/v1/address/${address}/mempool`
     );
     if (!response.ok) return [];
-    const data = await response.json();
+    const data = (await response.json()) as PaginatedTransactionsResponse;
     return data.results || [];
   } catch (error) {
     logger.error('Error fetching mempool transactions', { address, network, error });
@@ -151,13 +176,13 @@ export async function getMempoolTransactions(
 /**
  * Get current block height
  */
-export async function getCoreApiInfo(network: 'mainnet' | 'testnet' = 'mainnet'): Promise<{ stx_tip_height: number } | null> {
+export async function getCoreApiInfo(network: 'mainnet' | 'testnet' = 'mainnet'): Promise<CoreApiInfoResponse | null> {
   const baseUrl = getStacksApiUrl(network);
   
   try {
     const response = await fetch(`${baseUrl}/v2/info`);
     if (!response.ok) return null;
-    return await response.json();
+    return (await response.json()) as CoreApiInfoResponse;
   } catch (error) {
     logger.error('Error fetching core API info', { network, error });
     return null;
@@ -178,10 +203,116 @@ export async function getBlockTransactions(
       `${baseUrl}/extended/v1/block/${blockHeight}/transactions`
     );
     if (!response.ok) return [];
-    const data = await response.json();
+    const data = (await response.json()) as PaginatedTransactionsResponse;
     return data.results || [];
   } catch (error) {
     logger.error('Error fetching block transactions', { blockHeight, network, error });
     return [];
   }
+}
+
+/**
+ * Compatibility helpers for event parsing.
+ */
+export function parseWhaleTransfer(event: GenericJsonObject): { amountSTX: string; amountFormatted: string; sender: string; recipient: string } | null {
+  if ((event.type as string | undefined) !== 'STXTransferEvent') {
+    return null;
+  }
+
+  const data = (event.data as GenericJsonObject | undefined) || {};
+  const amount = Number(data.amount || 0);
+  const sender = String(data.sender || '');
+  const recipient = String(data.recipient || '');
+
+  if (!amount || !sender || !recipient) {
+    return null;
+  }
+
+  const amountSTX = (amount / 1_000_000).toFixed(6);
+  return {
+    amountSTX,
+    amountFormatted: `${amountSTX} STX`,
+    sender,
+    recipient,
+  };
+}
+
+export function parseContractDeployment(tx: GenericJsonObject): { contractId: string; contractName: string; deployer: string } | null {
+  const metadata = (tx.metadata as GenericJsonObject | undefined) || {};
+  const kind = (metadata.kind as GenericJsonObject | undefined) || {};
+  const kindType = kind.type as string | undefined;
+
+  if (kindType !== 'ContractDeployment') {
+    return null;
+  }
+
+  const kindData = (kind.data as GenericJsonObject | undefined) || {};
+  const contractId = String(kindData.contract_identifier || '');
+  const deployer = String(metadata.sender || '');
+
+  if (!contractId || !deployer) {
+    return null;
+  }
+
+  const parts = contractId.split('.');
+  const contractName = parts[1] || contractId;
+
+  return { contractId, contractName, deployer };
+}
+
+export function parseNFTMint(event: GenericJsonObject): { assetIdentifier: string; assetName: string; tokenId: string; recipient: string; contractAddress: string } | null {
+  if ((event.type as string | undefined) !== 'NFTTransferEvent') {
+    return null;
+  }
+
+  const data = (event.data as GenericJsonObject | undefined) || {};
+  const assetIdentifier = String(data.asset_identifier || '');
+  const tokenId = String(data.value || '');
+  const recipient = String(data.recipient || '');
+
+  if (!assetIdentifier || !tokenId || !recipient) {
+    return null;
+  }
+
+  const [contractAddress, assetName] = assetIdentifier.split('::');
+  return {
+    assetIdentifier,
+    assetName: assetName || assetIdentifier,
+    tokenId,
+    recipient,
+    contractAddress: contractAddress || '',
+  };
+}
+
+export function parseStackPulseEvent(event: GenericJsonObject): GenericJsonObject | null {
+  if ((event.type as string | undefined) !== 'SmartContractEvent') {
+    return null;
+  }
+
+  const data = (event.data as GenericJsonObject | undefined) || {};
+  const value = data.value as GenericJsonObject | undefined;
+  return value || null;
+}
+
+export function formatSTX(amountMicroStx: number | string): string {
+  const amount = typeof amountMicroStx === 'string' ? Number(amountMicroStx) : amountMicroStx;
+  if (!Number.isFinite(amount)) {
+    return '0';
+  }
+  return (amount / 1_000_000).toFixed(6);
+}
+
+export function decodeClarityValue<T = unknown>(value: T): T {
+  return value;
+}
+
+export const stacksAppConfig = {
+  scopes: ['store_write', 'publish_data'],
+} as const;
+
+export function createUserSession(userData: GenericJsonObject = {}): { userData: GenericJsonObject; createdAt: number } {
+  return {
+    userData,
+    createdAt: Date.now(),
+  };
 }
