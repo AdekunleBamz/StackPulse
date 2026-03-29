@@ -60,6 +60,8 @@ router.get('/:address', (req: Request, res: Response) => {
  */
 router.post('/', (req: Request, res: Response) => {
   const { address, displayName } = req.body;
+  const normalizedDisplayName =
+    typeof displayName === 'string' ? displayName.trim().slice(0, 64) : '';
   
   if (!address || typeof address !== 'string') {
     return res.status(400).json({
@@ -77,7 +79,7 @@ router.post('/', (req: Request, res: Response) => {
   
   const user: UserRecord = {
     address,
-    displayName: typeof displayName === 'string' && displayName.trim() ? displayName : address.slice(0, 8),
+    displayName: normalizedDisplayName || address.slice(0, 8),
     tier: UserTier.FREE,
     createdAt: Date.now(),
     alertCount: 0
