@@ -1,4 +1,5 @@
 import logger from '../utils/logger';
+import { randomUUID } from 'crypto';
 
 /**
  * Notifications Service
@@ -61,7 +62,7 @@ class NotificationsService {
     priority: Notification['priority'] = 'normal'
   ): Notification {
     const notification: Notification = {
-      id: Math.random().toString(36).substring(7),
+      id: randomUUID(),
       type,
       title,
       message,
