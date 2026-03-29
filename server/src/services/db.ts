@@ -15,7 +15,7 @@ class DatabaseService {
     this.ensureDirs();
   }
 
-  private ensureDirs() {
+  private ensureDirs(): void {
     [this.dataDir, this.backupDir].forEach(dir => {
       if (!fs.existsSync(dir)) {
         fs.mkdirSync(dir, { recursive: true });
