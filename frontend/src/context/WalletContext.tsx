@@ -56,11 +56,8 @@ export function WalletProvider({ children }: { children: ReactNode }) {
         if (session.isUserSignedIn()) {
           const userData = session.loadUserData();
           setIsConnected(true);
-          setAddress(
-            network === 'mainnet' 
-              ? userData.profile?.stxAddress?.mainnet 
-              : userData.profile?.stxAddress?.testnet
-          );
+          // Initial hydrate defaults to mainnet; network-specific switching is handled in a separate effect.
+          setAddress(userData.profile?.stxAddress?.mainnet);
         }
       } catch (error) {
         console.error('Failed to initialize wallet:', error);
