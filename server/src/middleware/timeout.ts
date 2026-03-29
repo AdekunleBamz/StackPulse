@@ -1,34 +1,27 @@
+import { Request, Response, NextFunction } from 'express';
+import logger from '../utils/logger';
+
 /**
  * Request timeout middleware
- * Prevents resource exhaustion from hanging connections
  */
 export function requestTimeout(timeoutMs: number = 30000) {
   return (req: Request, res: Response, next: NextFunction) => {
     const timer = setTimeout(() => {
       if (!res.headersSent) {
-        logger.warn('Request timeout triggered', { 
+        logger.warn('Request timeout reached', { 
           method: req.method, 
           url: req.originalUrl,
           timeoutMs 
         });
         res.status(504).json({
           success: false,
-          error: {
-            message: 'Request timed out',
-            statusCode: 504
-          }
+          error: 'Request timeout'
         });
       }
     }, timeoutMs);
 
-    const cleanup = () => clearTimeout(timer);
-
-    res.on('finish', cleanup);
-    res.on('close', cleanup);
-    res.on('error', cleanup);
-    
+    res.on('finish', () => clearTimeout(timer));
+    res.on('close', () => clearTimeout(timer));
     next();
   };
 }
-
-export default requestTimeout;
