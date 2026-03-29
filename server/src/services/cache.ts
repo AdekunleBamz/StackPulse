@@ -102,9 +102,8 @@ class CacheService {
    * Destroy cache service
    */
   destroy(): void {
-    if (this.cleanupInterval) { // Only clear if it was set
-      clearInterval(this.cleanupInterval);
-    }
+    clearInterval(this.cleanupInterval);
+    this.clear();
     logger.info('Cache cleared');
   }
 
