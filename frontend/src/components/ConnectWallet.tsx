@@ -108,8 +108,8 @@ export default function ConnectWallet() {
                   switchNetwork('mainnet');
                   setShowDropdown(false);
                 }}
-                role="menuitem"
-                aria-pressed={network === 'mainnet'}
+                role="menuitemradio"
+                aria-checked={network === 'mainnet'}
                 aria-label="Switch to Mainnet"
                 className={`flex-1 px-3 py-2 rounded-xl text-xs font-bold transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-purple-500/50 ${
                   network === 'mainnet'
@@ -125,8 +125,8 @@ export default function ConnectWallet() {
                   switchNetwork('testnet');
                   setShowDropdown(false);
                 }}
-                role="menuitem"
-                aria-pressed={network === 'testnet'}
+                role="menuitemradio"
+                aria-checked={network === 'testnet'}
                 aria-label="Switch to Testnet"
                 className={`flex-1 px-3 py-2 rounded-xl text-xs font-bold transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-purple-500/50 ${
                   network === 'testnet'
