@@ -1,0 +1,32 @@
+---
+id: 0
+name: V4 Contracts Deployment
+network: mainnet
+stacks-node: "https://api.hiro.so"
+bitcoin-node: "http://blockstack:blockstacksystem@bitcoin.blockstack.com:8332"
+plan:
+  batches:
+    - id: 0
+      transactions:
+        - contract-publish:
+            contract-name: stackpulse-v-j4
+            expected-sender: SP1THTSTZ8RQGD8R3GKPGK3ABQ908BD8X85P3J6X9
+            cost: 20000
+            path: contracts/stackpulse-v-j4.clar
+            anchor-block-only: true
+            clarity-version: 2
+        - contract-publish:
+            contract-name: alert-manager-v-j4
+            expected-sender: SP1THTSTZ8RQGD8R3GKPGK3ABQ908BD8X85P3J6X9
+            cost: 20000
+            path: contracts/alert-manager-v-j4.clar
+            anchor-block-only: true
+            clarity-version: 2
+        - contract-publish:
+            contract-name: fee-vault-v-j4
+            expected-sender: SP1THTSTZ8RQGD8R3GKPGK3ABQ908BD8X85P3J6X9
+            cost: 20000
+            path: contracts/fee-vault-v-j4.clar
+            anchor-block-only: true
+            clarity-version: 2
+      epoch: "2.5"
