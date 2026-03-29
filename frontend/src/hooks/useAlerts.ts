@@ -158,9 +158,8 @@ export function useAlerts(address: string | null): UseAlertsReturn {
   const deleteAlert = useCallback(async (id: string): Promise<boolean> => {
     if (!address) return false;
 
-    // Optimistic update
-    const previousAlerts = [...alerts];
-    setAlerts(prev => prev.filter(alert => alert.id !== id));
+    setLoading(true);
+    setError(null);
 
     try {
       const response = await fetch(`${SERVER_URL}/api/alerts/${id}?address=${address}`, {
@@ -168,25 +167,28 @@ export function useAlerts(address: string | null): UseAlertsReturn {
       });
 
       const data = await response.json();
-      if (!data.success) throw new Error(data.error);
-      return true;
-    } catch (err: any) {
-      setAlerts(previousAlerts); // Rollback
-      setError(err.message || 'Failed to delete alert');
+
+      if (data.success) {
+        setAlerts(prev => prev.filter(alert => alert.id !== id));
+        return true;
+      } else {
+        setError(data.error || 'Failed to delete alert');
+        return false;
+      }
+    } catch (err) {
+      setError('Network error');
+      console.error('Error deleting alert:', err);
       return false;
+    } finally {
+      setLoading(false);
     }
-  }, [address, alerts]);
+  }, [address]);
 
   const toggleAlert = useCallback(async (id: string): Promise<boolean> => {
     if (!address) return false;
 
-    // Optimistic update
-    const previousAlerts = [...alerts];
-    setAlerts(prev =>
-      prev.map(alert =>
-        alert.id === id ? { ...alert, enabled: !alert.enabled } : alert
-      )
-    );
+    setLoading(true);
+    setError(null);
 
     try {
       const response = await fetch(`${SERVER_URL}/api/alerts/${id}/toggle?address=${address}`, {
@@ -194,14 +196,34 @@ export function useAlerts(address: string | null): UseAlertsReturn {
       });
 
       const data = await response.json();
-      if (!data.success) throw new Error(data.error);
-      return true;
-    } catch (err: any) {
-      setAlerts(previousAlerts); // Rollback
-      setError(err.message || 'Failed to toggle alert');
+
+      if (data.success) {
+        setAlerts(prev =>
+          prev.map(alert =>
+            alert.id === id
+              ? {
+                  ...data.alert,
+                  createdAt: new Date(data.alert.createdAt),
+                  lastTriggered: data.alert.lastTriggered
+                    ? new Date(data.alert.lastTriggered)
+                    : undefined,
+                }
+              : alert
+          )
+        );
+        return true;
+      } else {
+        setError(data.error || 'Failed to toggle alert');
+        return false;
+      }
+    } catch (err) {
+      setError('Network error');
+      console.error('Error toggling alert:', err);
       return false;
+    } finally {
+      setLoading(false);
     }
-  }, [address, alerts]);
+  }, [address]);
 
   // Auto-fetch on mount and when address changes
   useEffect(() => {
