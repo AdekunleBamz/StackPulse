@@ -107,8 +107,6 @@ plan:
 
 ---
 
----
-
 ## 2. Local Deployment (Docker Compose)
 
 For a quick local setup with all dependencies, use Docker Compose.
