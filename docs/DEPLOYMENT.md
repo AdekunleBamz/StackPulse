@@ -183,9 +183,9 @@ CHAINHOOK_AUTH_TOKEN=your-secure-token
 # Contract Addresses
 DEPLOYER_ADDRESS=SP5K2RHMSBH4PAP4PGX77MCVNK1ZEED07CWX9TJT
 REGISTRY_CONTRACT=stackpulse-v-j4
-ALERT_CONTRACT=alert-manager-v3
-VAULT_CONTRACT=fee-vault-v3
-BADGE_CONTRACT=reputation-badges-v3
+ALERT_CONTRACT=alert-manager-v-j4
+VAULT_CONTRACT=fee-vault-v-j4
+BADGE_CONTRACT=reputation-badges-v-j4
 
 # Optional: Redis for caching
 REDIS_URL=redis://...
@@ -246,7 +246,7 @@ Get your Hiro Platform API key from [platform.hiro.so](https://platform.hiro.so)
 export HIRO_API_KEY=your-api-key
 
 # Run registration script
-npx ts-node scripts/register-stackpulse-chainhooks-v3.ts
+npx tsx scripts/register-stackpulse-chainhooks-v-j4.ts
 ```
 
 ### Verify Registration
