@@ -21,6 +21,7 @@ import {
 import { Breadcrumbs } from '@/components';
 import { NoResultsState } from '@/components/EmptyState';
 import { apiUrl } from '@/lib/env';
+import logger from '@/lib/logger';
 
 interface AnalyticsData {
   totalUsers: number;
@@ -157,7 +158,7 @@ export default function AnalyticsPage() {
           setError('Failed to load analytics. Please try again.');
         }
       } catch (error) {
-        console.error('Error fetching analytics:', error);
+        logger.error('Error fetching analytics:', error);
         setError('Failed to load analytics. Please try again.');
       } finally {
         setLoading(false);
