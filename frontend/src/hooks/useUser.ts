@@ -35,8 +35,9 @@ const SERVER_URL = process.env.NEXT_PUBLIC_SERVER_URL || 'https://stackpulse-b8f
 export function useUser(address: string | null, options: UseUserOptions = {}): UseUserReturn {
   const { autoFetch = true } = options;
 
-  const [isRegistering, setIsRegistering] = useState(false);
-  const [isUpgrading, setIsUpgrading] = useState(false);
+  const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const fetchUser = useCallback(async () => {
     if (!address) {
@@ -50,19 +51,18 @@ export function useUser(address: string | null, options: UseUserOptions = {}): U
     try {
       const response = await fetch(`${SERVER_URL}/api/users/${address}`);
       const data = await response.json();
-      const payload = data.user || data.data?.user;
 
-      if (data.success && payload) {
+      if (data.success) {
         setUser({
-          ...payload,
-          registeredAt: new Date(payload.registeredAt),
-          expiresAt: payload.expiresAt ? new Date(payload.expiresAt) : undefined,
+          ...data.user,
+          registeredAt: new Date(data.user.registeredAt),
+          expiresAt: data.user.expiresAt ? new Date(data.user.expiresAt) : undefined,
         });
       } else {
-        setError(data.error || 'Failed to fetch user profile');
+        setError(data.error || 'Failed to fetch user');
       }
-    } catch (err: any) {
-      setError('Connection refused while fetching user');
+    } catch (err) {
+      setError('Network error');
       console.error('Error fetching user:', err);
     } finally {
       setLoading(false);
@@ -72,7 +72,7 @@ export function useUser(address: string | null, options: UseUserOptions = {}): U
   const register = useCallback(async (referrer?: string): Promise<boolean> => {
     if (!address) return false;
 
-    setIsRegistering(true);
+    setLoading(true);
     setError(null);
 
     try {
@@ -83,12 +83,11 @@ export function useUser(address: string | null, options: UseUserOptions = {}): U
       });
 
       const data = await response.json();
-      const payload = data.user || data.data?.user;
 
-      if (data.success && payload) {
+      if (data.success) {
         setUser({
-          ...payload,
-          registeredAt: new Date(payload.registeredAt),
+          ...data.user,
+          registeredAt: new Date(data.user.registeredAt),
         });
         return true;
       } else {
@@ -96,17 +95,18 @@ export function useUser(address: string | null, options: UseUserOptions = {}): U
         return false;
       }
     } catch (err) {
-      setError('Network error during registration');
+      setError('Network error');
+      console.error('Error registering user:', err);
       return false;
     } finally {
-      setIsRegistering(false);
+      setLoading(false);
     }
   }, [address]);
 
   const upgrade = useCallback(async (tier: number, txId: string): Promise<boolean> => {
     if (!address) return false;
 
-    setIsUpgrading(true);
+    setLoading(true);
     setError(null);
 
     try {
@@ -117,24 +117,24 @@ export function useUser(address: string | null, options: UseUserOptions = {}): U
       });
 
       const data = await response.json();
-      const payload = data.user || data.data?.user;
 
-      if (data.success && payload) {
+      if (data.success) {
         setUser({
-          ...payload,
-          registeredAt: new Date(payload.registeredAt),
-          expiresAt: payload.expiresAt ? new Date(payload.expiresAt) : undefined,
+          ...data.user,
+          registeredAt: new Date(data.user.registeredAt),
+          expiresAt: data.user.expiresAt ? new Date(data.user.expiresAt) : undefined,
         });
         return true;
       } else {
-        setError(data.error || 'Tier upgrade failed');
+        setError(data.error || 'Upgrade failed');
         return false;
       }
     } catch (err) {
-      setError('Network error during upgrade');
+      setError('Network error');
+      console.error('Error upgrading user:', err);
       return false;
     } finally {
-      setIsUpgrading(false);
+      setLoading(false);
     }
   }, [address]);
 
