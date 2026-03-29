@@ -104,7 +104,7 @@ export default function NotificationCenter({ maxNotifications = 50 }: Notificati
     <div className="relative">
       {/* Notification Bell */}
       <button
-        onClick={() => setIsOpen(!isOpen)}
+        onClick={() => setIsOpen((prev) => !prev)}
         className="relative p-2 text-gray-400 hover:text-white transition-colors rounded-lg hover:bg-gray-800"
         aria-label={`Notifications (${unreadCount} unread)`}
         aria-expanded={isOpen}
