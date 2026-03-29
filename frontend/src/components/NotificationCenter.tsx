@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { Bell, X, ExternalLink } from 'lucide-react';
 import { apiUrl } from '@/lib/env';
+import logger from '@/lib/logger';
 
 interface Notification {
   id: string;
@@ -57,7 +58,7 @@ export default function NotificationCenter({ maxNotifications = 50 }: Notificati
           }
         }
       } catch (error) {
-        console.error('Error fetching notifications:', error);
+        logger.error('Error fetching notifications:', error);
       }
     };
 
