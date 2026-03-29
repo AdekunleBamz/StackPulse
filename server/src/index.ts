@@ -120,6 +120,27 @@ interface ChainhookPayload {
   };
 }
 
+function getPrintEventData(event: { type?: string; data?: Record<string, unknown> }): Record<string, unknown> | null {
+  if (event.type !== 'SmartContractEvent') {
+    return null;
+  }
+  const rawValue = event.data?.value;
+  if (!rawValue || typeof rawValue !== 'object') {
+    return null;
+  }
+  return rawValue as Record<string, unknown>;
+}
+
+function getStringField(record: Record<string, unknown>, key: string): string | null {
+  const value = record[key];
+  return typeof value === 'string' ? value : null;
+}
+
+function getNumberField(record: Record<string, unknown>, key: string): number | null {
+  const value = record[key];
+  return typeof value === 'number' ? value : null;
+}
+
 // Event statistics
 const eventStats = {
   whaleTransfers: 0,
