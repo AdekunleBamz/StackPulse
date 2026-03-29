@@ -21,7 +21,7 @@ interface AlertHistoryEntry {
   triggeredAt: Date;
   txHash: string;
   blockHeight: number;
-  data: Record<string, any>;
+  data: Record<string, unknown>;
 }
 
 const alertTypeInfo: Record<number, { name: string; icon: string; color: string }> = {
