@@ -190,7 +190,11 @@ function handleMessage(client: WSClient, message: WSMessage): void {
     }
 
     case 'auth': {
-      const address = (message.data?.address as string | undefined) || undefined;
+      const rawAddress = message.data?.address;
+      const address =
+        typeof rawAddress === 'string' && rawAddress.trim().length > 0
+          ? rawAddress.trim()
+          : undefined;
       client.address = address;
       socket.send(JSON.stringify({ type: 'notification', data: { title: 'Authenticated', address } }));
       logger.debug('Client authenticated', { clientId: client.id, address });
