@@ -54,6 +54,19 @@ router.get('/summary', (req: Request, res: Response) => {
 router.post('/track', (req: Request, res: Response) => {
   const { eventType, metadata } = req.body;
   const address = req.headers['x-user-address'] as string;
+
+  if (!eventType || typeof eventType !== 'string') {
+    return res.status(400).json({
+      success: false,
+      error: 'eventType is required',
+    });
+  }
+  if (metadata != null && typeof metadata !== 'object') {
+    return res.status(400).json({
+      success: false,
+      error: 'metadata must be an object',
+    });
+  }
   
   // In a real app, fetch tier from user store
   const tier = 0; // Default to FREE
