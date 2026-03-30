@@ -40,13 +40,14 @@ export function requestLogger(options: RequestLogOptions = defaultOptions) {
 
     const startTime = process.hrtime.bigint();
     const requestId = randomUUID();
+    const queryData = Object.keys(req.query).length > 0 ? req.query : undefined;
 
     // Log request
     logger.info('Incoming request', {
       requestId,
       method: req.method,
       path: req.path,
-      query: req.query,
+      ...(queryData ? { query: queryData } : {}),
       ip: req.ip,
       userAgent: req.get('user-agent'),
       ...(logHeaders ? { headers: req.headers } : {}),
