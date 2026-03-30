@@ -111,7 +111,7 @@ export interface AlertStats {
 /**
  * Generic wrapper for paginated API responses.
  */
-export interface PaginatedAlerts<T> {
+export interface PaginatedAlerts<T = unknown> {
   /** Array of items for the current page */
   items: T[];
   /** Pagination metadata */
