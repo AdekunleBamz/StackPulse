@@ -36,6 +36,8 @@ export interface UserPreferences {
 }
 
 const MAX_NOTIFICATIONS_PER_USER = 100;
+const DEFAULT_NOTIFICATION_RETRIES = 3;
+const RETRY_BACKOFF_BASE_MS = 1000;
 const userPreferencesStore: Map<string, UserPreferences> = new Map();
 
 class NotificationsService {
@@ -196,9 +198,11 @@ class NotificationsService {
     title: string,
     message: string,
     priority: Notification['priority'] = 'normal',
-    retries: number = 3
+    retries: number = DEFAULT_NOTIFICATION_RETRIES
   ): Promise<Notification | null> {
-    const safeRetries = Number.isFinite(retries) ? Math.max(1, Math.floor(retries)) : 3;
+    const safeRetries = Number.isFinite(retries)
+      ? Math.max(1, Math.floor(retries))
+      : DEFAULT_NOTIFICATION_RETRIES;
     let lastError: unknown;
     
     for (let i = 0; i < safeRetries; i++) {
@@ -208,7 +212,7 @@ class NotificationsService {
       } catch (err) {
         lastError = err;
         logger.warn(`Notification attempt ${i + 1} failed`, { userAddress, i, err });
-        await new Promise(resolve => setTimeout(resolve, 1000 * Math.pow(2, i))); // Exponential backoff
+        await new Promise((resolve) => setTimeout(resolve, RETRY_BACKOFF_BASE_MS * Math.pow(2, i))); // Exponential backoff
       }
     }
     
