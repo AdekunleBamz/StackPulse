@@ -113,6 +113,7 @@ export default function NotificationCenter({ maxNotifications = 50 }: Notificati
     <div className="relative">
       {/* Notification Bell */}
       <button
+        type="button"
         onClick={() => setIsOpen((prev) => !prev)}
         className="relative p-2 text-gray-400 hover:text-white transition-colors rounded-lg hover:bg-gray-800"
         aria-label={`Notifications (${unreadCount} unread)`}
@@ -143,6 +144,7 @@ export default function NotificationCenter({ maxNotifications = 50 }: Notificati
               <div className="flex items-center gap-2">
                 {unreadCount > 0 && (
                   <button
+                    type="button"
                     onClick={markAllAsRead}
                     className="text-xs text-purple-400 hover:text-purple-300"
                   >
@@ -150,6 +152,7 @@ export default function NotificationCenter({ maxNotifications = 50 }: Notificati
                   </button>
                 )}
                 <button
+                  type="button"
                   onClick={() => setIsOpen(false)}
                   className="p-1 text-gray-400 hover:text-white rounded"
                   aria-label="Close notification panel"
@@ -222,6 +225,7 @@ export default function NotificationCenter({ maxNotifications = 50 }: Notificati
             {notifications.length > 0 && (
               <div className="p-3 border-t border-gray-700 flex justify-between">
                 <button
+                  type="button"
                   onClick={clearAll}
                   className="text-sm text-gray-400 hover:text-white"
                   aria-label="Clear all notifications"
