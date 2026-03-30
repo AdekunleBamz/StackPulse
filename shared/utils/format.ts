@@ -125,10 +125,13 @@ export function formatDateTime(timestamp: number | Date): string {
  * @returns A truncated address string (e.g., "SP123...4567").
  */
 export function truncateAddress(address: string, startChars: number = 6, endChars: number = 4): string {
-  if (!address || address.length <= startChars + endChars) {
+  const safeStart = Number.isFinite(startChars) ? Math.max(0, Math.floor(startChars)) : 6;
+  const safeEnd = Number.isFinite(endChars) ? Math.max(0, Math.floor(endChars)) : 4;
+  if (!address || safeStart + safeEnd <= 0 || address.length <= safeStart + safeEnd) {
     return address;
   }
-  return `${address.slice(0, startChars)}...${address.slice(-endChars)}`;
+  const tail = safeEnd > 0 ? address.slice(-safeEnd) : '';
+  return `${address.slice(0, safeStart)}...${tail}`;
 }
 
 /**
