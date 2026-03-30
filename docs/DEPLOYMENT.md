@@ -109,7 +109,7 @@ plan:
 
 ## 2. Local Deployment (Docker Compose)
 
-For a quick local setup with all dependencies, use Docker Compose.
+For a quick local setup with all dependencies, use Docker Compose. (`docker-compose.yml` also works, but `compose.yaml` is the modern default.)
 
 ### compose.yaml
 
