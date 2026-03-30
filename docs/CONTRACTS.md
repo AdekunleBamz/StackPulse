@@ -433,3 +433,7 @@ const response = await fetch(
   }
 );
 ```
+
+### Integration Note
+
+Track tx IDs for write calls in your app telemetry so users can jump directly to explorer traces when support follow-up is needed.
