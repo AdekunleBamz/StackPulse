@@ -52,7 +52,9 @@ export default function NotificationCenter({ maxNotifications = 50 }: Notificati
   useEffect(() => {
     const fetchNotifications = async () => {
       try {
-        const response = await fetch(apiUrl(`/api/notifications?limit=${safeMaxNotifications}`));
+        const response = await fetch(apiUrl(`/api/notifications?limit=${safeMaxNotifications}`), {
+          headers: { Accept: 'application/json' },
+        });
         if (response.ok) {
           const data = await response.json();
           if (data.notifications) {
