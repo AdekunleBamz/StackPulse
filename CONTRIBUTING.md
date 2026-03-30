@@ -81,3 +81,4 @@ feat(frontend): add wallet status banner
 - Prefer updating an existing nearby README before adding a disconnected note.
 - Call out versioned or legacy behavior explicitly when older docs remain in the tree.
 - Avoid leaving stale deployment plan names, route paths, or package commands in docs.
+- Small docs-only PRs should still explain operational context in the description (what changed and why now).
