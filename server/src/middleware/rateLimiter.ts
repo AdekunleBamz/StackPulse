@@ -14,6 +14,8 @@ interface RateLimitEntry {
 
 const rateLimitStore = new Map<string, RateLimitEntry>();
 const RATE_LIMIT_CLEANUP_INTERVAL_MS = 60000;
+const DEFAULT_RATE_LIMIT_WINDOW_MS = 60000;
+const DEFAULT_RATE_LIMIT_MAX_REQUESTS = 100;
 
 type TierRequest = Request & {
   user?: {
@@ -41,8 +43,8 @@ export interface RateLimitOptions {
 }
 
 const defaultOptions: RateLimitOptions = {
-  windowMs: 60000, // 1 minute
-  maxRequests: 100,
+  windowMs: DEFAULT_RATE_LIMIT_WINDOW_MS, // 1 minute
+  maxRequests: DEFAULT_RATE_LIMIT_MAX_REQUESTS,
   message: 'Too many requests, please try again later.',
   keyGenerator: (req: Request) => {
     return req.ip || req.socket.remoteAddress || 'unknown';
@@ -109,19 +111,19 @@ export function rateLimiter(options: RateLimitOptions = defaultOptions) {
 
 // Pre-configured rate limiters
 export const apiLimiter = rateLimiter({
-  windowMs: 60000,
-  maxRequests: 100
+  windowMs: DEFAULT_RATE_LIMIT_WINDOW_MS,
+  maxRequests: DEFAULT_RATE_LIMIT_MAX_REQUESTS
 });
 
 export const tieredApiLimiter = rateLimiter({
-  windowMs: 60000,
-  maxRequests: 100, // Default
+  windowMs: DEFAULT_RATE_LIMIT_WINDOW_MS,
+  maxRequests: DEFAULT_RATE_LIMIT_MAX_REQUESTS, // Default
   maxRequestsGenerator: (req) => {
     // In a real app, fetch tier from user store
     const userTier = (req as TierRequest).user?.tier || 0;
     const limits = [100, 1000, 5000, 20000]; // Defined earlier in tier.ts
     const safeTier = Number.isInteger(userTier) && userTier >= 0 ? userTier : 0;
-    return limits[safeTier] || 100;
+    return limits[safeTier] || DEFAULT_RATE_LIMIT_MAX_REQUESTS;
   }
 });
 
@@ -131,7 +133,7 @@ export const authLimiter = rateLimiter({
 });
 
 export const webhookLimiter = rateLimiter({
-  windowMs: 60000,
+  windowMs: DEFAULT_RATE_LIMIT_WINDOW_MS,
   maxRequests: 1000
 });
 
