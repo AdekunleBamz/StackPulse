@@ -7,6 +7,8 @@ import logger from '../utils/logger';
 import fs from 'fs';
 import path from 'path';
 
+const BACKUP_FILE_VERSION = '1.0.0';
+
 class DatabaseService {
   private dataDir = path.join(__dirname, '../../data');
   private backupDir = path.join(__dirname, '../../backups');
@@ -37,7 +39,7 @@ class DatabaseService {
       // In a real app, we would stream data to a file
       fs.writeFileSync(
         backupPath,
-        JSON.stringify({ version: '1.0.0', timestamp: new Date().toISOString() })
+        JSON.stringify({ version: BACKUP_FILE_VERSION, timestamp: new Date().toISOString() })
       );
       logger.info('Database backup completed successfully', { backupPath });
       return backupPath;
