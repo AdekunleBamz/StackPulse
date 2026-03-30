@@ -20,3 +20,4 @@ Custom React hooks for data fetching, browser state, and live updates.
 - Keep hooks single-purpose.
 - Clean up timers, listeners, and socket connections.
 - Return stable, well-typed shapes so components stay simple.
+- When reconnecting sockets, apply jittered delays to avoid synchronized reconnect spikes across many clients.
