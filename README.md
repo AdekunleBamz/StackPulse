@@ -57,3 +57,4 @@ Join our community to get help, stay updated, and contribute:
 - **Discord**: [Join our server](https://discord.gg/stackpulse)
 - **Telegram**: [Follow us](https://t.me/stackpulse)
 - **Twitter**: [Follow @StackPulse](https://twitter.com/StackPulse)
+- When asking for incident help, include affected network and one transaction ID for faster triage.
