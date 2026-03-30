@@ -38,6 +38,9 @@ npm --prefix frontend run lint
 
 # Shared package
 npm --prefix shared run build
+
+# Local stack with Docker Compose
+docker compose up -d
 ```
 
 ## Key docs
