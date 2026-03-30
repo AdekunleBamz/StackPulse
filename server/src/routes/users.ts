@@ -116,10 +116,22 @@ router.patch('/:address', (req: Request, res: Response) => {
   >;
   const normalizedDisplayName =
     typeof updates.displayName === 'string' ? updates.displayName.trim().slice(0, 64) : undefined;
+  const normalizedUsername =
+    typeof updates.username === 'string' ? updates.username.trim().slice(0, 32) : undefined;
+  const normalizedEmail =
+    typeof updates.email === 'string' ? updates.email.trim().slice(0, 128) : undefined;
+  const normalizedDiscord =
+    typeof updates.discord === 'string' ? updates.discord.trim().slice(0, 64) : undefined;
+  const normalizedTelegram =
+    typeof updates.telegram === 'string' ? updates.telegram.trim().slice(0, 64) : undefined;
   const updatedUser: UserRecord = {
     ...user,
     ...updates,
     displayName: normalizedDisplayName || user.displayName,
+    ...(normalizedUsername !== undefined ? { username: normalizedUsername } : {}),
+    ...(normalizedEmail !== undefined ? { email: normalizedEmail } : {}),
+    ...(normalizedDiscord !== undefined ? { discord: normalizedDiscord } : {}),
+    ...(normalizedTelegram !== undefined ? { telegram: normalizedTelegram } : {}),
     address: user.address,
     createdAt: user.createdAt,
     tier: user.tier,
