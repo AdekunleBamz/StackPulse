@@ -379,6 +379,6 @@ git push origin main
 - Verify Next.js version compatibility
 - Check for TypeScript errors
 
-### Communication Note
+### Rollout Window Note
 
-Post maintenance-window updates at start, midpoint, and completion so alert consumers know whether unusual activity is expected.
+Prefer deploying contracts and API updates inside the same announced window to reduce temporary mismatches between server assumptions and on-chain state.
