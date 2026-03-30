@@ -212,7 +212,7 @@ export function parseStxAmount(amount: string): number {
  * @returns A formatted balance string.
  */
 export function formatBalance(balance: number | string, decimals: number = 6): string {
-  const bal = typeof balance === 'string' ? parseFloat(balance) : balance;
+  const bal = typeof balance === 'string' ? parseFloat(balance.replace(/,/g, '')) : balance;
   const safeDecimals = Number.isFinite(decimals) ? Math.max(0, Math.min(12, Math.floor(decimals))) : 6;
   if (!Number.isFinite(bal)) {
     return (0).toFixed(safeDecimals);
