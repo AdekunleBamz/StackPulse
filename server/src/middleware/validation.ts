@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from 'express';
+import { Request, Response, NextFunction, RequestHandler } from 'express';
 import logger from '../utils/logger';
 
 const PAYLOAD_SIZE_LIMITS_BY_TIER = [10240, 102400, 1048576, 10485760] as const; // 10K, 100K, 1M, 10M
@@ -57,7 +57,7 @@ function matchesType(
 /**
  * Validate request body against schema
  */
-export function validateBody(schema: ValidationSchema) {
+export function validateBody(schema: ValidationSchema): RequestHandler {
   return (req: Request, res: Response, next: NextFunction) => {
     const errors: string[] = [];
 
@@ -120,7 +120,7 @@ export function validateBody(schema: ValidationSchema) {
 /**
  * Validate request query parameters
  */
-export function validateQuery(schema: ValidationSchema) {
+export function validateQuery(schema: ValidationSchema): RequestHandler {
   return (req: Request, res: Response, next: NextFunction) => {
     const errors: string[] = [];
 
@@ -177,7 +177,7 @@ export function validateQuery(schema: ValidationSchema) {
 /**
  * Validate request params
  */
-export function validateParams(schema: ValidationSchema) {
+export function validateParams(schema: ValidationSchema): RequestHandler {
   return (req: Request, res: Response, next: NextFunction) => {
     const errors: string[] = [];
 
