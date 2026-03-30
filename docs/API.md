@@ -246,6 +246,7 @@ Get recent notifications.
 ## Chainhook Endpoints
 
 These endpoints receive blockchain events from Hiro Chainhooks.
+All chainhook routes require `Authorization: Bearer <CHAINHOOK_AUTH_TOKEN>`.
 
 ### POST /api/v1/chainhooks/whale-transfer
 
