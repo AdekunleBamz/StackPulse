@@ -150,6 +150,7 @@ export const webhookLimiter = rateLimiter({
 export default {
   rateLimiter,
   apiLimiter,
+  tieredApiLimiter,
   authLimiter,
   webhookLimiter
 };
