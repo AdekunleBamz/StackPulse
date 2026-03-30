@@ -29,9 +29,11 @@ export interface User {
 }
 
 // Notification Types
+export type NotificationType = 'alert' | 'badge' | 'subscription' | 'system';
+
 export interface Notification {
   id: string;
-  type: 'alert' | 'badge' | 'subscription' | 'system';
+  type: NotificationType;
   title: string;
   message: string;
   userAddress?: string;
