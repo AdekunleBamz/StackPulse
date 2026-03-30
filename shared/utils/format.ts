@@ -18,6 +18,8 @@ const MONTHS_PER_YEAR = 12;
 const DAYS_PER_YEAR = 365;
 const BYTES_PER_UNIT = 1024;
 const FILE_SIZE_UNITS = ['B', 'KB', 'MB', 'GB', 'TB'] as const;
+const STX_PER_THOUSAND = 1000;
+const STX_PER_MILLION = 1000000;
 
 /**
  * Formats a micro-STX amount into a human-readable STX string.
@@ -33,11 +35,11 @@ export function formatStxAmount(microStx: number | string): string {
   const safeAmount = Number.isFinite(amount) ? amount : 0;
   const stx = safeAmount / MICROSTX_PER_STX;
   
-  if (stx >= MICROSTX_PER_STX) {
-    return `${(stx / MICROSTX_PER_STX).toFixed(2)}M STX`;
+  if (stx >= STX_PER_MILLION) {
+    return `${(stx / STX_PER_MILLION).toFixed(2)}M STX`;
   }
-  if (stx >= 1000) {
-    return `${(stx / 1000).toFixed(2)}K STX`;
+  if (stx >= STX_PER_THOUSAND) {
+    return `${(stx / STX_PER_THOUSAND).toFixed(2)}K STX`;
   }
   return `${stx.toFixed(6)} STX`;
 }
