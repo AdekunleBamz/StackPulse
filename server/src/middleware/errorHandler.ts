@@ -30,7 +30,11 @@ export function errorHandler(
   res: Response,
   _next: NextFunction
 ) {
-  const statusCode = err.statusCode || 500;
+  const rawStatusCode = err.statusCode ?? 500;
+  const statusCode =
+    Number.isInteger(rawStatusCode) && rawStatusCode >= 400 && rawStatusCode <= 599
+      ? rawStatusCode
+      : 500;
   const message = err.isOperational ? err.message : 'Internal server error';
 
   // Log error
