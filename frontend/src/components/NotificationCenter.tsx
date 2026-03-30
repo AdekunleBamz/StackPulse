@@ -25,7 +25,7 @@ interface NotificationApiItem {
   read: boolean;
 }
 
-const notificationIcons: Record<string, string> = {
+const notificationIcons: Record<Notification['type'], string> = {
   whale: '🐋',
   contract: '📜',
   nft: '🎨',
