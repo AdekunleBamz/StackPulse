@@ -111,7 +111,7 @@ plan:
 
 For a quick local setup with all dependencies, use Docker Compose.
 
-### docker-compose.yml
+### compose.yaml
 
 ```yaml
 version: '3.8'
