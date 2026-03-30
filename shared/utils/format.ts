@@ -45,7 +45,9 @@ export function formatNumber(num: number | string): string {
  * @returns A formatted percentage string (e.g., "12.34%").
  */
 export function formatPercent(value: number, decimals: number = 2): string {
-  return `${value.toFixed(decimals)}%`;
+  const safeValue = Number.isFinite(value) ? value : 0;
+  const safeDecimals = Number.isFinite(decimals) ? Math.max(0, Math.min(6, Math.floor(decimals))) : 2;
+  return `${safeValue.toFixed(safeDecimals)}%`;
 }
 
 /**
