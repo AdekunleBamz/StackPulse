@@ -12,6 +12,7 @@ interface MetricValue {
 }
 
 const MAX_METRIC_ENTRIES = 1000;
+const PERFORMANCE_WARN_THRESHOLD_MS = 500;
 
 class MetricsService {
   private metrics: Map<string, MetricValue[]> = new Map();
@@ -73,7 +74,7 @@ class MetricsService {
    */
   monitorPerformance(): void {
     const avgDuration = this.getAverage('http_request_duration');
-    if (avgDuration > 500) {
+    if (avgDuration > PERFORMANCE_WARN_THRESHOLD_MS) {
       logger.warn('Performance degraded: high average request duration', { avgDuration: `${avgDuration.toFixed(2)}ms` });
     }
   }
