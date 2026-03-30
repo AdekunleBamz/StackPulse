@@ -19,3 +19,4 @@ Business logic and infrastructure helpers used by the StackPulse backend.
 - Keep service APIs reusable from routes, background jobs, or tests.
 - Log external failures with enough context to debug them.
 - Document any tier-aware limits close to the code that enforces them.
+- For outbound providers, document retry budgets so alert delivery failures are visible before queues silently degrade.
