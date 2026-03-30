@@ -35,6 +35,8 @@ const notificationIcons: Record<string, string> = {
   badge: '🏆',
 };
 
+const NOTIFICATION_POLL_INTERVAL_MS = 30000;
+
 interface NotificationCenterProps {
   maxNotifications?: number;
 }
@@ -72,7 +74,7 @@ export default function NotificationCenter({ maxNotifications = 50 }: Notificati
 
     fetchNotifications();
     // Poll for new notifications every 30 seconds
-    const interval = setInterval(fetchNotifications, 30000);
+    const interval = setInterval(fetchNotifications, NOTIFICATION_POLL_INTERVAL_MS);
     return () => clearInterval(interval);
   }, [safeMaxNotifications]);
 
