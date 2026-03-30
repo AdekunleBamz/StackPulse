@@ -138,7 +138,10 @@ export default function AlertHistory({ userAddress }: AlertHistoryProps) {
     const a = document.createElement('a');
     a.href = url;
     a.download = 'alert-history.csv';
+    document.body.appendChild(a);
     a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
   };
 
   return (
