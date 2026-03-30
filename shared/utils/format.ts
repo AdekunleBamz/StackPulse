@@ -23,6 +23,7 @@ const STX_PER_MILLION = 1000000;
 const TX_ID_PREFIX_LENGTH = 8;
 const TX_ID_SUFFIX_LENGTH = 8;
 const DEFAULT_PERCENT_DECIMALS = 2;
+const DEFAULT_BALANCE_DECIMALS = 6;
 
 /**
  * Formats a micro-STX amount into a human-readable STX string.
@@ -218,9 +219,11 @@ export function parseStxAmount(amount: string): number {
  * @param decimals - The number of decimals to display (default: 6).
  * @returns A formatted balance string.
  */
-export function formatBalance(balance: number | string, decimals: number = 6): string {
+export function formatBalance(balance: number | string, decimals: number = DEFAULT_BALANCE_DECIMALS): string {
   const bal = typeof balance === 'string' ? parseFloat(balance.replace(/,/g, '')) : balance;
-  const safeDecimals = Number.isFinite(decimals) ? Math.max(0, Math.min(12, Math.floor(decimals))) : 6;
+  const safeDecimals = Number.isFinite(decimals)
+    ? Math.max(0, Math.min(12, Math.floor(decimals)))
+    : DEFAULT_BALANCE_DECIMALS;
   if (!Number.isFinite(bal)) {
     return (0).toFixed(safeDecimals);
   }
