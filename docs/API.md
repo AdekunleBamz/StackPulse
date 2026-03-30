@@ -160,7 +160,7 @@ Delete user preferences.
 
 ### Alerts
 
-#### GET /api/users/:address/alerts
+#### GET /api/v1/users/:address/alerts
 
 Get user's configured alerts.
 
@@ -181,7 +181,7 @@ Get user's configured alerts.
 }
 ```
 
-#### POST /api/users/:address/alerts
+#### POST /api/v1/users/:address/alerts
 
 Create a new alert (server-side tracking).
 
