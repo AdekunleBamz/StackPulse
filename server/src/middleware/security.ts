@@ -5,6 +5,8 @@
 
 import { Request, Response, NextFunction } from 'express';
 
+const DEFAULT_ALLOWED_ORIGINS = ['http://localhost:3000', 'http://localhost:3001'] as const;
+
 /**
  * Security headers middleware
  */
@@ -48,7 +50,7 @@ export function securityHeaders(req: Request, res: Response, next: NextFunction)
 export function corsMiddleware(req: Request, res: Response, next: NextFunction) {
   const allowedOrigins = process.env.ALLOWED_ORIGINS 
     ? process.env.ALLOWED_ORIGINS.split(',').map((origin) => origin.trim()).filter(Boolean)
-    : ['http://localhost:3000', 'http://localhost:3001'];
+    : [...DEFAULT_ALLOWED_ORIGINS];
   
   const origin = req.headers.origin;
   
