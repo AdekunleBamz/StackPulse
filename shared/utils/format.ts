@@ -22,6 +22,7 @@ const STX_PER_THOUSAND = 1000;
 const STX_PER_MILLION = 1000000;
 const TX_ID_PREFIX_LENGTH = 8;
 const TX_ID_SUFFIX_LENGTH = 8;
+const DEFAULT_PERCENT_DECIMALS = 2;
 
 /**
  * Formats a micro-STX amount into a human-readable STX string.
@@ -65,9 +66,11 @@ export function formatNumber(num: number | string): string {
  * @param decimals - The number of decimal places to include (default: 2).
  * @returns A formatted percentage string (e.g., "12.34%").
  */
-export function formatPercent(value: number, decimals: number = 2): string {
+export function formatPercent(value: number, decimals: number = DEFAULT_PERCENT_DECIMALS): string {
   const safeValue = Number.isFinite(value) ? value : 0;
-  const safeDecimals = Number.isFinite(decimals) ? Math.max(0, Math.min(6, Math.floor(decimals))) : 2;
+  const safeDecimals = Number.isFinite(decimals)
+    ? Math.max(0, Math.min(6, Math.floor(decimals)))
+    : DEFAULT_PERCENT_DECIMALS;
   return `${safeValue.toFixed(safeDecimals)}%`;
 }
 
