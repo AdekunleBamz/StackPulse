@@ -20,15 +20,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - PWA manifest and robots.txt for mobile experience and SEO.
 
 ### Changed
-- Refactored `README.md` to focus on full-stack architecture and community.
-- Enhanced `NotificationCenter` with loading states and accessibility fixes.
-- Updated `Header` with network status indicators and refined active states.
-- Improved `stackpulse-v-j4` contract events for better indexability.
-
-## [Unreleased]
-
-### Fixed
-- Environment variable validation in frontend.
+- Refactored `README.md` to focus on the full-stack architecture.
+- Clarified operational documentation notes for deployment, API reliability, and contributor workflows.
+- Updated `package.json` with comprehensive project metadata.
 
 ## [1.0.0] - 2026-03-21
 
