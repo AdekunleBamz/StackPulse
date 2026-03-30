@@ -13,7 +13,6 @@ import logger from '../utils/logger';
 const PAYLOAD_SIZE_LIMITS_BY_TIER = [10_240, 102_400, 1_048_576, 10_485_760] as const; // 10K, 100K, 1M, 10M
 const DEFAULT_TIER_INDEX = 0;
 const PAYLOAD_TOO_LARGE_STATUS = 413;
-const BAD_REQUEST_STATUS = 400;
 
 /** Request with optional user tier information */
 type TierRequest = Request & {
@@ -25,9 +24,43 @@ type TierRequest = Request & {
 /**
  * Validation error response structure.
  */
-export interface ValidationErrorResponse {
-  success: false;
-  errors: string[];
+export function validatePayloadSize(req: Request, res: Response, next: NextFunction) {
+  const userTier = (req as TierRequest).user?.tier || DEFAULT_TIER_INDEX;
+  const safeTier = Number.isInteger(userTier) && userTier >= 0 ? userTier : DEFAULT_TIER_INDEX;
+  const limit = PAYLOAD_SIZE_LIMITS_BY_TIER[safeTier] || PAYLOAD_SIZE_LIMITS_BY_TIER[DEFAULT_TIER_INDEX];
+  
+  const contentLength = Number.parseInt(req.headers['content-length'] || '0', 10);
+  if (contentLength > limit) {
+    logger.warn('Payload size limit exceeded', { userTier, limit, contentLength });
+    return res.status(PAYLOAD_TOO_LARGE_STATUS).json({
+      success: false,
+      error: `Payload too large for your tier. Limit: ${limit} bytes.`
+    });
+  }
+  next();
+}
+
+interface ValidationSchema {
+  [key: string]: {
+    type: 'string' | 'number' | 'boolean' | 'array' | 'object';
+    required?: boolean;
+    min?: number;
+    max?: number;
+    pattern?: RegExp;
+  };
+}
+
+function matchesType(
+  value: unknown,
+  expectedType: ValidationSchema[string]['type']
+): boolean {
+  if (expectedType === 'array') {
+    return Array.isArray(value);
+  }
+  if (expectedType === 'object') {
+    return typeof value === 'object' && value !== null && !Array.isArray(value);
+  }
+  return typeof value === expectedType;
 }
 
 /**
