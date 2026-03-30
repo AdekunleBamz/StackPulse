@@ -340,3 +340,5 @@ This plan is complete and ready to execute. ✅ **CODE CHANGES IMPLEMENTED!**
 7. ⏳ Commit changes to git
 
 **Ready for deployment!** 🚀
+
+Operational note: define explicit rollback triggers (for example sustained webhook failures or abnormal alert lag) before starting deployment execution.
