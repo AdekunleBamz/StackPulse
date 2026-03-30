@@ -125,7 +125,7 @@ export function WalletProvider({ children }: { children: ReactNode }) {
   }, [isClient, userSession]);
 
   const switchNetwork = useCallback((newNetwork: 'mainnet' | 'testnet') => {
-    setNetwork(newNetwork);
+    setNetwork((current) => (current === newNetwork ? current : newNetwork));
   }, []);
 
   return (
