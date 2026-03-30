@@ -6,6 +6,7 @@
 import { Request, Response, NextFunction } from 'express';
 
 const DEFAULT_ALLOWED_ORIGINS = ['http://localhost:3000', 'http://localhost:3001'] as const;
+const PREFLIGHT_SUCCESS_STATUS = 200;
 
 /**
  * Security headers middleware
@@ -65,7 +66,7 @@ export function corsMiddleware(req: Request, res: Response, next: NextFunction) 
   
   // Handle preflight
   if (req.method === 'OPTIONS') {
-    return res.sendStatus(200);
+    return res.sendStatus(PREFLIGHT_SUCCESS_STATUS);
   }
   
   next();
