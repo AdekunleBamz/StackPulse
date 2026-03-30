@@ -26,6 +26,9 @@ const MAX_EVENT_TYPES = 50;
 const MAX_HOURLY_ENTRIES = 24 * 7; // 1 week of hourly data
 const MAX_DAILY_ENTRIES = 365; // 1 year of daily data
 const ANALYTICS_CLEANUP_INTERVAL_MS = 3600000;
+const MILLISECONDS_PER_HOUR = 3600000;
+const MILLISECONDS_PER_DAY = 86400000;
+const APPROX_MILLISECONDS_PER_30_DAYS = 2592000000;
 const MAX_EVENTS_PER_USER = new Map<number, number>([
   [0, 1000],  // FREE
   [1, 10000], // PRO
@@ -77,8 +80,8 @@ export function trackEvent(
   }
 
   const now = Date.now();
-  const hour = Math.floor(now / 3600000);
-  const day = Math.floor(now / 86400000);
+  const hour = Math.floor(now / MILLISECONDS_PER_HOUR);
+  const day = Math.floor(now / MILLISECONDS_PER_DAY);
   
   // Update event count
   const existing = analytics.events.get(eventType);
@@ -131,22 +134,22 @@ export function getEventsInWindow(window: TimeWindow): Record<string, number> {
   
   switch (window) {
     case '1h':
-      cutoffTime = now - 3600000;
+      cutoffTime = now - MILLISECONDS_PER_HOUR;
       break;
     case '24h':
-      cutoffTime = now - 86400000;
+      cutoffTime = now - MILLISECONDS_PER_DAY;
       break;
     case '7d':
-      cutoffTime = now - 604800000;
+      cutoffTime = now - (7 * MILLISECONDS_PER_DAY);
       break;
     case '30d':
-      cutoffTime = now - 2592000000;
+      cutoffTime = now - APPROX_MILLISECONDS_PER_30_DAYS;
       break;
     default:
       cutoffTime = 0;
   }
   
-  const cutoffHour = Math.floor(cutoffTime / 3600000);
+  const cutoffHour = Math.floor(cutoffTime / MILLISECONDS_PER_HOUR);
   const result: Record<string, number> = {};
   
   analytics.hourly.forEach((eventCounts, hour) => {
@@ -163,14 +166,14 @@ export function getEventsInWindow(window: TimeWindow): Record<string, number> {
 // Get hourly breakdown for a specific event
 export function getHourlyBreakdown(eventType: string, hours: number = 24): Record<string, number> {
   const now = Date.now();
-  const startHour = Math.floor(now / 3600000) - hours;
+  const startHour = Math.floor(now / MILLISECONDS_PER_HOUR) - hours;
   const result: Record<string, number> = {};
   
   for (let i = startHour; i < startHour + hours; i++) {
     const hourMap = analytics.hourly.get(i);
     if (hourMap) {
       const count = hourMap.get(eventType) || 0;
-      const date = new Date(i * 3600000);
+      const date = new Date(i * MILLISECONDS_PER_HOUR);
       const key = date.toISOString().slice(0, 13); // YYYY-MM-DDTHH
       result[key] = count;
     }
@@ -182,14 +185,14 @@ export function getHourlyBreakdown(eventType: string, hours: number = 24): Recor
 // Get daily breakdown for a specific event
 export function getDailyBreakdown(eventType: string, days: number = 30): Record<string, number> {
   const now = Date.now();
-  const startDay = Math.floor(now / 86400000) - days;
+  const startDay = Math.floor(now / MILLISECONDS_PER_DAY) - days;
   const result: Record<string, number> = {};
   
   for (let i = startDay; i < startDay + days; i++) {
     const dayMap = analytics.daily.get(i);
     if (dayMap) {
       const count = dayMap.get(eventType) || 0;
-      const date = new Date(i * 86400000);
+      const date = new Date(i * MILLISECONDS_PER_DAY);
       const key = date.toISOString().slice(0, 10); // YYYY-MM-DD
       result[key] = count;
     }
@@ -225,10 +228,10 @@ export function getAnalyticsSummary(): {
 
 // Clear old analytics data (call periodically)
 export function clearOldData(maxAgeDays: number = 30): void {
-  const maxAge = maxAgeDays * 86400000;
+  const maxAge = maxAgeDays * MILLISECONDS_PER_DAY;
   const now = Date.now();
-  const cutoffHour = Math.floor((now - maxAge) / 3600000);
-  const cutoffDay = Math.floor((now - maxAge) / 86400000);
+  const cutoffHour = Math.floor((now - maxAge) / MILLISECONDS_PER_HOUR);
+  const cutoffDay = Math.floor((now - maxAge) / MILLISECONDS_PER_DAY);
   
   // Clear old hourly data
   for (const [hour] of analytics.hourly) {
@@ -246,7 +249,7 @@ export function clearOldData(maxAgeDays: number = 30): void {
 
   // Monthly reset for user event counts if needed
   // For now, just log the size
-  if (now % 2592000000 < 3600000) { // Approx once a month
+  if (now % APPROX_MILLISECONDS_PER_30_DAYS < MILLISECONDS_PER_HOUR) { // Approx once a month
     logger.info('Resetting monthly user event counts', { count: analytics.userEventCounts.size });
     analytics.userEventCounts.clear();
   }
