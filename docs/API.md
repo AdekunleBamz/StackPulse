@@ -122,7 +122,7 @@ Get user profile and preferences.
 }
 ```
 
-#### PUT /api/users/:address
+#### PATCH /api/users/:address
 
 Update user notification preferences.
 
