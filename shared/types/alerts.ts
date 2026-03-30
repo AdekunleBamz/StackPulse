@@ -111,24 +111,26 @@ export interface AlertStats {
 /**
  * Generic wrapper for paginated API responses.
  */
+export interface AlertPagination {
+  /** Current page number (1-indexed) */
+  page: number;
+  /** Number of items per page */
+  limit: number;
+  /** Total number of items across all pages */
+  total: number;
+  /** Total number of pages */
+  totalPages: number;
+  /** Whether a subsequent page exists */
+  hasNext: boolean;
+  /** Whether a preceding page exists */
+  hasPrev: boolean;
+}
+
 export interface PaginatedAlerts<T = unknown> {
   /** Array of items for the current page */
   items: T[];
   /** Pagination metadata */
-  pagination: {
-    /** Current page number (1-indexed) */
-    page: number;
-    /** Number of items per page */
-    limit: number;
-    /** Total number of items across all pages */
-    total: number;
-    /** Total number of pages */
-    totalPages: number;
-    /** Whether a subsequent page exists */
-    hasNext: boolean;
-    /** Whether a preceding page exists */
-    hasPrev: boolean;
-  };
+  pagination: AlertPagination;
 }
 
 /**
