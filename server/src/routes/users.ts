@@ -60,17 +60,18 @@ router.get('/:address', (req: Request, res: Response) => {
  */
 router.post('/', (req: Request, res: Response) => {
   const { address, displayName } = req.body;
+  const normalizedAddress = typeof address === 'string' ? address.trim() : '';
   const normalizedDisplayName =
     typeof displayName === 'string' ? displayName.trim().slice(0, 64) : '';
   
-  if (!address || typeof address !== 'string') {
+  if (!normalizedAddress) {
     return res.status(400).json({
       success: false,
       error: 'Address is required'
     });
   }
   
-  if (users.has(address)) {
+  if (users.has(normalizedAddress)) {
     return res.status(409).json({
       success: false,
       error: 'User already exists'
@@ -78,16 +79,16 @@ router.post('/', (req: Request, res: Response) => {
   }
   
   const user: UserRecord = {
-    address,
-    displayName: normalizedDisplayName || address.slice(0, 8),
+    address: normalizedAddress,
+    displayName: normalizedDisplayName || normalizedAddress.slice(0, 8),
     tier: UserTier.FREE,
     createdAt: Date.now(),
     alertCount: 0
   };
   
-  users.set(address, user);
+  users.set(normalizedAddress, user);
   
-  logger.info('User registered', { address, displayName: user.displayName });
+  logger.info('User registered', { address: normalizedAddress, displayName: user.displayName });
   
   res.status(201).json({
     success: true,
