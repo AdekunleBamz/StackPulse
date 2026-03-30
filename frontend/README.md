@@ -33,3 +33,4 @@ NEXT_PUBLIC_WS_URL=wss://your-server.example/ws
 - The dashboard talks to the backend for alert history and user data.
 - Contract calls use the configured deployer address and current contract names.
 - Keep frontend docs aligned with the backend paths in `../docs/API.md`.
+- Revisit empty-state copy whenever new alert types are added so onboarding prompts stay accurate.
