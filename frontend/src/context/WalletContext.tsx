@@ -24,9 +24,9 @@ interface WalletContextType {
   /** The @stacks/connect UserSession instance */
   userSession: UserSession | null;
   /** Initiates the Stacks wallet connection flow */
-  connect: () => void;
+  connect: () => Promise<void>;
   /** Disconnects the current wallet session */
-  disconnect: () => void;
+  disconnect: () => Promise<void>;
   /** Switches between mainnet and testnet */
   switchNetwork: (network: 'mainnet' | 'testnet') => void;
 }
