@@ -119,6 +119,7 @@ export default function LiveStats() {
             </div>
           </div>
         </div>
+        <div className="mb-10 flex items-center justify-center gap-2">
           {lastUpdated && (
             <span className="hidden sm:inline text-[10px] text-gray-500 font-medium" aria-live="polite">
               • UPDATED {lastUpdated.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
@@ -134,6 +135,7 @@ export default function LiveStats() {
           >
             <ExternalLink className="w-3.5 h-3.5" />
           </a>
+        </div>
 
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
           {statItems.map((item, index) => (
