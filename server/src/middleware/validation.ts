@@ -4,6 +4,7 @@ import logger from '../utils/logger';
 const PAYLOAD_SIZE_LIMITS_BY_TIER = [10240, 102400, 1048576, 10485760] as const; // 10K, 100K, 1M, 10M
 const DEFAULT_TIER_INDEX = 0;
 const PAYLOAD_TOO_LARGE_STATUS = 413;
+const BAD_REQUEST_STATUS = 400;
 
 type TierRequest = Request & {
   user?: {
@@ -106,7 +107,7 @@ export function validateBody(schema: ValidationSchema) {
     }
 
     if (errors.length > 0) {
-      return res.status(400).json({
+      return res.status(BAD_REQUEST_STATUS).json({
         success: false,
         errors
       });
@@ -163,7 +164,7 @@ export function validateQuery(schema: ValidationSchema) {
     }
 
     if (errors.length > 0) {
-      return res.status(400).json({
+      return res.status(BAD_REQUEST_STATUS).json({
         success: false,
         errors
       });
@@ -208,7 +209,7 @@ export function validateParams(schema: ValidationSchema) {
     }
 
     if (errors.length > 0) {
-      return res.status(400).json({
+      return res.status(BAD_REQUEST_STATUS).json({
         success: false,
         errors
       });
