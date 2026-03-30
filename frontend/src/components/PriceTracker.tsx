@@ -19,6 +19,10 @@ const PRICE_REFRESH_INTERVAL_MS = 60000;
 const COINGECKO_SIMPLE_PRICE_URL =
   'https://api.coingecko.com/api/v3/simple/price?ids=blockstack,bitcoin&vs_currencies=usd&include_24hr_change=true';
 
+const toFiniteNumber = (value: unknown): number => {
+  return typeof value === 'number' && Number.isFinite(value) ? value : 0;
+};
+
 export default function PriceTracker() {
   const [prices, setPrices] = useState<PriceData | null>(null);
   const [loading, setLoading] = useState(true);
@@ -47,14 +51,19 @@ export default function PriceTracker() {
         if (!isMountedRef.current) {
           return;
         }
+        const stxUsd = toFiniteNumber(data.blockstack?.usd);
+        const stxChange24h = toFiniteNumber(data.blockstack?.usd_24h_change);
+        const btcUsd = toFiniteNumber(data.bitcoin?.usd);
+        const btcChange24h = toFiniteNumber(data.bitcoin?.usd_24h_change);
+
         setPrices({
           stx: {
-            usd: data.blockstack?.usd || 0,
-            change24h: data.blockstack?.usd_24h_change || 0,
+            usd: stxUsd,
+            change24h: stxChange24h,
           },
           btc: {
-            usd: data.bitcoin?.usd || 0,
-            change24h: data.bitcoin?.usd_24h_change || 0,
+            usd: btcUsd,
+            change24h: btcChange24h,
           },
         });
         setLastUpdate(new Date());
