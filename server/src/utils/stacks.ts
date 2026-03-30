@@ -43,6 +43,7 @@ interface CoreApiInfoResponse {
 
 type GenericJsonObject = Record<string, unknown>;
 type StacksNetwork = 'mainnet' | 'testnet';
+const JSON_ACCEPT_HEADERS = { Accept: 'application/json' } as const;
 
 /**
  * Get Stacks API URL based on network
@@ -60,7 +61,9 @@ export async function getTransaction(txId: string, network: StacksNetwork = 'mai
   const baseUrl = getStacksApiUrl(network);
   
   try {
-    const response = await fetch(`${baseUrl}/extended/v1/tx/${txId}`);
+    const response = await fetch(`${baseUrl}/extended/v1/tx/${txId}`, {
+      headers: JSON_ACCEPT_HEADERS,
+    });
     if (!response.ok) return null;
     return (await response.json()) as Transaction;
   } catch (error) {
@@ -76,7 +79,9 @@ export async function getAccountBalance(address: string, network: StacksNetwork 
   const baseUrl = getStacksApiUrl(network);
   
   try {
-    const response = await fetch(`${baseUrl}/extended/v1/address/${address}/balances`);
+    const response = await fetch(`${baseUrl}/extended/v1/address/${address}/balances`, {
+      headers: JSON_ACCEPT_HEADERS,
+    });
     if (!response.ok) return null;
     const data = (await response.json()) as AddressBalanceResponse;
     const stxBalance = data.stx?.balance || '0';
@@ -103,7 +108,8 @@ export async function getAccountTransactions(
   
   try {
     const response = await fetch(
-      `${baseUrl}/extended/v1/address/${address}/transactions?limit=${limit}&offset=${offset}`
+      `${baseUrl}/extended/v1/address/${address}/transactions?limit=${limit}&offset=${offset}`,
+      { headers: JSON_ACCEPT_HEADERS }
     );
     if (!response.ok) return [];
     const data = (await response.json()) as PaginatedTransactionsResponse;
@@ -126,7 +132,8 @@ export async function getContractSource(
   
   try {
     const response = await fetch(
-      `${baseUrl}/v2/contracts/source/${contractAddress}/${contractName}`
+      `${baseUrl}/v2/contracts/source/${contractAddress}/${contractName}`,
+      { headers: JSON_ACCEPT_HEADERS }
     );
     if (!response.ok) return null;
     return (await response.json()) as ContractSourceResponse;
@@ -146,7 +153,9 @@ export async function getBlock(
   const baseUrl = getStacksApiUrl(network);
   
   try {
-    const response = await fetch(`${baseUrl}/extended/v1/block/${blockHeight}`);
+    const response = await fetch(`${baseUrl}/extended/v1/block/${blockHeight}`, {
+      headers: JSON_ACCEPT_HEADERS,
+    });
     if (!response.ok) return null;
     return (await response.json()) as GenericJsonObject;
   } catch (error) {
@@ -166,7 +175,8 @@ export async function getMempoolTransactions(
   
   try {
     const response = await fetch(
-      `${baseUrl}/extended/v1/address/${address}/mempool`
+      `${baseUrl}/extended/v1/address/${address}/mempool`,
+      { headers: JSON_ACCEPT_HEADERS }
     );
     if (!response.ok) return [];
     const data = (await response.json()) as PaginatedTransactionsResponse;
@@ -184,7 +194,7 @@ export async function getCoreApiInfo(network: StacksNetwork = 'mainnet'): Promis
   const baseUrl = getStacksApiUrl(network);
   
   try {
-    const response = await fetch(`${baseUrl}/v2/info`);
+    const response = await fetch(`${baseUrl}/v2/info`, { headers: JSON_ACCEPT_HEADERS });
     if (!response.ok) return null;
     return (await response.json()) as CoreApiInfoResponse;
   } catch (error) {
@@ -204,7 +214,8 @@ export async function getBlockTransactions(
   
   try {
     const response = await fetch(
-      `${baseUrl}/extended/v1/block/${blockHeight}/transactions`
+      `${baseUrl}/extended/v1/block/${blockHeight}/transactions`,
+      { headers: JSON_ACCEPT_HEADERS }
     );
     if (!response.ok) return [];
     const data = (await response.json()) as PaginatedTransactionsResponse;
