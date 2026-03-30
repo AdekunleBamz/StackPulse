@@ -86,6 +86,9 @@ export function formatRelativeTime(timestamp: number | Date): string {
  */
 export function formatDate(timestamp: number | Date, options?: Intl.DateTimeFormatOptions): string {
   const date = typeof timestamp === 'number' ? new Date(timestamp) : timestamp;
+  if (Number.isNaN(date.getTime())) {
+    return 'Invalid date';
+  }
   return date.toLocaleDateString('en-US', options || {
     year: 'numeric',
     month: 'short',
@@ -100,6 +103,9 @@ export function formatDate(timestamp: number | Date, options?: Intl.DateTimeForm
  */
 export function formatDateTime(timestamp: number | Date): string {
   const date = typeof timestamp === 'number' ? new Date(timestamp) : timestamp;
+  if (Number.isNaN(date.getTime())) {
+    return 'Invalid date';
+  }
   return date.toLocaleString('en-US', {
     year: 'numeric',
     month: 'short',
