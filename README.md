@@ -89,9 +89,8 @@ cp .env.example .env
 
 ## Features & Highlights
 
-- **Real-time Monitoring**: Sub-second ingestion of Stacks blockchain events.
-- **Tiered Alerts**: Tiered feature gating (Basic, Pro, Premium) with granular limits.
-- **Multi-Channel Delivery**: Integration with Discord, Telegram, and custom Webhooks.
-- **Live Analytics**: High-performance data windowing for responsive dashboard charts.
-- **Security First**: JWT-based authentication, SSH-signed commits, and CSP-hardened headers.
-- **Reliability**: Exponential backoff retries, LRU caching, and health-monitored subsystems.
+Join our community to get help, stay updated, and contribute:
+- **Discord**: [Join our server](https://discord.gg/stackpulse)
+- **Telegram**: [Follow us](https://t.me/stackpulse)
+- **Twitter**: [Follow @StackPulse](https://twitter.com/StackPulse)
+- When asking for incident help, include affected network and one transaction ID for faster triage.
