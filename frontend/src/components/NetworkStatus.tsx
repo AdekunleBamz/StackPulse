@@ -21,8 +21,10 @@ interface NetworkStatusProps {
 
 const STACKS_INFO_API_URL = 'https://api.mainnet.hiro.so/extended/v1/info';
 const STACKS_CORE_INFO_API_URL = 'https://api.mainnet.hiro.so/v2/info';
+const DEFAULT_REFRESH_INTERVAL_MS = 30000;
+const MIN_REFRESH_INTERVAL_MS = 5000;
 
-export default function NetworkStatus({ refreshInterval = 30000 }: NetworkStatusProps) {
+export default function NetworkStatus({ refreshInterval = DEFAULT_REFRESH_INTERVAL_MS }: NetworkStatusProps) {
   const [stats, setStats] = useState<NetworkStats | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -31,7 +33,9 @@ export default function NetworkStatus({ refreshInterval = 30000 }: NetworkStatus
   const [refreshing, setRefreshing] = useState(false);
   const hasStatsRef = useRef(false);
   const isMountedRef = useRef(true);
-  const safeRefreshInterval = Number.isFinite(refreshInterval) ? Math.max(5000, Math.floor(refreshInterval)) : 30000;
+  const safeRefreshInterval = Number.isFinite(refreshInterval)
+    ? Math.max(MIN_REFRESH_INTERVAL_MS, Math.floor(refreshInterval))
+    : DEFAULT_REFRESH_INTERVAL_MS;
 
   useEffect(() => {
     return () => {
