@@ -34,3 +34,5 @@ This document describes the high-level architecture of the StackPulse ecosystem,
 4. **Matching**: Alert engine compares event data (e.g., amount > 10,000 STX) against active user alerts.
 5. **Dispatch**: Notification service sends asynchronous payloads to configured providers.
 6. **Live Update**: WebSocket gateway broadcasts the event to active dashboard users.
+
+Operational caveat: document how reorg-sensitive events are reconciled so downstream consumers understand when alert history can be amended.
