@@ -24,6 +24,7 @@ const STACKS_CORE_INFO_API_URL = 'https://api.mainnet.hiro.so/v2/info';
 const DEFAULT_REFRESH_INTERVAL_MS = 30000;
 const MIN_REFRESH_INTERVAL_MS = 5000;
 const JSON_ACCEPT_HEADERS = { Accept: 'application/json' } as const;
+const LAST_UPDATED_TIME_OPTIONS: Intl.DateTimeFormatOptions = { hour: '2-digit', minute: '2-digit' };
 
 export default function NetworkStatus({ refreshInterval = DEFAULT_REFRESH_INTERVAL_MS }: NetworkStatusProps) {
   const [stats, setStats] = useState<NetworkStats | null>(null);
@@ -143,7 +144,7 @@ export default function NetworkStatus({ refreshInterval = DEFAULT_REFRESH_INTERV
         <div className="flex items-center gap-3">
           {lastUpdated && (
             <span className="hidden sm:inline text-xs text-gray-500">
-              Updated {lastUpdated.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+              Updated {lastUpdated.toLocaleTimeString([], LAST_UPDATED_TIME_OPTIONS)}
             </span>
           )}
           <button
