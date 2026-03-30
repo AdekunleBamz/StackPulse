@@ -38,7 +38,7 @@ export function requestLogger(options: RequestLogOptions = defaultOptions) {
       return next();
     }
 
-    const startTime = process.hrtime();
+    const startTime = process.hrtime.bigint();
     const requestId = randomUUID();
 
     // Log request
@@ -56,12 +56,12 @@ export function requestLogger(options: RequestLogOptions = defaultOptions) {
     // Capture response
     const originalSend = res.send;
     res.send = function (body: unknown) {
-      const diff = process.hrtime(startTime);
-      const duration = (diff[0] * 1e3 + diff[1] * 1e-6).toFixed(2);
+      const durationMs = Number(process.hrtime.bigint() - startTime) / 1_000_000;
+      const duration = durationMs.toFixed(2);
       
       const logLevel = getLogLevel(res.statusCode);
       
-      MetricsService.recordMetric('http_request_duration', parseFloat(duration), {
+      MetricsService.recordMetric('http_request_duration', durationMs, {
         method: req.method,
         path: req.baseUrl + req.path,
         status: res.statusCode.toString()
