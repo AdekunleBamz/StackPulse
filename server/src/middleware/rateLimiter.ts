@@ -57,11 +57,18 @@ const defaultOptions: RateLimitOptions = {
  */
 export function rateLimiter(options: RateLimitOptions = defaultOptions) {
   const { windowMs, maxRequests, message, keyGenerator, maxRequestsGenerator } = { ...defaultOptions, ...options };
+  const safeWindowMs = Number.isFinite(windowMs) ? Math.max(1000, Math.floor(windowMs)) : DEFAULT_RATE_LIMIT_WINDOW_MS;
+  const safeMaxRequests = Number.isFinite(maxRequests)
+    ? Math.max(1, Math.floor(maxRequests))
+    : DEFAULT_RATE_LIMIT_MAX_REQUESTS;
 
   return (req: Request, res: Response, next: NextFunction) => {
     const key = keyGenerator!(req);
     const now = Date.now();
-    const effectiveMaxRequests = maxRequestsGenerator ? maxRequestsGenerator(req) : maxRequests;
+    const effectiveMaxRequestsRaw = maxRequestsGenerator ? maxRequestsGenerator(req) : safeMaxRequests;
+    const effectiveMaxRequests = Number.isFinite(effectiveMaxRequestsRaw)
+      ? Math.max(1, Math.floor(effectiveMaxRequestsRaw))
+      : safeMaxRequests;
 
     let entry = rateLimitStore.get(key);
 
@@ -69,7 +76,7 @@ export function rateLimiter(options: RateLimitOptions = defaultOptions) {
       // New window
       entry = {
         count: 1,
-        resetTime: now + windowMs
+        resetTime: now + safeWindowMs
       };
       rateLimitStore.set(key, entry);
       res.setHeader('X-RateLimit-Limit', effectiveMaxRequests.toString());
