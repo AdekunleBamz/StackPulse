@@ -15,6 +15,7 @@ const MILLISECONDS_PER_SECOND = 1000;
 const DAYS_PER_WEEK = 7;
 const WEEKS_PER_MONTH = 4;
 const MONTHS_PER_YEAR = 12;
+const DAYS_PER_YEAR = 365;
 
 /**
  * Formats a micro-STX amount into a human-readable STX string.
@@ -89,7 +90,7 @@ export function formatRelativeTime(timestamp: number | Date): string {
   if (days < DAYS_PER_WEEK) return isFuture ? `in ${days}d` : `${days}d ago`;
   if (weeks < WEEKS_PER_MONTH) return isFuture ? `in ${weeks}w` : `${weeks}w ago`;
   if (months < MONTHS_PER_YEAR) return isFuture ? `in ${months}mo` : `${months}mo ago`;
-  return isFuture ? `in ${Math.floor(days / 365)}y` : `${Math.floor(days / 365)}y ago`;
+  return isFuture ? `in ${Math.floor(days / DAYS_PER_YEAR)}y` : `${Math.floor(days / DAYS_PER_YEAR)}y ago`;
 }
 
 /**
