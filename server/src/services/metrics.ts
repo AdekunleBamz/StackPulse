@@ -22,7 +22,7 @@ class MetricsService {
    * Record an error metric
    */
   recordError(type: string): void {
-    const current = this.errorCounts.get(type) || 0;
+    const current = this.errorCounts.get(type) ?? 0;
     this.errorCounts.set(type, current + 1);
     logger.error(`Error recorded: ${type}`, { count: current + 1 });
   }
