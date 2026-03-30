@@ -136,8 +136,9 @@ export function truncateAddress(address: string, startChars: number = 6, endChar
  * @returns The truncated string with an ellipsis if it exceeded maxLength.
  */
 export function truncateString(str: string, maxLength: number): string {
-  if (str.length <= maxLength) return str;
-  return `${str.slice(0, maxLength)}...`;
+  const safeMaxLength = Number.isFinite(maxLength) ? Math.max(0, Math.floor(maxLength)) : 0;
+  if (str.length <= safeMaxLength) return str;
+  return `${str.slice(0, safeMaxLength)}...`;
 }
 
 /**
