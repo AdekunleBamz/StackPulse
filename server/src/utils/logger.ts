@@ -9,6 +9,7 @@ import fs from 'fs';
 
 const logDir = process.env.LOG_DIR || path.join(process.cwd(), 'logs');
 fs.mkdirSync(logDir, { recursive: true });
+const LOG_FILE_MAX_SIZE_BYTES = 5 * 1024 * 1024;
 
 /**
  * The primary Winston logger instance for StackPulse.
@@ -38,13 +39,13 @@ const logger = createLogger({
     new transports.File({
       filename: path.join(logDir, 'error.log'),
       level: 'error',
-      maxsize: 5242880, // 5MB
+      maxsize: LOG_FILE_MAX_SIZE_BYTES,
       maxFiles: 5
     }),
     // Combined log file
     new transports.File({
       filename: path.join(logDir, 'combined.log'),
-      maxsize: 5242880,
+      maxsize: LOG_FILE_MAX_SIZE_BYTES,
       maxFiles: 5
     })
   ]
