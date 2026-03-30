@@ -16,6 +16,7 @@ const rateLimitStore = new Map<string, RateLimitEntry>();
 const RATE_LIMIT_CLEANUP_INTERVAL_MS = 60000;
 const DEFAULT_RATE_LIMIT_WINDOW_MS = 60000;
 const DEFAULT_RATE_LIMIT_MAX_REQUESTS = 100;
+const RATE_LIMIT_UNKNOWN_KEY = 'unknown';
 
 type TierRequest = Request & {
   user?: {
@@ -47,7 +48,7 @@ const defaultOptions: RateLimitOptions = {
   maxRequests: DEFAULT_RATE_LIMIT_MAX_REQUESTS,
   message: 'Too many requests, please try again later.',
   keyGenerator: (req: Request) => {
-    return req.ip || req.socket.remoteAddress || 'unknown';
+    return req.ip || req.socket.remoteAddress || RATE_LIMIT_UNKNOWN_KEY;
   }
 };
 
