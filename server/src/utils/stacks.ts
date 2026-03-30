@@ -42,11 +42,12 @@ interface CoreApiInfoResponse {
 }
 
 type GenericJsonObject = Record<string, unknown>;
+type StacksNetwork = 'mainnet' | 'testnet';
 
 /**
  * Get Stacks API URL based on network
  */
-export function getStacksApiUrl(network: 'mainnet' | 'testnet' = 'mainnet'): string {
+export function getStacksApiUrl(network: StacksNetwork = 'mainnet'): string {
   return network === 'mainnet' 
     ? API_URLS.STACKS_API 
     : API_URLS.STACKS_API_TESTNET;
@@ -55,7 +56,7 @@ export function getStacksApiUrl(network: 'mainnet' | 'testnet' = 'mainnet'): str
 /**
  * Fetch transaction by ID
  */
-export async function getTransaction(txId: string, network: 'mainnet' | 'testnet' = 'mainnet'): Promise<Transaction | null> {
+export async function getTransaction(txId: string, network: StacksNetwork = 'mainnet'): Promise<Transaction | null> {
   const baseUrl = getStacksApiUrl(network);
   
   try {
@@ -71,7 +72,7 @@ export async function getTransaction(txId: string, network: 'mainnet' | 'testnet
 /**
  * Get account balance
  */
-export async function getAccountBalance(address: string, network: 'mainnet' | 'testnet' = 'mainnet'): Promise<{ balance: number; stx: string } | null> {
+export async function getAccountBalance(address: string, network: StacksNetwork = 'mainnet'): Promise<{ balance: number; stx: string } | null> {
   const baseUrl = getStacksApiUrl(network);
   
   try {
@@ -94,7 +95,7 @@ export async function getAccountBalance(address: string, network: 'mainnet' | 't
  */
 export async function getAccountTransactions(
   address: string, 
-  network: 'mainnet' | 'testnet' = 'mainnet',
+  network: StacksNetwork = 'mainnet',
   limit: number = 20,
   offset: number = 0
 ): Promise<Transaction[]> {
@@ -119,7 +120,7 @@ export async function getAccountTransactions(
 export async function getContractSource(
   contractAddress: string,
   contractName: string,
-  network: 'mainnet' | 'testnet' = 'mainnet'
+  network: StacksNetwork = 'mainnet'
 ): Promise<ContractSourceResponse | null> {
   const baseUrl = getStacksApiUrl(network);
   
@@ -140,7 +141,7 @@ export async function getContractSource(
  */
 export async function getBlock(
   blockHeight: number,
-  network: 'mainnet' | 'testnet' = 'mainnet'
+  network: StacksNetwork = 'mainnet'
 ): Promise<GenericJsonObject | null> {
   const baseUrl = getStacksApiUrl(network);
   
@@ -159,7 +160,7 @@ export async function getBlock(
  */
 export async function getMempoolTransactions(
   address: string,
-  network: 'mainnet' | 'testnet' = 'mainnet'
+  network: StacksNetwork = 'mainnet'
 ): Promise<Transaction[]> {
   const baseUrl = getStacksApiUrl(network);
   
@@ -179,7 +180,7 @@ export async function getMempoolTransactions(
 /**
  * Get current block height
  */
-export async function getCoreApiInfo(network: 'mainnet' | 'testnet' = 'mainnet'): Promise<CoreApiInfoResponse | null> {
+export async function getCoreApiInfo(network: StacksNetwork = 'mainnet'): Promise<CoreApiInfoResponse | null> {
   const baseUrl = getStacksApiUrl(network);
   
   try {
@@ -197,7 +198,7 @@ export async function getCoreApiInfo(network: 'mainnet' | 'testnet' = 'mainnet')
  */
 export async function getBlockTransactions(
   blockHeight: number,
-  network: 'mainnet' | 'testnet' = 'mainnet'
+  network: StacksNetwork = 'mainnet'
 ): Promise<Transaction[]> {
   const baseUrl = getStacksApiUrl(network);
   
