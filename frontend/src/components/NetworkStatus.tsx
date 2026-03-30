@@ -23,6 +23,7 @@ const STACKS_INFO_API_URL = 'https://api.mainnet.hiro.so/extended/v1/info';
 const STACKS_CORE_INFO_API_URL = 'https://api.mainnet.hiro.so/v2/info';
 const DEFAULT_REFRESH_INTERVAL_MS = 30000;
 const MIN_REFRESH_INTERVAL_MS = 5000;
+const JSON_ACCEPT_HEADERS = { Accept: 'application/json' } as const;
 
 export default function NetworkStatus({ refreshInterval = DEFAULT_REFRESH_INTERVAL_MS }: NetworkStatusProps) {
   const [stats, setStats] = useState<NetworkStats | null>(null);
@@ -48,8 +49,8 @@ export default function NetworkStatus({ refreshInterval = DEFAULT_REFRESH_INTERV
     try {
       // Fetch from Stacks API
       const [infoRes, coreRes] = await Promise.all([
-        fetch(STACKS_INFO_API_URL, { headers: { Accept: 'application/json' } }),
-        fetch(STACKS_CORE_INFO_API_URL, { headers: { Accept: 'application/json' } }),
+        fetch(STACKS_INFO_API_URL, { headers: JSON_ACCEPT_HEADERS }),
+        fetch(STACKS_CORE_INFO_API_URL, { headers: JSON_ACCEPT_HEADERS }),
       ]);
 
       if (!infoRes.ok || !coreRes.ok) {
