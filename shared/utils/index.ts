@@ -26,6 +26,9 @@ export function truncateAddress(address: string, startChars: number = 6, endChar
  * Format timestamp to relative time
  */
 export function formatRelativeTime(timestamp: number): string {
+  if (!Number.isFinite(timestamp)) {
+    return 'just now';
+  }
   const now = Date.now();
   const diff = now - timestamp;
   if (diff < 0) return 'just now';
