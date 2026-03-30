@@ -2,7 +2,7 @@
 
 import { useWallet } from '@/context/WalletContext';
 import { Wallet, LogOut, ChevronDown } from 'lucide-react';
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import Button from '@/components/ui/Button';
 import CopyButton from '@/components/ui/CopyButton';
 import { truncateAddress } from '@/utils/address';
@@ -12,6 +12,7 @@ export default function ConnectWallet() {
   const [showDropdown, setShowDropdown] = useState(false);
   const wrapperRef = useRef<HTMLDivElement>(null);
   const safeAddress = address || '';
+  const closeDropdown = useCallback(() => setShowDropdown(false), []);
 
   useEffect(() => {
     if (!showDropdown) return;
@@ -20,12 +21,12 @@ export default function ConnectWallet() {
       const target = e.target as Node | null;
       if (!target) return;
       if (wrapperRef.current && !wrapperRef.current.contains(target)) {
-        setShowDropdown(false);
+        closeDropdown();
       }
     };
 
     const onKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') setShowDropdown(false);
+      if (e.key === 'Escape') closeDropdown();
     };
 
     document.addEventListener('mousedown', onPointerDown);
@@ -37,7 +38,7 @@ export default function ConnectWallet() {
       document.removeEventListener('touchstart', onPointerDown);
       window.removeEventListener('keydown', onKeyDown);
     };
-  }, [showDropdown]);
+  }, [closeDropdown, showDropdown]);
 
   if (!isConnected) {
     return (
@@ -106,7 +107,7 @@ export default function ConnectWallet() {
                 type="button"
                 onClick={() => {
                   switchNetwork('mainnet');
-                  setShowDropdown(false);
+                  closeDropdown();
                 }}
                 role="menuitemradio"
                 aria-checked={network === 'mainnet'}
@@ -123,7 +124,7 @@ export default function ConnectWallet() {
                 type="button"
                 onClick={() => {
                   switchNetwork('testnet');
-                  setShowDropdown(false);
+                  closeDropdown();
                 }}
                 role="menuitemradio"
                 aria-checked={network === 'testnet'}
@@ -142,7 +143,7 @@ export default function ConnectWallet() {
             type="button"
             onClick={() => {
               disconnect();
-              setShowDropdown(false);
+              closeDropdown();
             }}
             className="w-full flex items-center gap-2 px-4 py-4 text-red-400 hover:bg-red-500/10 hover:text-red-300 transition-all duration-200 rounded-b-2xl font-semibold border-t border-white/5"
             role="menuitem"
