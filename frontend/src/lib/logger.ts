@@ -1,4 +1,5 @@
 type LogLevel = 'debug' | 'info' | 'warn' | 'error';
+type Logger = Record<LogLevel, (...args: unknown[]) => void>;
 
 const isProduction = process.env.NODE_ENV === 'production';
 const debugLogsEnabled = !isProduction || process.env.NEXT_PUBLIC_DEBUG_LOGS === 'true';
@@ -31,7 +32,7 @@ function writeLog(level: LogLevel, ...args: unknown[]): void {
   }
 }
 
-export const logger = {
+export const logger: Logger = {
   debug: (...args: unknown[]) => writeLog('debug', ...args),
   info: (...args: unknown[]) => writeLog('info', ...args),
   warn: (...args: unknown[]) => writeLog('warn', ...args),
