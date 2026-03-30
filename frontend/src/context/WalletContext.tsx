@@ -153,6 +153,6 @@ export function useWallet() {
   return context;
 }
 
-export function getStacksNetwork(network: 'mainnet' | 'testnet') {
+export function getStacksNetwork(network: 'mainnet' | 'testnet'): typeof STACKS_MAINNET | typeof STACKS_TESTNET {
   return network === 'mainnet' ? STACKS_MAINNET : STACKS_TESTNET;
 }
