@@ -30,3 +30,4 @@ import { API_URLS, ALERT_TYPES, TIER_NAMES } from '@stackpulse/shared/constants'
 import { AlertType, UserTier } from '@stackpulse/shared/types';
 import { formatStxAmount, formatRelativeTime, truncateAddress } from '@stackpulse/shared/utils';
 ```
+- When changing shared constants, publish compatibility notes so frontend and server deployments can roll in a safe order.
