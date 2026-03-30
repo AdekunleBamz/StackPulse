@@ -27,3 +27,4 @@ Please redact secrets (mnemonics, API tokens, `.env` values) from all reports an
 You can also use GitHub"""s private advisory flow: https://github.com/AdekunleBamz/StackPulse/security/advisories/new
 
 We will provide regular status updates until the issue is resolved.
+- For blockchain-related findings, include network (mainnet/testnet) and at least one transaction or block reference where behavior was observed.
