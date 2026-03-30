@@ -118,16 +118,17 @@ export function validateQuery(schema: ValidationSchema) {
         errors.push(`Query parameter '${field}' must be a string value`);
         continue;
       }
+      const normalizedValue = rawValue.trim();
 
       if (rules.type === 'number') {
-        const parsedValue = Number.parseFloat(rawValue);
+        const parsedValue = Number.parseFloat(normalizedValue);
         if (!Number.isFinite(parsedValue)) {
           errors.push(`Query parameter '${field}' must be a valid number`);
         }
         continue;
       }
 
-      if (rules.type === 'boolean' && rawValue !== 'true' && rawValue !== 'false') {
+      if (rules.type === 'boolean' && normalizedValue !== 'true' && normalizedValue !== 'false') {
         errors.push(`Query parameter '${field}' must be "true" or "false"`);
         continue;
       }
