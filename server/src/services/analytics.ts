@@ -244,7 +244,10 @@ export function getAnalyticsSummary(): {
 
 // Clear old analytics data (call periodically)
 export function clearOldData(maxAgeDays: number = 30): void {
-  const maxAge = maxAgeDays * MILLISECONDS_PER_DAY;
+  const safeMaxAgeDays = Number.isFinite(maxAgeDays)
+    ? Math.max(1, Math.floor(maxAgeDays))
+    : 30;
+  const maxAge = safeMaxAgeDays * MILLISECONDS_PER_DAY;
   const now = Date.now();
   const cutoffHour = Math.floor((now - maxAge) / MILLISECONDS_PER_HOUR);
   const cutoffDay = Math.floor((now - maxAge) / MILLISECONDS_PER_DAY);
@@ -271,7 +274,7 @@ export function clearOldData(maxAgeDays: number = 30): void {
   }
   
   logger.info('Cleared old analytics data', { 
-    maxAgeDays, 
+    maxAgeDays: safeMaxAgeDays, 
     hourlyRemaining: analytics.hourly.size,
     dailyRemaining: analytics.daily.size 
   });
