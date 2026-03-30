@@ -18,6 +18,8 @@ interface EventStats {
   badgesEarned: number;
 }
 
+const LIVE_STATS_REFRESH_INTERVAL_MS = 30000;
+
 export default function LiveStats() {
   const [stats, setStats] = useState<EventStats | null>(null);
   const [loading, setLoading] = useState(true);
@@ -45,7 +47,7 @@ export default function LiveStats() {
     };
 
     fetchStats();
-    const interval = setInterval(fetchStats, 30000); // Refresh every 30s
+    const interval = setInterval(fetchStats, LIVE_STATS_REFRESH_INTERVAL_MS);
     return () => clearInterval(interval);
   }, [refreshKey]);
 
