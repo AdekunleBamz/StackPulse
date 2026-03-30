@@ -378,3 +378,7 @@ git push origin main
 - Check environment variables are set in Vercel
 - Verify Next.js version compatibility
 - Check for TypeScript errors
+
+### Communication Note
+
+Post maintenance-window updates at start, midpoint, and completion so alert consumers know whether unusual activity is expected.
