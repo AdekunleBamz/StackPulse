@@ -16,6 +16,10 @@ class CacheService {
   private cache: Map<string, CacheEntry<unknown>> = new Map();
   private cleanupInterval: NodeJS.Timeout;
 
+  private isExpired(entry: CacheEntry<unknown>, now = Date.now()): boolean {
+    return now > entry.expiresAt;
+  }
+
   constructor() {
     // Clean up expired entries every 10 minutes
     this.cleanupInterval = setInterval(() => {
@@ -52,7 +56,7 @@ class CacheService {
     }
 
     // Check if expired
-    if (Date.now() > entry.expiresAt) {
+    if (this.isExpired(entry)) {
       this.cache.delete(key);
       return null;
     }
@@ -71,7 +75,7 @@ class CacheService {
     }
 
     // Check if expired
-    if (Date.now() > entry.expiresAt) {
+    if (this.isExpired(entry)) {
       this.cache.delete(key);
       return false;
     }
@@ -117,7 +121,7 @@ class CacheService {
     let count = 0;
     
     for (const [key, entry] of this.cache.entries()) {
-      if (entry.expiresAt < now) {
+      if (this.isExpired(entry, now)) {
         this.cache.delete(key);
         count++;
       }
