@@ -16,6 +16,7 @@ interface PriceData {
 }
 
 const PRICE_REFRESH_INTERVAL_MS = 60000;
+const PRICE_CHANGE_NEUTRAL_THRESHOLD = 0.1;
 const COINGECKO_SIMPLE_PRICE_URL =
   'https://api.coingecko.com/api/v3/simple/price?ids=blockstack,bitcoin&vs_currencies=usd&include_24hr_change=true';
 
@@ -100,14 +101,14 @@ export default function PriceTracker() {
   };
 
   const getChangeIcon = (change: number) => {
-    if (change > 0.1) return <ArrowUp className="w-3 h-3" />;
-    if (change < -0.1) return <ArrowDown className="w-3 h-3" />;
+    if (change > PRICE_CHANGE_NEUTRAL_THRESHOLD) return <ArrowUp className="w-3 h-3" />;
+    if (change < -PRICE_CHANGE_NEUTRAL_THRESHOLD) return <ArrowDown className="w-3 h-3" />;
     return <Minus className="w-3 h-3" />;
   };
 
   const getChangeColor = (change: number) => {
-    if (change > 0.1) return 'text-green-400';
-    if (change < -0.1) return 'text-red-400';
+    if (change > PRICE_CHANGE_NEUTRAL_THRESHOLD) return 'text-green-400';
+    if (change < -PRICE_CHANGE_NEUTRAL_THRESHOLD) return 'text-red-400';
     return 'text-gray-400';
   };
 
