@@ -15,3 +15,4 @@ These files break the backend into route-focused modules while `../index.ts` rem
 - Keep request parsing in the route layer.
 - Push reusable logic into `../services/`.
 - Update `docs/API.md` when a mounted path changes.
+- When introducing route-version changes, keep deprecation windows explicit in both route docs and public API notes.
