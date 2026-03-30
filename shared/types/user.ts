@@ -16,11 +16,13 @@ export const UserTierNames: Record<UserTier, string> = {
   [UserTier.Premium]: 'Premium',
 };
 
-export const UserTierLimits: Record<UserTier, {
+export interface UserTierLimit {
   maxAlerts: number;
   maxWebhooks: number;
   rateLimitPerMinute: number;
-}> = {
+}
+
+export const UserTierLimits: Record<UserTier, UserTierLimit> = {
   [UserTier.Free]: {
     maxAlerts: 3,
     maxWebhooks: 1,
