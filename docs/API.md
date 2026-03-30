@@ -767,6 +767,6 @@ ws.onmessage = (event) => {
 };
 ```
 
-### Operational Tip
+### Reliability Note
 
-If rate limiting is enabled, expose remaining-budget headers so dashboards can differentiate throttling from upstream outages.
+Clients should apply exponential backoff with jitter when reconnecting WebSocket sessions to avoid synchronized reconnect storms during outages.
