@@ -1,6 +1,9 @@
 import { Request, Response, NextFunction } from 'express';
 import logger from '../utils/logger';
 
+const PAYLOAD_SIZE_LIMITS_BY_TIER = [10240, 102400, 1048576, 10485760] as const; // 10K, 100K, 1M, 10M
+const DEFAULT_TIER_INDEX = 0;
+
 type TierRequest = Request & {
   user?: {
     tier?: number;
@@ -11,10 +14,9 @@ type TierRequest = Request & {
  * Validate body payload size based on tier
  */
 export function validatePayloadSize(req: Request, res: Response, next: NextFunction) {
-  const userTier = (req as TierRequest).user?.tier || 0;
-  const limits = [10240, 102400, 1048576, 10485760]; // 10K, 100K, 1M, 10M
-  const safeTier = Number.isInteger(userTier) && userTier >= 0 ? userTier : 0;
-  const limit = limits[safeTier] || 10240;
+  const userTier = (req as TierRequest).user?.tier || DEFAULT_TIER_INDEX;
+  const safeTier = Number.isInteger(userTier) && userTier >= 0 ? userTier : DEFAULT_TIER_INDEX;
+  const limit = PAYLOAD_SIZE_LIMITS_BY_TIER[safeTier] || PAYLOAD_SIZE_LIMITS_BY_TIER[DEFAULT_TIER_INDEX];
   
   const contentLength = Number.parseInt(req.headers['content-length'] || '0', 10);
   if (contentLength > limit) {
