@@ -3,6 +3,7 @@ import logger from '../utils/logger';
 
 const PAYLOAD_SIZE_LIMITS_BY_TIER = [10240, 102400, 1048576, 10485760] as const; // 10K, 100K, 1M, 10M
 const DEFAULT_TIER_INDEX = 0;
+const PAYLOAD_TOO_LARGE_STATUS = 413;
 
 type TierRequest = Request & {
   user?: {
@@ -21,7 +22,7 @@ export function validatePayloadSize(req: Request, res: Response, next: NextFunct
   const contentLength = Number.parseInt(req.headers['content-length'] || '0', 10);
   if (contentLength > limit) {
     logger.warn('Payload size limit exceeded', { userTier, limit, contentLength });
-    return res.status(413).json({
+    return res.status(PAYLOAD_TOO_LARGE_STATUS).json({
       success: false,
       error: `Payload too large for your tier. Limit: ${limit} bytes.`
     });
