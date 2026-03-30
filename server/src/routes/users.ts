@@ -124,6 +124,16 @@ router.patch('/:address', (req: Request, res: Response) => {
     typeof updates.discord === 'string' ? updates.discord.trim().slice(0, 64) : undefined;
   const normalizedTelegram =
     typeof updates.telegram === 'string' ? updates.telegram.trim().slice(0, 64) : undefined;
+  const normalizedEnabledAlerts = Array.isArray(updates.enabledAlerts)
+    ? Array.from(
+        new Set(
+          updates.enabledAlerts
+            .filter((value): value is string => typeof value === 'string')
+            .map((value) => value.trim())
+            .filter(Boolean)
+        )
+      )
+    : undefined;
   const updatedUser: UserRecord = {
     ...user,
     ...updates,
@@ -132,6 +142,7 @@ router.patch('/:address', (req: Request, res: Response) => {
     ...(normalizedEmail !== undefined ? { email: normalizedEmail } : {}),
     ...(normalizedDiscord !== undefined ? { discord: normalizedDiscord } : {}),
     ...(normalizedTelegram !== undefined ? { telegram: normalizedTelegram } : {}),
+    ...(normalizedEnabledAlerts !== undefined ? { enabledAlerts: normalizedEnabledAlerts } : {}),
     address: user.address,
     createdAt: user.createdAt,
     tier: user.tier,
