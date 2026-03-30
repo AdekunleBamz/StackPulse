@@ -19,9 +19,5 @@ Instead, please send an email to [security@stackpulse.io](mailto:security@stackp
 Please redact secrets (mnemonics, API tokens, `.env` values) from all reports and logs.
 You can also use GitHub"""s private advisory flow: https://github.com/AdekunleBamz/StackPulse/security/advisories/new
 
-### Our Process
-
-1. We will acknowledge receipt of your report within 48 hours.
-2. We will investigate the issue and determine its severity.
-3. We will keep you updated on our progress toward a fix.
-4. Once a fix is verified, we will release a new version and provide public credit if desired.
+We will provide regular status updates until the issue is resolved.
+- For blockchain-related findings, include network (mainnet/testnet) and at least one transaction or block reference where behavior was observed.
