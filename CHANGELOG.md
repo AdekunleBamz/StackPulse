@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - Refactored `README.md` to focus on the full-stack architecture.
+- Clarified operational documentation notes for deployment, API reliability, and contributor workflows.
 - Updated `package.json` with comprehensive project metadata.
 
 ## [1.0.0] - 2026-03-21
