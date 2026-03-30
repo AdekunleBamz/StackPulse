@@ -3,6 +3,11 @@
  */
 
 const MICROSTX_PER_STX = 1000000;
+const DEFAULT_DATE_FORMAT_OPTIONS: Intl.DateTimeFormatOptions = {
+  year: 'numeric',
+  month: 'short',
+  day: 'numeric',
+};
 
 /**
  * Formats a micro-STX amount into a human-readable STX string.
@@ -91,11 +96,7 @@ export function formatDate(timestamp: number | Date, options?: Intl.DateTimeForm
   if (Number.isNaN(date.getTime())) {
     return 'Invalid date';
   }
-  return date.toLocaleDateString('en-US', options || {
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric'
-  });
+  return date.toLocaleDateString('en-US', options || DEFAULT_DATE_FORMAT_OPTIONS);
 }
 
 /**
