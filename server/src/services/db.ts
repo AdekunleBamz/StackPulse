@@ -43,9 +43,12 @@ class DatabaseService {
       );
       logger.info('Database backup completed successfully', { backupPath });
       return backupPath;
-    } catch (error) {
+    } catch (error: unknown) {
       logger.error('Database backup failed', { error });
-      throw error;
+      if (error instanceof Error) {
+        throw error;
+      }
+      throw new Error('Unknown database backup error');
     }
   }
 }
