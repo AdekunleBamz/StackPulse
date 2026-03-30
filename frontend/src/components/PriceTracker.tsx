@@ -16,6 +16,8 @@ interface PriceData {
 }
 
 const PRICE_REFRESH_INTERVAL_MS = 60000;
+const COINGECKO_SIMPLE_PRICE_URL =
+  'https://api.coingecko.com/api/v3/simple/price?ids=blockstack,bitcoin&vs_currencies=usd&include_24hr_change=true';
 
 export default function PriceTracker() {
   const [prices, setPrices] = useState<PriceData | null>(null);
@@ -36,10 +38,9 @@ export default function PriceTracker() {
       setLoading(true);
       try {
         // Using CoinGecko API for price data
-        const response = await fetch(
-          'https://api.coingecko.com/api/v3/simple/price?ids=blockstack,bitcoin&vs_currencies=usd&include_24hr_change=true',
-          { headers: { Accept: 'application/json' } }
-        );
+        const response = await fetch(COINGECKO_SIMPLE_PRICE_URL, {
+          headers: { Accept: 'application/json' },
+        });
         
         if (!response.ok) throw new Error('Bad response');
         const data = await response.json();
