@@ -5,8 +5,10 @@
 
 import { createLogger, format, transports } from 'winston';
 import path from 'path';
+import fs from 'fs';
 
 const logDir = process.env.LOG_DIR || path.join(process.cwd(), 'logs');
+fs.mkdirSync(logDir, { recursive: true });
 
 /**
  * The primary Winston logger instance for StackPulse.
