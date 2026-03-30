@@ -43,3 +43,4 @@ REDIS_URL=redis://optional
 - `src/utils/`: logger, Stacks API helpers, and webhook signing utilities
 - `data/`: local persistence artifacts
 - `logs/`: runtime log output when enabled
+- Include a correlation ID in alert dispatch logs to connect inbound chainhook events with downstream notification attempts.
