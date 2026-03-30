@@ -28,3 +28,4 @@ Please include the following in your report:
 - **Disclosure Policy**: 90 days after the initial report, or sooner if a fix is released.
 
 We will provide regular status updates until the issue is resolved.
+- For blockchain-related findings, include network (mainnet/testnet) and at least one transaction or block reference where behavior was observed.
