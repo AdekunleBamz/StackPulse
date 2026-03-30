@@ -32,11 +32,11 @@ function writeLog(level: LogLevel, ...args: unknown[]): void {
   }
 }
 
-export const logger: Logger = {
+export const logger: Readonly<Logger> = Object.freeze({
   debug: (...args: unknown[]) => writeLog('debug', ...args),
   info: (...args: unknown[]) => writeLog('info', ...args),
   warn: (...args: unknown[]) => writeLog('warn', ...args),
   error: (...args: unknown[]) => writeLog('error', ...args),
-};
+});
 
 export default logger;
