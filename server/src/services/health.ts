@@ -6,6 +6,9 @@
 import logger from '../utils/logger';
 import os from 'os';
 
+const DEGRADED_MEMORY_THRESHOLD_PERCENT = 90;
+const CRITICAL_MEMORY_THRESHOLD_PERCENT = 95;
+
 interface SystemHealth {
   status: 'ok' | 'degraded' | 'critical';
   uptime: number;
@@ -33,7 +36,7 @@ class HealthService {
     const usagePercent = ((totalMemory - freeMemory) / totalMemory) * 100;
 
     const health: SystemHealth = {
-      status: usagePercent > 90 ? 'degraded' : 'ok',
+      status: usagePercent > DEGRADED_MEMORY_THRESHOLD_PERCENT ? 'degraded' : 'ok',
       uptime: os.uptime(),
       memory: {
         free: freeMemory,
@@ -51,7 +54,7 @@ class HealthService {
       timestamp: Date.now()
     };
 
-    if (usagePercent > 95) {
+    if (usagePercent > CRITICAL_MEMORY_THRESHOLD_PERCENT) {
       health.status = 'critical';
       logger.error('System memory usage critical', { usagePercent });
     }
