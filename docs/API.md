@@ -414,3 +414,7 @@ ws.onmessage = (event) => {
   }
 };
 ```
+
+### Operational Tip
+
+If rate limiting is enabled, expose remaining-budget headers so dashboards can differentiate throttling from upstream outages.
