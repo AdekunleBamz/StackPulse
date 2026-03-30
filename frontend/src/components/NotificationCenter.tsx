@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { Bell, X, ExternalLink } from 'lucide-react';
 import { apiUrl } from '@/lib/env';
 import logger from '@/lib/logger';
@@ -80,7 +80,7 @@ export default function NotificationCenter({ maxNotifications = 50 }: Notificati
     return () => clearInterval(interval);
   }, [safeMaxNotifications]);
 
-  const unreadCount = notifications.filter(n => !n.read).length;
+  const unreadCount = useMemo(() => notifications.filter((n) => !n.read).length, [notifications]);
 
   const markAsRead = (id: string) => {
     setNotifications(prev =>
