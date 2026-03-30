@@ -18,6 +18,7 @@ Shared constants, types, and formatting helpers used by the frontend and server.
 npm install
 npm run build
 npm test
+npm run test:watch
 ```
 
 ## Example imports
