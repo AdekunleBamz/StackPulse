@@ -17,6 +17,8 @@ const RATE_LIMIT_CLEANUP_INTERVAL_MS = 60000;
 const DEFAULT_RATE_LIMIT_WINDOW_MS = 60000;
 const DEFAULT_RATE_LIMIT_MAX_REQUESTS = 100;
 const RATE_LIMIT_UNKNOWN_KEY = 'unknown';
+const TOO_MANY_REQUESTS_STATUS = 429;
+const MILLISECONDS_PER_SECOND = 1000;
 
 type TierRequest = Request & {
   user?: {
@@ -87,7 +89,7 @@ export function rateLimiter(options: RateLimitOptions = defaultOptions) {
 
     // Check if limit exceeded
     if (entry.count >= effectiveMaxRequests) {
-      const retryAfter = Math.ceil((entry.resetTime - now) / 1000);
+      const retryAfter = Math.ceil((entry.resetTime - now) / MILLISECONDS_PER_SECOND);
       
       logger.warn('Rate limit exceeded', { 
         key, 
@@ -97,7 +99,7 @@ export function rateLimiter(options: RateLimitOptions = defaultOptions) {
       });
 
       res.setHeader('Retry-After', retryAfter.toString());
-      return res.status(429).json({
+      return res.status(TOO_MANY_REQUESTS_STATUS).json({
         success: false,
         error: message,
         retryAfter
