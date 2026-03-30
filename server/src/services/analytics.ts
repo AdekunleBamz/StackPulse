@@ -29,6 +29,8 @@ const ANALYTICS_CLEANUP_INTERVAL_MS = 3600000;
 const MILLISECONDS_PER_HOUR = 3600000;
 const MILLISECONDS_PER_DAY = 86400000;
 const APPROX_MILLISECONDS_PER_30_DAYS = 2592000000;
+const DEFAULT_HOURLY_BREAKDOWN_HOURS = 24;
+const MAX_HOURLY_BREAKDOWN_HOURS = 24 * 30;
 const MAX_EVENTS_PER_USER = new Map<number, number>([
   [0, 1000],  // FREE
   [1, 10000], // PRO
@@ -164,12 +166,18 @@ export function getEventsInWindow(window: TimeWindow): Record<string, number> {
 }
 
 // Get hourly breakdown for a specific event
-export function getHourlyBreakdown(eventType: string, hours: number = 24): Record<string, number> {
+export function getHourlyBreakdown(
+  eventType: string,
+  hours: number = DEFAULT_HOURLY_BREAKDOWN_HOURS
+): Record<string, number> {
   const now = Date.now();
-  const startHour = Math.floor(now / MILLISECONDS_PER_HOUR) - hours;
+  const safeHours = Number.isFinite(hours)
+    ? Math.min(MAX_HOURLY_BREAKDOWN_HOURS, Math.max(1, Math.floor(hours)))
+    : DEFAULT_HOURLY_BREAKDOWN_HOURS;
+  const startHour = Math.floor(now / MILLISECONDS_PER_HOUR) - safeHours;
   const result: Record<string, number> = {};
   
-  for (let i = startHour; i < startHour + hours; i++) {
+  for (let i = startHour; i < startHour + safeHours; i++) {
     const hourMap = analytics.hourly.get(i);
     if (hourMap) {
       const count = hourMap.get(eventType) || 0;
