@@ -19,6 +19,9 @@ interface NetworkStatusProps {
   refreshInterval?: number;
 }
 
+const STACKS_INFO_API_URL = 'https://api.mainnet.hiro.so/extended/v1/info';
+const STACKS_CORE_INFO_API_URL = 'https://api.mainnet.hiro.so/v2/info';
+
 export default function NetworkStatus({ refreshInterval = 30000 }: NetworkStatusProps) {
   const [stats, setStats] = useState<NetworkStats | null>(null);
   const [loading, setLoading] = useState(true);
@@ -41,8 +44,8 @@ export default function NetworkStatus({ refreshInterval = 30000 }: NetworkStatus
     try {
       // Fetch from Stacks API
       const [infoRes, coreRes] = await Promise.all([
-        fetch('https://api.mainnet.hiro.so/extended/v1/info', { headers: { Accept: 'application/json' } }),
-        fetch('https://api.mainnet.hiro.so/v2/info', { headers: { Accept: 'application/json' } }),
+        fetch(STACKS_INFO_API_URL, { headers: { Accept: 'application/json' } }),
+        fetch(STACKS_CORE_INFO_API_URL, { headers: { Accept: 'application/json' } }),
       ]);
 
       if (!infoRes.ok || !coreRes.ok) {
