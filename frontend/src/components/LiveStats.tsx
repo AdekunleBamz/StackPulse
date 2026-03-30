@@ -30,7 +30,9 @@ export default function LiveStats() {
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        const res = await fetch(apiUrl('/api/stats'));
+        const res = await fetch(apiUrl('/api/stats'), {
+          headers: { Accept: 'application/json' },
+        });
         if (!res.ok) throw new Error('Bad response');
         const data = await res.json();
         const payload = data?.stats ?? data;
