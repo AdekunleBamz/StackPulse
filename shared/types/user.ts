@@ -68,7 +68,7 @@ export interface NotificationPreferences {
   webhook: boolean;
   inApp: boolean;
   push: boolean;
-  alertTypes: number[];
+  alertTypes: readonly number[];
 }
 
 export interface CreateUserRequest {
