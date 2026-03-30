@@ -48,7 +48,8 @@ class MetricsService {
    * Get metrics by name
    */
   getMetrics(name: string): MetricValue[] {
-    return this.metrics.get(name) || [];
+    const values = this.metrics.get(name) || [];
+    return values.slice();
   }
 
   /**
