@@ -4,7 +4,9 @@ import logger from '../utils/logger';
 /**
  * Request timeout middleware
  */
-export function requestTimeout(timeoutMs: number = 30000) {
+const DEFAULT_REQUEST_TIMEOUT_MS = 30000;
+
+export function requestTimeout(timeoutMs: number = DEFAULT_REQUEST_TIMEOUT_MS) {
   return (req: Request, res: Response, next: NextFunction) => {
     const timer = setTimeout(() => {
       if (!res.headersSent) {
