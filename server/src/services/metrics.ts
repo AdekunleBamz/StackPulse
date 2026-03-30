@@ -26,6 +26,11 @@ class MetricsService {
     logger.error(`Error recorded: ${type}`, { count: current + 1 });
   }
   recordMetric(name: string, value: number, labels?: Record<string, string>): void {
+    if (!Number.isFinite(value)) {
+      logger.warn(`Skipping non-finite metric: ${name}`, { value, labels });
+      return;
+    }
+
     const entry: MetricValue = {
       value,
       timestamp: Date.now(),
