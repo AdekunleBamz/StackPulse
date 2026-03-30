@@ -250,7 +250,7 @@ npx tsx scripts/register-stackpulse-chainhooks-v-j4.ts
 ### Verify Registration
 
 ```bash
-npx ts-node scripts/check-chainhook-status.ts
+npx tsx scripts/check-chainhook-status.ts
 ```
 
 ### Chainhook Webhook URLs
