@@ -8,6 +8,7 @@ TypeScript + Express backend for chainhook ingestion, alert persistence, metrics
 npm install
 npm run dev
 npm run build
+npm run lint
 npm start
 npm run register-hooks
 ```
