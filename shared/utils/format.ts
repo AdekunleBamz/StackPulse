@@ -20,6 +20,8 @@ const BYTES_PER_UNIT = 1024;
 const FILE_SIZE_UNITS = ['B', 'KB', 'MB', 'GB', 'TB'] as const;
 const STX_PER_THOUSAND = 1000;
 const STX_PER_MILLION = 1000000;
+const TX_ID_PREFIX_LENGTH = 8;
+const TX_ID_SUFFIX_LENGTH = 8;
 
 /**
  * Formats a micro-STX amount into a human-readable STX string.
@@ -228,5 +230,5 @@ export function formatBalance(balance: number | string, decimals: number = 6): s
  * @returns A truncated transaction ID string.
  */
 export function formatTxId(txId: string): string {
-  return truncateAddress(txId, 8, 8);
+  return truncateAddress(txId, TX_ID_PREFIX_LENGTH, TX_ID_SUFFIX_LENGTH);
 }
