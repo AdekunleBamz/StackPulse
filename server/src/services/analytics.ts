@@ -31,6 +31,8 @@ const MILLISECONDS_PER_DAY = 86400000;
 const APPROX_MILLISECONDS_PER_30_DAYS = 2592000000;
 const DEFAULT_HOURLY_BREAKDOWN_HOURS = 24;
 const MAX_HOURLY_BREAKDOWN_HOURS = 24 * 30;
+const DEFAULT_DAILY_BREAKDOWN_DAYS = 30;
+const MAX_DAILY_BREAKDOWN_DAYS = 365;
 const MAX_EVENTS_PER_USER = new Map<number, number>([
   [0, 1000],  // FREE
   [1, 10000], // PRO
@@ -191,12 +193,18 @@ export function getHourlyBreakdown(
 }
 
 // Get daily breakdown for a specific event
-export function getDailyBreakdown(eventType: string, days: number = 30): Record<string, number> {
+export function getDailyBreakdown(
+  eventType: string,
+  days: number = DEFAULT_DAILY_BREAKDOWN_DAYS
+): Record<string, number> {
   const now = Date.now();
-  const startDay = Math.floor(now / MILLISECONDS_PER_DAY) - days;
+  const safeDays = Number.isFinite(days)
+    ? Math.min(MAX_DAILY_BREAKDOWN_DAYS, Math.max(1, Math.floor(days)))
+    : DEFAULT_DAILY_BREAKDOWN_DAYS;
+  const startDay = Math.floor(now / MILLISECONDS_PER_DAY) - safeDays;
   const result: Record<string, number> = {};
   
-  for (let i = startDay; i < startDay + days; i++) {
+  for (let i = startDay; i < startDay + safeDays; i++) {
     const dayMap = analytics.daily.get(i);
     if (dayMap) {
       const count = dayMap.get(eventType) || 0;
