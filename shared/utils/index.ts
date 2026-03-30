@@ -16,10 +16,14 @@ export function formatStxAmount(microStx: string | number): string {
  * Truncate Stacks address for display
  */
 export function truncateAddress(address: string, startChars: number = 6, endChars: number = 4): string {
-  if (!address || address.length <= startChars + endChars) {
+  const safeStart = Math.max(0, Math.floor(startChars));
+  const safeEnd = Math.max(0, Math.floor(endChars));
+  if (!address || address.length <= safeStart + safeEnd) {
     return address;
   }
-  return `${address.slice(0, startChars)}...${address.slice(-endChars)}`;
+  const startPart = address.slice(0, safeStart);
+  const endPart = safeEnd > 0 ? address.slice(-safeEnd) : '';
+  return `${startPart}...${endPart}`;
 }
 
 /**
