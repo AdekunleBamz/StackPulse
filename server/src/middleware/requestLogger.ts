@@ -48,7 +48,9 @@ export function requestLogger(options: RequestLogOptions = defaultOptions) {
       path: req.path,
       query: req.query,
       ip: req.ip,
-      userAgent: req.get('user-agent')
+      userAgent: req.get('user-agent'),
+      ...(logHeaders ? { headers: req.headers } : {}),
+      ...(logBody ? { body: req.body } : {}),
     });
 
     // Capture response
