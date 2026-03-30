@@ -50,7 +50,7 @@ export interface ApiResponse<T = unknown> {
 }
 
 // Pagination Types
-export interface PaginatedResponse<T> {
+export interface PaginatedResponse<T = unknown> {
   items: T[];
   total: number;
   page: number;
