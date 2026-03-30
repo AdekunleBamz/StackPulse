@@ -15,7 +15,7 @@ type TierRequest = Request & {
 /**
  * Validate body payload size based on tier
  */
-export function validatePayloadSize(req: Request, res: Response, next: NextFunction) {
+export function validatePayloadSize(req: Request, res: Response, next: NextFunction): Response | void {
   const userTier = (req as TierRequest).user?.tier || DEFAULT_TIER_INDEX;
   const safeTier = Number.isInteger(userTier) && userTier >= 0 ? userTier : DEFAULT_TIER_INDEX;
   const limit = PAYLOAD_SIZE_LIMITS_BY_TIER[safeTier] || PAYLOAD_SIZE_LIMITS_BY_TIER[DEFAULT_TIER_INDEX];
