@@ -39,8 +39,6 @@ interface AlertHistoryProps {
 }
 
 export default function AlertHistory({ userAddress }: AlertHistoryProps) {
-  void userAddress;
-
   const [history, setHistory] = useState<AlertHistoryEntry[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -60,7 +58,7 @@ export default function AlertHistory({ userAddress }: AlertHistoryProps) {
     try {
       // Simulated data - replace with actual API call
       const mockHistory: AlertHistoryEntry[] = Array.from({ length: 50 }, (_, i) => ({
-        id: `hist-${i}`,
+        id: `hist-${userAddress || 'global'}-${i}`,
         alertId: Math.floor(Math.random() * 10) + 1,
         alertName: `Alert #${Math.floor(Math.random() * 10) + 1}`,
         alertType: Math.floor(Math.random() * 6) + 1,
@@ -103,7 +101,7 @@ export default function AlertHistory({ userAddress }: AlertHistoryProps) {
     } finally {
       setLoading(false);
     }
-  }, [debouncedSearchQuery, filter, page]);
+  }, [debouncedSearchQuery, filter, page, userAddress]);
 
   useEffect(() => {
     fetchHistory();
