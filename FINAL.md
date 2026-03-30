@@ -22,3 +22,5 @@ StackPulse has evolved from a basic monitoring tool into a robust, secure, and h
 - Advanced alert filtering with customizable Clarity expressions.
 
 Thank you for following the journey of 112 atomic commits.
+
+Maintenance note: refresh this retrospective whenever a major architecture or reliability milestone changes the release narrative.
