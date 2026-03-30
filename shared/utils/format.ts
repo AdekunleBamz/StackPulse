@@ -48,7 +48,7 @@ export function formatStxAmount(microStx: number | string): string {
  * @returns A formatted string (e.g., "1,234.56").
  */
 export function formatNumber(num: number | string): string {
-  const n = typeof num === 'string' ? parseFloat(num) : num;
+  const n = typeof num === 'string' ? parseFloat(num.replace(/,/g, '')) : num;
   if (!Number.isFinite(n)) {
     return '0';
   }
