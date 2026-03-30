@@ -48,11 +48,7 @@ npm --prefix frontend run build
 
 ## Dependency Management
 
-- **Shared Package**: The `shared` package is a local dependency for both the `server` and `frontend`. When you make changes to files in `shared/src`, you **must** run `npm --prefix shared run build` to update the `dist/` directory before those changes will be reflected in the other workspaces.
-- **Contract Sync**: Clarity contract changes often require updates to `shared/types/index.ts` (e.g., adding a new alert type ID) and the Hiro Chainhook manifests in `chainhooks/`.
-
-## Best Practices
-
-- **No Direct Dependency**: Avoid making the `shared` package depend on `server` or `frontend`. It should only contain pure logic, types, and constants.
-- **Sync manifests**: Keep chainhook manifest names aligned with the matching server handlers in `server/src/index.ts`.
-- **Atomic Updates**: If a frontend page depends on shared constants or contract names, update both places in the same change.
+- Update nearby README files when behavior, commands, or file layout changes.
+- Keep chainhook manifest names aligned with the matching server handlers.
+- If a frontend page depends on shared constants or contract names, update both places in the same change.
+- During release week, call out the active stabilization branch in this doc to reduce accidental commits to the wrong line.
