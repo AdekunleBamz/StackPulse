@@ -375,11 +375,10 @@ git push origin main
 
 ### Frontend Issues
 
-- **CORS Errors**: Ensure the server's `CORS_ORIGIN` environment variable includes your frontend domain.
-- **Missing NEXT_PUBLIC Vars**: Vercel requires `NEXT_PUBLIC_` prefix for variables to be accessible in the browser.
-- **Wallet Connection**: Verify that your browser has the Hiro Wallet extension installed and configured for the correct network.
+- Check environment variables are set in Vercel
+- Verify Next.js version compatibility
+- Check for TypeScript errors
 
-### WebSocket Disconnections
+### Communication Note
 
-- **Proxy Timeouts**: If using a proxy (like Nginx), ensure `proxy_read_timeout` is set high enough for persistent WS connections.
-- **Client Heartbeat**: Implement a ping/pong heartbeat to keep connections alive through cloud provider load balancers.
+Post maintenance-window updates at start, midpoint, and completion so alert consumers know whether unusual activity is expected.
