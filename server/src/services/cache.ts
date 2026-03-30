@@ -33,9 +33,11 @@ class CacheService {
       return;
     }
     
+    const safeTtlMs = Number.isFinite(ttlMs) ? Math.max(0, Math.floor(ttlMs)) : 0;
+
     this.cache.set(key, {
       value,
-      expiresAt: Date.now() + ttlMs
+      expiresAt: Date.now() + safeTtlMs
     });
   }
 
