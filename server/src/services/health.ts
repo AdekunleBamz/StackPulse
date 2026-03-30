@@ -9,7 +9,7 @@ import os from 'os';
 const DEGRADED_MEMORY_THRESHOLD_PERCENT = 90;
 const CRITICAL_MEMORY_THRESHOLD_PERCENT = 95;
 
-interface SystemHealth {
+export interface SystemHealth {
   status: 'ok' | 'degraded' | 'critical';
   uptime: number;
   memory: {
