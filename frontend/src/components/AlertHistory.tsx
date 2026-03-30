@@ -203,21 +203,24 @@ export default function AlertHistory({ userAddress }: AlertHistoryProps) {
             >
               All Types
             </button>
-            {Object.entries(alertTypeInfo).map(([type, info]) => (
-              <button
-                key={type}
-                onClick={() => setFilter(parseInt(type))}
-                className={`px-3 py-1.5 rounded-lg text-sm flex items-center gap-1.5 transition-all focus:outline-none focus:ring-2 focus:ring-purple-500/50 ${
-                  filter === parseInt(type)
-                    ? 'bg-purple-600 text-white'
-                    : 'bg-gray-800 text-gray-400 hover:text-white'
-                }`}
-                aria-pressed={filter === parseInt(type)}
-              >
-                <span aria-hidden="true">{info.icon}</span>
-                <span>{info.name}</span>
-              </button>
-            ))}
+            {Object.entries(alertTypeInfo).map(([type, info]) => {
+              const typeValue = Number.parseInt(type, 10);
+              return (
+                <button
+                  key={type}
+                  onClick={() => setFilter(typeValue)}
+                  className={`px-3 py-1.5 rounded-lg text-sm flex items-center gap-1.5 transition-all focus:outline-none focus:ring-2 focus:ring-purple-500/50 ${
+                    filter === typeValue
+                      ? 'bg-purple-600 text-white'
+                      : 'bg-gray-800 text-gray-400 hover:text-white'
+                  }`}
+                  aria-pressed={filter === typeValue}
+                >
+                  <span aria-hidden="true">{info.icon}</span>
+                  <span>{info.name}</span>
+                </button>
+              );
+            })}
           </div>
         )}
       </div>
