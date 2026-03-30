@@ -12,6 +12,9 @@ const SECONDS_PER_MINUTE = 60;
 const MINUTES_PER_HOUR = 60;
 const HOURS_PER_DAY = 24;
 const MILLISECONDS_PER_SECOND = 1000;
+const DAYS_PER_WEEK = 7;
+const WEEKS_PER_MONTH = 4;
+const MONTHS_PER_YEAR = 12;
 
 /**
  * Formats a micro-STX amount into a human-readable STX string.
@@ -73,19 +76,19 @@ export function formatRelativeTime(timestamp: number | Date): string {
   const isFuture = diff < 0;
   const absDiff = Math.abs(diff);
   
-  const seconds = Math.floor(absDiff / 1000);
-  const minutes = Math.floor(seconds / 60);
-  const hours = Math.floor(minutes / 60);
-  const days = Math.floor(hours / 24);
-  const weeks = Math.floor(days / 7);
+  const seconds = Math.floor(absDiff / MILLISECONDS_PER_SECOND);
+  const minutes = Math.floor(seconds / SECONDS_PER_MINUTE);
+  const hours = Math.floor(minutes / MINUTES_PER_HOUR);
+  const days = Math.floor(hours / HOURS_PER_DAY);
+  const weeks = Math.floor(days / DAYS_PER_WEEK);
   const months = Math.floor(days / 30);
   
-  if (seconds < 60) return isFuture ? 'in a moment' : 'just now';
-  if (minutes < 60) return isFuture ? `in ${minutes}m` : `${minutes}m ago`;
-  if (hours < 24) return isFuture ? `in ${hours}h` : `${hours}h ago`;
-  if (days < 7) return isFuture ? `in ${days}d` : `${days}d ago`;
-  if (weeks < 4) return isFuture ? `in ${weeks}w` : `${weeks}w ago`;
-  if (months < 12) return isFuture ? `in ${months}mo` : `${months}mo ago`;
+  if (seconds < SECONDS_PER_MINUTE) return isFuture ? 'in a moment' : 'just now';
+  if (minutes < MINUTES_PER_HOUR) return isFuture ? `in ${minutes}m` : `${minutes}m ago`;
+  if (hours < HOURS_PER_DAY) return isFuture ? `in ${hours}h` : `${hours}h ago`;
+  if (days < DAYS_PER_WEEK) return isFuture ? `in ${days}d` : `${days}d ago`;
+  if (weeks < WEEKS_PER_MONTH) return isFuture ? `in ${weeks}w` : `${weeks}w ago`;
+  if (months < MONTHS_PER_YEAR) return isFuture ? `in ${months}mo` : `${months}mo ago`;
   return isFuture ? `in ${Math.floor(days / 365)}y` : `${Math.floor(days / 365)}y ago`;
 }
 
