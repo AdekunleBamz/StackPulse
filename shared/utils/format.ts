@@ -2,6 +2,8 @@
  * Formatting utilities for display
  */
 
+const MICROSTX_PER_STX = 1000000;
+
 /**
  * Formats a micro-STX amount into a human-readable STX string.
  * @param microStx - The amount in micro-STX (1 STX = 1,000,000 micro-STX).
@@ -14,10 +16,10 @@
 export function formatStxAmount(microStx: number | string): string {
   const amount = typeof microStx === 'string' ? parseFloat(microStx) : microStx;
   const safeAmount = Number.isFinite(amount) ? amount : 0;
-  const stx = safeAmount / 1000000;
+  const stx = safeAmount / MICROSTX_PER_STX;
   
-  if (stx >= 1000000) {
-    return `${(stx / 1000000).toFixed(2)}M STX`;
+  if (stx >= MICROSTX_PER_STX) {
+    return `${(stx / MICROSTX_PER_STX).toFixed(2)}M STX`;
   }
   if (stx >= 1000) {
     return `${(stx / 1000).toFixed(2)}K STX`;
