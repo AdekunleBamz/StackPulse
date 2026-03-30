@@ -11,7 +11,7 @@ export default function ConnectWallet() {
   const { isConnected, address, network, connect, disconnect, switchNetwork } = useWallet();
   const [showDropdown, setShowDropdown] = useState(false);
   const wrapperRef = useRef<HTMLDivElement>(null);
-
+  const safeAddress = address || '';
 
   useEffect(() => {
     if (!showDropdown) return;
@@ -55,9 +55,8 @@ export default function ConnectWallet() {
 
   const explorerUrl =
     network === 'testnet'
-      ? `https://explorer.hiro.so/address/${address}?chain=testnet`
-      : `https://explorer.hiro.so/address/${address}?chain=mainnet`;
-  const safeAddress = address || '';
+      ? `https://explorer.hiro.so/address/${safeAddress}?chain=testnet`
+      : `https://explorer.hiro.so/address/${safeAddress}?chain=mainnet`;
 
   return (
     <div ref={wrapperRef} className="relative">
