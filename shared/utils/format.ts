@@ -16,6 +16,8 @@ const DAYS_PER_WEEK = 7;
 const WEEKS_PER_MONTH = 4;
 const MONTHS_PER_YEAR = 12;
 const DAYS_PER_YEAR = 365;
+const BYTES_PER_UNIT = 1024;
+const FILE_SIZE_UNITS = ['B', 'KB', 'MB', 'GB', 'TB'] as const;
 
 /**
  * Formats a micro-STX amount into a human-readable STX string.
@@ -161,16 +163,15 @@ export function truncateString(str: string, maxLength: number): string {
  * @returns A formatted string with appropriate units (B, KB, MB, GB, TB).
  */
 export function formatFileSize(bytes: number): string {
-  const units = ['B', 'KB', 'MB', 'GB', 'TB'];
   let size = Number.isFinite(bytes) ? Math.max(0, bytes) : 0;
   let unitIndex = 0;
   
-  while (size >= 1024 && unitIndex < units.length - 1) {
-    size /= 1024;
+  while (size >= BYTES_PER_UNIT && unitIndex < FILE_SIZE_UNITS.length - 1) {
+    size /= BYTES_PER_UNIT;
     unitIndex++;
   }
   
-  return `${size.toFixed(2)} ${units[unitIndex]}`;
+  return `${size.toFixed(2)} ${FILE_SIZE_UNITS[unitIndex]}`;
 }
 
 /**
