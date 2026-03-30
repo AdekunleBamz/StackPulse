@@ -105,10 +105,12 @@ export async function getAccountTransactions(
   offset: number = 0
 ): Promise<Transaction[]> {
   const baseUrl = getStacksApiUrl(network);
+  const safeLimit = Number.isFinite(limit) ? Math.max(1, Math.floor(limit)) : 20;
+  const safeOffset = Number.isFinite(offset) ? Math.max(0, Math.floor(offset)) : 0;
   
   try {
     const response = await fetch(
-      `${baseUrl}/extended/v1/address/${address}/transactions?limit=${limit}&offset=${offset}`,
+      `${baseUrl}/extended/v1/address/${address}/transactions?limit=${safeLimit}&offset=${safeOffset}`,
       { headers: JSON_ACCEPT_HEADERS }
     );
     if (!response.ok) return [];
