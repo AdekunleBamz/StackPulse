@@ -1,7 +1,7 @@
 'use client';
 
 import { Activity, ExternalLink } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { StatsCardSkeleton } from './LoadingSkeleton';
 import { apiUrl } from '@/lib/env';
 import logger from '@/lib/logger';
@@ -26,6 +26,13 @@ export default function LiveStats() {
   const [error, setError] = useState<string | null>(null);
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
   const [refreshKey, setRefreshKey] = useState(0);
+  const isMountedRef = useRef(true);
+
+  useEffect(() => {
+    return () => {
+      isMountedRef.current = false;
+    };
+  }, []);
 
   useEffect(() => {
     const fetchStats = async () => {
@@ -35,16 +42,24 @@ export default function LiveStats() {
         });
         if (!res.ok) throw new Error('Bad response');
         const data = await res.json();
+        if (!isMountedRef.current) {
+          return;
+        }
         const payload = data?.stats ?? data;
         if (!payload) throw new Error('Missing stats');
         setStats(payload);
         setLastUpdated(new Date());
         setError(null);
       } catch (error) {
+        if (!isMountedRef.current) {
+          return;
+        }
         logger.error('Failed to fetch stats:', error);
         setError('Unable to load live stats right now.');
       } finally {
-        setLoading(false);
+        if (isMountedRef.current) {
+          setLoading(false);
+        }
       }
     };
 
