@@ -153,7 +153,7 @@ export default function AlertHistory({ userAddress }: AlertHistoryProps) {
           <div className="flex items-center gap-2">
             <button
               type="button"
-              onClick={() => setShowFilters(!showFilters)}
+              onClick={() => setShowFilters((prev) => !prev)}
               className={`p-2 rounded-lg transition-all duration-300 hover:scale-110 active:scale-90 focus:outline-none focus:ring-2 focus:ring-purple-500/50 ${
                 showFilters ? 'bg-purple-600 text-white shadow-[0_0_15px_rgba(147,51,234,0.4)]' : 'bg-gray-800 text-gray-400 hover:text-white'
               }`}
