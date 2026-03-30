@@ -32,6 +32,10 @@ npm test
 # App surfaces
 npm --prefix server run dev
 npm --prefix frontend run dev
+
+# Optional builds
+npm --prefix server run build
+npm --prefix frontend run build
 ```
 
 ## Source-of-truth files
