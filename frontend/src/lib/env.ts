@@ -9,7 +9,7 @@ export const DEPLOYER_ADDRESS = process.env.NEXT_PUBLIC_DEPLOYER_ADDRESS || '';
 export const WS_URL =
   (process.env.NEXT_PUBLIC_WS_URL || `${toWebSocketProtocol(SERVER_URL)}/ws`).replace(/\/+$/, '');
 
-export function apiUrl(path: string) {
+export function apiUrl(path: string): string {
   const normalizedPath = path.startsWith('/') ? path : `/${path}`;
   return `${SERVER_URL}${normalizedPath}`;
 }
