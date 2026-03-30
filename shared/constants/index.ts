@@ -129,6 +129,7 @@ export const ERROR_MESSAGES = {
   NETWORK_ERROR: 'Network error occurred',
   UNAUTHORIZED: 'Unauthorized access',
   NOT_FOUND: 'Resource not found',
+  REQUEST_TIMEOUT: 'Request timed out',
   PAYLOAD_TOO_LARGE: 'Payload exceeds allowed size',
   RATE_LIMITED: 'Rate limit exceeded',
 } as const;
