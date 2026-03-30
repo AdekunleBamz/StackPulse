@@ -11,7 +11,7 @@ const PREFLIGHT_SUCCESS_STATUS = 200;
 /**
  * Security headers middleware
  */
-export function securityHeaders(req: Request, res: Response, next: NextFunction) {
+export function securityHeaders(req: Request, res: Response, next: NextFunction): void {
   // HSTS
   res.setHeader('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
   
@@ -48,7 +48,7 @@ export function securityHeaders(req: Request, res: Response, next: NextFunction)
 /**
  * CORS middleware
  */
-export function corsMiddleware(req: Request, res: Response, next: NextFunction) {
+export function corsMiddleware(req: Request, res: Response, next: NextFunction): Response | void {
   const allowedOrigins = process.env.ALLOWED_ORIGINS 
     ? process.env.ALLOWED_ORIGINS.split(',').map((origin) => origin.trim()).filter(Boolean)
     : [...DEFAULT_ALLOWED_ORIGINS];
@@ -75,7 +75,7 @@ export function corsMiddleware(req: Request, res: Response, next: NextFunction) 
 /**
  * Prevent clickjacking
  */
-export function preventClickjacking(req: Request, res: Response, next: NextFunction) {
+export function preventClickjacking(req: Request, res: Response, next: NextFunction): void {
   res.setHeader('X-Frame-Options', 'DENY');
   next();
 }
@@ -83,7 +83,7 @@ export function preventClickjacking(req: Request, res: Response, next: NextFunct
 /**
  * Remove powered by header
  */
-export function removePoweredBy(req: Request, res: Response, next: NextFunction) {
+export function removePoweredBy(req: Request, res: Response, next: NextFunction): void {
   res.removeHeader('X-Powered-By');
   res.removeHeader('Server');
   next();
