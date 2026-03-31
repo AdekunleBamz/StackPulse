@@ -5,7 +5,10 @@
  * imported from both server and frontend code.
  */
 
-// API URLs
+/**
+ * External API endpoints used across the application.
+ * SERVER URL can be overridden via NEXT_PUBLIC_SERVER_URL environment variable.
+ */
 export const API_URLS = {
   SERVER: process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:3000',
   STACKS_API: 'https://stacks-node-api.mainnet.stacks.co',
@@ -13,7 +16,10 @@ export const API_URLS = {
   HIRO_API: 'https://api.hiro.so',
 } as const;
 
-// Contract Addresses (optional env-driven config)
+/**
+ * Clarity contract addresses for different networks.
+ * Addresses can be overridden via environment variables.
+ */
 export const CONTRACT_ADDRESSES = {
   MAINNET: {
     ALERT_MANAGER: process.env.ALERT_MANAGER_MAINNET || '',
@@ -27,7 +33,10 @@ export const CONTRACT_ADDRESSES = {
   },
 } as const;
 
-// Network
+/**
+ * Supported blockchain networks.
+ * NETWORK_TYPES is a backwards-compatible alias.
+ */
 export const NETWORKS = {
   MAINNET: 'mainnet',
   TESTNET: 'testnet',
@@ -37,14 +46,18 @@ export const NETWORKS = {
 // Backwards-compatible alias
 export const NETWORK_TYPES = NETWORKS;
 
-// Pagination
+/**
+ * Pagination configuration defaults.
+ */
 export const PAGINATION = {
   DEFAULT_PAGE: 1,
   DEFAULT_LIMIT: 10,
   MAX_LIMIT: 100,
 } as const;
 
-// Cache TTL (in milliseconds)
+/**
+ * Cache time-to-live values in milliseconds.
+ */
 export const CACHE_TTL = {
   SHORT: 60000, // 1 minute
   MEDIUM: 300000, // 5 minutes
@@ -52,7 +65,9 @@ export const CACHE_TTL = {
   DAY: 86400000, // 24 hours
 } as const;
 
-// Rate Limits
+/**
+ * Rate limiting configuration for different endpoint types.
+ */
 export const RATE_LIMITS = {
   PUBLIC: {
     WINDOW_MS: 60000,
@@ -68,14 +83,18 @@ export const RATE_LIMITS = {
   },
 } as const;
 
-// WebSocket
+/**
+ * WebSocket connection configuration.
+ */
 export const WS_CONFIG = {
   RECONNECT_INTERVAL: 3000,
   MAX_RECONNECT_ATTEMPTS: 5,
   PING_INTERVAL: 30000,
 } as const;
 
-// Alert Types (support both CONTRACT_DEPLOY and CONTRACT_DEPLOYED names)
+/**
+ * Alert type identifiers. CONTRACT_DEPLOY is an alias for CONTRACT_DEPLOYED.
+ */
 export const ALERT_TYPES = {
   WHALE_TRANSFER: 1,
   CONTRACT_DEPLOYED: 2,
@@ -96,7 +115,10 @@ export const ALERT_TYPE_NAMES: Record<number, string> = {
   [ALERT_TYPES.ADDRESS_WATCH]: 'Address Watch',
 };
 
-// Subscription Tiers (matches contract tiers)
+/**
+ * Subscription tier levels matching smart contract definitions.
+ * USER_TIERS is a backwards-compatible alias.
+ */
 export const SUBSCRIPTION_TIERS = {
   FREE: 0,
   BASIC: 1,
@@ -114,7 +136,9 @@ export const TIER_NAMES: Record<number, string> = {
   [SUBSCRIPTION_TIERS.PREMIUM]: 'Premium',
 };
 
-// Default Values
+/**
+ * Application-wide default values.
+ */
 export const DEFAULTS = {
   PAGE_SIZE: 20,
   MAX_PAGE_SIZE: 100,
@@ -123,7 +147,9 @@ export const DEFAULTS = {
   CACHE_TTL: CACHE_TTL.MEDIUM,
 };
 
-// Error Messages
+/**
+ * Standardized error messages for consistent user feedback.
+ */
 export const ERROR_MESSAGES = {
   INVALID_ADDRESS: 'Invalid Stacks address',
   NETWORK_ERROR: 'Network error occurred',
@@ -134,7 +160,9 @@ export const ERROR_MESSAGES = {
   RATE_LIMITED: 'Rate limit exceeded',
 } as const;
 
-// Event Types
+/**
+ * Internal event type strings for the event system.
+ */
 export const EVENT_TYPES = {
   ALERT_CREATED: 'alert.created',
   ALERT_UPDATED: 'alert.updated',
@@ -149,7 +177,9 @@ export const EVENT_TYPES = {
   FEE_COLLECTED: 'fee.collected',
 } as const;
 
-// HTTP Status Codes
+/**
+ * HTTP status codes for API responses.
+ */
 export const HTTP_STATUS = {
   OK: 200,
   CREATED: 201,
@@ -167,7 +197,9 @@ export const HTTP_STATUS = {
   INTERNAL_SERVER_ERROR: 500,
 } as const;
 
-// Error Codes
+/**
+ * Application-specific error codes for error handling.
+ */
 export const ERROR_CODES = {
   VALIDATION_ERROR: 'VALIDATION_ERROR',
   NOT_FOUND: 'NOT_FOUND',
@@ -181,7 +213,10 @@ export const ERROR_CODES = {
   INVALID_ALERT_TYPE: 'INVALID_ALERT_TYPE',
 } as const;
 
-// Chainhook event keys (naming may vary by integration)
+/**
+ * Hiro Chainhook event type identifiers.
+ * Note: Event naming may vary by integration version.
+ */
 export const CHAINHOOK_EVENTS = {
   WHALE_TRANSFER: 'bitcoin::transfer',
   CONTRACT_DEPLOY: 'stacks::contract_deployment',
@@ -191,7 +226,9 @@ export const CHAINHOOK_EVENTS = {
   ADDRESS_WATCH: 'bitcoin::address_activity',
 } as const;
 
-// Feature Flags
+/**
+ * Feature flags for gradual rollouts and A/B testing.
+ */
 export const FEATURE_FLAGS = {
   ANALYTICS: true,
   BADGES: true,
