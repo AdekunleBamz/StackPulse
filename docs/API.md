@@ -1,109 +1,285 @@
 # StackPulse API Documentation
 
-## Current mounted surface
+> Complete API reference for the StackPulse monitoring platform
 
-The live backend routes are currently defined in `server/src/index.ts`. The list below reflects the mounted paths in this repo today.
+## Table of Contents
 
-### Health and status
+- [Overview](#overview)
+- [Base URLs](#base-urls)
+- [Authentication](#authentication)
+- [Rate Limiting](#rate-limiting)
+- [Health Endpoints](#health-endpoints)
+- [User Management](#user-management)
+- [Alert Management](#alert-management)
+- [Chainhook Endpoints](#chainhook-endpoints)
+- [Error Handling](#error-handling)
+- [WebSocket Events](#websocket-events)
 
-- `GET /health`
-- `GET /api/v1/ping`
-- `GET /api/v1/stats`
-- `GET /api/v1/chainhooks/status`
+## Overview
 
-### Users and alerts
+The StackPulse API provides programmatic access to blockchain monitoring features, user management, and alert configuration. All endpoints return JSON responses with consistent error formatting.
 
-- `POST /api/v1/users`
-- `GET /api/users`
-- `GET /api/users/:address`
-- `PATCH /api/users/:address`
-- `DELETE /api/users/:address`
-- `GET /api/v1/users/:address/alerts`
-- `POST /api/v1/users/:address/alerts`
-- `DELETE /api/users/:address/alerts/:alertId`
+### Current mounted surface
 
-### Chainhook ingestion
+The live backend routes are defined in `server/src/index.ts`.
 
-- `POST /api/v1/chainhooks/whale-transfer`
-- `POST /api/v1/chainhooks/contract-deployed`
-- `POST /api/v1/chainhooks/nft-mint`
-- `POST /api/v1/chainhooks/token-launch`
-- `POST /api/v1/chainhooks/large-swap-alert`
-- `POST /api/v1/chainhooks/subscription-created`
-- `POST /api/v1/chainhooks/alert-triggered`
-- `POST /api/v1/chainhooks/fee-collected`
-- `POST /api/v1/chainhooks/badge-earned`
-- `POST /api/v1/chainhooks/new-subscription`
-- `POST /api/v1/chainhooks/subscription-upgrade`
-- `POST /api/v1/chainhooks/alert-created`
+#### Health and Status
 
-The extracted router files under `server/src/routes/` are useful module references, but they are not the source of truth for mounted paths until they are wired into the server entrypoint.
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `GET` | `/health` | Server health check |
+| `GET` | `/api/v1/ping` | Keep-alive ping endpoint |
+| `GET` | `/api/v1/stats` | Global event statistics |
+| `GET` | `/api/v1/chainhooks/status` | Chainhook registration status |
+
+#### User Management
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `POST` | `/api/v1/users` | Create new user |
+| `GET` | `/api/users` | List all users (admin) |
+| `GET` | `/api/users/:address` | Get user by address |
+| `PUT` | `/api/users/:address` | Update user preferences |
+| `DELETE` | `/api/users/:address` | Delete user |
+
+#### Alert Management
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `GET` | `/api/v1/users/:address/alerts` | Get user's alerts |
+| `POST` | `/api/v1/users/:address/alerts` | Create new alert |
+| `PUT` | `/api/users/:address/alerts/:alertId` | Update alert |
+| `DELETE` | `/api/users/:address/alerts/:alertId` | Delete alert |
+
+#### Chainhook Ingestion
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `POST` | `/api/v1/chainhooks/whale-transfer` | Whale transfer events |
+| `POST` | `/api/v1/chainhooks/contract-deployed` | Contract deployment events |
+| `POST` | `/api/v1/chainhooks/nft-mint` | NFT mint events |
+| `POST` | `/api/v1/chainhooks/token-launch` | Token launch events |
+| `POST` | `/api/v1/chainhooks/large-swap-alert` | Large swap events |
+| `POST` | `/api/v1/chainhooks/subscription-created` | Subscription events |
+| `POST` | `/api/v1/chainhooks/alert-triggered` | Alert trigger events |
+| `POST` | `/api/v1/chainhooks/fee-collected` | Fee collection events |
+| `POST` | `/api/v1/chainhooks/badge-earned` | Badge earning events |
+| `POST` | `/api/v1/chainhooks/new-subscription` | New subscription events |
+| `POST` | `/api/v1/chainhooks/subscription-upgrade` | Subscription upgrade events |
+| `POST` | `/api/v1/chainhooks/alert-created` | Alert creation events |
+
+> **Note:** The extracted router files under `server/src/routes/` are useful module references, but the server entrypoint (`server/src/index.ts`) is the source of truth for mounted paths.
 
 ## Base URLs
 
-- **Production**: `https://stackpulse-b8fw.onrender.com`
-- **Local Development**: `http://localhost:3000`
+| Environment | URL |
+|-------------|-----|
+| Production | `https://stackpulse-b8fw.onrender.com` |
+| Local Development | `http://localhost:3000` |
 
 ## Authentication
 
-Most endpoints are public. Chainhook endpoints use Bearer token authentication configured via `CHAINHOOK_AUTH_TOKEN` environment variable.
+### Public Endpoints
+Most user-facing endpoints are public and do not require authentication.
 
+### Chainhook Endpoints
+All chainhook endpoints require Bearer token authentication via the `CHAINHOOK_AUTH_TOKEN` environment variable.
+
+```http
+Authorization: Bearer <your-chainhook-token>
 ```
-Authorization: Bearer <your-token>
+
+### Example Request
+```bash
+curl -X POST https://stackpulse-b8fw.onrender.com/api/v1/chainhooks/whale-transfer \
+  -H "Authorization: Bearer your-token" \
+  -H "Content-Type: application/json" \
+  -d '{"apply": [...]}'
+```
+
+## Rate Limiting
+
+StackPulse implements tiered rate limiting to ensure fair usage:
+
+| Endpoint Type | Limit | Window |
+|---------------|-------|--------|
+| Public endpoints | 100 requests | per minute per IP |
+| User endpoints | 60 requests | per minute per address |
+| Chainhook endpoints | No limit | (authenticated) |
+| Auth endpoints | 5 requests | per 15 minutes |
+
+### Rate Limit Headers
+
+All responses include rate limit headers:
+
+```http
+X-RateLimit-Limit: 100
+X-RateLimit-Remaining: 95
+X-RateLimit-Reset: 1706100000
+```
+
+When rate limited, responses include:
+
+```http
+Retry-After: 30
 ```
 
 ---
 
-## Endpoints
+## Health Endpoints
 
-### Health Check
+### GET /health
 
-#### GET /health
-
-Check server health status.
+Check server health status and uptime.
 
 **Response:**
 ```json
 {
   "status": "healthy",
   "timestamp": "2025-01-24T12:00:00.000Z",
-  "uptime": 3600,
   "version": "1.0.0"
 }
 ```
 
----
+### GET /api/v1/ping
 
-### Statistics
+Keep-alive endpoint for preventing cold starts on serverless platforms.
 
-#### GET /api/v1/stats
+**Response:**
+```
+pong
+```
 
-Get global event statistics.
+**Headers:**
+```http
+Cache-Control: no-store
+```
+
+### GET /api/v1/stats
+
+Get global event statistics since server start.
 
 **Response:**
 ```json
 {
-  "whaleTransfers": 1234,
-  "contractDeployments": 567,
-  "nftMints": 8901,
-  "tokenLaunches": 234,
-  "largeSwaps": 567,
-  "subscriptions": 890,
-  "alertsTriggered": 1234,
-  "feesCollected": 567,
-  "badgesEarned": 890
+  "stats": {
+    "whaleTransfers": 1234,
+    "contractDeployments": 567,
+    "nftMints": 8901,
+    "tokenLaunches": 234,
+    "largeSwaps": 567,
+    "subscriptions": 890,
+    "alertsTriggered": 1234,
+    "feesCollected": 567,
+    "badgesEarned": 890
+  },
+  "uptime": 3600.5,
+  "timestamp": "2025-01-24T12:00:00.000Z"
+}
+```
+
+### GET /api/v1/chainhooks/status
+
+Get the status of registered chainhook endpoints.
+
+**Response:**
+```json
+{
+  "registered": 12,
+  "active": 12,
+  "chainhooks": [
+    "whale-transfer-alert",
+    "new-contract-deployed",
+    "nft-mint-tracker",
+    "token-launch-detector",
+    "large-swap-alert",
+    "user-subscription-created",
+    "alert-triggered",
+    "fee-collected",
+    "badge-earned",
+    "new-subscription",
+    "subscription-upgrade",
+    "alert-created"
+  ]
 }
 ```
 
 ---
 
-### Users
+## User Management
 
-#### GET /api/users/:address
+### POST /api/v1/users
 
-Get user profile and preferences.
+Create a new user with notification preferences.
 
-**Parameters:**
+**Request Body:**
+```json
+{
+  "address": "SP3FKNEZ86RG5RT7SZ5FBRGH85FZNG94ZH1MCGG6N",
+  "username": "satoshi",
+  "email": "user@example.com",
+  "discord": "user#1234",
+  "telegram": "@username",
+  "enabledAlerts": ["whale", "nft", "token"]
+}
+```
+
+**Validation Rules:**
+- `address`: Required, valid Stacks address format
+- `username`: Optional, max 50 characters
+- `email`: Optional, valid email format
+- `discord`: Optional, Discord tag format
+- `telegram`: Optional, Telegram username format
+- `enabledAlerts`: Optional, array of alert type strings
+
+**Response (201 Created):**
+```json
+{
+  "success": true,
+  "user": {
+    "address": "SP3FKNEZ86RG5RT7SZ5FBRGH85FZNG94ZH1MCGG6N",
+    "username": "satoshi",
+    "email": "user@example.com",
+    "discord": "user#1234",
+    "telegram": "@username",
+    "enabledAlerts": ["whale", "nft", "token"],
+    "createdAt": "2025-01-24T12:00:00.000Z"
+  }
+}
+```
+
+**Response (400 Bad Request):**
+```json
+{
+  "success": false,
+  "error": "Address is required"
+}
+```
+
+### GET /api/users
+
+List all registered users (admin endpoint).
+
+**Response:**
+```json
+{
+  "users": [
+    {
+      "address": "SP3FKNEZ86RG5RT7SZ5FBRGH85FZNG94ZH1MCGG6N",
+      "username": "satoshi",
+      "email": "user@example.com",
+      "createdAt": "2025-01-24T12:00:00.000Z"
+    }
+  ],
+  "count": 1
+}
+```
+
+### GET /api/users/:address
+
+Get user profile and notification preferences.
+
+**Path Parameters:**
 | Parameter | Type | Description |
 |-----------|------|-------------|
 | address | string | Stacks wallet address |
@@ -112,7 +288,7 @@ Get user profile and preferences.
 ```json
 {
   "success": true,
-  "data": {
+  "user": {
     "address": "SP3FKNEZ86RG5RT7SZ5FBRGH85FZNG94ZH1MCGG6N",
     "username": "satoshi",
     "email": "user@example.com",
@@ -123,13 +299,22 @@ Get user profile and preferences.
 }
 ```
 
-#### PATCH /api/users/:address
+**Response (404 Not Found):**
+```json
+{
+  "success": false,
+  "error": "User not found"
+}
+```
+
+### PUT /api/users/:address
 
 Update user notification preferences.
 
 **Request Body:**
 ```json
 {
+  "username": "newusername",
   "email": "new@example.com",
   "discord": "newuser#5678",
   "telegram": "@newusername",
@@ -141,29 +326,35 @@ Update user notification preferences.
 ```json
 {
   "success": true,
-  "message": "Preferences updated successfully"
+  "user": {
+    "address": "SP3FKNEZ86RG5RT7SZ5FBRGH85FZNG94ZH1MCGG6N",
+    "username": "newusername",
+    "email": "new@example.com",
+    "discord": "newuser#5678",
+    "telegram": "@newusername",
+    "enabledAlerts": ["whale", "contract", "nft", "token", "swap"]
+  }
 }
 ```
 
-#### DELETE /api/users/:address
+### DELETE /api/users/:address
 
-Delete user preferences.
+Delete a user and all associated data.
 
 **Response:**
 ```json
 {
-  "success": true,
-  "message": "User preferences deleted"
+  "success": true
 }
 ```
 
 ---
 
-### Alerts
+## Alert Management
 
-#### GET /api/v1/users/:address/alerts
+### GET /api/v1/users/:address/alerts
 
-Get user's configured alerts.
+Get all alerts configured by a user.
 
 **Response:**
 ```json
@@ -171,20 +362,34 @@ Get user's configured alerts.
   "success": true,
   "alerts": [
     {
-      "id": 1,
+      "id": 1706100000000,
       "type": 1,
       "name": "Whale Watch",
-      "enabled": true,
       "threshold": 10000000000,
-      "triggerCount": 5
+      "targetAddress": null,
+      "enabled": true,
+      "triggerCount": 5,
+      "createdAt": "2025-01-24T12:00:00.000Z"
     }
-  ]
+  ],
+  "count": 1
 }
 ```
 
-#### POST /api/v1/users/:address/alerts
+#### Alert Types
 
-Create a new alert (server-side tracking).
+| Type ID | Name | Description |
+|---------|------|-------------|
+| 1 | Whale Transfer | Large STX transfers (>10,000 STX) |
+| 2 | Contract Deployment | New contract deployments |
+| 3 | NFT Mint | NFT minting events |
+| 4 | Token Launch | New SIP-010 token deployments |
+| 5 | Large Swap | Significant DEX swap events |
+| 6 | Custom | User-defined alerts |
+
+### POST /api/v1/users/:address/alerts
+
+Create a new alert for a user.
 
 **Request Body:**
 ```json
@@ -192,8 +397,52 @@ Create a new alert (server-side tracking).
   "type": 1,
   "name": "My Whale Alert",
   "threshold": 50000000000,
+  "targetAddress": "SP3FKNEZ86RG5RT7SZ5FBRGH85FZNG94ZH1MCGG6N",
+  "txId": "0x1234567890abcdef..."
+}
+```
+
+**Validation Rules:**
+- `type`: Required, integer 1-6
+- `name`: Required, max 100 characters
+- `threshold`: Optional, numeric value in micro-STX
+- `targetAddress`: Optional, valid Stacks address
+- `txId`: Optional, transaction hash reference
+
+**Response (201 Created):**
+```json
+{
+  "success": true,
+  "alert": {
+    "id": 1706100000001,
+    "type": 1,
+    "name": "My Whale Alert",
+    "threshold": 50000000000,
+    "targetAddress": "SP3FKNEZ86RG5RT7SZ5FBRGH85FZNG94ZH1MCGG6N",
+    "enabled": true,
+    "triggerCount": 0,
+    "createdAt": "2025-01-24T12:00:00.000Z"
+  }
+}
+```
+
+### PUT /api/users/:address/alerts/:alertId
+
+Update an existing alert.
+
+**Path Parameters:**
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| address | string | User's Stacks address |
+| alertId | number | Alert ID |
+
+**Request Body (all fields optional):**
+```json
+{
+  "name": "Updated Alert Name",
+  "threshold": 100000000000,
   "targetAddress": "SP...",
-  "txId": "0x..."
+  "enabled": false
 }
 ```
 
@@ -202,43 +451,26 @@ Create a new alert (server-side tracking).
 {
   "success": true,
   "alert": {
-    "id": 42,
+    "id": 1706100000001,
     "type": 1,
-    "name": "My Whale Alert",
-    "enabled": true
+    "name": "Updated Alert Name",
+    "threshold": 100000000000,
+    "targetAddress": "SP...",
+    "enabled": false,
+    "triggerCount": 5,
+    "createdAt": "2025-01-24T12:00:00.000Z"
   }
 }
 ```
 
----
+### DELETE /api/users/:address/alerts/:alertId
 
-### Notifications
-
-#### GET /api/notifications
-
-Get recent notifications.
-
-**Query Parameters:**
-| Parameter | Type | Default | Description |
-|-----------|------|---------|-------------|
-| limit | number | 20 | Max notifications to return |
-| type | string | - | Filter by notification type |
+Delete an alert.
 
 **Response:**
 ```json
 {
-  "success": true,
-  "notifications": [
-    {
-      "id": "abc123",
-      "type": "whale",
-      "title": "🐋 Whale Transfer Detected",
-      "message": "10,000 STX transferred",
-      "txHash": "0x...",
-      "blockHeight": 123456,
-      "timestamp": "2025-01-24T12:00:00.000Z"
-    }
-  ]
+  "success": true
 }
 ```
 
@@ -246,79 +478,165 @@ Get recent notifications.
 
 ## Chainhook Endpoints
 
-These endpoints receive blockchain events from Hiro Chainhooks.
-All chainhook routes require `Authorization: Bearer <CHAINHOOK_AUTH_TOKEN>`.
+These endpoints receive blockchain events from Hiro Chainhooks. All chainhook routes require authentication.
 
-### POST /api/v1/chainhooks/whale-transfer
+### Authentication Header
+```http
+Authorization: Bearer <CHAINHOOK_AUTH_TOKEN>
+```
 
-Receive whale transfer events (>10,000 STX).
+### Common Payload Structure
 
-### POST /api/v1/chainhooks/contract-deployed
+All chainhook endpoints receive events in this format:
 
-Receive new contract deployment events.
-
-### POST /api/v1/chainhooks/nft-mint
-
-Receive NFT mint events.
-
-### POST /api/v1/chainhooks/token-launch
-
-Receive new SIP-010 token deployment events.
-
-### POST /api/v1/chainhooks/large-swap-alert
-
-Receive large DEX swap events.
-
-### POST /api/v1/chainhooks/subscription-created
-
-Receive StackPulse subscription events.
-
-### POST /api/v1/chainhooks/alert-triggered
-
-Receive alert trigger events.
-
-### POST /api/v1/chainhooks/fee-collected
-
-Receive fee collection events.
-
-### POST /api/v1/chainhooks/badge-earned
-
-Receive badge minting events.
-
-**Common Chainhook Payload Structure:**
 ```json
 {
   "apply": [
     {
       "block_identifier": {
         "index": 123456,
-        "hash": "0x..."
+        "hash": "0xabcdef1234567890..."
       },
       "transactions": [
         {
-          "transaction_identifier": { "hash": "0x..." },
+          "transaction_identifier": {
+            "hash": "0x1234567890abcdef..."
+          },
           "metadata": {
             "success": true,
-            "sender": "SP...",
+            "sender": "SP3FKNEZ86RG5RT7SZ5FBRGH85FZNG94ZH1MCGG6N",
             "fee": 1000,
+            "kind": {
+              "type": "ContractDeployment",
+              "data": {
+                "contract_identifier": "SP3FKNEZ86RG5RT7SZ5FBRGH85FZNG94ZH1MCGG6N.my-contract"
+              }
+            },
             "receipt": {
-              "events": [...]
+              "events": [
+                {
+                  "type": "SmartContractEvent",
+                  "data": {
+                    "value": { ... }
+                  }
+                }
+              ]
             }
           }
         }
       ]
     }
   ],
+  "rollback": [],
   "chainhook": {
-    "uuid": "chainhook-id",
-    "predicate": {}
+    "uuid": "chainhook-uuid",
+    "predicate": {
+      "scope": "txid",
+      "equals": "0x..."
+    }
   }
 }
 ```
 
+### Event-Specific Endpoints
+
+#### POST /api/v1/chainhooks/whale-transfer
+
+Receives whale transfer events for transfers >10,000 STX.
+
+**Processing:**
+- Parses transfer amount, sender, and recipient
+- Broadcasts notification to all users
+- Increments global statistics
+
+#### POST /api/v1/chainhooks/contract-deployed
+
+Receives new contract deployment events.
+
+**Processing:**
+- Extracts contract ID, name, and deployer
+- Broadcasts notification to all users
+- Increments deployment statistics
+
+#### POST /api/v1/chainhooks/nft-mint
+
+Receives NFT mint events.
+
+**Processing:**
+- Extracts asset ID, token ID, and recipient
+- Broadcasts notification to all users
+- Increments mint statistics
+
+#### POST /api/v1/chainhooks/token-launch
+
+Receives new SIP-010 token deployment events.
+
+**Processing:**
+- Extracts token contract details
+- Broadcasts notification to all users
+- Increments launch statistics
+
+#### POST /api/v1/chainhooks/large-swap-alert
+
+Receives large DEX swap events.
+
+**Processing:**
+- Detects swaps with multiple FT transfer events
+- Broadcasts notification to all users
+- Increments swap statistics
+
+#### POST /api/v1/chainhooks/subscription-created
+
+Receives StackPulse subscription events from smart contracts.
+
+**Processing:**
+- Extracts user, tier, and price from print events
+- Broadcasts personalized notification to subscriber
+- Increments subscription statistics
+
+#### POST /api/v1/chainhooks/alert-triggered
+
+Receives alert trigger events from smart contracts.
+
+**Processing:**
+- Extracts alert ID, owner, and type from print events
+- Broadcasts personalized notification to alert owner
+- Increments trigger statistics
+
+#### POST /api/v1/chainhooks/fee-collected
+
+Receives fee collection events.
+
+**Processing:**
+- Extracts source and amount from print events
+- Broadcasts notification to all users
+- Increments fee statistics
+
+#### POST /api/v1/chainhooks/badge-earned
+
+Receives badge minting events.
+
+**Processing:**
+- Extracts recipient, badge name, and type from print events
+- Broadcasts personalized notification to badge earner
+- Increments badge statistics
+
+### Async Processing
+
+All chainhook endpoints respond immediately with `202 Accepted` to prevent Hiro timeout:
+
+```json
+{
+  "status": "accepted",
+  "message": "Processing async"
+}
+```
+
+Events are processed in the background after the response is sent.
+
 ---
 
-## Error Responses
+## Error Handling
 
 All endpoints return errors in a consistent format:
 
@@ -330,7 +648,22 @@ All endpoints return errors in a consistent format:
 }
 ```
 
-**Example (400 Bad Request):**
+### HTTP Status Codes
+
+| Code | Name | Description |
+|------|------|-------------|
+| 200 | OK | Request successful |
+| 201 | Created | Resource created successfully |
+| 202 | Accepted | Async processing started |
+| 400 | Bad Request | Invalid parameters or request format |
+| 401 | Unauthorized | Missing or invalid authentication |
+| 404 | Not Found | Resource not found |
+| 429 | Too Many Requests | Rate limit exceeded |
+| 500 | Internal Server Error | Server error |
+
+### Error Examples
+
+**400 Bad Request - Invalid Address:**
 ```json
 {
   "success": false,
@@ -339,7 +672,7 @@ All endpoints return errors in a consistent format:
 }
 ```
 
-**Example (401 Unauthorized):**
+**401 Unauthorized - Missing Token:**
 ```json
 {
   "success": false,
@@ -348,49 +681,48 @@ All endpoints return errors in a consistent format:
 }
 ```
 
-**Example (429 Too Many Requests):**
+**429 Too Many Requests:**
 ```json
 {
   "success": false,
   "error": "Rate limit exceeded. Please try again later.",
-  "code": 429
+  "code": 429,
+  "retryAfter": 30
 }
 ```
 
-### Common Error Codes
-
-| Code | Description |
-|------|-------------|
-| 400 | Bad Request - Invalid parameters |
-| 401 | Unauthorized - Missing or invalid auth |
-| 404 | Not Found - Resource doesn't exist |
-| 429 | Too Many Requests - Rate limited |
-| 500 | Internal Server Error |
-
----
-
-## Rate Limiting
-
-- **Public endpoints**: 100 requests per minute per IP
-- **Chainhook endpoints**: No rate limiting (authenticated)
-- **User endpoints**: 60 requests per minute per address
+**404 Not Found:**
+```json
+{
+  "success": false,
+  "error": "User not found",
+  "code": 404
+}
+```
 
 ---
 
-## WebSocket Events (Future)
+## WebSocket Events
 
-Real-time notifications via WebSocket at `wss://stackpulse-b8fw.onrender.com/ws`
+Real-time notifications are available via WebSocket connection.
 
-### Event Types
+### Connection
+
+```
+wss://stackpulse-b8fw.onrender.com/ws
+```
+
+### Message Types
 
 ```typescript
 interface WebSocketMessage {
   type: 'notification' | 'stats' | 'alert';
   data: Record<string, unknown>;
+  timestamp: string;
 }
 ```
 
-### Subscribe to Events
+### Subscription
 
 ```javascript
 const ws = new WebSocket('wss://stackpulse-b8fw.onrender.com/ws');
@@ -398,19 +730,93 @@ const ws = new WebSocket('wss://stackpulse-b8fw.onrender.com/ws');
 ws.onopen = () => {
   ws.send(JSON.stringify({
     type: 'subscribe',
-    address: 'SP...',
+    address: 'SP3FKNEZ86RG5RT7SZ5FBRGH85FZNG94ZH1MCGG6N',
     events: ['whale', 'nft', 'alert']
   }));
 };
 
 ws.onmessage = (event) => {
   try {
-    const data = JSON.parse(event.data);
-    if (data.type === 'notification') {
-      // handle notification payload
+    const message = JSON.parse(event.data);
+    console.log('Received:', message);
+    
+    if (message.type === 'notification') {
+      // Handle notification
+      const { title, message: text, data } = message.data;
+      showNotification(title, text, data);
     }
-  } catch {
-    // ignore malformed events
+  } catch (error) {
+    console.error('Failed to parse message:', error);
   }
 };
 ```
+
+### Event Payloads
+
+**Notification Event:**
+```json
+{
+  "type": "notification",
+  "data": {
+    "id": "abc123",
+    "title": "🐋 Whale Transfer Detected",
+    "message": "10,000 STX transferred",
+    "txHash": "0x...",
+    "blockHeight": 123456,
+    "timestamp": "2025-01-24T12:00:00.000Z"
+  }
+}
+```
+
+**Stats Update Event:**
+```json
+{
+  "type": "stats",
+  "data": {
+    "whaleTransfers": 1235,
+    "contractDeployments": 568,
+    "timestamp": "2025-01-24T12:00:01.000Z"
+  }
+}
+```
+
+---
+
+## SDK & Client Libraries
+
+### JavaScript/TypeScript
+
+```bash
+npm install stackpulse-sdk
+```
+
+```typescript
+import { StackPulseClient } from 'stackpulse-sdk';
+
+const client = new StackPulseClient({
+  baseUrl: 'https://stackpulse-b8fw.onrender.com',
+  chainhookToken: 'your-token'
+});
+
+// Get stats
+const stats = await client.getStats();
+
+// Create alert
+const alert = await client.createAlert({
+  address: 'SP...',
+  type: 1,
+  name: 'My Alert',
+  threshold: 10000000000
+});
+```
+
+## Support & Feedback
+
+- **Documentation**: [docs.stackpulse.io](https://docs.stackpulse.io)
+- **GitHub Issues**: [Report bugs](https://github.com/AdekunleBamz/StackPulse/issues)
+- **Discord**: [Community support](https://discord.gg/stackpulse)
+- **Email**: support@stackpulse.io
+
+---
+
+*Last updated: January 2025*
