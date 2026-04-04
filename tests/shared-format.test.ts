@@ -3,6 +3,7 @@ import { describe, expect, it, vi } from 'vitest';
 import {
   formatDate,
   formatDateTime,
+  formatFileSize,
   formatNumber,
   formatPercent,
   formatRelativeTime,
@@ -74,5 +75,11 @@ describe('truncateAddress', () => {
 describe('truncateString', () => {
   it('returns an empty string when truncating to zero characters', () => {
     expect(truncateString('StackPulse', 0)).toBe('');
+  });
+});
+
+describe('formatFileSize', () => {
+  it('formats bytes into larger units when needed', () => {
+    expect(formatFileSize(1536)).toBe('1.50 KB');
   });
 });
