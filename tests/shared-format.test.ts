@@ -1,6 +1,11 @@
 import { describe, expect, it } from 'vitest';
 
-import { formatNumber, formatPercent, formatStxAmount } from '../shared/utils/format';
+import {
+  formatNumber,
+  formatPercent,
+  formatRelativeTime,
+  formatStxAmount,
+} from '../shared/utils/format';
 
 describe('formatStxAmount', () => {
   it('formats whole STX balances with six decimals', () => {
@@ -16,5 +21,11 @@ describe('formatStxAmount', () => {
 describe('formatPercent', () => {
   it('clamps requested decimals into a safe range', () => {
     expect(formatPercent(12.3456789, 10)).toBe('12.345679%');
+  });
+});
+
+describe('formatRelativeTime', () => {
+  it('falls back gracefully for invalid dates', () => {
+    expect(formatRelativeTime(new Date('invalid'))).toBe('just now');
   });
 });
