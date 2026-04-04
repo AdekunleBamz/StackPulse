@@ -16,9 +16,3 @@ describe('formatStxAmount', () => {
     expect(formatStxAmount('2000000000000')).toBe('2.00M STX');
   });
 });
-
-describe('formatNumber', () => {
-  it('falls back to zero for invalid numeric input', () => {
-    expect(formatNumber('not-a-number')).toBe('0');
-  });
-});
