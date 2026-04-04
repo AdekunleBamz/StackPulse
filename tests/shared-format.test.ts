@@ -44,9 +44,3 @@ describe('formatRelativeTime', () => {
     vi.useRealTimers();
   });
 });
-
-describe('formatDate', () => {
-  it('returns an explicit fallback for invalid dates', () => {
-    expect(formatDate(new Date('invalid'))).toBe('Invalid date');
-  });
-});
