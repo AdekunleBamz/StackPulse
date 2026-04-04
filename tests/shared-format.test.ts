@@ -96,4 +96,8 @@ describe('parseStxAmount', () => {
   it('rejects negative STX inputs instead of parsing them as positive', () => {
     expect(parseStxAmount('-1.5 STX')).toBe(0);
   });
+
+  it('parses comma-separated STX display values into micro-STX', () => {
+    expect(parseStxAmount('1,234.567890 STX')).toBe(1_234_567_890);
+  });
 });
