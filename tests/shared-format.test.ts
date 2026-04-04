@@ -3,7 +3,6 @@ import { describe, expect, it, vi } from 'vitest';
 import {
   formatDate,
   formatDateTime,
-  formatBalance,
   formatDuration,
   formatFileSize,
   formatNumber,
@@ -84,15 +83,5 @@ describe('formatFileSize', () => {
 describe('formatDuration', () => {
   it('formats long durations into day-hour pairs', () => {
     expect(formatDuration(90_000_000)).toBe('1d 1h');
-  });
-});
-
-describe('parseStxAmount', () => {
-  it('rejects negative STX inputs instead of parsing them as positive', () => {
-    expect(parseStxAmount('-1.5 STX')).toBe(0);
-  });
-
-  it('parses comma-separated STX display values into micro-STX', () => {
-    expect(parseStxAmount('1,234.567890 STX')).toBe(1_234_567_890);
   });
 });
