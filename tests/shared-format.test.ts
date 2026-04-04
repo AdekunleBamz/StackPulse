@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { formatStxAmount } from '../shared/utils/format';
+import { formatNumber, formatStxAmount } from '../shared/utils/format';
 
 describe('formatStxAmount', () => {
   it('formats whole STX balances with six decimals', () => {
@@ -14,5 +14,11 @@ describe('formatStxAmount', () => {
 
   it('abbreviates very large balances into millions of STX', () => {
     expect(formatStxAmount('2000000000000')).toBe('2.00M STX');
+  });
+});
+
+describe('formatNumber', () => {
+  it('falls back to zero for invalid numeric input', () => {
+    expect(formatNumber('not-a-number')).toBe('0');
   });
 });
