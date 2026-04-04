@@ -3,6 +3,7 @@ import { describe, expect, it, vi } from 'vitest';
 import {
   formatDate,
   formatDateTime,
+  formatDuration,
   formatFileSize,
   formatNumber,
   formatPercent,
@@ -81,5 +82,11 @@ describe('truncateString', () => {
 describe('formatFileSize', () => {
   it('formats bytes into larger units when needed', () => {
     expect(formatFileSize(1536)).toBe('1.50 KB');
+  });
+});
+
+describe('formatDuration', () => {
+  it('formats long durations into day-hour pairs', () => {
+    expect(formatDuration(90_000_000)).toBe('1d 1h');
   });
 });
