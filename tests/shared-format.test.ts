@@ -1,6 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
 
 import {
+  formatDate,
   formatNumber,
   formatPercent,
   formatRelativeTime,
@@ -40,5 +41,11 @@ describe('formatRelativeTime', () => {
     expect(formatRelativeTime(Date.parse('2026-04-04T12:05:00Z'))).toBe('in 5m');
 
     vi.useRealTimers();
+  });
+});
+
+describe('formatDate', () => {
+  it('returns an explicit fallback for invalid dates', () => {
+    expect(formatDate(new Date('invalid'))).toBe('Invalid date');
   });
 });
