@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { formatNumber, formatStxAmount } from '../shared/utils/format';
+import { formatNumber, formatPercent, formatStxAmount } from '../shared/utils/format';
 
 describe('formatStxAmount', () => {
   it('formats whole STX balances with six decimals', () => {
@@ -20,5 +20,11 @@ describe('formatStxAmount', () => {
 describe('formatNumber', () => {
   it('falls back to zero for invalid numeric input', () => {
     expect(formatNumber('not-a-number')).toBe('0');
+  });
+});
+
+describe('formatPercent', () => {
+  it('clamps requested decimals into a safe range', () => {
+    expect(formatPercent(12.3456789, 10)).toBe('12.345679%');
   });
 });
