@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 
 import {
   formatNumber,
@@ -27,5 +27,14 @@ describe('formatPercent', () => {
 describe('formatRelativeTime', () => {
   it('falls back gracefully for invalid dates', () => {
     expect(formatRelativeTime(new Date('invalid'))).toBe('just now');
+  });
+
+  it('formats future timestamps with relative labels', () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date('2026-04-04T12:00:00Z'));
+
+    expect(formatRelativeTime(Date.parse('2026-04-04T12:05:00Z'))).toBe('in 5m');
+
+    vi.useRealTimers();
   });
 });
