@@ -11,6 +11,7 @@ import {
   formatPercent,
   formatRelativeTime,
   formatStxAmount,
+  formatTxId,
   truncateAddress,
   truncateString,
 } from '../shared/utils/format';
@@ -106,5 +107,11 @@ describe('parseStxAmount', () => {
 describe('formatBalance', () => {
   it('clamps requested balance decimals to twelve places', () => {
     expect(formatBalance('1.23456789123456', 20)).toBe('1.234567891235');
+  });
+});
+
+describe('formatTxId', () => {
+  it('truncates transaction ids with fixed prefix and suffix lengths', () => {
+    expect(formatTxId('0x1234567890abcdef1234567890abcdef')).toBe('0x123456...90abcdef');
   });
 });
