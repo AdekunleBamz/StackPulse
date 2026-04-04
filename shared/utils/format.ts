@@ -83,6 +83,9 @@ export function formatPercent(value: number, decimals: number = DEFAULT_PERCENT_
 export function formatRelativeTime(timestamp: number | Date): string {
   const now = new Date().getTime();
   const time = typeof timestamp === 'number' ? timestamp : timestamp.getTime();
+  if (!Number.isFinite(time)) {
+    return 'just now';
+  }
   const diff = now - time;
   const isFuture = diff < 0;
   const absDiff = Math.abs(diff);
