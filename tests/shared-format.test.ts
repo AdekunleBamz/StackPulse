@@ -2,6 +2,7 @@ import { describe, expect, it, vi } from 'vitest';
 
 import {
   formatDate,
+  formatDateTime,
   formatNumber,
   formatPercent,
   formatRelativeTime,
@@ -47,5 +48,11 @@ describe('formatRelativeTime', () => {
 describe('formatDate', () => {
   it('returns an explicit fallback for invalid dates', () => {
     expect(formatDate(new Date('invalid'))).toBe('Invalid date');
+  });
+});
+
+describe('formatDateTime', () => {
+  it('returns an explicit fallback for invalid timestamps', () => {
+    expect(formatDateTime(Number.NaN)).toBe('Invalid date');
   });
 });
