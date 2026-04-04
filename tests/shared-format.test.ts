@@ -7,6 +7,9 @@ import {
   formatPercent,
   formatRelativeTime,
   formatStxAmount,
+  formatTxId,
+  truncateAddress,
+  truncateString,
 } from '../shared/utils/format';
 
 describe('formatStxAmount', () => {
@@ -54,5 +57,51 @@ describe('formatDate', () => {
 describe('formatDateTime', () => {
   it('returns an explicit fallback for invalid timestamps', () => {
     expect(formatDateTime(Number.NaN)).toBe('Invalid date');
+  });
+});
+
+describe('truncateAddress', () => {
+  it('supports custom prefix and suffix lengths', () => {
+    expect(truncateAddress('SP3FKNEZ86RG5RT7SZ5FBRGH85FZNG94ZH1MCGG6N', 4, 6)).toBe('SP3F...MCGG6N');
+  });
+});
+
+describe('truncateString', () => {
+  it('returns an empty string when truncating to zero characters', () => {
+    expect(truncateString('StackPulse', 0)).toBe('');
+  });
+});
+
+describe('formatFileSize', () => {
+  it('formats bytes into larger units when needed', () => {
+    expect(formatFileSize(1536)).toBe('1.50 KB');
+  });
+});
+
+describe('formatDuration', () => {
+  it('formats long durations into day-hour pairs', () => {
+    expect(formatDuration(90_000_000)).toBe('1d 1h');
+  });
+});
+
+describe('parseStxAmount', () => {
+  it('rejects negative STX inputs instead of parsing them as positive', () => {
+    expect(parseStxAmount('-1.5 STX')).toBe(0);
+  });
+
+  it('parses comma-separated STX display values into micro-STX', () => {
+    expect(parseStxAmount('1,234.567890 STX')).toBe(1_234_567_890);
+  });
+});
+
+describe('formatBalance', () => {
+  it('clamps requested balance decimals to twelve places', () => {
+    expect(formatBalance('1.23456789123456', 20)).toBe('1.234567891235');
+  });
+});
+
+describe('formatTxId', () => {
+  it('truncates transaction ids with fixed prefix and suffix lengths', () => {
+    expect(formatTxId('0x1234567890abcdef1234567890abcdef')).toBe('0x123456...90abcdef');
   });
 });
