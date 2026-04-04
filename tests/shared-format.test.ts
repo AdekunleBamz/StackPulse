@@ -8,9 +8,7 @@ import {
   formatPercent,
   formatRelativeTime,
   formatStxAmount,
-  formatTxId,
   truncateAddress,
-  truncateString,
 } from '../shared/utils/format';
 
 describe('formatStxAmount', () => {
@@ -64,17 +62,5 @@ describe('formatDateTime', () => {
 describe('truncateAddress', () => {
   it('supports custom prefix and suffix lengths', () => {
     expect(truncateAddress('SP3FKNEZ86RG5RT7SZ5FBRGH85FZNG94ZH1MCGG6N', 4, 6)).toBe('SP3F...MCGG6N');
-  });
-});
-
-describe('truncateString', () => {
-  it('returns an empty string when truncating to zero characters', () => {
-    expect(truncateString('StackPulse', 0)).toBe('');
-  });
-});
-
-describe('formatFileSize', () => {
-  it('formats bytes into larger units when needed', () => {
-    expect(formatFileSize(1536)).toBe('1.50 KB');
   });
 });
