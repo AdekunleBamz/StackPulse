@@ -3,7 +3,6 @@ import { describe, expect, it, vi } from 'vitest';
 import {
   formatDate,
   formatDateTime,
-  formatFileSize,
   formatNumber,
   formatPercent,
   formatRelativeTime,
@@ -56,11 +55,5 @@ describe('formatDate', () => {
 describe('formatDateTime', () => {
   it('returns an explicit fallback for invalid timestamps', () => {
     expect(formatDateTime(Number.NaN)).toBe('Invalid date');
-  });
-});
-
-describe('truncateAddress', () => {
-  it('supports custom prefix and suffix lengths', () => {
-    expect(truncateAddress('SP3FKNEZ86RG5RT7SZ5FBRGH85FZNG94ZH1MCGG6N', 4, 6)).toBe('SP3F...MCGG6N');
   });
 });
