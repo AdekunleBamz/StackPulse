@@ -6,6 +6,7 @@ import {
   formatDuration,
   formatFileSize,
   formatNumber,
+  parseStxAmount,
   formatPercent,
   formatRelativeTime,
   formatStxAmount,
@@ -88,5 +89,11 @@ describe('formatFileSize', () => {
 describe('formatDuration', () => {
   it('formats long durations into day-hour pairs', () => {
     expect(formatDuration(90_000_000)).toBe('1d 1h');
+  });
+});
+
+describe('parseStxAmount', () => {
+  it('rejects negative STX inputs instead of parsing them as positive', () => {
+    expect(parseStxAmount('-1.5 STX')).toBe(0);
   });
 });
