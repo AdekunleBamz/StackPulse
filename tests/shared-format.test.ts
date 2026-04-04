@@ -3,6 +3,7 @@ import { describe, expect, it, vi } from 'vitest';
 import {
   formatDate,
   formatDateTime,
+  formatBalance,
   formatDuration,
   formatFileSize,
   formatNumber,
@@ -99,5 +100,11 @@ describe('parseStxAmount', () => {
 
   it('parses comma-separated STX display values into micro-STX', () => {
     expect(parseStxAmount('1,234.567890 STX')).toBe(1_234_567_890);
+  });
+});
+
+describe('formatBalance', () => {
+  it('clamps requested balance decimals to twelve places', () => {
+    expect(formatBalance('1.23456789123456', 20)).toBe('1.234567891235');
   });
 });
