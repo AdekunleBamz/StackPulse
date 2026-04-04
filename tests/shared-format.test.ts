@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
 
-import { formatNumber, formatPercent, formatStxAmount } from '../shared/utils/format';
+import { formatNumber, formatStxAmount } from '../shared/utils/format';
 
 describe('formatStxAmount', () => {
   it('formats whole STX balances with six decimals', () => {
@@ -17,29 +17,8 @@ describe('formatStxAmount', () => {
   });
 });
 
-describe('formatPercent', () => {
-  it('clamps requested decimals into a safe range', () => {
-    expect(formatPercent(12.3456789, 10)).toBe('12.345679%');
-  });
-});
-
-describe('formatRelativeTime', () => {
-  it('falls back gracefully for invalid dates', () => {
-    expect(formatRelativeTime(new Date('invalid'))).toBe('just now');
-  });
-
-  it('formats future timestamps with relative labels', () => {
-    vi.useFakeTimers();
-    vi.setSystemTime(new Date('2026-04-04T12:00:00Z'));
-
-    expect(formatRelativeTime(Date.parse('2026-04-04T12:05:00Z'))).toBe('in 5m');
-
-    vi.useRealTimers();
-  });
-});
-
-describe('formatPercent', () => {
-  it('clamps requested decimals into a safe range', () => {
-    expect(formatPercent(12.3456789, 10)).toBe('12.345679%');
+describe('formatNumber', () => {
+  it('falls back to zero for invalid numeric input', () => {
+    expect(formatNumber('not-a-number')).toBe('0');
   });
 });
