@@ -11,4 +11,8 @@ describe('formatStxAmount', () => {
   it('abbreviates large balances into thousands of STX', () => {
     expect(formatStxAmount(1_500_000_000)).toBe('1.50K STX');
   });
+
+  it('abbreviates very large balances into millions of STX', () => {
+    expect(formatStxAmount('2000000000000')).toBe('2.00M STX');
+  });
 });
