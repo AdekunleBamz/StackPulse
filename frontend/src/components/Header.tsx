@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { Menu, X } from 'lucide-react';
 import { useEffect, useId, useRef, useState } from 'react';
 import { usePathname } from 'next/navigation';
+import { motion, AnimatePresence } from 'framer-motion';
 
 export default function Header() {
   const [isOpen, setIsOpen] = useState(false);
@@ -84,12 +85,14 @@ export default function Header() {
             className="flex items-center space-x-2 group/logo outline-none focus-visible:ring-2 focus-visible:ring-purple-500/50 focus-visible:ring-offset-4 focus-visible:ring-offset-gray-950 rounded-xl transition-all"
             aria-label="StackPulse Home"
           >
-            <div 
-              className="w-9 h-9 bg-gradient-to-br from-purple-500 via-purple-600 to-blue-600 rounded-xl flex items-center justify-center shadow-lg shadow-purple-500/10 group-hover/logo:scale-125 group-hover/logo:shadow-purple-500/40 transition-all duration-300"
+            <motion.div 
+              whileHover={{ scale: 1.1, rotate: 5 }}
+              whileTap={{ scale: 0.9 }}
+              className="w-9 h-9 bg-gradient-to-br from-purple-500 via-purple-600 to-blue-600 rounded-xl flex items-center justify-center shadow-lg shadow-purple-500/10 group-hover/logo:shadow-purple-500/40 transition-all duration-300"
               aria-hidden="true"
             >
               <svg 
-                className="w-5 h-5 text-white transform group-hover/logo:rotate-[15deg] transition-transform duration-300" 
+                className="w-5 h-5 text-white" 
                 fill="none" 
                 stroke="currentColor" 
                 viewBox="0 0 24 24"
@@ -102,7 +105,7 @@ export default function Header() {
                   d="M13 10V3L4 14h7v7l9-11h-7z" 
                 />
               </svg>
-            </div>
+            </motion.div>
             <span className="text-xl font-black bg-gradient-to-r from-white via-purple-200 to-blue-200 bg-clip-text text-transparent tracking-tight">
               StackPulse
             </span>
@@ -154,16 +157,40 @@ export default function Header() {
           </nav>
 
           <div className="flex items-center gap-3">
-            <button
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
               type="button"
-              className="md:hidden inline-flex items-center justify-center w-10 h-10 rounded-xl border border-white/5 bg-white/5 text-gray-200 hover:bg-white/10 hover:scale-110 active:scale-90 transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-purple-500/50 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-950 hover:shadow-lg hover:shadow-purple-500/20"
+              className="md:hidden inline-flex items-center justify-center w-10 h-10 rounded-xl border border-white/5 bg-white/5 text-gray-200 hover:bg-white/10 transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-purple-500/50 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-950 hover:shadow-lg hover:shadow-purple-500/20"
               aria-expanded={isOpen}
               aria-controls={mobileNavId}
               aria-label={isOpen ? 'Close mobile menu' : 'Open mobile menu'}
               onClick={() => setIsOpen((v) => !v)}
             >
-              {isOpen ? <X className="w-5 h-5 transition-transform duration-300 rotate-90" /> : <Menu className="w-5 h-5 transition-transform duration-300 rotate-0" />}
-            </button>
+              <AnimatePresence mode="wait">
+                {isOpen ? (
+                  <motion.div
+                    key="close"
+                    initial={{ rotate: -90, opacity: 0 }}
+                    animate={{ rotate: 0, opacity: 1 }}
+                    exit={{ rotate: 90, opacity: 0 }}
+                    transition={{ duration: 0.2 }}
+                  >
+                    <X className="w-5 h-5" />
+                  </motion.div>
+                ) : (
+                  <motion.div
+                    key="menu"
+                    initial={{ rotate: 90, opacity: 0 }}
+                    animate={{ rotate: 0, opacity: 1 }}
+                    exit={{ rotate: -90, opacity: 0 }}
+                    transition={{ duration: 0.2 }}
+                  >
+                    <Menu className="w-5 h-5" />
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </motion.button>
 
             {/* Wallet Connection */}
             <ConnectWallet />
@@ -171,74 +198,87 @@ export default function Header() {
         </div>
 
         {/* Mobile Navigation */}
-        {isOpen && (
-          <>
-            <div
-              className={`md:hidden fixed inset-0 z-40 bg-black/60 backdrop-blur-sm animate-fade-in duration-500 ease-out transition-all ${
-                scrolled ? 'top-[72px]' : 'top-[88px]'
-              }`}
-              onClick={() => setIsOpen(false)}
-              aria-hidden="true"
-            />
-            <div
-              ref={mobileNavRef}
-              className={`md:hidden fixed left-0 right-0 z-50 bg-gray-950/90 backdrop-blur-2xl border-b border-white/10 shadow-2xl shadow-purple-500/10 animate-slide-down duration-700 ease-in-out transition-all ${
-                scrolled ? 'top-[72px]' : 'top-[88px]'
-              }`}
-              id={mobileNavId}
-              role="dialog"
-              aria-modal="true"
-              aria-label="Mobile navigation menu"
-            >
-              <nav className="px-4 py-6 space-y-2" aria-label="Mobile Navigation">
-                <Link
-                  href="/#features"
-                  className="block rounded-2xl px-5 py-3.5 text-base font-bold text-gray-400 hover:bg-white/10 hover:text-white transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-purple-500/50 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-950 active:scale-[0.98] aria-[current=page]:bg-white/10 aria-[current=page]:text-white animate-slide-down animate-stagger-1 fill-mode-backwards"
-                  aria-current={pathname === '/#features' ? 'page' : undefined}
-                  onClick={() => setIsOpen(false)}
-                >
-                  Features
-                </Link>
-                <Link
-                  href="/#pricing"
-                  className="block rounded-2xl px-5 py-3.5 text-base font-bold text-gray-400 hover:bg-white/10 hover:text-white transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-purple-500/50 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-950 active:scale-[0.98] aria-[current=page]:bg-white/10 aria-[current=page]:text-white animate-slide-down animate-stagger-2 fill-mode-backwards"
-                  aria-current={pathname === '/#pricing' ? 'page' : undefined}
-                  onClick={() => setIsOpen(false)}
-                >
-                  Pricing
-                </Link>
-                <Link
-                  href="/#stats"
-                  className="block rounded-2xl px-5 py-3.5 text-base font-bold text-gray-400 hover:bg-white/10 hover:text-white transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-purple-500/50 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-950 active:scale-[0.98] aria-[current=page]:bg-white/10 aria-[current=page]:text-white animate-slide-down animate-stagger-3 fill-mode-backwards"
-                  aria-current={pathname === '/#stats' ? 'page' : undefined}
-                  onClick={() => setIsOpen(false)}
-                >
-                  Live Stats
-                </Link>
-                <div className="pt-4 px-2 animate-slide-down animate-stagger-4 fill-mode-backwards">
-                  <Link
-                    href="/register"
-                    className="flex items-center justify-center h-14 rounded-2xl bg-gradient-to-r from-purple-600 via-indigo-600 to-indigo-700 text-base font-black text-white transition-all shadow-[0_10px_30px_-5px_rgba(168,85,247,0.4)] hover:shadow-[0_15px_35px_-5px_rgba(168,85,247,0.5)] hover:scale-[1.02] active:scale-95 outline-none focus-visible:ring-2 focus-visible:ring-purple-500/50 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-950 tracking-tight"
-                    aria-current={pathname === '/register' ? 'page' : undefined}
-                    onClick={() => setIsOpen(false)}
+        <AnimatePresence>
+          {isOpen && (
+            <>
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className={`md:hidden fixed inset-0 z-40 bg-black/60 backdrop-blur-sm transition-all ${
+                  scrolled ? 'top-[72px]' : 'top-[88px]'
+                }`}
+                onClick={() => setIsOpen(false)}
+                aria-hidden="true"
+              />
+              <motion.div
+                ref={mobileNavRef}
+                initial={{ y: -20, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                exit={{ y: -20, opacity: 0 }}
+                transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+                className={`md:hidden fixed left-0 right-0 z-50 bg-gray-950/90 backdrop-blur-2xl border-b border-white/10 shadow-2xl shadow-purple-500/10 transition-all ${
+                  scrolled ? 'top-[72px]' : 'top-[88px]'
+                }`}
+                id={mobileNavId}
+                role="dialog"
+                aria-modal="true"
+                aria-label="Mobile navigation menu"
+              >
+                <nav className="px-4 py-6 space-y-2" aria-label="Mobile Navigation">
+                  {['Features', 'Pricing', 'Live Stats'].map((item, i) => (
+                    <motion.div
+                      key={item}
+                      initial={{ x: -10, opacity: 0 }}
+                      animate={{ x: 0, opacity: 1 }}
+                      transition={{ delay: i * 0.05 }}
+                    >
+                      <Link
+                        href={`/#${item.toLowerCase().replace(' ', '')}`}
+                        className="block rounded-2xl px-5 py-3.5 text-base font-bold text-gray-400 hover:bg-white/10 hover:text-white transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-purple-500/50 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-950 active:scale-[0.98] aria-[current=page]:bg-white/10 aria-[current=page]:text-white"
+                        aria-current={pathname === `/#${item.toLowerCase().replace(' ', '')}` ? 'page' : undefined}
+                        onClick={() => setIsOpen(false)}
+                      >
+                        {item}
+                      </Link>
+                    </motion.div>
+                  ))}
+                  <motion.div
+                    initial={{ y: 10, opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    transition={{ delay: 0.2 }}
+                    className="pt-4 px-2"
                   >
-                    Get Started
-                  </Link>
-                </div>
-                <a
-                  href="https://docs.hiro.so/stacks/chainhook"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="mt-2 flex items-center justify-center h-14 rounded-2xl bg-white/5 border border-white/5 text-base font-bold text-gray-400 hover:bg-white/10 hover:text-white transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-purple-500/50 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-950 active:scale-[0.98] animate-slide-down animate-stagger-5 fill-mode-backwards"
-                  onClick={() => setIsOpen(false)}
-                >
-                  View Documentation
-                  <span className="sr-only">(opens in new tab)</span>
-                </a>
-              </nav>
-            </div>
-          </>
-        )}
+                    <Link
+                      href="/register"
+                      className="flex items-center justify-center h-14 rounded-2xl bg-gradient-to-r from-purple-600 via-indigo-600 to-indigo-700 text-base font-black text-white transition-all shadow-[0_10px_30px_-5px_rgba(168,85,247,0.4)] hover:shadow-[0_15px_35px_-5px_rgba(168,85,247,0.5)] hover:scale-[1.02] active:scale-95 outline-none focus-visible:ring-2 focus-visible:ring-purple-500/50 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-950 tracking-tight"
+                      aria-current={pathname === '/register' ? 'page' : undefined}
+                      onClick={() => setIsOpen(false)}
+                    >
+                      Get Started
+                    </Link>
+                  </motion.div>
+                  <motion.div
+                    initial={{ y: 10, opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    transition={{ delay: 0.25 }}
+                  >
+                    <a
+                      href="https://docs.hiro.so/stacks/chainhook"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="mt-2 flex items-center justify-center h-14 rounded-2xl bg-white/5 border border-white/5 text-base font-bold text-gray-400 hover:bg-white/10 hover:text-white transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-purple-500/50 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-950 active:scale-[0.98]"
+                      onClick={() => setIsOpen(false)}
+                    >
+                      View Documentation
+                      <span className="sr-only">(opens in new tab)</span>
+                    </a>
+                  </motion.div>
+                </nav>
+              </motion.div>
+            </>
+          )}
+        </AnimatePresence>
       </div>
     </header>
   );

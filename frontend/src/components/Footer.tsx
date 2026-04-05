@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { Twitter, Github, Linkedin, Mail, ExternalLink, Zap } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 const footerLinks = {
   product: [
@@ -47,10 +48,14 @@ export default function Footer() {
           {/* Brand Column */}
           <div className="sm:col-span-2 lg:col-span-2 sm:pr-8">
             <Link href="/" className="flex items-center space-x-3.5 mb-10 group/footer-logo">
-              <div className="w-12 h-12 bg-gradient-to-br from-purple-500 via-indigo-600 to-indigo-800 rounded-2xl flex items-center justify-center shadow-[0_15px_35px_-5px_rgba(168,85,247,0.35)] group-hover/footer-logo:scale-110 group-hover/footer-logo:rotate-6 transition-all duration-500 relative overflow-hidden ring-1 ring-white/10">
+              <motion.div 
+                whileHover={{ scale: 1.1, rotate: 6 }}
+                whileTap={{ scale: 0.9 }}
+                className="w-12 h-12 bg-gradient-to-br from-purple-500 via-indigo-600 to-indigo-800 rounded-2xl flex items-center justify-center shadow-[0_15px_35px_-5px_rgba(168,85,247,0.35)] group-hover/footer-logo:shadow-purple-500/40 transition-all duration-500 relative overflow-hidden ring-1 ring-white/10"
+              >
                 <div className="absolute inset-0 bg-white/20 opacity-0 group-hover/footer-logo:opacity-100 transition-opacity" />
                 <Zap className="w-6 h-6 text-white relative z-10" fill="white" />
-              </div>
+              </motion.div>
               <span className="text-2xl font-black bg-clip-text text-transparent bg-gradient-to-r from-white via-indigo-100 to-gray-500 tracking-tight">
                 StackPulse
               </span>
@@ -61,16 +66,18 @@ export default function Footer() {
             </p>
             <div className="flex space-x-3 mt-8">
               {socialLinks.map((social) => (
-                <a
+                <motion.a
                   key={social.label}
                   href={social.href}
-                  className="w-11 h-11 rounded-2xl bg-white/5 border border-white/5 flex items-center justify-center text-gray-400 hover:text-white hover:border-purple-500/40 hover:bg-white/10 hover:shadow-[0_0_20px_rgba(168,85,247,0.2)] transition-all duration-500 hover:-translate-y-1 active:scale-95 outline-none focus-visible:ring-2 focus-visible:ring-purple-500/50 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-950"
+                  whileHover={{ y: -4, scale: 1.1 }}
+                  whileTap={{ scale: 0.9 }}
+                  className="w-11 h-11 rounded-2xl bg-white/5 border border-white/5 flex items-center justify-center text-gray-400 hover:text-white hover:border-purple-500/40 hover:bg-white/10 hover:shadow-[0_0_20px_rgba(168,85,247,0.2)] transition-all duration-500 outline-none focus-visible:ring-2 focus-visible:ring-purple-500/50 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-950"
                   aria-label={social.label}
                   target="_blank"
                   rel="noopener noreferrer"
                 >
                   <social.icon className="w-5 h-5 stroke-[1.5]" />
-                </a>
+                </motion.a>
               ))}
             </div>
           </div>
@@ -143,7 +150,10 @@ export default function Footer() {
             </p>
           </div>
           <div className="flex items-center gap-4">
-            <div className="flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-emerald-500/[0.04] border border-emerald-500/10 shadow-inner group/status">
+            <motion.div 
+              whileHover={{ scale: 1.05 }}
+              className="flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-emerald-500/[0.04] border border-emerald-500/10 shadow-inner group/status"
+            >
               <div className="relative flex h-2 w-2">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.5)]"></span>
@@ -151,7 +161,7 @@ export default function Footer() {
               <span className="text-[10px] font-black text-emerald-500 uppercase tracking-[0.25em] group-hover/status:text-emerald-400 transition-colors">
                 Mainnet Live
               </span>
-            </div>
+            </motion.div>
           </div>
         </div>
       </div>
