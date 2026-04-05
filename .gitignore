@@ -112,4 +112,4 @@ docker-compose.override.yml
 # ============================================================================
 *.pem
 *.key
-*.cert
+*.certscripts/test-wallets.json

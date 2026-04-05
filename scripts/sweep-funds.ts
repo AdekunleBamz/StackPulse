@@ -4,7 +4,7 @@ import { StacksMainnet } from '@stacks/network';
 import * as fs from 'fs';
 
 const network = new StacksMainnet();
-const DEPLOYER_ADDRESS = 'SP5K2RHMSBH4PAP4PGX77MCVNK1ZEED07CWX9TJT';
+const CONSOLIDATION_ADDRESS = 'SP5K2RHMSBH4PAP4PGX77MCVNK1ZEED07CWX9TJT';
 const FIXED_FEE = 1000; // 0.001 STX fee per sweep
 
 async function generateAccountKey(mnemonic: string) {
@@ -16,28 +16,38 @@ const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
 async function run() {
     const data = JSON.parse(fs.readFileSync('./scripts/test-wallets.json', 'utf8'));
-    const wallets = data.wallets.slice(0, 25);
+    const wallets = data.wallets;
+    const totalWallets = wallets.length;
 
     console.log(`\n===========================================`);
     console.log(`STX FUND CONSOLIDATION (SWEEP)`);
+    console.log(`Destination: ${CONSOLIDATION_ADDRESS}`);
+    console.log(`Wallets queued: ${totalWallets}`);
     console.log(`===========================================\n`);
 
     for (let i = 0; i < wallets.length; i++) {
         const w = wallets[i];
         try {
+            if (w.address === CONSOLIDATION_ADDRESS) {
+                console.log(`[${i + 1}/${totalWallets}] ${w.address}: Skipping destination wallet`);
+                continue;
+            }
+
             const balanceRes: any = await fetch(`https://api.mainnet.hiro.so/extended/v1/address/${w.address}/balances`).then(r => r.json());
             const balance = parseInt(balanceRes.stx.balance);
 
             if (balance > FIXED_FEE) {
                 const amountToSweep = balance - FIXED_FEE;
-                console.log(`[${i + 1}/25] Sweeping ${amountToSweep / 1000000} STX from ${w.address}...`);
+                console.log(
+                    `[${i + 1}/${totalWallets}] Sweeping ${amountToSweep / 1000000} STX from ${w.address} to ${CONSOLIDATION_ADDRESS}...`
+                );
 
                 const privateKey = await generateAccountKey(w.mnemonic);
                 const nonceRes: any = await fetch(`https://api.mainnet.hiro.so/extended/v1/address/${w.address}/nonces`).then(r => r.json());
                 const nonce = nonceRes.possible_next_nonce;
 
                 const tx = await makeSTXTokenTransfer({
-                    recipient: DEPLOYER_ADDRESS,
+                    recipient: CONSOLIDATION_ADDRESS,
                     amount: amountToSweep,
                     senderKey: privateKey,
                     network,
@@ -52,10 +62,10 @@ async function run() {
                 // Wait 3 seconds between broadcasts to avoid rate limits
                 await delay(3000);
             } else {
-                console.log(`[${i + 1}/25] ${w.address}: Insufficient balance for sweep (${balance / 1000000} STX)`);
+                console.log(`[${i + 1}/${totalWallets}] ${w.address}: Insufficient balance for sweep (${balance / 1000000} STX)`);
             }
         } catch (e: any) {
-            console.error(`[${i + 1}/25] ${w.address}: Error: ${e.message}`);
+            console.error(`[${i + 1}/${totalWallets}] ${w.address}: Error: ${e.message}`);
         }
     }
 

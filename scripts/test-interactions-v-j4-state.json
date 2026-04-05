@@ -1,0 +1,179 @@
+{
+  "wallets": {
+    "SP1THTSTZ8RQGD8R3GKPGK3ABQ908BD8X85P3J6X9": {
+      "alertId": 4,
+      "effectiveTier": 0,
+      "badgeType": 1,
+      "badgeTokenId": 1,
+      "badgeOwner": "SP1THTSTZ8RQGD8R3GKPGK3ABQ908BD8X85P3J6X9"
+    },
+    "SP2VD8PDWNTJJ6K09PHSP6HNB3G71CJXVF8W44BKG": {
+      "alertId": 16,
+      "effectiveTier": 0,
+      "badgeType": 1,
+      "badgeTokenId": 2,
+      "badgeOwner": "SP2VD8PDWNTJJ6K09PHSP6HNB3G71CJXVF8W44BKG"
+    },
+    "SP1GG8SRKZD2P4X6BY11W09D2X676SCJKSEZA3WPA": {
+      "alertId": 40,
+      "effectiveTier": 0,
+      "badgeType": 1,
+      "badgeTokenId": 3,
+      "badgeOwner": "SP1GG8SRKZD2P4X6BY11W09D2X676SCJKSEZA3WPA"
+    },
+    "SP2KB6YF1YGF3SXSX6EECBN7G0CM41NNWDC42NRBC": {
+      "alertId": 41,
+      "effectiveTier": 0,
+      "badgeType": 1,
+      "badgeTokenId": 4,
+      "badgeOwner": "SP2KB6YF1YGF3SXSX6EECBN7G0CM41NNWDC42NRBC"
+    },
+    "SP1M8WN9JSTX4G7VG1RHVXHAEXPZ13W3Q71D61HZV": {
+      "alertId": 42,
+      "effectiveTier": 0,
+      "badgeType": 1,
+      "badgeTokenId": 5,
+      "badgeOwner": "SP1THTSTZ8RQGD8R3GKPGK3ABQ908BD8X85P3J6X9"
+    },
+    "SP2PB9M95C8DN3ENYY16TKTA9NZTQ1EMPTYX48Q56": {
+      "alertId": 43,
+      "effectiveTier": 0,
+      "badgeType": 1,
+      "badgeTokenId": 18,
+      "badgeOwner": "SP2PB9M95C8DN3ENYY16TKTA9NZTQ1EMPTYX48Q56"
+    },
+    "SP1EKN8XF6T0K86Z2EG055NG24STZPMR226F6CPG9": {
+      "alertId": 44,
+      "effectiveTier": 0,
+      "badgeType": 1,
+      "badgeTokenId": 6,
+      "badgeOwner": "SP1EKN8XF6T0K86Z2EG055NG24STZPMR226F6CPG9"
+    },
+    "SP205TXF3ZJ4Y22B4M1HJ9ZHR4EW5XJ90DWZB33KH": {
+      "alertId": 45,
+      "effectiveTier": 0,
+      "badgeType": 1,
+      "badgeTokenId": 7,
+      "badgeOwner": "SP205TXF3ZJ4Y22B4M1HJ9ZHR4EW5XJ90DWZB33KH"
+    },
+    "SP355PMRBTD5R5VB2KHQ0A7449325HKPY9NJJN4RB": {
+      "alertId": 23,
+      "effectiveTier": 0,
+      "badgeType": 1,
+      "badgeTokenId": 8,
+      "badgeOwner": "SP1THTSTZ8RQGD8R3GKPGK3ABQ908BD8X85P3J6X9"
+    },
+    "SP51AJHNDNS2SWSMH34YQM6RBRGDAE2F757GJTZN": {
+      "alertId": 46,
+      "effectiveTier": 0,
+      "badgeType": 1,
+      "badgeTokenId": 9,
+      "badgeOwner": "SP51AJHNDNS2SWSMH34YQM6RBRGDAE2F757GJTZN"
+    },
+    "SP239N8YYN30J25EYYHT2C1PTSXYNT1T0AB7YSAFS": {
+      "alertId": 47,
+      "effectiveTier": 0,
+      "badgeType": 1,
+      "badgeTokenId": 10,
+      "badgeOwner": "SP239N8YYN30J25EYYHT2C1PTSXYNT1T0AB7YSAFS"
+    },
+    "SPAP6W4F4KGM3WVV46B6YAS02FKP02RK1QNVE9A0": {
+      "alertId": 48,
+      "effectiveTier": 0,
+      "badgeType": 1,
+      "badgeTokenId": 11,
+      "badgeOwner": "SPAP6W4F4KGM3WVV46B6YAS02FKP02RK1QNVE9A0"
+    },
+    "SP19CQ2X1FEH6TN6Y5KRETYBW32RSYWAD8AXR4AVY": {
+      "alertId": 49,
+      "effectiveTier": 0,
+      "badgeType": 1,
+      "badgeTokenId": 12,
+      "badgeOwner": "SP19CQ2X1FEH6TN6Y5KRETYBW32RSYWAD8AXR4AVY"
+    },
+    "SP7GS1F2DFGCHGV1VJFG9WJV4EVXKJ6B8ZYF231S": {
+      "alertId": 50,
+      "effectiveTier": 0,
+      "badgeType": 1,
+      "badgeTokenId": 26,
+      "badgeOwner": "SP7GS1F2DFGCHGV1VJFG9WJV4EVXKJ6B8ZYF231S"
+    },
+    "SP1VBEF5WX7CG1ADYMJBDD2ABP63XEMH1HQ13KCTX": {
+      "alertId": 51,
+      "effectiveTier": 0,
+      "badgeType": 1,
+      "badgeTokenId": 27,
+      "badgeOwner": "SP1VBEF5WX7CG1ADYMJBDD2ABP63XEMH1HQ13KCTX"
+    },
+    "SP3EC5D15A86KG3NPMP9G7T3FF5DW59S2VDFNEBPW": {
+      "alertId": 52,
+      "effectiveTier": 0,
+      "badgeType": 1,
+      "badgeTokenId": 28,
+      "badgeOwner": "SP3EC5D15A86KG3NPMP9G7T3FF5DW59S2VDFNEBPW"
+    },
+    "SPW2PJ6Q65J02D7ZKN7CT3YJP82XN7JTGX5GTMZW": {
+      "alertId": 31,
+      "effectiveTier": 0,
+      "badgeType": 1,
+      "badgeTokenId": 29,
+      "badgeOwner": "SPW2PJ6Q65J02D7ZKN7CT3YJP82XN7JTGX5GTMZW"
+    },
+    "SP1ACC4J323FCA8D6ZATFCVKTA09V4RD7VNW7FA3W": {
+      "alertId": 53,
+      "effectiveTier": 0,
+      "badgeType": 1,
+      "badgeTokenId": 30,
+      "badgeOwner": "SP1ACC4J323FCA8D6ZATFCVKTA09V4RD7VNW7FA3W"
+    },
+    "SP3FMAWFXBD8EST1XV8HA1PJTNQBASJ0ZYF5FZZZ": {
+      "alertId": 33,
+      "effectiveTier": 0,
+      "badgeType": 1,
+      "badgeTokenId": 31,
+      "badgeOwner": "SP3FMAWFXBD8EST1XV8HA1PJTNQBASJ0ZYF5FZZZ"
+    },
+    "SPMB0FH88NQ7176W4TN24WV795GZQHRGGDG7QX6G": {
+      "alertId": 34,
+      "effectiveTier": 0,
+      "badgeType": 1,
+      "badgeTokenId": 32,
+      "badgeOwner": "SPMB0FH88NQ7176W4TN24WV795GZQHRGGDG7QX6G"
+    },
+    "SP364X8EXBAX1GQ0JZXQVMXJG0J4W4TJAJTFSPBEH": {
+      "alertId": 35,
+      "effectiveTier": 0,
+      "badgeType": 1,
+      "badgeTokenId": 33,
+      "badgeOwner": "SP364X8EXBAX1GQ0JZXQVMXJG0J4W4TJAJTFSPBEH"
+    },
+    "SPJP9FCJ9357RSJHWYA3P1VP5E8G86C67AJF4KRN": {
+      "alertId": 36,
+      "effectiveTier": 0,
+      "badgeType": 1,
+      "badgeTokenId": 34,
+      "badgeOwner": "SPJP9FCJ9357RSJHWYA3P1VP5E8G86C67AJF4KRN"
+    },
+    "SP2ZXN95GJSJZ1CR9FCAKBCCXQJZEB5PWG20622R2": {
+      "alertId": 37,
+      "effectiveTier": 0,
+      "badgeType": 1,
+      "badgeTokenId": 35,
+      "badgeOwner": "SP2ZXN95GJSJZ1CR9FCAKBCCXQJZEB5PWG20622R2"
+    },
+    "SPVNWQ9GVV797CKXNXEZV7TD1VNYQJZ63AVAP8K1": {
+      "alertId": 38,
+      "effectiveTier": 0,
+      "badgeType": 1,
+      "badgeTokenId": 36,
+      "badgeOwner": "SPVNWQ9GVV797CKXNXEZV7TD1VNYQJZ63AVAP8K1"
+    },
+    "SP1W51ZY0SWYK4M6KJAC7D9DS60870ECJGARMBRXS": {
+      "alertId": 39,
+      "effectiveTier": 0,
+      "badgeType": 1,
+      "badgeTokenId": 37,
+      "badgeOwner": "SP1W51ZY0SWYK4M6KJAC7D9DS60870ECJGARMBRXS"
+    }
+  }
+}
