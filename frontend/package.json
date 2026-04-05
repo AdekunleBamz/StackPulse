@@ -30,5 +30,13 @@
     "postcss": "^8.5.8",
     "tailwindcss": "^4.2.1",
     "typescript": "^5"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/AdekunleBamz/StackPulse.git"
+  },
+  "homepage": "https://stackpulse.vercel.app",
+  "bugs": {
+    "url": "https://github.com/AdekunleBamz/StackPulse/issues"
   }
 }
