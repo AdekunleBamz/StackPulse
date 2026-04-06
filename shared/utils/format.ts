@@ -238,3 +238,20 @@ export function formatBalance(balance: number | string, decimals: number = DEFAU
 export function formatTxId(txId: string): string {
   return truncateAddress(txId, TX_ID_PREFIX_LENGTH, TX_ID_SUFFIX_LENGTH);
 }
+
+// Default export for convenience
+export default {
+  formatStxAmount,
+  formatNumber,
+  formatPercent,
+  formatRelativeTime,
+  formatDate,
+  formatDateTime,
+  truncateAddress,
+  truncateString,
+  formatFileSize,
+  formatDuration,
+  parseStxAmount,
+  formatBalance,
+  formatTxId,
+};
