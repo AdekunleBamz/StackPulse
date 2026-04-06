@@ -10,7 +10,9 @@ Shared constants, types, and formatting helpers used by the frontend and server.
 
 - `types/`: alert and user types
 - `constants/`: API URLs, contract names, rate limits, tiers, feature flags, and event constants
-- `utils/`: formatting helpers for amounts, dates, balances, durations, and IDs
+- `utils/`: formatting helpers and common utilities
+  - `format.ts`: amount, date, balance, duration, and file size formatting
+  - `common.ts`: address validation, ID generation, debounce, and clamp utilities
 
 ## Common commands
 
