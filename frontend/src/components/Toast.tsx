@@ -3,12 +3,21 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { CheckCircle, AlertCircle, Info, AlertTriangle, X, Loader2 } from 'lucide-react';
 
+/**
+ * Props for the Toast component.
+ */
 interface ToastProps {
+  /** Unique identifier for the toast */
   id: string;
+  /** The type/style of the toast */
   type: 'success' | 'error' | 'warning' | 'info' | 'loading';
+  /** The toast title */
   title: string;
+  /** Optional detailed message */
   message?: string;
+  /** Duration in milliseconds before auto-dismiss (default: 5000) */
   duration?: number;
+  /** Callback to close the toast */
   onClose: (id: string) => void;
 }
 
