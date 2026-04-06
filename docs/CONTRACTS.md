@@ -126,12 +126,24 @@ Upgrade to a higher subscription tier.
   ...)
 ```
 
-#### get-stats
-
-```clarity
 (define-read-only (get-stats)
   { total-users, total-revenue, version })
 ```
+
+#### get-owner
+
+```clarity
+(define-read-only (get-owner)
+  CONTRACT-OWNER)
+```
+
+#### get-user-tier
+
+```clarity
+(define-read-only (get-user-tier (who principal))
+  (default-to u0 (get tier (map-get? users who))))
+```
+
 
 ---
 
