@@ -1,13 +1,23 @@
 import { ComponentType } from 'react';
 import { Bell, Users, History, Search, AlertTriangle, PlusCircle, BellOff } from 'lucide-react';
 
+/**
+ * Props for the EmptyState component.
+ */
 interface EmptyStateProps {
+  /** Icon component to display (from lucide-react) */
   icon: ComponentType<{ className?: string; strokeWidth?: number }>;
+  /** Title text for the empty state */
   title: string;
+  /** Description text explaining the empty state */
   description: string;
+  /** Optional additional CSS classes */
   className?: string;
+  /** Optional action button configuration */
   action?: {
+    /** Button label text */
     label: string;
+    /** Click handler for the button */
     onClick: () => void;
   };
 }
