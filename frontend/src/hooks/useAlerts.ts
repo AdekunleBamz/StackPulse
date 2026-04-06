@@ -4,6 +4,9 @@ import { useState, useEffect, useCallback } from 'react';
 import { apiUrl } from '@/lib/env';
 import logger from '@/lib/logger';
 
+/**
+ * Represents a user-configured blockchain event alert.
+ */
 interface Alert {
   id: string;
   name: string;
@@ -17,6 +20,9 @@ interface Alert {
   triggerCount: number;
 }
 
+/**
+ * Input data for creating a new alert.
+ */
 interface CreateAlertInput {
   name: string;
   alertType: number;
@@ -25,6 +31,9 @@ interface CreateAlertInput {
   webhookUrl?: string;
 }
 
+/**
+ * Return type for the useAlerts hook.
+ */
 interface UseAlertsReturn {
   alerts: Alert[];
   loading: boolean;
@@ -37,6 +46,9 @@ interface UseAlertsReturn {
   refetch: () => Promise<void>;
 }
 
+/**
+ * API response record with string dates (before normalization).
+ */
 type AlertApiRecord = Omit<Alert, 'createdAt' | 'lastTriggered'> & {
   createdAt: string;
   lastTriggered?: string;
