@@ -4,6 +4,9 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 import { WS_URL } from '@/lib/env';
 import logger from '@/lib/logger';
 
+/**
+ * Configuration options for the useWebSocket hook.
+ */
 interface UseWebSocketOptions {
   url?: string;
   reconnect?: boolean;
@@ -15,6 +18,9 @@ interface UseWebSocketOptions {
   onMessage?: (data: unknown) => void;
 }
 
+/**
+ * Return type for the useWebSocket hook.
+ */
 interface UseWebSocketReturn {
   isConnected: boolean;
   isConnecting: boolean;
