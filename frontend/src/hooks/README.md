@@ -11,9 +11,23 @@ Custom React hooks for data fetching, browser state, and live updates.
 - `useUser.ts`: load and refresh user profile data
 - `useWebSocket.ts`: manage live socket connections and messages
 
-## Export note
+## Exports
 
-`index.ts` currently re-exports `useLocalStorage`, `useMediaQuery`, and `useDebounce`. Import `useAlerts`, `useUser`, and `useWebSocket` directly until they are promoted to the shared hook surface.
+All hooks are exported from `index.ts`:
+
+```typescript
+import { 
+  useAlerts, 
+  useDebounce, 
+  useLocalStorage, 
+  useMediaQuery, 
+  useIsMobile, 
+  useIsTablet, 
+  useIsDesktop,
+  useUser, 
+  useWebSocket 
+} from '@/hooks';
+```
 
 ## Working rules
 
