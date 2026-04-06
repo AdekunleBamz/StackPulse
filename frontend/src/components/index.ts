@@ -5,13 +5,14 @@
 
 // Layout Components
 export { default as Header } from './Header';
+export { default as Footer } from './Footer';
 
 // UI Components
 export { default as AlertHistory } from './AlertHistory';
+export { default as LoadingSkeleton } from './LoadingSkeleton';
 export { default as BadgeShowcase } from './BadgeShowcase';
 export { default as ConnectWallet } from './ConnectWallet';
 export { default as Features } from './Features';
-export { default as Footer } from './Footer';
 export { default as LiveStats } from './LiveStats';
 export { default as NetworkStatus } from './NetworkStatus';
 export { default as NotificationCenter } from './NotificationCenter';
