@@ -4,6 +4,9 @@ import { useState, useEffect, useCallback } from 'react';
 import { apiUrl } from '@/lib/env';
 import logger from '@/lib/logger';
 
+/**
+ * Represents a registered StackPulse user with subscription and activity data.
+ */
 interface User {
   address: string;
   tier: number;
@@ -18,10 +21,16 @@ interface User {
   badges: number[];
 }
 
+/**
+ * Configuration options for the useUser hook.
+ */
 interface UseUserOptions {
   autoFetch?: boolean;
 }
 
+/**
+ * Return type for the useUser hook.
+ */
 interface UseUserReturn {
   user: User | null;
   loading: boolean;
