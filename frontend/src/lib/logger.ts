@@ -1,4 +1,11 @@
+/**
+ * Available log levels for the frontend logger.
+ */
 type LogLevel = 'debug' | 'info' | 'warn' | 'error';
+
+/**
+ * Logger interface with methods for each log level.
+ */
 type Logger = Record<LogLevel, (...args: unknown[]) => void>;
 
 const isProduction = process.env.NODE_ENV === 'production';
