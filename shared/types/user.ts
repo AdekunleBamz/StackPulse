@@ -2,13 +2,24 @@
  * User type definitions
  */
 
+/**
+ * Subscription tier levels for StackPulse users.
+ * Higher tiers get increased rate limits and feature access.
+ */
 export enum UserTier {
+  /** Free tier with basic features and limited alerts */
   Free = 0,
+  /** Basic tier with expanded features */
   Basic = 1,
+  /** Pro tier with advanced features */
   Pro = 2,
+  /** Premium tier with unlimited access */
   Premium = 3,
 }
 
+/**
+ * Human-readable names for each subscription tier.
+ */
 export const UserTierNames: Record<UserTier, string> = {
   [UserTier.Free]: 'Free',
   [UserTier.Basic]: 'Basic',
@@ -16,12 +27,18 @@ export const UserTierNames: Record<UserTier, string> = {
   [UserTier.Premium]: 'Premium',
 };
 
+/**
+ * Rate and feature limits applied per subscription tier.
+ */
 export interface UserTierLimit {
   maxAlerts: number;
   maxWebhooks: number;
   rateLimitPerMinute: number;
 }
 
+/**
+ * Tier-specific limits for alerts, webhooks, and rate limiting.
+ */
 export const UserTierLimits: Record<UserTier, UserTierLimit> = {
   [UserTier.Free]: {
     maxAlerts: 3,
