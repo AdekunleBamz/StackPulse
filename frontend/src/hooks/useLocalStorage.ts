@@ -2,8 +2,21 @@ import { useState, useEffect } from 'react';
 import logger from '@/lib/logger';
 
 /**
- * useLocalStorage hook
- * Persist state in localStorage
+ * A hook that synchronizes state with browser localStorage.
+ * Persists state across page reloads and provides a setter that updates
+ * both the React state and the stored value.
+ *
+ * @template T - The type of the stored value.
+ * @param key - The localStorage key to use for persistence.
+ * @param initialValue - The value to use if no stored value exists.
+ * @returns A tuple of [storedValue, setValue] where setValue updates both state and localStorage.
+ *
+ * @example
+ * ```tsx
+ * const [theme, setTheme] = useLocalStorage('theme', 'light');
+ * // theme will persist across page reloads
+ * setTheme('dark'); // Updates both state and localStorage
+ * ```
  */
 export function useLocalStorage<T>(key: string, initialValue: T): [T, (value: T | ((val: T) => T)) => void] {
   // Get stored value or initial value
