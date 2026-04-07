@@ -27,7 +27,7 @@ type TierRequest = Request & {
 };
 
 // Clean up expired entries every minute
-const cleanupInterval = setInterval(() => {
+const cleanupInterval: NodeJS.Timeout = setInterval(() => {
   const now = Date.now();
   for (const [key, entry] of rateLimitStore.entries()) {
     if (now > entry.resetTime) {
