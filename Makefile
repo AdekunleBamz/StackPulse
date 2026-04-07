@@ -20,9 +20,9 @@ help:
 	@echo "docker-down  - Stop Docker containers"
 
 install:
-	cd server && npm install
-	cd frontend && npm install
-	npm install
+	cd server && npm install --legacy-peer-deps
+	cd frontend && npm install --legacy-peer-deps
+	npm install --legacy-peer-deps
 
 dev:
 	npm run dev:all
