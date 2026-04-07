@@ -5,6 +5,9 @@
   "description": "Real-time Stacks blockchain monitoring and alert system",
   "author": "AdekunleBamz",
   "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/AdekunleBamz/StackPulse.git"
