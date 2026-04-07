@@ -19,6 +19,7 @@
   "scripts": {
     "test": "vitest run",
     "test:watch": "vitest",
+    "test:ci": "vitest run --coverage --reporter=junit --outputFile=./junit.xml",
     "clarinet:check": "clarinet check",
     "clarinet:test": "clarinet test",
     "lint:all": "npm run lint --prefix frontend && npm run lint --prefix server",
