@@ -21,6 +21,11 @@
     "react-dom": "19.2.3",
     "stackpulse-sdk": "0.1.0"
   },
+  "browserslist": [
+    ">0.2%",
+    "not dead",
+    "not op_mini all"
+  ],
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
