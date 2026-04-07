@@ -57,7 +57,7 @@ export function useAlerts(address: string | null): UseAlertsReturn {
     setError(null);
 
     try {
-      const response = await fetch(apiUrl(`/api/alerts?address=${address}`));
+      const response = await fetch(apiUrl(`/api/v1/users/${address}/alerts`));
       const data = await response.json();
 
       if (data.success) {
@@ -87,7 +87,7 @@ export function useAlerts(address: string | null): UseAlertsReturn {
     setError(null);
 
     try {
-      const response = await fetch(apiUrl(`/api/alerts?address=${address}`), {
+      const response = await fetch(apiUrl(`/api/v1/users/${address}/alerts`), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(input),
@@ -125,8 +125,8 @@ export function useAlerts(address: string | null): UseAlertsReturn {
     setError(null);
 
     try {
-      const response = await fetch(apiUrl(`/api/alerts/${id}?address=${address}`), {
-        method: 'PATCH',
+      const response = await fetch(apiUrl(`/api/v1/users/${address}/alerts/${id}`), {
+        method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(updates),
       });
@@ -168,7 +168,7 @@ export function useAlerts(address: string | null): UseAlertsReturn {
     setError(null);
 
     try {
-      const response = await fetch(apiUrl(`/api/alerts/${id}?address=${address}`), {
+      const response = await fetch(apiUrl(`/api/v1/users/${address}/alerts/${id}`), {
         method: 'DELETE',
       });
 
@@ -197,8 +197,10 @@ export function useAlerts(address: string | null): UseAlertsReturn {
     setError(null);
 
     try {
-      const response = await fetch(apiUrl(`/api/alerts/${id}/toggle?address=${address}`), {
-        method: 'POST',
+      const response = await fetch(apiUrl(`/api/v1/users/${address}/alerts/${id}`), {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ enabled: false }),
       });
 
       const data = await response.json();
