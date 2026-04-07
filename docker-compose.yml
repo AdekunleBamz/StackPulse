@@ -11,6 +11,7 @@ services:
       - "3000:3000"
     environment:
       - NODE_ENV=development
+      - NODE_OPTIONS=--max-old-space-size=512
       - PORT=3000
       - CHAINHOOKS_API_KEY=${CHAINHOOKS_API_KEY}
       - CHAINHOOK_AUTH_TOKEN=${CHAINHOOK_AUTH_TOKEN}
