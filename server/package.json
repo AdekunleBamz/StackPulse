@@ -45,5 +45,9 @@
     "clarity"
   ],
   "author": "StackPulse Team",
-  "license": "MIT"
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AdekunleBamz/StackPulse.git"
+  }
 }
