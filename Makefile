@@ -36,10 +36,10 @@ frontend:
 test:
 	npm test
 
-test:server:
+test_server:
 	cd server && npm test
 
-test:fe:
+test_fe:
 	cd frontend && npm test
 
 lint:
