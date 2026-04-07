@@ -33,3 +33,4 @@ Current and historical deployment plans live in `deployments/`, including:
 - `badges-v-j3.mainnet-plan.yaml`
 
 Use the plan that matches the contract version you are deploying and update `docs/DEPLOYMENT.md` when a new plan becomes the default.
+- Re-run representative contract calls in Clarinet console after fee or limit changes to confirm expected runtime costs.
