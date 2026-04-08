@@ -721,7 +721,7 @@ app.get('/api/v1/chainhooks/status', (req: Request, res: Response) => {
 // ============================================
 
 // Save user notification preferences
-app.post('/api/v1/users', async (req: Request, res: Response) => {
+const saveUserPreferencesHandler = async (req: Request, res: Response) => {
   try {
     const { address, username, email, discord, telegram, enabledAlerts } = req.body;
     
@@ -744,7 +744,10 @@ app.post('/api/v1/users', async (req: Request, res: Response) => {
     logger.error('Error saving user preferences', { error });
     res.status(500).json({ error: 'Failed to save preferences' });
   }
-});
+};
+
+app.post('/api/v1/users', saveUserPreferencesHandler);
+app.post('/api/users', saveUserPreferencesHandler);
 
 // Get user notification preferences
 app.get('/api/users/:address', async (req: Request, res: Response) => {
