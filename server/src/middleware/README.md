@@ -16,3 +16,4 @@ Express middleware used to protect, validate, and observe requests.
 - Keep middleware focused on a single responsibility.
 - Always finish by sending a response or calling `next()`.
 - Keep business logic in routes or services rather than inside middleware.
+- Emit a timeout-specific metric label so slow upstream dependencies are distinguishable from application errors.
