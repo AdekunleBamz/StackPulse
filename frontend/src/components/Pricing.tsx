@@ -688,17 +688,20 @@ export default function Pricing() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-y-16 md:gap-8 lg:gap-8 items-stretch">
-            {tiers.map((tier, index) => (
-              <div
-                key={index}
-                className={`group relative flex flex-col backdrop-blur-xl transition-all duration-300 rounded-[2rem] p-8 sm:p-12 hover:-translate-y-3 hover:ring-1 ${
-                  tier.popular
-                    ? 'border-2 border-purple-500/50 shadow-[0_20px_50px_-20px_rgba(168,85,247,0.15)] scale-[1.02] hover:scale-[1.05] z-10 bg-gradient-to-br from-gray-900/80 via-gray-900/40 to-purple-900/20 hover:shadow-[0_30px_70px_-15px_rgba(168,85,247,0.4)] hover:border-purple-400 hover:ring-purple-500/30'
-                    : tier.tier === currentTier && isRegistered
-                      ? 'bg-emerald-500/[0.03] border border-emerald-500/40 shadow-xl shadow-emerald-500/5 hover:scale-[1.03] hover:border-emerald-500/60 hover:shadow-[0_30px_60px_-15px_rgba(16,185,129,0.2)] hover:ring-emerald-500/30'
-                      : 'bg-white/[0.03] border border-white/5 hover:border-white/20 hover:bg-white/[0.05] hover:scale-[1.03] hover:shadow-[0_30px_60px_-15px_rgba(0,0,0,0.6)] hover:ring-white/10'
-                } ${!isRegistered ? 'opacity-75 blur-[0.3px]' : ''}`}
-              >
+            <div
+              key={index}
+              className={`group relative flex flex-col backdrop-blur-xl transition-all duration-500 rounded-[2.5rem] p-8 sm:p-12 hover:-translate-y-4 hover:ring-2 ${
+                tier.popular
+                  ? 'border-2 border-purple-500/50 shadow-[0_20px_50px_-20px_rgba(168,85,247,0.2)] scale-[1.02] hover:scale-[1.06] z-10 bg-gradient-to-br from-gray-900 via-gray-900/40 to-purple-900/20 hover:shadow-[0_40px_80px_-15px_rgba(168,85,247,0.5)] hover:border-purple-400 hover:ring-purple-500/40'
+                  : tier.tier === currentTier && isRegistered
+                    ? 'bg-emerald-500/[0.04] border border-emerald-500/40 shadow-xl shadow-emerald-500/10 hover:scale-[1.04] hover:border-emerald-500/60 hover:shadow-[0_40px_70px_-15px_rgba(16,185,129,0.3)] hover:ring-emerald-500/40'
+                    : 'bg-white/[0.02] border border-white/5 hover:border-white/20 hover:bg-white/[0.06] hover:scale-[1.04] hover:shadow-[0_40px_80px_-20px_rgba(0,0,0,0.8)] hover:ring-white/20'
+              } ${!isRegistered ? 'opacity-70 grayscale-[0.5] blur-[0.4px]' : ''}`}
+            >
+              {/* Animated Light Streak */}
+              <div className="absolute inset-0 overflow-hidden rounded-[2.5rem] pointer-events-none">
+                <div className="absolute -inset-x-full top-0 h-[200%] w-1/2 bg-gradient-to-r from-transparent via-white/[0.03] to-transparent -rotate-45 translate-y-[-50%] group-hover:inset-x-full transition-all duration-1000 ease-in-out" />
+              </div>
                 {/* Popular Badge */}
                 {tier.popular && (
                   <div className="absolute -top-5 left-1/2 -translate-x-1/2 bg-gradient-to-r from-purple-600 to-indigo-600 text-white text-[10px] font-black uppercase tracking-[0.25em] px-6 py-2.5 rounded-full shadow-[0_10px_20px_-5px_rgba(168,85,247,0.5)] z-20">
