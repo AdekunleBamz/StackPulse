@@ -96,7 +96,7 @@ export default function Pricing() {
         logger.debug('Checking registration for:', address);
         logger.debug('Using contract:', DEPLOYER_ADDRESS);
         
-        // Use V3 contract
+        // Use V-J3 contract
         const response = await fetch(
           `https://api.mainnet.hiro.so/v2/contracts/call-read/${DEPLOYER_ADDRESS}/stackpulse-v-j4/get-user`,
           {
@@ -234,7 +234,7 @@ export default function Pricing() {
         }
       ] : [];
  
-      // V3 contract: register-and-subscribe combines both steps
+      // V-J3 contract: register-and-subscribe combines both steps
       // alerts bitmask: 31 = all alerts enabled (1+2+4+8+16)
       await openContractCall({
         contractAddress: DEPLOYER_ADDRESS,
