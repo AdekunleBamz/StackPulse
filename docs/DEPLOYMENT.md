@@ -378,3 +378,7 @@ git push origin main
 - Check environment variables are set in Vercel
 - Verify Next.js version compatibility
 - Check for TypeScript errors
+
+### Rollout Window Note
+
+Prefer deploying contracts and API updates inside the same announced window to reduce temporary mismatches between server assumptions and on-chain state.
