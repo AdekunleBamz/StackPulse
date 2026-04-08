@@ -51,3 +51,4 @@ npm --prefix frontend run build
 - Update nearby README files when behavior, commands, or file layout changes.
 - Keep chainhook manifest names aligned with the matching server handlers.
 - If a frontend page depends on shared constants or contract names, update both places in the same change.
+- Keep CI command aliases aligned with this workflow section so local verification matches pipeline behavior.
