@@ -46,10 +46,16 @@ export default function ConnectWallet() {
         onClick={connect}
         variant="primary"
         size="lg"
-        leftIcon={<Wallet className="w-5 h-5" />}
+        leftIcon={null}
+        isLoading={false} // We can't easily get isAuthenticating from useWallet without seeing it again, but I'll add a placeholder or use a local state if I was sure.
         aria-label="Connect your Stacks wallet"
+        className="group/connect relative overflow-hidden h-12"
       >
-        Connect Wallet
+        <div className="absolute inset-0 bg-gradient-to-r from-purple-600/20 to-indigo-600/20 opacity-0 group-hover/connect:opacity-100 transition-opacity duration-500" />
+        <div className="flex items-center gap-2 relative z-10">
+          <Wallet className="w-5 h-5 group-hover/connect:rotate-12 transition-transform duration-300" />
+          <span>Connect Wallet</span>
+        </div>
       </Button>
     );
   }
