@@ -893,22 +893,22 @@ const saveAlerts = (alerts: Map<string, StoredAlert[]>) => {
 const userAlerts: Map<string, StoredAlert[]> = loadAlerts();
 
 // Get user's alerts
-app.get('/api/v1/users/:address/alerts', async (req: Request, res: Response) => {
+const getUserAlertsHandler = async (req: Request, res: Response) => {
   try {
     const { address } = req.params;
     if (!address || address.trim().length === 0) {
       return res.status(400).json({ error: 'Address is required' });
     }
     const alerts = userAlerts.get(address) || [];
-    res.json({ alerts, count: alerts.length });
+    res.json({ success: true, alerts, count: alerts.length });
   } catch (error) {
     logger.error('Error getting alerts', { error });
     res.status(500).json({ error: 'Failed to get alerts' });
   }
-});
+};
 
 // Create new alert
-app.post('/api/v1/users/:address/alerts', async (req: Request, res: Response) => {
+const createUserAlertHandler = async (req: Request, res: Response) => {
   try {
     const { address } = req.params;
     if (!address || address.trim().length === 0) {
@@ -945,7 +945,12 @@ app.post('/api/v1/users/:address/alerts', async (req: Request, res: Response) =>
     logger.error('Error creating alert', { error });
     res.status(500).json({ error: 'Failed to create alert' });
   }
-});
+};
+
+app.get('/api/v1/users/:address/alerts', getUserAlertsHandler);
+app.get('/api/users/:address/alerts', getUserAlertsHandler);
+app.post('/api/v1/users/:address/alerts', createUserAlertHandler);
+app.post('/api/users/:address/alerts', createUserAlertHandler);
 
 /**
  * System Maintenance Task
