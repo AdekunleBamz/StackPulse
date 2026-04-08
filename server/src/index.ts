@@ -976,7 +976,7 @@ setInterval(runMaintenanceTask, 24 * 3600000);
 runMaintenanceTask();
 
 // Update alert
-app.put('/api/users/:address/alerts/:alertId', async (req: Request, res: Response) => {
+const updateUserAlertHandler = async (req: Request, res: Response) => {
   try {
     const { address, alertId } = req.params;
     if (!address || address.trim().length === 0) {
@@ -1005,10 +1005,10 @@ app.put('/api/users/:address/alerts/:alertId', async (req: Request, res: Respons
     logger.error('Error updating alert', { error });
     res.status(500).json({ error: 'Failed to update alert' });
   }
-});
+};
 
 // Delete alert
-app.delete('/api/users/:address/alerts/:alertId', async (req: Request, res: Response) => {
+const deleteUserAlertHandler = async (req: Request, res: Response) => {
   try {
     const { address, alertId } = req.params;
     if (!address || address.trim().length === 0) {
@@ -1035,7 +1035,14 @@ app.delete('/api/users/:address/alerts/:alertId', async (req: Request, res: Resp
     logger.error('Error deleting alert', { error });
     res.status(500).json({ error: 'Failed to delete alert' });
   }
-});
+};
+
+app.put('/api/users/:address/alerts/:alertId', updateUserAlertHandler);
+app.put('/api/v1/users/:address/alerts/:alertId', updateUserAlertHandler);
+app.patch('/api/users/:address/alerts/:alertId', updateUserAlertHandler);
+app.patch('/api/v1/users/:address/alerts/:alertId', updateUserAlertHandler);
+app.delete('/api/users/:address/alerts/:alertId', deleteUserAlertHandler);
+app.delete('/api/v1/users/:address/alerts/:alertId', deleteUserAlertHandler);
 
 // Error handling middleware
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
