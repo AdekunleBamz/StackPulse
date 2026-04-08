@@ -2,7 +2,7 @@
 
 import { useWallet } from '@/context/WalletContext';
 import { Check, Wallet, Mail, MessageCircle, Send } from 'lucide-react';
-import { useEffect, useId, useState } from 'react';
+import { useEffect, useId, useState, memo } from 'react';
 import { toast } from '@/components/Toast';
 import Button from '@/components/ui/Button';
 import Link from 'next/link';
@@ -53,7 +53,7 @@ const tiers = [
 
 type ChannelId = 'email' | 'discord' | 'telegram';
 
-export default function Pricing() {
+const Pricing = memo(() => {
   const { isConnected, connect, address } = useWallet();
   const editChannelTitleId = useId();
   const [isRegistered, setIsRegistered] = useState(false);
@@ -768,4 +768,8 @@ export default function Pricing() {
       </div>
     </section>
   );
-}
+});
+
+Pricing.displayName = 'Pricing';
+
+export default Pricing;
