@@ -65,6 +65,7 @@ export default function DashboardPage() {
   const [userData, setUserData] = useState<UserData | null>(null);
   const [alerts, setAlerts] = useState<UserAlert[]>([]);
   const [showCreateAlert, setShowCreateAlert] = useState(false);
+  const [showWhalesOnly, setShowWhalesOnly] = useState(false);
   const [newAlertType, setNewAlertType] = useState(1);
   const [newAlertName, setNewAlertName] = useState('');
   const [newAlertThreshold, setNewAlertThreshold] = useState('10000');
