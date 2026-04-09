@@ -1,8 +1,9 @@
 import { describe, expect, it } from 'vitest';
 import {
-  formatNumber,
-  formatPercent,
   formatFileSize,
+  formatNumber,
+  parseStxAmount,
+  formatPercent,
   formatRelativeTime,
   formatStxAmount,
   truncateAddress,
@@ -48,5 +49,11 @@ describe('shared/format truncateString', () => {
 describe('shared/format formatFileSize', () => {
   it('clamps negative byte counts to zero', () => {
     expect(formatFileSize(-12)).toBe('0.00 B');
+  });
+});
+
+describe('shared/format parseStxAmount', () => {
+  it('removes commas and units before parsing', () => {
+    expect(parseStxAmount('1,234.567 STX')).toBe(1234567000);
   });
 });
