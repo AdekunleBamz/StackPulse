@@ -1,9 +1,5 @@
-import { afterEach, describe, expect, it, vi } from 'vitest';
-import { clamp, debounce, generateId, isValidStacksAddress } from '../shared/utils/common';
-
-afterEach(() => {
-  vi.useRealTimers();
-});
+import { describe, expect, it } from 'vitest';
+import { clamp, generateId, isValidStacksAddress } from '../shared/utils/common';
 
 describe('shared/common isValidStacksAddress', () => {
   it('accepts a valid mainnet address', () => {
@@ -163,5 +159,11 @@ describe('shared/common debounce', () => {
     vi.advanceTimersByTime(1);
     expect(handler).toHaveBeenCalledTimes(1);
     expect(handler).toHaveBeenCalledWith('second');
+  });
+});
+
+describe('shared/common clamp', () => {
+  it('handles reversed bounds', () => {
+    expect(clamp(5, 10, 0)).toBe(5);
   });
 });
