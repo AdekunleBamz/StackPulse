@@ -20,10 +20,10 @@ StackPulse is organized as a small monorepo. Each top-level package owns a diffe
 
 ```bash
 # Install each package used in day-to-day development
-npm install
-npm --prefix server install
-npm --prefix frontend install
-npm --prefix shared install
+npm ci
+npm --prefix server ci
+npm --prefix frontend ci
+npm --prefix shared ci
 
 # Contract checks
 npm run clarinet:check
@@ -37,6 +37,8 @@ npm --prefix frontend run dev
 npm --prefix server run build
 npm --prefix frontend run build
 ```
+
+Use `npm ci` variants above for deterministic dependency installs in local and CI environments.
 
 ## Source-of-truth files
 
