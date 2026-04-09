@@ -486,9 +486,12 @@ export default function AnalyticsPage() {
             )}
           </div>
 
-          <button className="w-full mt-4 py-2 text-center text-purple-400 hover:text-purple-300 transition-all text-sm">
+          <Link
+            href="/history"
+            className="block w-full mt-4 py-2 text-center text-purple-400 hover:text-purple-300 transition-all text-sm"
+          >
             View all events →
-          </button>
+          </Link>
         </div>
       </main>
     </div>
