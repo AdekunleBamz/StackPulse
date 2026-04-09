@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import {
   formatNumber,
   formatPercent,
+  formatFileSize,
   formatRelativeTime,
   formatStxAmount,
   truncateAddress,
@@ -41,5 +42,11 @@ describe('shared/format truncateAddress', () => {
 describe('shared/format truncateString', () => {
   it('adds an ellipsis when trimming long text', () => {
     expect(truncateString('stackpulse-alert', 10)).toBe('stackpulse...');
+  });
+});
+
+describe('shared/format formatFileSize', () => {
+  it('clamps negative byte counts to zero', () => {
+    expect(formatFileSize(-12)).toBe('0.00 B');
   });
 });
