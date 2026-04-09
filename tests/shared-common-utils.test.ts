@@ -1,5 +1,9 @@
-import { describe, expect, it } from 'vitest';
-import { clamp, generateId, isValidStacksAddress } from '../shared/utils/common';
+import { afterEach, describe, expect, it, vi } from 'vitest';
+import { clamp, debounce, generateId, isValidStacksAddress } from '../shared/utils/common';
+
+afterEach(() => {
+  vi.useRealTimers();
+});
 
 describe('shared/common isValidStacksAddress', () => {
   it('accepts a valid mainnet address', () => {
@@ -28,5 +32,23 @@ describe('shared/common generateId', () => {
 describe('shared/common clamp', () => {
   it('handles reversed bounds', () => {
     expect(clamp(5, 10, 0)).toBe(5);
+  });
+});
+
+describe('shared/common debounce', () => {
+  it('keeps only the last call arguments', () => {
+    vi.useFakeTimers();
+    const handler = vi.fn();
+    const debounced = debounce(handler, 20);
+
+    debounced('first');
+    debounced('second');
+
+    vi.advanceTimersByTime(19);
+    expect(handler).not.toHaveBeenCalled();
+
+    vi.advanceTimersByTime(1);
+    expect(handler).toHaveBeenCalledTimes(1);
+    expect(handler).toHaveBeenCalledWith('second');
   });
 });
