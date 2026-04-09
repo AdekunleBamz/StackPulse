@@ -468,6 +468,8 @@ export default function AnalyticsPage() {
                     target="_blank"
                     rel="noopener noreferrer"
                     className="flex items-center justify-between p-3 bg-gray-900/50 rounded-lg hover:bg-gray-900 border border-transparent hover:border-purple-500/20 transition-all cursor-pointer group"
+                    aria-label={`View event transaction ${event.txHash} on Hiro Explorer`}
+                    title="View on Hiro Explorer"
                   >
                     <div className="flex items-center gap-3">
                       <span className="text-xl group-hover:scale-110 transition-transform">{eventIcon}</span>
