@@ -140,6 +140,7 @@ export default function ConfirmDialog({
         
         <div className="flex gap-3 mt-6">
           <button
+            type="button"
             onClick={onCancel}
             disabled={isLoading}
             ref={cancelButtonRef}
@@ -148,6 +149,7 @@ export default function ConfirmDialog({
             {cancelLabel}
           </button>
           <button
+            type="button"
             onClick={handleConfirm}
             disabled={isLoading || confirmDisabled}
             aria-busy={isLoading}
