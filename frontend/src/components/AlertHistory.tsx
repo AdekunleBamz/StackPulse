@@ -322,8 +322,8 @@ export default function AlertHistory({ userAddress }: AlertHistoryProps) {
                       target="_blank"
                       rel="noopener noreferrer"
                       className="inline-flex items-center gap-1 text-purple-400 hover:text-purple-300 text-sm font-mono"
-                      aria-label={`View transaction ${entry.txHash} on explorer`}
-                      title="View on explorer"
+                      aria-label={`View transaction ${entry.txHash} on Hiro Explorer`}
+                      title="View on Hiro Explorer"
                     >
                       {entry.txHash.slice(0, 8)}...{entry.txHash.slice(-6)}
                       <ExternalLink className="w-3 h-3" aria-hidden="true" />
