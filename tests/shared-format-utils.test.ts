@@ -1,13 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import {
-  formatBalance,
-  formatCompactNumber,
-  formatDate,
-  formatDateTime,
-  formatDuration,
   formatFileSize,
   formatNumber,
-  formatTxId,
   parseStxAmount,
   formatPercent,
   formatRelativeTime,
@@ -311,5 +305,11 @@ describe('shared/format formatOrdinal', () => {
 describe('shared/format formatTxId', () => {
   it('uses the standard transaction id truncation window', () => {
     expect(formatTxId('0x1234567890abcdef1234567890abcdef')).toBe('0x123456...90abcdef');
+  });
+});
+
+describe('shared/format parseStxAmount', () => {
+  it('removes commas and units before parsing', () => {
+    expect(parseStxAmount('1,234.567 STX')).toBe(1234567000);
   });
 });
