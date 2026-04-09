@@ -245,6 +245,7 @@ export default function BadgeShowcase({ userBadges = [], onBadgeSelect }: BadgeS
           {(['all', 'earned', 'locked'] as const).map((f) => (
             <button
               key={f}
+              type="button"
               onClick={() => setFilter(f)}
               aria-pressed={filter === f}
               className={`px-3 py-1 rounded-md text-sm capitalize transition-all focus:outline-none focus:ring-2 focus:ring-purple-500/50 ${
@@ -365,6 +366,7 @@ export default function BadgeShowcase({ userBadges = [], onBadgeSelect }: BadgeS
             )}
 
             <button
+              type="button"
               onClick={() => setSelectedBadge(null)}
               className="w-full mt-3 py-3 border border-gray-700 rounded-lg text-gray-400 hover:text-white hover:border-gray-600 transition-all focus:outline-none focus:ring-2 focus:ring-gray-600 focus:ring-offset-2 focus:ring-offset-gray-900"
               aria-label="Close badge details"
