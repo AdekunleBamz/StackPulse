@@ -320,3 +320,9 @@ describe('shared/format formatFileSize', () => {
     expect(formatFileSize(-12)).toBe('0.00 B');
   });
 });
+
+describe('shared/format truncateString', () => {
+  it('adds an ellipsis when trimming long text', () => {
+    expect(truncateString('stackpulse-alert', 10)).toBe('stackpulse...');
+  });
+});
