@@ -449,7 +449,7 @@ export default function Pricing() {
                     {isConnected ? (
                       <p className="text-emerald-400 text-xs font-mono font-medium truncate">{address?.slice(0, 10)}...{address?.slice(-6)}</p>
                     ) : (
-                      <button onClick={connect} className="text-purple-400 text-xs font-bold hover:underline">Connect Wallet →</button>
+                      <button type="button" onClick={connect} className="text-purple-400 text-xs font-bold hover:underline">Connect Wallet →</button>
                     )}
                   </div>
                   <div className="flex-1">
