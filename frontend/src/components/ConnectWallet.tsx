@@ -94,9 +94,9 @@ export default function ConnectWallet() {
               rel="noopener noreferrer"
               className="mt-2 inline-flex text-xs text-purple-300 hover:text-purple-200 transition-colors focus:outline-none focus:underline"
               role="menuitem"
-              aria-label={`View address ${address} on Stacks Explorer (opens in new tab)`}
+              aria-label={`View address ${address} on Hiro Explorer (opens in new tab)`}
             >
-              View on explorer
+              View on Hiro Explorer
               <span className="sr-only">(opens in new tab)</span>
             </a>
           </div>
