@@ -1,11 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import {
-  formatNumber,
-  formatPercent,
-  formatRelativeTime,
-  formatStxAmount,
-  truncateAddress,
-} from '../shared/utils/format';
+import { formatNumber, formatPercent, formatRelativeTime, formatStxAmount } from '../shared/utils/format';
 
 describe('shared/format formatStxAmount', () => {
   it('formats zero micro-STX amounts', () => {
@@ -324,5 +318,11 @@ describe('shared/format truncateString', () => {
 describe('shared/format truncateAddress', () => {
   it('omits the tail when end chars are zero', () => {
     expect(truncateAddress('SP3K8BC0PPEVCV7NZ6QSRWPQ2JE9E5B6N3PA0KBR9', 4, 0)).toBe('SP3K...');
+  });
+});
+
+describe('shared/format formatRelativeTime', () => {
+  it('describes timestamps a few minutes in the future', () => {
+    expect(formatRelativeTime(Date.now() + 3 * 60 * 1000 + 5000)).toBe('in 3m');
   });
 });
