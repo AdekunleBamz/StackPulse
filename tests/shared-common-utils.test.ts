@@ -1,21 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import {
-  clamp,
-  debounce,
-  endOfDay,
-  generateId,
-  groupBy,
-  isExpiredDate,
-  isSameDate,
-  isValidStacksAddress,
-  mapValues,
-  omit,
-  pick,
-  retryWithBackoff,
-  sleep,
-  startOfDay,
-  throttle,
-} from '../shared/utils/common';
+import { clamp, debounce, generateId, isValidStacksAddress } from '../shared/utils/common';
 
 afterEach(() => {
   vi.useRealTimers();
@@ -161,5 +145,23 @@ describe('shared/common debounce', () => {
 
     expect(handler).toHaveBeenCalledTimes(1);
     expect(handler).toHaveBeenCalledWith('now');
+  });
+});
+
+describe('shared/common debounce', () => {
+  it('keeps only the last call arguments', () => {
+    vi.useFakeTimers();
+    const handler = vi.fn();
+    const debounced = debounce(handler, 20);
+
+    debounced('first');
+    debounced('second');
+
+    vi.advanceTimersByTime(19);
+    expect(handler).not.toHaveBeenCalled();
+
+    vi.advanceTimersByTime(1);
+    expect(handler).toHaveBeenCalledTimes(1);
+    expect(handler).toHaveBeenCalledWith('second');
   });
 });
