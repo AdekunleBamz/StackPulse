@@ -4,6 +4,7 @@ import {
   formatNumber,
   parseStxAmount,
   formatPercent,
+  formatFileSize,
   formatRelativeTime,
   formatSignedNumber,
   formatStxAmount,
@@ -311,5 +312,11 @@ describe('shared/format formatTxId', () => {
 describe('shared/format parseStxAmount', () => {
   it('removes commas and units before parsing', () => {
     expect(parseStxAmount('1,234.567 STX')).toBe(1234567000);
+  });
+});
+
+describe('shared/format formatFileSize', () => {
+  it('clamps negative byte counts to zero', () => {
+    expect(formatFileSize(-12)).toBe('0.00 B');
   });
 });
