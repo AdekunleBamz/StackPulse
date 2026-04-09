@@ -51,4 +51,16 @@ describe('shared/common debounce', () => {
     expect(handler).toHaveBeenCalledTimes(1);
     expect(handler).toHaveBeenCalledWith('second');
   });
+
+  it('treats non-finite waits as immediate', () => {
+    vi.useFakeTimers();
+    const handler = vi.fn();
+    const debounced = debounce(handler, Number.POSITIVE_INFINITY);
+
+    debounced('now');
+    vi.advanceTimersByTime(0);
+
+    expect(handler).toHaveBeenCalledTimes(1);
+    expect(handler).toHaveBeenCalledWith('now');
+  });
 });
