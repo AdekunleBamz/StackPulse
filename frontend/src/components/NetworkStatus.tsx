@@ -213,9 +213,11 @@ export default function NetworkStatus({ refreshInterval = DEFAULT_REFRESH_INTERV
           target="_blank"
           rel="noopener noreferrer"
           className="text-purple-400 hover:text-purple-300 flex items-center gap-1"
+          aria-label="Open Hiro Explorer in a new tab"
+          title="Open Hiro Explorer"
         >
           <TrendingUp className="w-3 h-3" />
-          Explorer
+          Hiro Explorer
         </a>
         <a
           href="https://stx.is/"
