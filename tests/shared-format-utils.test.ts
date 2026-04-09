@@ -5,6 +5,7 @@ import {
   formatRelativeTime,
   formatStxAmount,
   truncateAddress,
+  truncateString,
 } from '../shared/utils/format';
 
 describe('shared/format formatStxAmount', () => {
@@ -34,5 +35,11 @@ describe('shared/format formatRelativeTime', () => {
 describe('shared/format truncateAddress', () => {
   it('omits the tail when end chars are zero', () => {
     expect(truncateAddress('SP3K8BC0PPEVCV7NZ6QSRWPQ2JE9E5B6N3PA0KBR9', 4, 0)).toBe('SP3K...');
+  });
+});
+
+describe('shared/format truncateString', () => {
+  it('adds an ellipsis when trimming long text', () => {
+    expect(truncateString('stackpulse-alert', 10)).toBe('stackpulse...');
   });
 });
