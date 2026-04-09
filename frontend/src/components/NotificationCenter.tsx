@@ -209,6 +209,8 @@ export default function NotificationCenter({ maxNotifications = 50 }: Notificati
                                 rel="noopener noreferrer"
                                 className="text-purple-400 hover:text-purple-300 text-xs flex items-center gap-1"
                                 onClick={(e) => e.stopPropagation()}
+                                aria-label={`View transaction ${notification.txHash} on Hiro Explorer`}
+                                title="View on Hiro Explorer"
                               >
                                 View TX
                                 <ExternalLink className="w-3 h-3" />
