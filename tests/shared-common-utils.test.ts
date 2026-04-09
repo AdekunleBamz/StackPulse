@@ -19,4 +19,8 @@ describe('shared/common generateId', () => {
   it('floors decimal lengths', () => {
     expect(generateId(5.9)).toHaveLength(5);
   });
+
+  it('never returns an empty id', () => {
+    expect(generateId(0)).toHaveLength(1);
+  });
 });
