@@ -7,7 +7,6 @@ import {
   formatDuration,
   formatFileSize,
   formatNumber,
-  formatOrdinal,
   formatTxId,
   parseStxAmount,
   formatPercent,
@@ -306,5 +305,11 @@ describe('shared/format formatOrdinal', () => {
 
   it('formats teen ordinal suffixes as th', () => {
     expect(formatOrdinal(11)).toBe('11th');
+  });
+});
+
+describe('shared/format formatTxId', () => {
+  it('uses the standard transaction id truncation window', () => {
+    expect(formatTxId('0x1234567890abcdef1234567890abcdef')).toBe('0x123456...90abcdef');
   });
 });
