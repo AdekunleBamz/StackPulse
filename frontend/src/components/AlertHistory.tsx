@@ -199,6 +199,7 @@ export default function AlertHistory({ userAddress, initialPage = 1 }: AlertHist
         {showFilters && (
           <div className="mt-4 flex flex-wrap gap-2">
             <button
+              type="button"
               onClick={() => setFilter(null)}
               className={`px-3 py-1.5 rounded-lg text-sm transition-all focus:outline-none focus:ring-2 focus:ring-purple-500/50 ${
                 filter === null
@@ -214,6 +215,7 @@ export default function AlertHistory({ userAddress, initialPage = 1 }: AlertHist
               return (
                 <button
                   key={type}
+                  type="button"
                   onClick={() => setFilter(typeValue)}
                   className={`px-3 py-1.5 rounded-lg text-sm flex items-center gap-1.5 transition-all focus:outline-none focus:ring-2 focus:ring-purple-500/50 ${
                     filter === typeValue
