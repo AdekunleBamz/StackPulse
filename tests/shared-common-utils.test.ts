@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { generateId, isValidStacksAddress } from '../shared/utils/common';
+import { clamp, generateId, isValidStacksAddress } from '../shared/utils/common';
 
 describe('shared/common isValidStacksAddress', () => {
   it('accepts a valid mainnet address', () => {
@@ -22,5 +22,11 @@ describe('shared/common generateId', () => {
 
   it('never returns an empty id', () => {
     expect(generateId(0)).toHaveLength(1);
+  });
+});
+
+describe('shared/common clamp', () => {
+  it('handles reversed bounds', () => {
+    expect(clamp(5, 10, 0)).toBe(5);
   });
 });
