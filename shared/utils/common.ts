@@ -10,9 +10,10 @@
  * @returns True if the address is valid, false otherwise.
  */
 export function isValidStacksAddress(address: string): boolean {
-  if (!address) return false;
+  const normalizedAddress = typeof address === 'string' ? address.trim() : '';
+  if (!normalizedAddress) return false;
   // Mainnet: SP..., Testnet: ST...
-  return /^S[PT][A-Z0-9]{38,40}$/.test(address);
+  return /^S[PT][A-Z0-9]{38,40}$/.test(normalizedAddress);
 }
 
 /**
