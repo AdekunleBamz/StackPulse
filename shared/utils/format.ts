@@ -161,6 +161,7 @@ export function truncateAddress(address: string, startChars: number = 6, endChar
  */
 export function truncateString(str: string, maxLength: number): string {
   const safeMaxLength = Number.isFinite(maxLength) ? Math.max(0, Math.floor(maxLength)) : 0;
+  if (safeMaxLength === 0) return '';
   if (str.length <= safeMaxLength) return str;
   return `${str.slice(0, safeMaxLength)}...`;
 }

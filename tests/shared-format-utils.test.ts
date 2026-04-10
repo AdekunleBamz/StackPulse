@@ -45,6 +45,10 @@ describe('shared/format truncateString', () => {
   it('adds an ellipsis when trimming long text', () => {
     expect(truncateString('stackpulse-alert', 10)).toBe('stackpulse...');
   });
+
+  it('returns an empty string when max length is zero', () => {
+    expect(truncateString('stackpulse-alert', 0)).toBe('');
+  });
 });
 
 describe('shared/format formatFileSize', () => {
