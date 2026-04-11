@@ -272,8 +272,8 @@ export function parseContractDeployment(tx: GenericJsonObject): { contractId: st
     return null;
   }
 
-  const parts = contractId.split('.');
-  const contractName = parts[1] || contractId;
+  const [_, ...contractNameParts] = contractId.split('.');
+  const contractName = contractNameParts.join('.') || contractId;
 
   return { contractId, contractName, deployer };
 }
