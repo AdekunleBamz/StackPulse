@@ -15,6 +15,11 @@ describe('shared/format formatStxAmount', () => {
   it('formats million-scale STX amounts', () => {
     expect(formatStxAmount('2000000000000')).toBe('2.00M STX');
   });
+
+  it('handles comma-formatted and malformed microSTX strings', () => {
+    expect(formatStxAmount('1,000,000')).toBe('1.000000 STX');
+    expect(formatStxAmount('1.2.3')).toBe('0.000000 STX');
+  });
 });
 
 describe('shared/format formatNumber', () => {
