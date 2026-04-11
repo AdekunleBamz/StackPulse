@@ -118,6 +118,12 @@ npm run clarinet:test
 # Run all tests
 npm run test
 
+# Run focused shared utility tests
+npm run test:format
+
+# Run fast pre-push checks
+npm run check:fast
+
 # Run tests in watch mode
 npm run test:watch
 
