@@ -49,6 +49,25 @@ export function useLocalStorage<T>(key: string, initialValue: T): [T, (value: T 
     }
   }, [key, storedValue]);
 
+  // Re-hydrate state when the storage key changes.
+  useEffect(() => {
+    if (typeof window === 'undefined') {
+      return;
+    }
+    try {
+      const item = window.localStorage.getItem(key);
+      if (!item) {
+        setStoredValue(initialValue);
+        return;
+      }
+      const parsed = JSON.parse(item) as T | undefined;
+      setStoredValue(parsed === undefined ? initialValue : parsed);
+    } catch (error) {
+      logger.error('Error hydrating localStorage key:', error);
+      setStoredValue(initialValue);
+    }
+  }, [initialValue, key]);
+
   return [storedValue, setStoredValue];
 }
 
