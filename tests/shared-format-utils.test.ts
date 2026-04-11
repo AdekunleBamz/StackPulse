@@ -61,6 +61,11 @@ describe('shared/format parseStxAmount', () => {
   it('removes commas and units before parsing', () => {
     expect(parseStxAmount('1,234.567 STX')).toBe(1234567000);
   });
+
+  it('returns zero for malformed numeric strings', () => {
+    expect(parseStxAmount('1.2.3 STX')).toBe(0);
+    expect(parseStxAmount('abc')).toBe(0);
+  });
 });
 
 describe('shared/format formatTxId', () => {
