@@ -27,11 +27,12 @@ npm --prefix shared install
 
 # Contract checks
 npm run clarinet:check
+npm run check:fast
 npm test
 
 # App surfaces
 npm --prefix server run dev
-npm --prefix frontend run dev
+npm run frontend:dev
 
 # Optional builds
 npm --prefix server run build
