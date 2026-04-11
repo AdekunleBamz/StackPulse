@@ -35,7 +35,14 @@ const DEFAULT_BALANCE_DECIMALS = 6;
  * formatStxAmount("2000000000000") // "2.00M STX"
  */
 export function formatStxAmount(microStx: number | string): string {
-  const amount = typeof microStx === 'string' ? parseFloat(microStx) : microStx;
+  const amount = (() => {
+    if (typeof microStx !== 'string') return microStx;
+
+    const normalized = microStx.trim().replace(/,/g, '');
+    if (!/^\d+(\.\d+)?$/.test(normalized)) return 0;
+
+    return Number(normalized);
+  })();
   const safeAmount = Number.isFinite(amount) ? amount : 0;
   const stx = safeAmount / MICROSTX_PER_STX;
   
