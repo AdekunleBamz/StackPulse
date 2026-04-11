@@ -90,12 +90,13 @@ export default function RegisterPage() {
 
   return (
     <main id="main" className="min-h-screen bg-gray-950 flex items-center justify-center px-4">
-      <div className="max-w-md w-full">
-        {/* Back button */}
-        <button
-          onClick={() => router.push('/')}
-          className="group mb-10 text-gray-500 hover:text-white transition-all flex items-center gap-2.5 font-bold text-sm uppercase tracking-widest"
-        >
+        <div className="max-w-md w-full">
+          {/* Back button */}
+          <button
+            type="button"
+            onClick={() => router.push('/')}
+            className="group mb-10 text-gray-500 hover:text-white transition-all flex items-center gap-2.5 font-bold text-sm uppercase tracking-widest"
+          >
           <div className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center group-hover:bg-white/10 transition-colors">
             <svg className="w-4 h-4 group-hover:-translate-x-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15 19l-7-7 7-7" />
@@ -133,6 +134,7 @@ export default function RegisterPage() {
                 Stacks wallet connection required for registration
               </p>
               <button
+                type="button"
                 onClick={connect}
                 className="w-full py-3 bg-amber-500 hover:bg-amber-400 text-black font-bold rounded-xl transition-all duration-300 shadow-lg shadow-amber-500/20 active:scale-95"
               >
