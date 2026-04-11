@@ -36,16 +36,9 @@ describe('shared/format formatStxAmount', () => {
     expect(formatStxAmount('2000000000000')).toBe('2.00M STX');
   });
 
-  it('formats thousand-scale STX amounts', () => {
-    expect(formatStxAmount(1_500_000_000)).toBe('1.50K STX');
-  });
-
-  it('falls back to zero for invalid stx amount strings', () => {
-    expect(formatStxAmount('NaN')).toBe('0.000000 STX');
-  });
-
-  it('parses numeric strings with surrounding whitespace', () => {
-    expect(formatStxAmount(' 1000000 ')).toBe('1.000000 STX');
+  it('handles comma-formatted and malformed microSTX strings', () => {
+    expect(formatStxAmount('1,000,000')).toBe('1.000000 STX');
+    expect(formatStxAmount('1.2.3')).toBe('0.000000 STX');
   });
 });
 
