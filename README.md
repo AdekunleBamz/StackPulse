@@ -132,7 +132,8 @@ npm run lint:all
 | [API Reference](docs/API.md) | Complete API endpoint documentation |
 | [Deployment Guide](docs/DEPLOYMENT.md) | Production deployment instructions |
 | [Contract Docs](docs/CONTRACTS.md) | Clarity contract specifications |
-| [Architecture](docs/WORKSPACES.md) | System architecture overview |
+| [Workspace Overview](docs/WORKSPACES.md) | Monorepo package and service layout |
+| [Architecture](docs/ARCHITECTURE.md) | Data flow and runtime architecture |
 | [Contributing](CONTRIBUTING.md) | Contribution guidelines |
 
 ## 🔧 Configuration
