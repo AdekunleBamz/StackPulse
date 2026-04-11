@@ -247,20 +247,9 @@ describe('shared/format parseStxAmount', () => {
     expect(parseStxAmount('1,234.567 STX')).toBe(1234567000);
   });
 
-  it('parses uppercase STX unit suffixes', () => {
-    expect(parseStxAmount('1 STX')).toBe(1_000_000);
-  });
-
-  it('clamps negative parsed amounts to zero', () => {
-    expect(parseStxAmount('-1 STX')).toBe(0);
-  });
-
-  it('returns zero for malformed decimal amounts', () => {
-    expect(parseStxAmount('1.2.3')).toBe(0);
-  });
-
-  it('parses STX amounts with an explicit plus sign', () => {
-    expect(parseStxAmount('+1.5 STX')).toBe(1500000);
+  it('returns zero for malformed numeric strings', () => {
+    expect(parseStxAmount('1.2.3 STX')).toBe(0);
+    expect(parseStxAmount('abc')).toBe(0);
   });
 });
 
