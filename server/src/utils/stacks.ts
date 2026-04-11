@@ -292,7 +292,8 @@ export function parseNFTMint(event: GenericJsonObject): { assetIdentifier: strin
     return null;
   }
 
-  const [contractAddress, assetName] = assetIdentifier.split('::');
+  const [contractAddress, ...assetNameParts] = assetIdentifier.split('::');
+  const assetName = assetNameParts.join('::');
   return {
     assetIdentifier,
     assetName: assetName || assetIdentifier,
