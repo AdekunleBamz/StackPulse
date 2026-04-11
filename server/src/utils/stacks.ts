@@ -85,8 +85,9 @@ export async function getAccountBalance(address: string, network: StacksNetwork 
     if (!response.ok) return null;
     const data = (await response.json()) as AddressBalanceResponse;
     const stxBalance = data.stx?.balance || '0';
+    const parsedBalance = Number.parseInt(stxBalance, 10);
     return {
-      balance: parseInt(stxBalance, 10),
+      balance: Number.isFinite(parsedBalance) ? parsedBalance : 0,
       stx: stxBalance
     };
   } catch (error) {
