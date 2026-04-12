@@ -21,7 +21,7 @@ StackPulse is organized as a small monorepo. Each top-level package owns a diffe
 ```bash
 # Install each package used in day-to-day development
 npm install
-npm --prefix server install
+npm --prefix server ci
 npm --prefix frontend install
 npm --prefix shared install
 
