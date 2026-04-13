@@ -18,7 +18,7 @@ export default function LoadingSkeleton({
   height,
   animation = 'wave'
 }: SkeletonProps) {
-  const baseClasses = 'bg-gray-800/40 backdrop-blur-md shadow-inner border border-white/5';
+  const baseClasses = 'bg-gray-800/40 backdrop-blur-md shadow-inner border border-white/5 opacity-50';
   
   const variantClasses = {
     text: 'rounded-md',
