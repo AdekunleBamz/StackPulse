@@ -1,83 +1,58 @@
 # Contributing to StackPulse
 
-Use small, reviewable changes and keep documentation close to the code it describes.
+Thank you for your interest in contributing to StackPulse! We welcome help from the community to make our blockchain monitoring system even better.
 
-## Local setup
+## 📜 Code of Conduct
 
-```bash
-git clone https://github.com/YOUR_USERNAME/StackPulse.git
-cd StackPulse
+By participating in this project, you agree to abide by our Code of Conduct. Please be respectful and professional in all interactions.
 
-npm install
-npm --prefix server install
-npm --prefix frontend install
-npm --prefix shared install
-```
+## 🛠️ Getting Started
 
-## Day-to-day workflow
+1. **Fork the Repo**: Create your own fork of the repository.
+2. **Setup Dev Environment**: Follow the instructions in [README.md](README.md) to install dependencies.
+3. **Sign Your Commits**: We require all commits to be GPG-signed for security and verification.
+   ```bash
+   git config --global user.signingkey <your-key-id>
+   git commit -S -m "Your commit message"
+   ```
 
-1. Start from a branch or worktree based on the latest `main`.
-2. Keep changes scoped to one concern when possible.
-3. Update nearby docs or READMEs when commands, routes, or file layout change.
-4. Run the checks that match the area you touched.
-5. Create signed commits with clear messages.
+## 🌿 Branching Strategy
 
-## Branch naming
+- `main`: Production-ready code.
+- `feat/*`: New features.
+- `fix/*`: Bug fixes.
+- `docs/*`: Documentation updates.
 
-Use descriptive prefixes to categorize your work:
-- `feat/`: New features or significant enhancements
-- `fix/`: Bug fixes
-- `docs/`: Documentation updates
-- `refactor/`: Code structural changes without behavioral impact
-- `test/`: Adding or improving tests
-- `chore/`: Maintenance tasks (dependencies, config)
+## 🧪 Testing Guidelines
 
-## Signed commits
-
-The repository already supports SSH commit signing. Prefer signed commits for all changes:
+Before submitting a pull request, ensure that all tests pass:
 
 ```bash
-git commit -S -m "docs: refresh workspace notes"
-```
+# Frontend tests
+npm --prefix frontend test
 
-## Useful checks
-
-```bash
-# Contracts
-npm run clarinet:check
-npm test
-
-# Server
-npm --prefix server run build
+# Backend tests
 npm --prefix server test
 
-# Frontend
-npm --prefix frontend run lint
-npm --prefix frontend run build
+# Shared package tests
+npm --prefix shared test
 
-# Shared package
-npm --prefix shared run build
+# Clarity contract checks
+npm run clarinet:check
 ```
 
-## Repo-specific expectations
+## 📝 Pull Request Process
 
-- `server/src/index.ts` is the current source of truth for mounted backend endpoints.
-- `server/src/routes/` contains extracted router modules that should stay aligned with the live API.
-- Chainhook manifest names in `chainhooks/` should stay in sync with the server handlers they target.
-- Shared constants and types should be updated together with the frontend or server code that consumes them.
+1. Create a descriptive branch name.
+2. Follow the [conventional commits](https://www.conventionalcommits.org/) specification.
+3. Update relevant documentation.
+4. Ensure CI passing (if applicable).
+5. Request a review from maintainers.
 
-## Commit messages
+## 🛡️ Security Vulnerabilities
 
-Use a short prefix and a direct summary:
+Please do not report security vulnerabilities via GitHub issues. Refer to [SECURITY.md](SECURITY.md) for our reporting process.
 
-```text
-docs: clarify current API surface
-fix(server): tighten request timeout handling
-feat(frontend): add wallet status banner
-```
+---
 
-## Documentation hygiene
-
-- Prefer updating an existing nearby README before adding a disconnected note.
-- Call out versioned or legacy behavior explicitly when older docs remain in the tree.
-- Avoid leaving stale deployment plan names, route paths, or package commands in docs.
+Built with ❤️ by [AdekunleBamz](https://github.com/AdekunleBamz) and the community.
