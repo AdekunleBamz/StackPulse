@@ -44,13 +44,15 @@ interface NotificationCenterProps {
 export default function NotificationCenter({ maxNotifications = 50 }: NotificationCenterProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [notifications, setNotifications] = useState<Notification[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
   const safeMaxNotifications = Number.isFinite(maxNotifications)
     ? Math.max(1, Math.floor(maxNotifications))
     : 50;
 
   // Fetch notifications from server
   useEffect(() => {
-    const fetchNotifications = async () => {
+    const fetchNotifications = async (showLoading = false) => {
+      if (showLoading) setIsLoading(true);
       try {
         const response = await fetch(apiUrl(`/api/notifications?limit=${safeMaxNotifications}`), {
           headers: { Accept: 'application/json' },
@@ -71,12 +73,14 @@ export default function NotificationCenter({ maxNotifications = 50 }: Notificati
         }
       } catch (error) {
         logger.error('Error fetching notifications:', error);
+      } finally {
+        if (showLoading) setIsLoading(false);
       }
     };
 
-    fetchNotifications();
+    fetchNotifications(true);
     // Poll for new notifications every 30 seconds
-    const interval = setInterval(fetchNotifications, NOTIFICATION_POLL_INTERVAL_MS);
+    const interval = setInterval(() => fetchNotifications(false), NOTIFICATION_POLL_INTERVAL_MS);
     return () => clearInterval(interval);
   }, [safeMaxNotifications]);
 
