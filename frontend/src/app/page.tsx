@@ -128,22 +128,22 @@ Hero.displayName = 'Hero';
 
 export default function Home() {
   return (
-    <main id="main" className="min-h-screen" tabIndex={-1} aria-labelledby="hero-title">
+    <main id="main" className="min-h-screen bg-gray-950" tabIndex={-1} aria-label="StackPulse Dashboard Home">
       <Header />
       <Hero />
       
-      {/* Features Section */}
-      <section id="features" className="scroll-mt-32 py-32">
+      {/* Principal Product Features */}
+      <section id="features" className="scroll-mt-32 py-32" aria-label="Product Features">
         <Features />
       </section>
       
-      {/* Live Stats Section */}
-      <section id="stats" className="scroll-mt-32 py-32">
+      {/* Blockchain Live Statistics */}
+      <section id="stats" className="scroll-mt-32 py-32" aria-label="Live Network Activity">
         <LiveStats />
       </section>
       
-      {/* Pricing Section */}
-      <section id="pricing" className="scroll-mt-32 py-32">
+      {/* Subscription and Membership Plans */}
+      <section id="pricing" className="scroll-mt-32 py-32" aria-label="Pricing and Membership">
         <Pricing />
       </section>
       
