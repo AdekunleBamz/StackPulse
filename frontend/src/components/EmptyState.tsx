@@ -24,7 +24,7 @@ interface EmptyStateProps {
 
 export default function EmptyState({ icon: Icon, title, description, action, className = "" }: EmptyStateProps) {
   return (
-    <div 
+    <section 
       className={`flex flex-col items-center justify-center py-16 px-4 text-center animate-zoom-in duration-500 group ${className}`}
       role="status"
       aria-labelledby="empty-state-title"
