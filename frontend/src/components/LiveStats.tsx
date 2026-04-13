@@ -20,6 +20,11 @@ interface EventStats {
 
 const LIVE_STATS_REFRESH_INTERVAL_MS = 30000;
 
+interface StatsResponse {
+  stats?: EventStats;
+  [key: string]: any;
+}
+
 export default function LiveStats() {
   const [stats, setStats] = useState<EventStats | null>(null);
   const [loading, setLoading] = useState(true);
