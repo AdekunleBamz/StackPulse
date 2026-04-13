@@ -40,6 +40,10 @@ export function requestLogger(options: RequestLogOptions = defaultOptions) {
 
     const startTime = process.hrtime.bigint();
     const requestId = randomUUID();
+    
+    // Attach requestId to request object for use in other logs
+    (req as any).id = requestId;
+    
     const queryData = Object.keys(req.query).length > 0 ? req.query : undefined;
 
     // Log request
@@ -50,6 +54,7 @@ export function requestLogger(options: RequestLogOptions = defaultOptions) {
       ...(queryData ? { query: queryData } : {}),
       ip: req.ip,
       userAgent: req.get('user-agent'),
+      referer: req.get('referer'),
       ...(logHeaders ? { headers: req.headers } : {}),
       ...(logBody ? { body: req.body } : {}),
     });
