@@ -1051,9 +1051,10 @@ app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
 });
 
 // Start server
-const server = app.listen(PORT, () => {
-  logger.info(`🚀 StackPulse Server running on port ${PORT}`);
-  logger.info(`📡 Ready to receive chainhook events`);
+const server = app.listen(PORT, '0.0.0.0', () => {
+  logger.info(`🚀 StackPulse Server is running on port ${PORT}`);
+  logger.info(`🌍 Environment: ${process.env.NODE_ENV || 'development'}`);
+  logger.info(`📡 Chainhook endpoints available at: http://localhost:${PORT}/api/v1/chainhooks/*`);
   logger.info(`🔗 Health check: http://localhost:${PORT}/health`);
 });
 
