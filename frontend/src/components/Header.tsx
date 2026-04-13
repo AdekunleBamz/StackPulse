@@ -116,7 +116,7 @@ export default function Header() {
               aria-current={pathname === '/#features' ? 'page' : undefined}
             >
               Features
-              <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 bg-purple-500 rounded-full opacity-0 group-aria-[current=page]/nav:opacity-100 transition-opacity" />
+              <span className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-1.5 h-1.5 bg-gradient-to-t from-purple-500 to-indigo-400 rounded-full opacity-0 group-aria-[current=page]/nav:opacity-100 shadow-[0_0_10px_rgba(168,85,247,0.8)] transition-all duration-500" />
             </Link>
             <Link 
               href="/#pricing" 
@@ -124,7 +124,7 @@ export default function Header() {
               aria-current={pathname === '/#pricing' ? 'page' : undefined}
             >
               Pricing
-              <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 bg-purple-500 rounded-full opacity-0 group-aria-[current=page]/nav:opacity-100 transition-opacity" />
+              <span className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-1.5 h-1.5 bg-gradient-to-t from-purple-500 to-indigo-400 rounded-full opacity-0 group-aria-[current=page]/nav:opacity-100 shadow-[0_0_10px_rgba(168,85,247,0.8)] transition-all duration-500" />
             </Link>
             <Link 
               href="/#stats" 
@@ -132,7 +132,7 @@ export default function Header() {
               aria-current={pathname === '/#stats' ? 'page' : undefined}
             >
               Live Stats
-              <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 bg-purple-500 rounded-full opacity-0 group-aria-[current=page]/nav:opacity-100 transition-opacity" />
+              <span className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-1.5 h-1.5 bg-gradient-to-t from-purple-500 to-indigo-400 rounded-full opacity-0 group-aria-[current=page]/nav:opacity-100 shadow-[0_0_10px_rgba(168,85,247,0.8)] transition-all duration-500" />
             </Link>
             <Link 
               href="/register"
@@ -140,7 +140,7 @@ export default function Header() {
               aria-current={pathname === '/register' ? 'page' : undefined}
             >
               Register
-              <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 bg-purple-400 rounded-full opacity-0 group-aria-[current=page]/nav:opacity-100 transition-opacity" />
+              <span className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-1.5 h-1.5 bg-gradient-to-t from-purple-400 to-indigo-300 rounded-full opacity-0 group-aria-[current=page]/nav:opacity-100 shadow-[0_0_10px_rgba(168,85,247,0.8)] transition-all duration-500" />
             </Link>
             <a 
               href="https://docs.hiro.so/stacks/chainhook" 
