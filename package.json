@@ -24,6 +24,7 @@
     "clarinet:test": "clarinet test",
     "lint:all": "npm run lint --prefix frontend && npm run lint --prefix server",
     "lint:fix": "npm run lint --prefix frontend -- --fix && npm run lint --prefix server -- --fix",
+    "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md,clar}\"",
     "build:all": "npm run build --prefix shared && npm run build --prefix server && npm run build --prefix frontend"
   },
   "devDependencies": {
