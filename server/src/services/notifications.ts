@@ -248,14 +248,14 @@ function normalizeNotificationType(type: string): Notification['type'] {
   return 'system';
 }
 
-export function saveUserPreferences(input: UserPreferences): UserPreferences {
-  const existing = userPreferencesStore.get(input.address) || { address: input.address };
+export function saveUserPreferences(preferences: UserPreferences): UserPreferences {
+  const existing = userPreferencesStore.get(preferences.address) || { address: preferences.address };
   const merged: UserPreferences = {
     ...existing,
-    ...input,
-    address: input.address,
+    ...preferences,
+    address: preferences.address,
   };
-  userPreferencesStore.set(input.address, merged);
+  userPreferencesStore.set(preferences.address, merged);
   return merged;
 }
 
