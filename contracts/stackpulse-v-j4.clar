@@ -48,8 +48,11 @@
 ;; DATA STORAGE
 ;; ============================================
 
+;; Total number of users registered since contract deployment
 (define-data-var total-users uint u0)
+;; Total STX revenue collected from subscription upgrades
 (define-data-var total-revenue uint u0)
+;; Semantic version of the contract for tracking migrations
 (define-data-var contract-version (string-ascii 8) "v3.0.0")
 
 ;; Main user profile map
