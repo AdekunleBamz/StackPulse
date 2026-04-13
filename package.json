@@ -2,7 +2,7 @@
   "name": "stackpulse",
   "version": "1.0.0",
   "type": "module",
-  "description": "Real-time Stacks blockchain monitoring and alert system",
+  "description": "StackPulse: Real-time Stacks blockchain event monitoring, analytics, and alerting workspace powered by Hiro Chainhooks.",
   "author": "AdekunleBamz",
   "license": "MIT",
   "engines": {
