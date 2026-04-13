@@ -3,13 +3,21 @@
 import { useEffect, useId, useRef, useState } from 'react';
 
 interface ConfirmDialogProps {
+  /** Whether the dialog is currently visible */
   isOpen: boolean;
+  /** The title text displayed at the top of the dialog */
   title: string;
+  /** The main content message explaining the action to be confirmed */
   message: string;
+  /** Optional custom label for the confirmation button (defaults to "Confirm") */
   confirmLabel?: string;
+  /** Optional custom label for the cancellation button (defaults to "Cancel") */
   cancelLabel?: string;
+  /** Callback function executed when the user confirms. Can return a Promise for async actions. */
   onConfirm: () => void | Promise<void>;
+  /** Callback function executed when the user cancels or closes the dialog */
   onCancel: () => void;
+  /** Visual style variant of the dialog (defaults to "danger") */
   variant?: 'danger' | 'warning' | 'info';
 }
 
