@@ -109,6 +109,10 @@
           u0))))
 )
 
+(define-read-only (get-user-tier (who principal))
+  (default-to u0 (get tier (map-get? users who)))
+)
+
 (define-read-only (get-stats)
   {
     total-users: (var-get total-users),
