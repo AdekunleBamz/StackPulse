@@ -54,6 +54,13 @@ type AlertApiRecord = Omit<Alert, 'createdAt' | 'lastTriggered'> & {
   lastTriggered?: string;
 };
 
+/**
+ * Custom hook for managing a user's blockchain alerts.
+ * Provides methods for fetching, creating, updating, and deleting alerts.
+ *
+ * @param address - The Stacks wallet address of the user.
+ * @returns Hook state and alert management functions.
+ */
 export function useAlerts(address: string | null): UseAlertsReturn {
   const [alerts, setAlerts] = useState<Alert[]>([]);
   const [loading, setLoading] = useState(false);
