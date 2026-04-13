@@ -12,6 +12,16 @@ interface CacheEntry<T> {
 const MAX_CACHE_SIZE = 10000;
 const CACHE_CLEANUP_INTERVAL_MS = 600000;
 
+/**
+ * Standard TTL values in milliseconds
+ */
+export const CACHE_TTL = {
+  SHORT: 60 * 1000,         // 1 minute
+  MEDIUM: 5 * 60 * 1000,    // 5 minutes
+  LONG: 60 * 60 * 1000,     // 1 hour
+  DAY: 24 * 60 * 60 * 1000, // 24 hours
+} as const;
+
 class CacheService {
   private cache: Map<string, CacheEntry<unknown>> = new Map();
   private cleanupInterval: NodeJS.Timeout;
