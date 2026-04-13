@@ -137,6 +137,7 @@ export default function Footer() {
           <div className="flex flex-col items-center md:items-start gap-2 text-center md:text-left">
             <p className="text-gray-400 text-[11px] font-bold tracking-tight">
               © {new Date().getFullYear()} StackPulse Labs. <span className="text-gray-600 font-medium ml-1">All Rights Reserved.</span>
+              <span className="ml-3 px-2 py-0.5 rounded-md bg-white/5 border border-white/10 text-[9px] text-gray-400 font-black tracking-widest uppercase">v3.0.0-beta</span>
             </p>
             <p className="text-gray-500/80 text-[10px] font-medium tracking-wide">
               Crafted with <span className="text-purple-500/60 transition-colors hover:text-purple-500 cursor-default">♥</span> for the Stacks Network.
