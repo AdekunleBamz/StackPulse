@@ -614,12 +614,24 @@ Receives fee collection events.
 
 #### POST /api/v1/chainhooks/badge-earned
 
-Receives badge minting events.
+Receives badge minting events from the StackPulse reputation contract.
 
 **Processing:**
-- Extracts recipient, badge name, and type from print events
-- Broadcasts personalized notification to badge earner
-- Increments badge statistics
+- Extracts recipient, badge name, token ID, and badge type from print events
+- Validates data against the `badge-minted` event schema
+- Broadcasts personalized notification to the recipient address
+- Increments platform-wide badge earning statistics
+
+**Example Data:**
+```json
+{
+  "event": "badge-minted",
+  "recipient": "SP3FK...",
+  "badge-name": "Early Adopter",
+  "token-id": 1,
+  "badge-type": "reputation"
+}
+```
 
 ### Async Processing
 
