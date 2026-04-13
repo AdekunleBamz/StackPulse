@@ -245,6 +245,7 @@
       event: "profile-updated",
       version: "v3",
       user: caller,
+      user-id: (get user-id user-data),
       username: username,
       alerts: alerts,
       block: block-height
