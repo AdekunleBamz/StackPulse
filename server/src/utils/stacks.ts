@@ -230,6 +230,13 @@ export async function getBlockTransactions(
 
 /**
  * Compatibility helpers for event parsing.
+ * These functions extract and format blockchain data from raw JSON event objects.
+ */
+
+/**
+ * Parses a raw STX transfer event into a readable format.
+ * @param event The raw event object from chainhook payload
+ * @returns Formatted transfer data or null if event is not an STX transfer
  */
 export function parseWhaleTransfer(event: GenericJsonObject): { amountSTX: string; amountFormatted: string; sender: string; recipient: string } | null {
   if ((event.type as string | undefined) !== 'STXTransferEvent') {
