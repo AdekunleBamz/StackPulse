@@ -15,8 +15,32 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "StackPulse - Real-time Stacks Blockchain Alerts",
-  description: "Monitor whale transfers, token launches, NFT mints, and more with Hiro Chainhooks",
+  title: "StackPulse | Real-time Stacks Blockchain Alerts",
+  description: "The ultimate dashboard for Stacks blockchain enthusiasts. Monitor whale transfers, token launches, and NFT events with instant notifications.",
+  keywords: ["Stacks", "Blockchain", "Bitcoin", "Alerts", "Whale Watcher", "NFT", "Clarity", "Hiro Chainhooks"],
+  authors: [{ name: "AdekunleBamz", url: "https://github.com/AdekunleBamz" }],
+  openGraph: {
+    title: "StackPulse - Stacks Real-time Intelligence",
+    description: "Monitor the Stacks blockchain in real-time.",
+    url: "https://stackpulse.io",
+    siteName: "StackPulse",
+    images: [
+      {
+        url: "/og-image.png",
+        width: 1200,
+        height: 630,
+      },
+    ],
+    locale: "en_US",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "StackPulse - Stacks Real-time Intelligence",
+    description: "Monitor the Stacks blockchain in real-time.",
+    creator: "@AdekunleBamz",
+    images: ["/og-image.png"],
+  },
   icons: {
     icon: "/favicon.svg",
     shortcut: "/favicon.svg",
