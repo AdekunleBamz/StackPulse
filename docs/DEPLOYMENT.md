@@ -356,25 +356,30 @@ git push origin main
 
 ### Contract Deployment Fails
 
-- Check wallet has sufficient STX (>1 STX recommended)
-- Verify Clarinet is using correct network settings
-- Check contract syntax with `clarinet check`
+- **Insufficient Funds**: Check wallet has sufficient STX (>1 STX recommended for complete plan deployment).
+- **Network Mismatch**: Verify Clarinet is using correct network settings (mainnet vs testnet).
+- **Syntax Errors**: Check contract syntax with `clarinet check` and ensure all imported traits are available.
 
 ### Chainhooks Not Triggering
 
-- Verify webhook URL is correct and reachable
-- Check authentication token matches
-- Ensure start_block is set correctly
-- Check Hiro Platform status page
+- **Webhook Unreachable**: Verify webhook URL is correct, use `https`, and ensure it's reachable from the public internet.
+- **Auth Token Mismatch**: Double-check that `CHAIN_HOOK_AUTH_TOKEN` on the server matches the token sent by Hiro Platform.
+- **Predicate Scope**: Ensure `start_block` is not in the future and the predicate (e.g., contract-id) is correctly formatted.
+- **Platform Status**: Check [Hiro Platform status](https://status.hiro.so/) for known issues with Chainhooks.
 
 ### Server 500 Errors
 
-- Check environment variables are set
-- Review logs for stack traces
-- Verify Redis connection if configured
+- **Missing Env Vars**: Ensure all required variables in the [Environment Variables](#environment-variables) section are defined.
+- **Rate Limiting**: Review logs to see if your own services are being rate-limited by the Stacks API.
+- **DB Connection**: Verify `DATABASE_URL` is correct and the database is accepting connections.
 
-### Frontend Build Fails
+### Frontend Issues
 
-- Check environment variables are set in Vercel
-- Verify Next.js version compatibility
-- Check for TypeScript errors
+- **CORS Errors**: Ensure the server's `CORS_ORIGIN` environment variable includes your frontend domain.
+- **Missing NEXT_PUBLIC Vars**: Vercel requires `NEXT_PUBLIC_` prefix for variables to be accessible in the browser.
+- **Wallet Connection**: Verify that your browser has the Hiro Wallet extension installed and configured for the correct network.
+
+### WebSocket Disconnections
+
+- **Proxy Timeouts**: If using a proxy (like Nginx), ensure `proxy_read_timeout` is set high enough for persistent WS connections.
+- **Client Heartbeat**: Implement a ping/pong heartbeat to keep connections alive through cloud provider load balancers.
