@@ -112,11 +112,13 @@ export default function PriceTracker() {
     return 'text-gray-400';
   };
 
-  if (loading) {
+  if (loading && !prices) {
     return (
-      <div className="flex items-center gap-4 px-4 py-2 bg-gray-800/50 rounded-lg animate-pulse">
-        <div className="w-24 h-4 bg-gray-700 rounded"></div>
-        <div className="w-24 h-4 bg-gray-700 rounded"></div>
+      <div className="flex items-center gap-4 px-4 py-2 bg-gray-900/40 backdrop-blur-md rounded-xl border border-white/5 animate-pulse shadow-sm">
+        <div className="w-4 h-4 bg-gray-800 rounded-md" />
+        <div className="w-24 h-4 bg-gray-800 rounded-md" />
+        <div className="w-px h-4 bg-gray-800" />
+        <div className="w-24 h-4 bg-gray-800 rounded-md" />
       </div>
     );
   }
