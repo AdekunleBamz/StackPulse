@@ -18,10 +18,32 @@ function toWebSocketProtocol(url: string): string {
 }
 
 /**
+ * Validates if a string is a properly formatted URL.
+ */
+const isValidUrl = (url: string): boolean => {
+  try {
+    new URL(url);
+    return true;
+  } catch {
+    return false;
+  }
+};
+
+const rawServerUrl = process.env.NEXT_PUBLIC_SERVER_URL || DEFAULT_SERVER_URL;
+
+if (process.env.NODE_ENV === 'development' && !process.env.NEXT_PUBLIC_SERVER_URL) {
+  console.warn(`[Env] NEXT_PUBLIC_SERVER_URL is not set. Falling back to default: ${DEFAULT_SERVER_URL}`);
+}
+
+if (!isValidUrl(rawServerUrl)) {
+  console.error(`[Env] Invalid SERVER_URL configured: ${rawServerUrl}`);
+}
+
+/**
  * The configured StackPulse server URL.
  * Can be overridden via NEXT_PUBLIC_SERVER_URL environment variable.
  */
-export const SERVER_URL = trimTrailingSlashes(process.env.NEXT_PUBLIC_SERVER_URL || DEFAULT_SERVER_URL);
+export const SERVER_URL = trimTrailingSlashes(rawServerUrl);
 
 /**
  * The configured Clarity contract deployer address.
