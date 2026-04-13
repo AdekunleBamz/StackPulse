@@ -677,7 +677,7 @@ export default function Pricing() {
         )}
 
         {/* Pricing Tiers Section */}
-        <div id="pricing-tiers" className="scroll-mt-24 mt-24">
+        <div id="pricing-tiers" className="scroll-mt-32 mt-32">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-black text-white mb-4 tracking-tight">
               Simple, Transparent Pricing
