@@ -2,29 +2,24 @@
 
 ## Supported Versions
 
-Security updates are provided for the following versions of StackPulse:
+We currently support the following versions with security updates:
 
 | Version | Supported          |
 | ------- | ------------------ |
-| 3.x     | :white_check_mark: |
-| 1.0.x   | :x:                |
+| 1.0.x   | :white_check_mark: |
+| < 1.0   | :x:                |
 
 ## Reporting a Vulnerability
 
-We take the security of StackPulse seriously. If you believe you have found a security vulnerability, please report it to us by emailing [bams.kunle@gmail.com](mailto:bams.kunle@gmail.com).
+We take the security of StackPulse seriously. If you believe you have found a security vulnerability, please report it to us responsibly.
 
-Please include the following in your report:
-- Type of issue (e.g., buffer overflow, SQL injection, cross-site scripting)
-- Full paths of source file(s) related to the manifestation of the issue
-- The location of the affected code (tag/branch/commit or direct URL)
-- Any special configuration required to reproduce the issue
-- Step-by-step instructions to reproduce the issue
-- Proof-of-concept or exploit code (if possible)
-- Impact of the issue, including how an attacker might exploit the issue
+**Please do not open a public GitHub issue for security vulnerabilities.**
 
-### Response Timeline
-- **Acknowledgement**: Within 24 hours of receipt.
-- **Triage**: Within 3 business days.
-- **Disclosure Policy**: 90 days after the initial report, or sooner if a fix is released.
+Instead, please send an email to security@stackpulse.io with a detailed description of the issue, steps to reproduce it, and any potential impact.
 
-We will provide regular status updates until the issue is resolved.
+### Our Process
+
+1. We will acknowledge receipt of your report within 48 hours.
+2. We will investigate the issue and determine its severity.
+3. We will keep you updated on our progress toward a fix.
+4. Once a fix is verified, we will release a new version and provide public credit if desired.
