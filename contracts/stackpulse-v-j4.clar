@@ -144,9 +144,11 @@
 ;; PUBLIC FUNCTIONS
 ;; ============================================
 
-;; Register and subscribe in one transaction
-;; tier: 0=Free, 1=Basic, 2=Pro, 3=Premium
-;; alerts: bitmask (1=whale, 2=nft, 4=token, 8=swap, 16=contract) or just pass 31 for all
+;; Register a new user and activate their initial subscription tier.
+;; @param username: Desired username (3-32 chars)
+;; @param email: Optional contact email (max 64 chars)
+;; @param tier: 0=Free, 1=Basic, 2=Pro, 3=Premium
+;; @param alerts: A bitmask representing enabled alert types (e.g., u31 enables all)
 (define-public (register-and-subscribe 
     (username (string-ascii 32))
     (email (string-ascii 64))
