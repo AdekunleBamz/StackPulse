@@ -126,6 +126,13 @@ Upgrade to a higher subscription tier.
   ...)
 ```
 
+#### get-user-tier
+
+```clarity
+(define-read-only (get-user-tier (who principal))
+  (default-to u0 (get tier (map-get? users who))))
+```
+
 #### get-stats
 
 ```clarity
