@@ -23,6 +23,7 @@
     "clarinet:check": "clarinet check",
     "clarinet:test": "clarinet test",
     "lint:all": "npm run lint --prefix frontend && npm run lint --prefix server",
+    "lint:fix": "npm run lint --prefix frontend -- --fix && npm run lint --prefix server -- --fix",
     "build:all": "npm run build --prefix shared && npm run build --prefix server && npm run build --prefix frontend"
   },
   "devDependencies": {
