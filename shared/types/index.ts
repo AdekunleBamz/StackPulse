@@ -22,9 +22,9 @@ export interface Alert {
   userAddress: string;
   /** Alert type identifier (1=whale, 2=contract, 3=nft, 4=token, 5=swap, 6=custom) */
   alertType: number;
-  /** Optional threshold value for triggering the alert */
+  /** Minimum value required to trigger (e.g. STX amount for whale transfers, or number of events) */
   threshold?: number;
-  /** Optional specific address to monitor */
+  /** Optional specific address to monitor (e.g. for address watch alerts) */
   targetAddress?: string;
   /** Optional webhook URL for external notifications */
   webhookUrl?: string;
@@ -38,13 +38,22 @@ export interface Alert {
   triggerCount: number;
 }
 
-/** Alert type identifiers matching the contract definitions */
+/** 
+ * Alert type identifiers matching the Clarity contract definitions.
+ * These IDs are used to route alerts correctly to the notification dispatchers.
+ */
 export enum AlertTypeId {
+  /** Triggered when a large amount of STX is transferred */
   WhaleTransfer = 1,
+  /** Triggered when a new smart contract is deployed to the blockchain */
   ContractDeployed = 2,
+  /** Triggered when an NFT is minted in a tracked collection */
   NFTMint = 3,
+  /** Triggered when a new SIP-010 token contract is detected */
   TokenLaunch = 4,
+  /** Triggered when a swap exceeding a certain value is detected */
   LargeSwap = 5,
+  /** Triggered when any activity is detected on a specific address */
   AddressWatch = 6,
 }
 
