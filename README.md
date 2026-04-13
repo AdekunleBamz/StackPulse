@@ -23,14 +23,14 @@ StackPulse is a comprehensive monitoring workspace that combines Clarity smart c
 ## 🏗️ Architecture
 
 ```
-┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
-│  Stacks Blockchain  │──▶│  Hiro Chainhooks   │──▶│  StackPulse Server │
-└─────────────────┘    └──────────────────┘    └─────────────────┘
+┌──────────────────┐    ┌──────────────────┐    ┌────────────────────┐
+│ Stacks Blockchain │──▶│ Hiro Chainhooks  │──▶│ StackPulse Server  │
+└──────────────────┘    └──────────────────┘    └────────────────────┘
                                                           │
                                                           ▼
-┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
-│  Clarity Contracts  │◀──│  Shared Types/Utils  │◀──│  Next.js Frontend  │
-└─────────────────┘    └──────────────────┘    └─────────────────┘
+┌──────────────────┐    ┌──────────────────┐    ┌────────────────────┐
+│ Clarity Contracts│◀──│Shared Types/Utils │◀──│ Next.js Frontend   │
+└──────────────────┘    └──────────────────┘    └────────────────────┘
 ```
 
 ## 📁 Project Structure
