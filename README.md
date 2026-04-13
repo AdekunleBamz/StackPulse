@@ -183,14 +183,19 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - [Stacks Foundation](https://stacks.org/) for the Stacks blockchain
 - [Clarity Language](https://clarity-lang.org/) for secure smart contracts
 
-## 🔗 Links
+## 🔗 Links & Community
 
-- **Website**: [stackpulse.io](https://stackpulse.io)
+- **Official Website**: [stackpulse.io](https://stackpulse.io)
 - **Documentation**: [docs.stackpulse.io](https://docs.stackpulse.io)
-- **GitHub**: [AdekunleBamz/StackPulse](https://github.com/AdekunleBamz/StackPulse)
-- **Discord**: [Join our community](https://discord.gg/stackpulse)
-- **Twitter**: [@StackPulse](https://twitter.com/StackPulse)
+- **GitHub Repository**: [AdekunleBamz/StackPulse](https://github.com/AdekunleBamz/StackPulse)
+- **Discord Community**: [Join our community](https://discord.gg/stackpulse)
+- **Twitter / X**: [@StackPulse](https://twitter.com/StackPulse)
+- **Telegram**: [Global Community](https://t.me/stackpulse)
 
 ---
 
-Built with ❤️ by [AdekunleBamz](https://github.com/AdekunleBamz) and contributors
+## 🔐 Security & Verification
+
+All official commits and releases are GPG-signed by the lead developer **[AdekunleBamz](https://github.com/AdekunleBamz)**.
+
+Built with ❤️ by **Adekunle Bamz** and contributors
