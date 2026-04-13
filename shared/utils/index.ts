@@ -18,6 +18,7 @@ export {
   truncateString,
   formatFileSize,
   formatDuration,
+  formatOrdinal,
   parseStxAmount,
   formatBalance,
   formatTxId,

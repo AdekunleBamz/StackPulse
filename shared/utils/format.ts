@@ -239,6 +239,18 @@ export function formatTxId(txId: string): string {
   return truncateAddress(txId, TX_ID_PREFIX_LENGTH, TX_ID_SUFFIX_LENGTH);
 }
 
+/**
+ * Formats a number with its ordinal suffix (e.g., 1st, 2nd, 3rd).
+ * @param n - The number to format.
+ * @returns A string with the number and its ordinal suffix.
+ */
+export function formatOrdinal(n: number): string {
+  const safeN = Math.floor(n);
+  const s = ["th", "st", "nd", "rd"];
+  const v = safeN % 100;
+  return safeN + (s[(v - 20) % 10] || s[v] || s[0]);
+}
+
 // Default export for convenience
 export default {
   formatStxAmount,
@@ -251,6 +263,7 @@ export default {
   truncateString,
   formatFileSize,
   formatDuration,
+  formatOrdinal,
   parseStxAmount,
   formatBalance,
   formatTxId,
