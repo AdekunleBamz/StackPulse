@@ -9,16 +9,18 @@
 
 StackPulse is a comprehensive monitoring workspace that combines Clarity smart contracts, Hiro Chainhook manifests, an Express ingestion server, a shared TypeScript package, and a Next.js frontend to deliver real-time blockchain event notifications.
 
-## ✨ Features
+## 🚀 Project Status
 
-- 🐋 **Whale Transfer Alerts** - Track large STX transfers in real-time
-- 📜 **Contract Deployment Notifications** - Get notified when new contracts are deployed
-- 🎨 **NFT Mint Tracking** - Monitor NFT minting events across collections
-- 🪙 **Token Launch Detection** - Discover new SIP-010 token deployments
-- 💱 **Large Swap Alerts** - Track significant DEX swap events
-- 🏆 **Badge System** - Earn achievement badges for platform activity
-- 🔔 **Custom Alerts** - Create personalized alert thresholds
-- 📊 **Real-time Dashboard** - Live statistics and analytics
+StackPulse is currently in **Beta**. We are actively monitoring the Stacks mainnet and refining our alert algorithms.
+
+## ✨ Core Features
+
+- 🐋 **Whale Transfers** - Track large STX movements in real-time.
+- 📜 **Smart Contracts** - Instant notifications for new contract deployments.
+- 🎨 **NFT Monitoring** - Track minting events across top collections.
+- 🪙 **Token Launches** - Automated detection of new SIP-010 tokens.
+- 💱 **DEX Swaps** - Monitoring for significant swap volume.
+- 🏆 **Reputation** - Earn on-chain badges for platform participation.
 
 ## 🏗️ Architecture
 
