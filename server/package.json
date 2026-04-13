@@ -1,7 +1,7 @@
 {
   "name": "stackpulse-server",
   "version": "1.0.0",
-  "description": "StackPulse Chainhook Event Server - Real-time Stacks blockchain event processing",
+  "description": "StackPulse Event Processing Engine: Consumes Hiro Chainhooks and dispatches real-time alerts.",
   "main": "dist/index.js",
   "scripts": {
     "dev": "tsx watch src/index.ts",
@@ -44,7 +44,7 @@
     "bitcoin",
     "clarity"
   ],
-  "author": "StackPulse Team",
+  "author": "AdekunleBamz",
   "license": "MIT",
   "repository": {
     "type": "git",
