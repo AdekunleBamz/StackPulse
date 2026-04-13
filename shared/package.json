@@ -1,7 +1,7 @@
 {
   "name": "@stackpulse/shared",
   "version": "1.0.0",
-  "description": "Shared types, constants, and utilities for StackPulse",
+  "description": "StackPulse Core: Shared types, constants, and utilities used across the StackPulse workspace.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [
@@ -17,7 +17,7 @@
     "blockchain",
     "shared"
   ],
-  "author": "StackPulse Team",
+  "author": "AdekunleBamz",
   "license": "MIT",
   "devDependencies": {
     "typescript": "^5.3.3"
