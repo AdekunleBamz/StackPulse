@@ -85,7 +85,8 @@ export function validateWebhookPayload(data: unknown): { payload: WebhookPayload
   
   // Check if timestamp is within acceptable range (5 minutes)
   const now = Date.now();
-  if (Math.abs(now - timestamp) > 300000) {
+  const REPLAY_WINDOW_MS = 5 * 60 * 1000;
+  if (Math.abs(now - timestamp) > REPLAY_WINDOW_MS) {
     return { payload: null, error: 'Webhook timestamp expired' };
   }
   
