@@ -17,9 +17,9 @@ const footerLinks = {
     { label: 'API Reference', href: '/docs/api' },
   ],
   company: [
-    { label: 'About', href: '#' },
-    { label: 'Blog', href: '#' },
-    { label: 'Twitter', href: '#' },
+    { label: 'About', href: '/about' },
+    { label: 'Blog', href: '/blog' },
+    { label: 'Twitter', href: 'https://twitter.com/StackPulseApp' },
     { label: 'GitHub', href: 'https://github.com/AdekunleBamz/StackPulse' },
   ],
   legal: [
