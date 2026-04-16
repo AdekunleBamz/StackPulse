@@ -27,7 +27,7 @@ export default function Tooltip({
   const showTooltip = () => {
     timeoutRef.current = setTimeout(() => {
       setIsVisible(true);
-    }, delay);
+    }, Math.max(0, delay));
   };
 
   const hideTooltip = () => {
