@@ -57,6 +57,11 @@ export enum AlertTypeId {
   AddressWatch = 6,
 }
 
+/** The minimum valid AlertTypeId value */
+export const MIN_ALERT_TYPE_ID = AlertTypeId.WhaleTransfer;
+/** The maximum valid AlertTypeId value */
+export const MAX_ALERT_TYPE_ID = AlertTypeId.AddressWatch;
+
 /** Request body for creating a new alert */
 export interface CreateAlertRequest {
   /** Alert type identifier */
