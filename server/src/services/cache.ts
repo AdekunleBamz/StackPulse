@@ -120,7 +120,7 @@ class CacheService {
   destroy(): void {
     clearInterval(this.cleanupInterval);
     this.clear();
-    logger.info('Cache cleared');
+    logger.info('Cache service destroyed');
   }
 
   /**
