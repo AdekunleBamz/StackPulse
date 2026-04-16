@@ -39,6 +39,8 @@ export default function LoadingSkeleton({
   
   return (
     <div
+      role="status"
+      aria-label="Loading..."
       className={`${baseClasses} ${variantClasses[variant]} ${animationClasses[animation]} ${className}`}
       style={style}
     />
