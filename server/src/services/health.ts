@@ -41,7 +41,7 @@ class HealthService {
       memory: {
         free: freeMemory,
         total: totalMemory,
-        usagePercent
+        usagePercent: Math.round(usagePercent * 100) / 100,
       },
       cpu: {
         loadAvg: os.loadavg()
