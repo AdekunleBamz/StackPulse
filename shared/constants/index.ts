@@ -218,12 +218,12 @@ export const ERROR_CODES = {
  * Note: Event naming may vary by integration version.
  */
 export const CHAINHOOK_EVENTS = {
-  WHALE_TRANSFER: 'bitcoin::transfer',
+  WHALE_TRANSFER: 'stacks::stx_transfer',
   CONTRACT_DEPLOY: 'stacks::contract_deployment',
   NFT_MINT: 'stacks::nft_mint',
   TOKEN_LAUNCH: 'stacks::token_launch',
   LARGE_SWAP: 'stacks::large_swap',
-  ADDRESS_WATCH: 'bitcoin::address_activity',
+  ADDRESS_WATCH: 'stacks::address_activity',
 } as const;
 
 /**
