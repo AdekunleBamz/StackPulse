@@ -29,31 +29,8 @@ class MetricsService {
   }
 
   /**
-   * Record an event for throughput calculation
+   * Record a named metric value with optional labels
    */
-  recordEvent(name: string): void {
-    const now = Date.now();
-    const timestamps = this.eventCounts.get(name) || [];
-    timestamps.push(now);
-    
-    // Keep only last 10 minutes of events
-    const tenMinutesAgo = now - 10 * 60 * 1000;
-    const filtered = timestamps.filter(t => t > tenMinutesAgo);
-    
-    this.eventCounts.set(name, filtered);
-  }
-
-  /**
-   * Get event throughput (events per minute)
-   */
-  getThroughput(name: string, windowMs: number = 60000): number {
-    const now = Date.now();
-    const timestamps = this.eventCounts.get(name) || [];
-    const windowStart = now - windowMs;
-    const count = timestamps.filter(t => t > windowStart).length;
-    return (count / windowMs) * 60000;
-  }
-
   recordMetric(name: string, value: number, labels?: Record<string, string>): void {
     if (!Number.isFinite(value)) {
       logger.warn(`Skipping non-finite metric: ${name}`, { value, labels });
