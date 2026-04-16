@@ -112,7 +112,7 @@ export function rateLimiter(options: RateLimitOptions = defaultOptions) {
 
     // Set rate limit headers
     res.setHeader('X-RateLimit-Limit', effectiveMaxRequests.toString());
-    res.setHeader('X-RateLimit-Remaining', (effectiveMaxRequests - entry.count).toString());
+    res.setHeader('X-RateLimit-Remaining', Math.max(0, effectiveMaxRequests - entry.count).toString());
     res.setHeader('X-RateLimit-Reset', entry.resetTime.toString());
 
     next();
