@@ -75,3 +75,13 @@ export default {
   debounce,
   clamp,
 };
+
+/**
+ * Returns a promise that resolves after the specified number of milliseconds.
+ * Useful for adding delays in async flows or tests.
+ * @param ms - The number of milliseconds to wait.
+ */
+export function sleep(ms: number): Promise<void> {
+  const safeDuration = Number.isFinite(ms) ? Math.max(0, ms) : 0;
+  return new Promise((resolve) => setTimeout(resolve, safeDuration));
+}
