@@ -11,6 +11,7 @@ router.get('/', (req: Request, res: Response) => {
   // Return analytics data
   res.json({
     success: true,
+    timestamp: new Date().toISOString(),
     data: {
       totalAlerts: 0,
       activeAlerts: 0,
