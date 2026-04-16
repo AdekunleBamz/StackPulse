@@ -58,7 +58,7 @@ export function useUser(address: string | null, options: UseUserOptions = {}): U
     setError(null);
 
     try {
-      const response = await fetch(apiUrl(`/api/users/${address}`));
+      const response = await fetch(apiUrl(`/api/v1/users/${address}`));
       const data = await response.json();
 
       if (data.success) {
