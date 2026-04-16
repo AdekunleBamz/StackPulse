@@ -172,8 +172,8 @@ class NotificationsService {
     return this.createNotification(
       userAddress,
       'badge',
-      'Badge Earned!',
-      `You earned the "${badgeName}" badge!`
+      'New Badge Earned',
+      `You earned the "${badgeName}" badge.`
     );
   }
 
