@@ -206,6 +206,16 @@ export async function getCoreApiInfo(network: StacksNetwork = 'mainnet'): Promis
 }
 
 /**
+ * Get current block height from the Stacks node.
+ * @param network - Target network (mainnet or testnet).
+ * @returns The current tip height, or null on failure.
+ */
+export async function getBlockHeight(network: StacksNetwork = 'mainnet'): Promise<number | null> {
+  const info = await getCoreApiInfo(network);
+  return info ? info.stx_tip_height : null;
+}
+
+/**
  * Get transactions for a block
  */
 export async function getBlockTransactions(
