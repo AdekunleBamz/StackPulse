@@ -19,6 +19,7 @@ interface EventStats {
 }
 
 const LIVE_STATS_REFRESH_INTERVAL_MS = 30000;
+const LIVE_STATS_STALE_THRESHOLD_MS = LIVE_STATS_REFRESH_INTERVAL_MS * 3;
 
 interface StatsResponse {
   stats?: EventStats;
