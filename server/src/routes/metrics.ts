@@ -18,7 +18,7 @@ const metricsLimiter = rateLimiter({
     const userTier = (req as TierRequest).user?.tier || 0;
     const limits = [10, 100, 500, 2000];
     const safeTier = Number.isInteger(userTier) && userTier >= 0 ? userTier : 0;
-    return limits[safeTier] || 10;
+    return limits[Math.min(safeTier, limits.length - 1)];
   }
 });
 
