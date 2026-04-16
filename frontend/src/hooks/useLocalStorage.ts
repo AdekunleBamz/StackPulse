@@ -52,4 +52,18 @@ export function useLocalStorage<T>(key: string, initialValue: T): [T, (value: T 
   return [storedValue, setStoredValue];
 }
 
+/**
+ * Removes a key from localStorage and clears the associated state.
+ */
+export function removeLocalStorageItem(key: string): void {
+  if (typeof window === 'undefined') {
+    return;
+  }
+  try {
+    window.localStorage.removeItem(key);
+  } catch (error) {
+    logger.error('Error removing localStorage key:', error);
+  }
+}
+
 export default useLocalStorage;
