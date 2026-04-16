@@ -10,6 +10,7 @@ interface UserRecord {
   tier: UserTier;
   createdAt: number;
   alertCount: number;
+  badgeCount: number;
   username?: string;
   email?: string;
   discord?: string;
