@@ -15,7 +15,7 @@ type ClassValue = string | number | null | undefined | false;
  * ```ts
  * cn('foo', 'bar') // => 'foo bar'
  * cn('foo', null, 'bar') // => 'foo bar'
- * cn({ foo: true } && 'foo') // => 'foo'
+ * cn('foo', false && 'hidden') // => 'foo'
  * ```
  */
 export function cn(...classNames: ClassValue[]): string {
