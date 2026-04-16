@@ -39,9 +39,11 @@ const NOTIFICATION_POLL_INTERVAL_MS = 30000;
 
 interface NotificationCenterProps {
   maxNotifications?: number;
+  /** Polling interval in ms for new notifications (default: 30000) */
+  pollInterval?: number;
 }
 
-export default function NotificationCenter({ maxNotifications = 50 }: NotificationCenterProps) {
+export default function NotificationCenter({ maxNotifications = 50, pollInterval = NOTIFICATION_POLL_INTERVAL_MS }: NotificationCenterProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [isLoading, setIsLoading] = useState(false);
