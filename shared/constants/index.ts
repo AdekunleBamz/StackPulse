@@ -140,7 +140,7 @@ export const TIER_NAMES: Record<number, string> = {
  * Application-wide default values.
  */
 export const DEFAULTS = {
-  PAGE_SIZE: 20,
+  PAGE_SIZE: 10,
   MAX_PAGE_SIZE: 100,
   API_TIMEOUT: 30000,
   WS_RECONNECT_DELAY: 5000,
