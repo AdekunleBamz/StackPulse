@@ -33,6 +33,7 @@ const clients: Map<string, WSClient> = new Map();
 const MAX_CLIENTS = 1000;
 const MAX_SUBS_PER_CLIENT = 50;
 const WS_PING_INTERVAL_MS = 30000;
+const WS_CLIENT_TIMEOUT_MS = 60000;
 
 function getChannel(message: WSMessage): string | undefined {
   return message.channel || message.subscription;
