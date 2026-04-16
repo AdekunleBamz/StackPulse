@@ -85,7 +85,7 @@ export function useUser(address: string | null, options: UseUserOptions = {}): U
     setError(null);
 
     try {
-      const response = await fetch(apiUrl('/api/users/register'), {
+      const response = await fetch(apiUrl('/api/v1/users/register'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ address, referrer }),
@@ -119,7 +119,7 @@ export function useUser(address: string | null, options: UseUserOptions = {}): U
     setError(null);
 
     try {
-      const response = await fetch(apiUrl(`/api/users/${address}/upgrade`), {
+      const response = await fetch(apiUrl(`/api/v1/users/${address}/upgrade`), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ tier, txId }),
