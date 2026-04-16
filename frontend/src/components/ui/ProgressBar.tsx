@@ -3,12 +3,15 @@
 import React from 'react';
 
 interface ProgressBarProps {
-  progress: number; // 0 to 100
+  /** Current progress value, from 0 to 100 */
+  progress: number;
   size?: 'sm' | 'md' | 'lg';
   color?: 'purple' | 'blue' | 'emerald' | 'rose' | 'amber';
   showLabel?: boolean;
   className?: string;
   animate?: boolean;
+  /** Accessible label for the progress bar */
+  label?: string;
 }
 
 export default function ProgressBar({
@@ -17,7 +20,8 @@ export default function ProgressBar({
   color = 'purple',
   showLabel = false,
   className = '',
-  animate = true
+  animate = true,
+  label,
 }: ProgressBarProps) {
   const clampedProgress = Math.min(100, Math.max(0, progress));
   
@@ -53,6 +57,7 @@ export default function ProgressBar({
           aria-valuenow={clampedProgress}
           aria-valuemin={0}
           aria-valuemax={100}
+          aria-label={label ?? `${clampedProgress}% complete`}
         >
           {/* Shimmer effect inside progress bar */}
           <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent animate-shimmer" style={{ backgroundSize: '200% 100%' }} />
