@@ -7,9 +7,11 @@ import { cn } from '@/lib/cn';
 
 interface BreadcrumbsProps {
   className?: string;
+  /** Override the home label (default: visually hidden "Home") */
+  homeLabel?: string;
 }
 
-export default function Breadcrumbs({ className }: BreadcrumbsProps) {
+export default function Breadcrumbs({ className, homeLabel = 'Home' }: BreadcrumbsProps) {
   const pathname = usePathname();
   
   // Don't show breadcrumbs on the home page
@@ -29,7 +31,7 @@ export default function Breadcrumbs({ className }: BreadcrumbsProps) {
               className="flex items-center text-gray-400 hover:text-white transition-all duration-300 hover:scale-110 active:scale-90"
             >
               <Home className="w-3.5 h-3.5 stroke-[2.5]" />
-              <span className="sr-only">Home</span>
+              <span className="sr-only">{homeLabel}</span>
             </Link>
           </li>
           
