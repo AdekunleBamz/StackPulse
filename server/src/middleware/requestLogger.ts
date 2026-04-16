@@ -17,7 +17,7 @@ export interface RequestLogOptions {
 const defaultOptions: RequestLogOptions = {
   logBody: false,
   logHeaders: false,
-  excludePaths: ['/health', '/health/ready', '/health/live']
+  excludePaths: ['/health', '/health/ready', '/health/live', '/health/full']
 };
 
 function getLogLevel(statusCode: number): 'error' | 'warn' | 'info' {
