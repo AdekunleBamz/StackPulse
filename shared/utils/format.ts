@@ -233,7 +233,7 @@ export function formatBalance(balance: number | string, decimals: number = DEFAU
 /**
  * Formats a transaction ID for display using truncation.
  * @param txId - The full transaction ID string.
- * @returns A truncated transaction ID string.
+ * @returns A truncated transaction ID string (prefix...suffix).
  */
 export function formatTxId(txId: string): string {
   return truncateAddress(txId, TX_ID_PREFIX_LENGTH, TX_ID_SUFFIX_LENGTH);
