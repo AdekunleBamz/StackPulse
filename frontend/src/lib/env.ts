@@ -68,3 +68,14 @@ export function apiUrl(path: string): string {
   const normalizedPath = path.startsWith('/') ? path : `/${path}`;
   return `${SERVER_URL}${normalizedPath}`;
 }
+
+/**
+ * Constructs a versioned v1 API URL.
+ *
+ * @param path - The path after /api/v1 (with or without leading slash).
+ * @returns The complete /api/v1 URL.
+ */
+export function apiV1Url(path: string): string {
+  const normalizedPath = path.startsWith('/') ? path : `/${path}`;
+  return `${SERVER_URL}/api/v1${normalizedPath}`;
+}
