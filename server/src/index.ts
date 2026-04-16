@@ -77,7 +77,7 @@ const authenticateWebhook = (req: Request, res: Response, next: NextFunction) =>
   }
 
   if (authHeader !== `Bearer ${expectedToken}`) {
-    logger.warn('Webhook request with invalid authorization token', { ip: req.ip });
+    logger.warn('Webhook request with invalid authorization token', { ip: req.ip, path: req.path });
     return res.status(401).json({ error: 'Unauthorized' });
   }
 
