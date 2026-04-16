@@ -6,9 +6,11 @@ export interface TextFieldProps extends React.InputHTMLAttributes<HTMLInputEleme
   label: string;
   hint?: string;
   error?: string;
+  /** Whether the field is required (adds visual indicator) */
+  required?: boolean;
 }
 
-export default function TextField({ label, hint, error, className, id, ...props }: TextFieldProps) {
+export default function TextField({ label, hint, error, className, id, required, ...props }: TextFieldProps) {
   const inputId = id || props.name || label.toLowerCase().replace(/\s+/g, '-');
   const errorId = `${inputId}-error`;
   const hintId = `${inputId}-hint`;
@@ -18,6 +20,7 @@ export default function TextField({ label, hint, error, className, id, ...props 
     <div className="space-y-1">
       <label htmlFor={inputId} className="block text-sm font-semibold text-gray-400 tracking-tight">
         {label}
+        {required && <span className="ml-1 text-red-400 select-none" aria-hidden="true">*</span>}
       </label>
       <input
         id={inputId}
