@@ -84,7 +84,8 @@ router.post('/', (req: Request, res: Response) => {
     displayName: normalizedDisplayName || normalizedAddress.slice(0, 8),
     tier: UserTier.FREE,
     createdAt: Date.now(),
-    alertCount: 0
+    alertCount: 0,
+    badgeCount: 0,
   };
   
   users.set(normalizedAddress, user);
