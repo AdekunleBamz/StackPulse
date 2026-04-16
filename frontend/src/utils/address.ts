@@ -1,4 +1,16 @@
 /**
+ * Checks whether a string looks like a valid Stacks address.
+ * Mainnet addresses start with SP, testnet addresses start with ST.
+ *
+ * @param address - The address string to test.
+ * @returns True if the address passes the format check.
+ */
+export function isValidAddress(address: string): boolean {
+  if (!address) return false;
+  return /^S[PT][A-Z0-9]{39}$/.test(address.trim());
+}
+
+/**
  * Truncates a Stacks address for display purposes.
  * Shows the first and last few characters with an ellipsis in between.
  *
