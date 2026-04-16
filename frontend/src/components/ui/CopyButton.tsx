@@ -20,7 +20,7 @@ export default function CopyButton({
 
   useEffect(() => {
     if (!copied) return;
-    const t = window.setTimeout(() => setCopied(false), 1500);
+    const t = window.setTimeout(() => setCopied(false), 2000);
     return () => window.clearTimeout(t);
   }, [copied]);
 
