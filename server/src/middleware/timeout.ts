@@ -15,13 +15,14 @@ export function requestTimeout(timeoutMs: number = DEFAULT_REQUEST_TIMEOUT_MS) {
     const timer = setTimeout(() => {
       if (!res.headersSent) {
         logger.warn('Request timeout reached', { 
-          method: req.method, 
+          method: req.method,
           url: req.originalUrl,
           timeoutMs: safeTimeoutMs
         });
         res.status(504).json({
           success: false,
-          error: 'Request timeout'
+          error: 'Request timeout',
+          path: req.path,
         });
       }
     }, safeTimeoutMs);
