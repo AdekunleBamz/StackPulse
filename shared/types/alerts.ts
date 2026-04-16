@@ -83,6 +83,7 @@ export interface CreateAlertRequest {
 
 /**
  * Request payload for updating an existing alert.
+ * All fields are optional; only provided fields will be updated.
  */
 export interface UpdateAlertRequest {
   /** Updated name for the alert */
