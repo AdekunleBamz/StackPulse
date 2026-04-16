@@ -41,6 +41,7 @@ interface CreateAlertRequest {
 const alerts: Map<string, Alert> = new Map();
 
 // Alert type names
+// TODO: consolidate with shared/constants ALERT_TYPES to avoid duplication
 const alertTypeNames: Record<number, string> = {
   1: 'Whale Transfer',
   2: 'Contract Deploy',
