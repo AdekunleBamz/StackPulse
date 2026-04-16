@@ -66,7 +66,8 @@ router.get('/live', (req: Request, res: Response) => {
   res.json({
     status: 'alive',
     timestamp: new Date().toISOString(),
-    uptime: process.uptime()
+    uptime: process.uptime(),
+    pid: process.pid,
   });
 });
 
