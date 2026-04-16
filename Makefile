@@ -1,7 +1,7 @@
 # StackPulse Makefile
 # Common development tasks
 
-.PHONY: help install dev server frontend test lint clean docker-build docker-up docker-down
+.PHONY: help install dev server frontend test test:server test:fe lint clean docker-build docker-up docker-down
 
 help:
 	@echo "StackPulse Development Commands"
@@ -36,10 +36,10 @@ frontend:
 test:
 	npm test
 
-test_server:
+test:server:
 	cd server && npm test
 
-test_fe:
+test:fe:
 	cd frontend && npm test
 
 lint:
