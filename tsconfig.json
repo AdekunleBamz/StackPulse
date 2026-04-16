@@ -7,7 +7,6 @@
     "resolveJsonModule": true,
     "allowJs": true,
     "checkJs": false,
-    "jsx": "react-jsx",
     "declaration": true,
     "declarationMap": true,
     "sourceMap": true,
