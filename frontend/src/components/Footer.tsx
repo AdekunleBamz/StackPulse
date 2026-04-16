@@ -30,9 +30,9 @@ const footerLinks = {
 };
 
 const socialLinks = [
-  { icon: Twitter, href: '#', label: 'Twitter' },
+  { icon: Twitter, href: 'https://twitter.com/StackPulseApp', label: 'Twitter' },
   { icon: Github, href: 'https://github.com/AdekunleBamz/StackPulse', label: 'GitHub' },
-  { icon: Linkedin, href: '#', label: 'LinkedIn' },
+  { icon: Linkedin, href: 'https://linkedin.com/company/stackpulse', label: 'LinkedIn' },
   { icon: Mail, href: 'mailto:support@stackpulse.io', label: 'Email' },
 ];
 
