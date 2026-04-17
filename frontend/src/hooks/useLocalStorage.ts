@@ -21,7 +21,7 @@ import logger from '@/lib/logger';
 export function useLocalStorage<T>(key: string, initialValue: T): [T, (value: T | ((val: T) => T)) => void] {
   // Get stored value or initial value
   const [storedValue, setStoredValue] = useState<T>(() => {
-    if (typeof window === 'undefined') {
+    if (typeof window === 'undefined' || !key) {
       return initialValue;
     }
     try {
@@ -39,7 +39,7 @@ export function useLocalStorage<T>(key: string, initialValue: T): [T, (value: T 
 
   // Update localStorage when value changes
   useEffect(() => {
-    if (typeof window === 'undefined') {
+    if (typeof window === 'undefined' || !key) {
       return;
     }
     try {
