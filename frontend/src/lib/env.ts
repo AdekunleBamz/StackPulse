@@ -79,3 +79,8 @@ export function apiV1Url(path: string): string {
   const normalizedPath = path.startsWith('/') ? path : `/${path}`;
   return `${SERVER_URL}/api/v1${normalizedPath}`;
 }
+
+/**
+ * Default page size used across paginated API requests.
+ */
+export const DEFAULT_PAGINATION_LIMIT = 20;
