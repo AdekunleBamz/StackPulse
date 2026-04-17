@@ -4,6 +4,11 @@
 type LogLevel = 'debug' | 'info' | 'warn' | 'error';
 
 /**
+ * Ordered log levels from least to most severe.
+ */
+export const LOG_LEVELS: readonly LogLevel[] = ['debug', 'info', 'warn', 'error'] as const;
+
+/**
  * Logger interface with methods for each log level.
  */
 type Logger = Record<LogLevel, (...args: unknown[]) => void>;
