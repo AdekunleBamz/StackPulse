@@ -1,16 +1,4 @@
 /**
- * Checks whether a string looks like a valid Stacks address.
- * Mainnet addresses start with SP, testnet addresses start with ST.
- *
- * @param address - The address string to test.
- * @returns True if the address passes the format check.
- */
-export function isValidAddress(address: string): boolean {
-  if (!address) return false;
-  return /^S[PT][A-Z0-9]{39}$/.test(address.trim());
-}
-
-/**
  * Truncates a Stacks address for display purposes.
  * Shows the first and last few characters with an ellipsis in between.
  *
@@ -33,4 +21,15 @@ export function truncateAddress(address: string, startChars = 6, endChars = 4): 
   if (address.length <= safeStart + safeEnd) return address;
   const tail = safeEnd > 0 ? address.slice(-safeEnd) : '';
   return `${address.slice(0, safeStart)}...${tail}`;
+}
+
+/**
+ * Returns true if the string looks like a well-formed Stacks address.
+ * Accepts mainnet (SP/SM) and testnet (ST/SN) prefixes.
+ *
+ * @param address - The string to check.
+ */
+export function isValidStacksAddress(address: string): boolean {
+  if (typeof address !== 'string') return false;
+  return /^(S[PMN]|ST)[A-Z0-9]{38,40}$/.test(address.trim());
 }
