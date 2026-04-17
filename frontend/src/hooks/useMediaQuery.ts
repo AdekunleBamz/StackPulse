@@ -70,4 +70,10 @@ export const useIsDesktop = () => useMediaQuery('(min-width: 1025px)');
  */
 export const useIsDesktop = () => useMediaQuery('(min-width: 1025px)');
 
+/**
+ * Hook to check if the viewport is large-screen-sized (≥1440px).
+ * @returns True if the viewport width is 1440px or more.
+ */
+export const useIsLargeScreen = () => useMediaQuery('(min-width: 1440px)');
+
 export default useMediaQuery;
