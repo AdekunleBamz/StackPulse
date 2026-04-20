@@ -49,6 +49,10 @@ describe('shared/common clamp', () => {
   it('caps values above the upper bound', () => {
     expect(clamp(15, 0, 10)).toBe(10);
   });
+
+  it('raises values below the lower bound', () => {
+    expect(clamp(-5, 0, 10)).toBe(0);
+  });
 });
 
 describe('shared/common debounce', () => {
