@@ -254,6 +254,35 @@ export function formatOrdinal(n: number): string {
   return safeN + (s[(v - 20) % 10] || s[v] || s[0]);
 }
 
+/**
+ * Formats a timestamp as a time-only string (e.g., "14:30" or "2:30 PM").
+ * @param timestamp - The timestamp as a number or Date object.
+ * @param use24h - When true, uses 24-hour format (default: false).
+ * @returns A locale-specific time string.
+ */
+export function formatTime(timestamp: number | Date, use24h = false): string {
+  const date = typeof timestamp === 'number' ? new Date(timestamp) : timestamp;
+  if (Number.isNaN(date.getTime())) return 'Invalid date';
+  return date.toLocaleTimeString('en-US', {
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: !use24h,
+  });
+}
+
+/**
+ * Formats a large number in compact notation (e.g., 1200 → "1.2K", 1500000 → "1.5M").
+ * @param value - The number to format.
+ * @returns A compact string representation.
+ */
+export function formatCompactNumber(value: number): string {
+  const safe = Number.isFinite(value) ? value : 0;
+  if (Math.abs(safe) >= 1_000_000_000) return `${(safe / 1_000_000_000).toFixed(1)}B`;
+  if (Math.abs(safe) >= 1_000_000) return `${(safe / 1_000_000).toFixed(1)}M`;
+  if (Math.abs(safe) >= 1_000) return `${(safe / 1_000).toFixed(1)}K`;
+  return String(safe);
+}
+
 // Default export for convenience
 export default {
   formatStxAmount,
@@ -262,6 +291,8 @@ export default {
   formatRelativeTime,
   formatDate,
   formatDateTime,
+  formatTime,
+  formatCompactNumber,
   truncateAddress,
   truncateString,
   formatFileSize,
