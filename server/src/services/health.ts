@@ -27,6 +27,8 @@ export interface SystemHealth {
 }
 
 class HealthService {
+  private readonly startedAt = Date.now();
+
   /**
    * Get system health metrics
    */
@@ -60,6 +62,20 @@ class HealthService {
     }
 
     return health;
+  }
+
+  /**
+   * Returns the number of milliseconds since the service was instantiated.
+   */
+  getUptimeMs(): number {
+    return Date.now() - this.startedAt;
+  }
+
+  /**
+   * Returns true when the system health status is 'ok'.
+   */
+  isHealthy(): boolean {
+    return this.getHealth().status === 'ok';
   }
 }
 
