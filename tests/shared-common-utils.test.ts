@@ -108,4 +108,15 @@ describe('shared/common sleep', () => {
 
     expect(done).toHaveBeenCalledTimes(1);
   });
+
+  it('treats non-finite durations as zero-delay', async () => {
+    vi.useFakeTimers();
+    const done = vi.fn();
+
+    void sleep(Number.POSITIVE_INFINITY).then(done);
+    vi.advanceTimersByTime(0);
+    await vi.runAllTimersAsync();
+
+    expect(done).toHaveBeenCalledTimes(1);
+  });
 });
