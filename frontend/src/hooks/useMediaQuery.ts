@@ -1,5 +1,11 @@
 import { useSyncExternalStore } from 'react';
 
+const BREAKPOINT_MOBILE_MAX_PX = 640;
+const BREAKPOINT_TABLET_MIN_PX = 641;
+const BREAKPOINT_TABLET_MAX_PX = 1024;
+const BREAKPOINT_DESKTOP_MIN_PX = 1025;
+const BREAKPOINT_LARGE_SCREEN_MIN_PX = 1440;
+
 /**
  * A hook that tracks whether a CSS media query matches the current viewport.
  * Uses useSyncExternalStore for optimal React 18 compatibility.
@@ -50,30 +56,24 @@ export function useMediaQuery(query: string): boolean {
  * Hook to check if the viewport is mobile-sized (≤640px).
  * @returns True if the viewport width is 640px or less.
  */
-export const useIsMobile = () => useMediaQuery('(max-width: 640px)');
+export const useIsMobile = () => useMediaQuery(`(max-width: ${BREAKPOINT_MOBILE_MAX_PX}px)`);
 
 /**
  * Hook to check if the viewport is tablet-sized (641px-1024px).
  * @returns True if the viewport width is between 641px and 1024px.
  */
-export const useIsTablet = () => useMediaQuery('(min-width: 641px) and (max-width: 1024px)');
+export const useIsTablet = () => useMediaQuery(`(min-width: ${BREAKPOINT_TABLET_MIN_PX}px) and (max-width: ${BREAKPOINT_TABLET_MAX_PX}px)`);
 
 /**
  * Hook to check if the viewport is desktop-sized (>1024px).
  * @returns True if the viewport width is greater than 1024px.
  */
-export const useIsDesktop = () => useMediaQuery('(min-width: 1025px)');
-
-/**
- * Hook to check if the viewport is desktop-sized (≥1025px).
- * @returns True if the viewport width is 1025px or more.
- */
-export const useIsDesktop = () => useMediaQuery('(min-width: 1025px)');
+export const useIsDesktop = () => useMediaQuery(`(min-width: ${BREAKPOINT_DESKTOP_MIN_PX}px)`);
 
 /**
  * Hook to check if the viewport is large-screen-sized (≥1440px).
  * @returns True if the viewport width is 1440px or more.
  */
-export const useIsLargeScreen = () => useMediaQuery('(min-width: 1440px)');
+export const useIsLargeScreen = () => useMediaQuery(`(min-width: ${BREAKPOINT_LARGE_SCREEN_MIN_PX}px)`);
 
 export default useMediaQuery;
