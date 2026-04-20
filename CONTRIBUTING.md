@@ -29,7 +29,7 @@ Before submitting a pull request, ensure that all tests pass:
 
 ```bash
 # Frontend tests
-npm --prefix frontend test
+npm --prefix frontend run lint
 
 # Backend tests
 npm --prefix server test
