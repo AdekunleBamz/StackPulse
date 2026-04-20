@@ -44,6 +44,8 @@ interface UseUserReturn {
   fetchUser: () => Promise<void>;
   register: (referrer?: string) => Promise<boolean>;
   upgrade: (tier: number, txId: string) => Promise<boolean>;
+  /** Clears the current error state. */
+  clearError: () => void;
   refetch: () => Promise<void>;
 }
 
@@ -178,6 +180,7 @@ export function useUser(address: string | null, options: UseUserOptions = {}): U
     fetchUser,
     register,
     upgrade,
+    clearError: () => setError(null),
     refetch: fetchUser,
   };
 }
