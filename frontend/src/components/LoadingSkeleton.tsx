@@ -9,6 +9,8 @@ interface SkeletonProps {
   width?: string | number;
   height?: string | number;
   animation?: 'pulse' | 'wave' | 'none';
+  /** Accessible label for the loading placeholder. Defaults to "Loading...". */
+  label?: string;
 }
 
 export default function LoadingSkeleton({
@@ -16,7 +18,8 @@ export default function LoadingSkeleton({
   variant = 'rectangular',
   width,
   height,
-  animation = 'wave'
+  animation = 'wave',
+  label = 'Loading...',
 }: SkeletonProps) {
   const baseClasses = 'bg-gray-800/40 backdrop-blur-md shadow-inner border border-white/5 opacity-50';
   
@@ -40,7 +43,7 @@ export default function LoadingSkeleton({
   return (
     <div
       role="status"
-      aria-label="Loading..."
+      aria-label={label}
       className={`${baseClasses} ${variantClasses[variant]} ${animationClasses[animation]} ${className}`}
       style={style}
     />
