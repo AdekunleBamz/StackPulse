@@ -112,6 +112,33 @@ export function sleep(ms: number): Promise<void> {
 }
 
 /**
+ * Retries an async operation with exponential backoff on failure.
+ * @param fn - The async operation to retry.
+ * @param maxAttempts - Maximum number of attempts (default: 3).
+ * @param baseDelayMs - Initial delay in ms before first retry (default: 200).
+ * @returns The resolved value from the operation.
+ * @throws The last error if all attempts fail.
+ */
+export async function retryWithBackoff<T>(
+  fn: () => Promise<T>,
+  maxAttempts: number = 3,
+  baseDelayMs: number = 200
+): Promise<T> {
+  let lastError: unknown;
+  for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
+    try {
+      return await fn();
+    } catch (err) {
+      lastError = err;
+      if (attempt < maxAttempts) {
+        await sleep(baseDelayMs * 2 ** (attempt - 1));
+      }
+    }
+  }
+  throw lastError;
+}
+
+/**
  * Returns a new object containing only the specified keys from the source object.
  * @param obj - The source object.
  * @param keys - The keys to include.
