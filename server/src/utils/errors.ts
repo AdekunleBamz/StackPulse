@@ -50,3 +50,36 @@ export class InternalServerError extends AppError {
     super(message, 500, false);
   }
 }
+
+export class ConflictError extends AppError {
+  constructor(message: string = 'Conflict') {
+    super(message, 409);
+  }
+}
+
+export class ServiceUnavailableError extends AppError {
+  constructor(message: string = 'Service Unavailable') {
+    super(message, 503);
+  }
+}
+
+export class UnprocessableEntityError extends AppError {
+  constructor(message: string = 'Unprocessable Entity') {
+    super(message, 422);
+  }
+}
+
+/**
+ * Returns true if the given value is an AppError instance.
+ */
+export function isAppError(err: unknown): err is AppError {
+  return err instanceof AppError;
+}
+
+/**
+ * Returns the HTTP status code from an error, defaulting to 500 for unknown errors.
+ */
+export function getErrorStatus(err: unknown): number {
+  if (isAppError(err)) return err.statusCode;
+  return 500;
+}
