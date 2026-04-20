@@ -21,6 +21,10 @@ describe('shared/common isValidStacksAddress', () => {
   it('accepts a valid testnet address', () => {
     expect(isValidStacksAddress('ST3K8BC0PPEVCV7NZ6QSRWPQ2JE9E5B6N3PA0KBR9')).toBe(true);
   });
+
+  it('rejects addresses with unsupported network prefix', () => {
+    expect(isValidStacksAddress('SM3K8BC0PPEVCV7NZ6QSRWPQ2JE9E5B6N3PA0KBR9')).toBe(false);
+  });
 });
 
 describe('shared/common generateId', () => {
