@@ -41,6 +41,8 @@ interface UseUserReturn {
   hasReferrer: boolean;
   /** True when the user has a non-zero referral count or badges. */
   hasActivity: boolean;
+  /** True when the user is on the free tier. */
+  isFreeTier: boolean;
   /** True when the user's subscription has not expired. */
   isSubscriptionActive: boolean;
   fetchUser: () => Promise<void>;
@@ -167,6 +169,7 @@ export function useUser(address: string | null, options: UseUserOptions = {}): U
   const isAuthenticated = user !== null;
   const hasReferrer = useMemo(() => !!user?.referrer, [user]);
   const hasActivity = useMemo(() => !!user && (user.referralCount > 0 || user.badges.length > 0 || user.totalAlertsTriggers > 0), [user]);
+  const isFreeTier = useMemo(() => (user?.tier ?? 0) === 0, [user]);
   const isSubscriptionActive = useMemo(() => {
     if (!user) return false;
     if (!user.expiresAt) return true;
@@ -180,6 +183,7 @@ export function useUser(address: string | null, options: UseUserOptions = {}): U
     isAuthenticated,
     hasReferrer,
     hasActivity,
+    isFreeTier,
     isSubscriptionActive,
     fetchUser,
     register,
