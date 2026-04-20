@@ -339,6 +339,56 @@ export function formatSTX(amountMicroStx: number | string): string {
   return (amount / STACKS_MICRO_DIVISOR).toFixed(6);
 }
 
+/**
+ * Converts a STX amount (in whole STX) to its microSTX representation.
+ *
+ * @param stx - Amount in STX.
+ * @returns The equivalent amount in microSTX as an integer.
+ */
+export function stxToMicro(stx: number): number {
+  if (!Number.isFinite(stx)) return 0;
+  return Math.round(stx * STACKS_MICRO_DIVISOR);
+}
+
+/**
+ * Converts a microSTX amount to whole STX.
+ *
+ * @param micro - Amount in microSTX.
+ * @returns The equivalent amount in STX.
+ */
+export function microToStx(micro: number | string): number {
+  const amount = typeof micro === 'string' ? Number(micro) : micro;
+  if (!Number.isFinite(amount)) return 0;
+  return amount / STACKS_MICRO_DIVISOR;
+}
+
+/**
+ * Returns true if the given transaction status indicates the tx is still pending.
+ *
+ * @param status - The `tx_status` string from the Stacks API.
+ */
+export function isTransactionPending(status: string): boolean {
+  return status === 'pending' || status === 'submitted';
+}
+
+/**
+ * Returns true if the given transaction status indicates a successful anchor.
+ *
+ * @param status - The `tx_status` string from the Stacks API.
+ */
+export function isTransactionSuccess(status: string): boolean {
+  return status === 'success';
+}
+
+/**
+ * Returns true if the given transaction status indicates a failure or abort.
+ *
+ * @param status - The `tx_status` string from the Stacks API.
+ */
+export function isTransactionFailed(status: string): boolean {
+  return status === 'abort_by_response' || status === 'abort_by_post_condition' || status === 'dropped';
+}
+
 export function decodeClarityValue<T = unknown>(value: T): T {
   return value;
 }
