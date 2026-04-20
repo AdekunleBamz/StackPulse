@@ -115,6 +115,10 @@ describe('shared/format formatBalance', () => {
   it('caps decimal precision at twelve places', () => {
     expect(formatBalance(1.234567890123456, 20)).toBe('1.234567890123');
   });
+
+  it('returns a zero balance string for invalid values', () => {
+    expect(formatBalance('oops', 4)).toBe('0.0000');
+  });
 });
 
 describe('shared/format parseStxAmount', () => {
