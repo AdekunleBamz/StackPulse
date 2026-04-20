@@ -73,3 +73,29 @@ export function isContractAddress(address: string): boolean {
   if (typeof address !== 'string') return false;
   return address.includes('.');
 }
+
+/**
+ * Extracts the deployer address from a Stacks contract identifier.
+ * For a contract like "SP123.my-contract", returns "SP123".
+ * Returns the original string if it is not a contract identifier.
+ *
+ * @param contractId - The contract identifier to parse.
+ */
+export function extractDeployerAddress(contractId: string): string {
+  if (typeof contractId !== 'string') return '';
+  const dot = contractId.indexOf('.');
+  return dot === -1 ? contractId : contractId.slice(0, dot);
+}
+
+/**
+ * Extracts the contract name from a Stacks contract identifier.
+ * For a contract like "SP123.my-contract", returns "my-contract".
+ * Returns an empty string if the input is not a contract identifier.
+ *
+ * @param contractId - The contract identifier to parse.
+ */
+export function extractContractName(contractId: string): string {
+  if (typeof contractId !== 'string') return '';
+  const dot = contractId.indexOf('.');
+  return dot === -1 ? '' : contractId.slice(dot + 1);
+}
