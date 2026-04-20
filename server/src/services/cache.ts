@@ -116,6 +116,35 @@ class CacheService {
   }
 
   /**
+   * Returns remaining TTL in milliseconds for a cached key.
+   * Returns -1 if the key does not exist or has expired.
+   */
+  ttl(key: string): number {
+    const entry = this.cache.get(key);
+    if (!entry) return -1;
+    const remaining = entry.expiresAt - Date.now();
+    if (remaining <= 0) {
+      this.cache.delete(key);
+      return -1;
+    }
+    return remaining;
+  }
+
+  /**
+   * Returns an array of all non-expired keys currently held in the cache.
+   */
+  keys(): string[] {
+    const now = Date.now();
+    const result: string[] = [];
+    for (const [key, entry] of this.cache.entries()) {
+      if (!this.isExpired(entry, now)) {
+        result.push(key);
+      }
+    }
+    return result;
+  }
+
+  /**
    * Destroy cache service
    */
   destroy(): void {
