@@ -114,6 +114,9 @@ npm --prefix frontend run build
 # Run Clarinet contract checks
 npm run clarinet:check
 
+# Run fast pre-push checks (clarinet + focused utility tests)
+npm run check:fast
+
 # Run Clarinet contract tests
 npm run clarinet:test
 
