@@ -17,6 +17,7 @@ We take the security of StackPulse seriously. If you believe you have found a se
 
 Instead, please send an email to security@stackpulse.io with a detailed description of the issue, steps to reproduce it, and any potential impact.
 Please redact secrets (mnemonics, API tokens, `.env` values) from all reports and logs.
+You can also use GitHub"""s private advisory flow: https://github.com/AdekunleBamz/StackPulse/security/advisories/new
 
 ### Our Process
 
