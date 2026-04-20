@@ -36,3 +36,40 @@ export function isValidStacksAddress(address: string): boolean {
   if (typeof address !== 'string') return false;
   return /^(S[PMN]|ST)[A-Z0-9]{38,40}$/.test(address.trim());
 }
+
+/**
+ * Returns the network type of a Stacks address based on its prefix.
+ * SP/SM = mainnet, ST/SN = testnet.
+ *
+ * @param address - The Stacks address to inspect.
+ * @returns 'mainnet', 'testnet', or 'unknown'.
+ */
+export function getAddressNetwork(address: string): 'mainnet' | 'testnet' | 'unknown' {
+  if (typeof address !== 'string') return 'unknown';
+  const trimmed = address.trim();
+  if (/^S[PM]/.test(trimmed)) return 'mainnet';
+  if (/^S[TN]/.test(trimmed)) return 'testnet';
+  return 'unknown';
+}
+
+/**
+ * Returns true if two Stacks addresses are equal, ignoring case and surrounding whitespace.
+ *
+ * @param a - First address.
+ * @param b - Second address.
+ */
+export function isSameAddress(a: string, b: string): boolean {
+  if (!a || !b) return false;
+  return a.trim().toLowerCase() === b.trim().toLowerCase();
+}
+
+/**
+ * Returns true if the given Stacks address looks like a contract address
+ * (contains a dot separator between the deployer and contract name).
+ *
+ * @param address - The address or contract identifier to check.
+ */
+export function isContractAddress(address: string): boolean {
+  if (typeof address !== 'string') return false;
+  return address.includes('.');
+}
