@@ -29,6 +29,17 @@
 (define-constant ERR-SAME-TIER (err u109))
 (define-constant ERR-INVALID-HOOK-TYPE (err u110))
 
+;; Chainhook types
+(define-constant HOOK-WHALE-TRANSFER u1)
+(define-constant HOOK-CONTRACT-DEPLOY u2)
+(define-constant HOOK-NFT-MINT u3)
+(define-constant HOOK-TOKEN-LAUNCH u4)
+(define-constant HOOK-LARGE-SWAP u5)
+(define-constant HOOK-SUBSCRIPTION-CREATED u6)
+(define-constant HOOK-ALERT-TRIGGERED u7)
+(define-constant HOOK-FEE-COLLECTED u8)
+(define-constant HOOK-BADGE-EARNED u9)
+
 ;; Subscription duration: ~30 days in blocks (assuming 10 min blocks)
 (define-constant BLOCKS-PER-MONTH u4320)
 
@@ -351,7 +362,7 @@
                   (is-eq tx-sender user)) ERR-NOT-AUTHORIZED)
     
     ;; V3: Validate hook type (1-9)
-    (asserts! (and (>= hook-type u1) (<= hook-type u9)) ERR-INVALID-HOOK-TYPE)
+    (asserts! (and (>= hook-type HOOK-WHALE-TRANSFER) (<= hook-type HOOK-BADGE-EARNED)) ERR-INVALID-HOOK-TYPE)
     
     ;; Update trigger count
     (map-set chainhook-triggers { user: user, hook-type: hook-type } (+ current-count u1))
@@ -381,15 +392,15 @@
 ;; Get all chainhook stats for a user
 (define-read-only (get-user-chainhook-stats (user principal))
   {
-    whale-alerts: (get-trigger-count user u1),
-    contract-deploys: (get-trigger-count user u2),
-    nft-mints: (get-trigger-count user u3),
-    token-launches: (get-trigger-count user u4),
-    large-swaps: (get-trigger-count user u5),
-    subscriptions: (get-trigger-count user u6),
-    alerts-triggered: (get-trigger-count user u7),
-    fees-collected: (get-trigger-count user u8),
-    badges-earned: (get-trigger-count user u9)
+    whale-alerts: (get-trigger-count user HOOK-WHALE-TRANSFER),
+    contract-deploys: (get-trigger-count user HOOK-CONTRACT-DEPLOY),
+    nft-mints: (get-trigger-count user HOOK-NFT-MINT),
+    token-launches: (get-trigger-count user HOOK-TOKEN-LAUNCH),
+    large-swaps: (get-trigger-count user HOOK-LARGE-SWAP),
+    subscriptions: (get-trigger-count user HOOK-SUBSCRIPTION-CREATED),
+    alerts-triggered: (get-trigger-count user HOOK-ALERT-TRIGGERED),
+    fees-collected: (get-trigger-count user HOOK-FEE-COLLECTED),
+    badges-earned: (get-trigger-count user HOOK-BADGE-EARNED)
   }
 )
 
