@@ -4,6 +4,11 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 import { WS_URL } from '@/lib/env';
 import logger from '@/lib/logger';
 
+/** Default interval in ms between WebSocket reconnect attempts. */
+const WS_DEFAULT_RECONNECT_INTERVAL_MS = 5000;
+/** Default maximum number of reconnect attempts before giving up. */
+const WS_DEFAULT_MAX_RECONNECT_ATTEMPTS = 10;
+
 /**
  * Configuration options for the useWebSocket hook.
  */
@@ -37,8 +42,8 @@ export function useWebSocket(options: UseWebSocketOptions = {}): UseWebSocketRet
   const {
     url = WS_URL,
     reconnect = true,
-    reconnectInterval = 5000,
-    maxReconnectAttempts = 10,
+    reconnectInterval = WS_DEFAULT_RECONNECT_INTERVAL_MS,
+    maxReconnectAttempts = WS_DEFAULT_MAX_RECONNECT_ATTEMPTS,
     onOpen,
     onClose,
     onError,
