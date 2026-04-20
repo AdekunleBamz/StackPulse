@@ -102,6 +102,18 @@ class CacheService {
   }
 
   /**
+   * Returns the cached value for key if it exists and has not expired.
+   * Otherwise calls factory(), stores the result, and returns it.
+   */
+  async getOrSet<T>(key: string, factory: () => T | Promise<T>, ttlMs: number = CACHE_DEFAULT_TTL_MS): Promise<T> {
+    const cached = this.get<T>(key);
+    if (cached !== null) return cached;
+    const value = await factory();
+    this.set(key, value, ttlMs);
+    return value;
+  }
+
+  /**
    * Clear all cache
    */
   clear(): void {
