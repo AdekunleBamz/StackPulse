@@ -33,13 +33,13 @@ export const TIER_LIMITS: Record<UserTier, TierLimits> = {
   [UserTier.PRO]: {
     maxAlerts: 25,
     maxWebhooks: 5,
-    rateLimit: 1000,
+    rateLimit: 1_000,
     priorityNotifications: true
   },
   [UserTier.PREMIUM]: {
     maxAlerts: 999,
     maxWebhooks: 20,
-    rateLimit: 5000,
+    rateLimit: 5_000,
     priorityNotifications: true
   }
 };

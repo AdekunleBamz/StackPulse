@@ -11,7 +11,7 @@ interface MetricValue {
   labels?: Record<string, string>;
 }
 
-const MAX_METRIC_ENTRIES = 1000;
+const MAX_METRIC_ENTRIES = 1_000;
 const PERFORMANCE_WARN_THRESHOLD_MS = 500;
 
 class MetricsService {
