@@ -283,6 +283,16 @@ export function formatCompactNumber(value: number): string {
   return String(safe);
 }
 
+/**
+ * Formats a number with an explicit sign for positive values.
+ * Useful for showing metric deltas (e.g. "+12", "-3").
+ * @param value - The number to format.
+ */
+export function formatSignedNumber(value: number): string {
+  const safe = Number.isFinite(value) ? value : 0;
+  return safe > 0 ? `+${safe}` : `${safe}`;
+}
+
 // Default export for convenience
 export default {
   formatStxAmount,
@@ -293,6 +303,7 @@ export default {
   formatDateTime,
   formatTime,
   formatCompactNumber,
+  formatSignedNumber,
   truncateAddress,
   truncateString,
   formatFileSize,

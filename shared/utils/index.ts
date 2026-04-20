@@ -16,6 +16,7 @@ export {
   formatDateTime,
   formatTime,
   formatCompactNumber,
+  formatSignedNumber,
   truncateAddress,
   truncateString,
   formatFileSize,
