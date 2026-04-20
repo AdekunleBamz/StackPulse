@@ -163,7 +163,7 @@ docker compose logs -f
 2. Connect your GitHub repository
 3. Configure:
    - **Root Directory**: `server`
-   - **Build Command**: `npm install && npm run build`
+   - **Build Command**: `npm ci && npm run build`
    - **Start Command**: `npm start`
    - **Environment**: Node
 
