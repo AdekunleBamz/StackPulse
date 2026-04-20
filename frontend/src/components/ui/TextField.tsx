@@ -8,13 +8,18 @@ export interface TextFieldProps extends React.InputHTMLAttributes<HTMLInputEleme
   error?: string;
   /** Whether the field is required (adds visual indicator) */
   required?: boolean;
+  /** Optional character count shown as a suffix hint when set. */
+  maxLength?: number;
+  /** When true, shows a character counter beside the hint. */
+  showCharCount?: boolean;
 }
 
-export default function TextField({ label, hint, error, className, id, required, ...props }: TextFieldProps) {
+export default function TextField({ label, hint, error, className, id, required, maxLength, showCharCount = false, ...props }: TextFieldProps) {
   const inputId = id || props.name || label.toLowerCase().replace(/\s+/g, '-');
   const errorId = `${inputId}-error`;
   const hintId = `${inputId}-hint`;
   const descriptionId = error ? errorId : hint ? hintId : undefined;
+  const currentLength = typeof props.value === 'string' ? props.value.length : typeof props.defaultValue === 'string' ? props.defaultValue.length : 0;
 
   return (
     <div className="space-y-1">
@@ -26,6 +31,7 @@ export default function TextField({ label, hint, error, className, id, required,
         id={inputId}
         aria-invalid={!!error}
         aria-describedby={descriptionId}
+        maxLength={maxLength}
           className={cn(
             "flex h-12 w-full rounded-xl border bg-gray-900/50 px-4 py-2 text-sm text-gray-100 transition-all duration-300",
             "border-gray-700/50 backdrop-blur-sm",
@@ -41,7 +47,14 @@ export default function TextField({ label, hint, error, className, id, required,
       {error ? (
         <p id={errorId} className="text-xs text-red-500/90 font-medium px-1 leading-tight">{error}</p>
       ) : hint ? (
-        <p id={hintId} className="text-xs text-gray-500 px-1 leading-tight italic">{hint}</p>
+        <div className="flex justify-between items-center px-1">
+          <p id={hintId} className="text-xs text-gray-500 leading-tight italic">{hint}</p>
+          {showCharCount && maxLength && (
+            <span className="text-xs text-gray-500 tabular-nums">{currentLength}/{maxLength}</span>
+          )}
+        </div>
+      ) : showCharCount && maxLength ? (
+        <p className="text-xs text-gray-500 text-right px-1 tabular-nums">{currentLength}/{maxLength}</p>
       ) : null}
     </div>
   );
