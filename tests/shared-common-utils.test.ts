@@ -27,6 +27,10 @@ describe('shared/common generateId', () => {
   it('never returns an empty id', () => {
     expect(generateId(0)).toHaveLength(1);
   });
+
+  it('falls back to minimum length for non-finite values', () => {
+    expect(generateId(Number.NaN)).toHaveLength(1);
+  });
 });
 
 describe('shared/common clamp', () => {
