@@ -10,11 +10,14 @@ export default function CopyButton({
   className,
   copiedLabel = 'Copied',
   label = 'Copy',
+  onCopied,
 }: {
   value: string;
   className?: string;
   copiedLabel?: string;
   label?: string;
+  /** Optional callback invoked after the value is successfully copied. */
+  onCopied?: () => void;
 }) {
   const [copied, setCopied] = useState(false);
 
@@ -29,6 +32,7 @@ export default function CopyButton({
       await navigator.clipboard.writeText(value);
       setCopied(true);
       toast.success(copiedLabel);
+      onCopied?.();
     } catch {
       toast.error('Copy failed', 'Please copy manually.');
     }
