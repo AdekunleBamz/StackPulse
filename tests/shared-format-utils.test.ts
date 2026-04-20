@@ -37,6 +37,10 @@ describe('shared/format formatNumber', () => {
   it('returns zero for invalid numeric strings', () => {
     expect(formatNumber('not-a-number')).toBe('0');
   });
+
+  it('formats numeric inputs with locale grouping', () => {
+    expect(formatNumber(1234567)).toBe('1,234,567');
+  });
 });
 
 describe('shared/format formatPercent', () => {
