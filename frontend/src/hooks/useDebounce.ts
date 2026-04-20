@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
 const DEBOUNCE_DEFAULT_DELAY_MS = 500;
 
@@ -31,6 +31,41 @@ export function useDebounce<T>(value: T, delay: number = DEBOUNCE_DEFAULT_DELAY_
   }, [safeDelay, value]);
 
   return debouncedValue;
+}
+
+/**
+ * Extended debounce hook that also exposes an `isPending` flag.
+ * `isPending` is true while the debounce timer is running (i.e. the value has
+ * changed but the debounced output has not yet updated).
+ *
+ * @template T - The type of the value to debounce.
+ * @param value - The value to debounce.
+ * @param delay - The debounce delay in milliseconds (default: 500).
+ * @returns An object with `debouncedValue` and `isPending`.
+ */
+export function useDebounceWithPending<T>(value: T, delay: number = DEBOUNCE_DEFAULT_DELAY_MS): { debouncedValue: T; isPending: boolean } {
+  const [debouncedValue, setDebouncedValue] = useState<T>(() => value);
+  const [isPending, setIsPending] = useState(false);
+  const safeDelay = Number.isFinite(delay) ? Math.max(0, delay) : 0;
+  const isFirstRender = useRef(true);
+
+  useEffect(() => {
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
+    }
+    setIsPending(true);
+    const handler = setTimeout(() => {
+      setDebouncedValue(value);
+      setIsPending(false);
+    }, safeDelay);
+
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [safeDelay, value]);
+
+  return { debouncedValue, isPending };
 }
 
 export default useDebounce;
