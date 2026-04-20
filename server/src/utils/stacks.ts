@@ -10,6 +10,9 @@ const API_URLS = {
   STACKS_API_TESTNET: 'https://stacks-node-api.testnet.stacks.co',
 } as const;
 
+const STACKS_MICRO_DIVISOR = 1_000_000;
+const ACCOUNT_TRANSACTIONS_DEFAULT_LIMIT = 20;
+
 interface Transaction {
   tx_id: string;
   tx_status: string;
@@ -101,11 +104,11 @@ export async function getAccountBalance(address: string, network: StacksNetwork 
 export async function getAccountTransactions(
   address: string, 
   network: StacksNetwork = 'mainnet',
-  limit: number = 20,
+  limit: number = ACCOUNT_TRANSACTIONS_DEFAULT_LIMIT,
   offset: number = 0
 ): Promise<Transaction[]> {
   const baseUrl = getStacksApiUrl(network);
-  const safeLimit = Number.isFinite(limit) ? Math.max(1, Math.floor(limit)) : 20;
+  const safeLimit = Number.isFinite(limit) ? Math.max(1, Math.floor(limit)) : ACCOUNT_TRANSACTIONS_DEFAULT_LIMIT;
   const safeOffset = Number.isFinite(offset) ? Math.max(0, Math.floor(offset)) : 0;
   
   try {
@@ -262,7 +265,7 @@ export function parseWhaleTransfer(event: GenericJsonObject): { amountSTX: strin
     return null;
   }
 
-  const amountSTX = (amount / 1_000_000).toFixed(6);
+  const amountSTX = (amount / STACKS_MICRO_DIVISOR).toFixed(6);
   return {
     amountSTX,
     amountFormatted: `${amountSTX} STX`,
@@ -333,7 +336,7 @@ export function formatSTX(amountMicroStx: number | string): string {
   if (!Number.isFinite(amount)) {
     return '0';
   }
-  return (amount / 1_000_000).toFixed(6);
+  return (amount / STACKS_MICRO_DIVISOR).toFixed(6);
 }
 
 export function decodeClarityValue<T = unknown>(value: T): T {
