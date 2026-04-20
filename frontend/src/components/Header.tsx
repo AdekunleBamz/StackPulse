@@ -6,6 +6,8 @@ import { Menu, X } from 'lucide-react';
 import { useEffect, useId, useRef, useState } from 'react';
 import { usePathname } from 'next/navigation';
 
+const HEADER_SCROLL_THRESHOLD_PX = 20;
+
 export default function Header() {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
@@ -14,7 +16,7 @@ export default function Header() {
   const mobileNavRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 20);
+    const handleScroll = () => setScrolled(window.scrollY > HEADER_SCROLL_THRESHOLD_PX);
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
