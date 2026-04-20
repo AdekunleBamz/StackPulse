@@ -23,6 +23,10 @@ const MAX_WEBHOOKS_PER_USER = new Map<number, number>([
   [2, 100],  // WHALE
   [3, 1000]  // EXCHANGE
 ]);
+/** Acceptable time window for webhook replay protection (5 minutes in ms). */
+const WEBHOOK_REPLAY_WINDOW_MS = 5 * 60 * 1_000;
+/** Default rate limit (requests per window) for outbound webhook delivery. */
+const WEBHOOK_DEFAULT_RATE_LIMIT = 100;
 
 /**
  * Generate HMAC signature for webhook payload
@@ -85,8 +89,7 @@ export function validateWebhookPayload(data: unknown): { payload: WebhookPayload
   
   // Check if timestamp is within acceptable range (5 minutes)
   const now = Date.now();
-  const REPLAY_WINDOW_MS = 5 * 60 * 1000;
-  if (Math.abs(now - timestamp) > REPLAY_WINDOW_MS) {
+  if (Math.abs(now - timestamp) > WEBHOOK_REPLAY_WINDOW_MS) {
     return { payload: null, error: 'Webhook timestamp expired' };
   }
   
@@ -130,7 +133,7 @@ export function processWebhook(
 export async function sendWebhook(
   url: string,
   payload: WebhookPayload,
-  rateLimit: number = 100 // Default rate limit
+  rateLimit: number = WEBHOOK_DEFAULT_RATE_LIMIT
 ): Promise<boolean> {
   // Simulating rate limit check
   // In a real app, we'd use a Redis-based rate limiter
