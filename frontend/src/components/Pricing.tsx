@@ -9,6 +9,17 @@ import Link from 'next/link';
 import { apiUrl, DEPLOYER_ADDRESS } from '@/lib/env';
 import logger from '@/lib/logger';
 
+const PRICING_USERNAME_MIN_LENGTH = 3;
+const PRICING_USERNAME_MAX_LENGTH = 32;
+const PRICING_CHANNEL_PREVIEW_LENGTH = 12;
+/** Tier prices in microSTX (1 STX = 1_000_000 microSTX). */
+const TIER_PRICES_MICRO_STX: Record<number, number> = {
+  0: 0,           // Free
+  1: 1_000_000,   // 1 STX for Basic
+  2: 5_000_000,   // 5 STX for Pro
+  3: 20_000_000,  // 20 STX for Premium
+};
+
 const tiers = [
   {
     name: 'Free',
@@ -200,8 +211,8 @@ export default function Pricing() {
       return;
     }
 
-    if (normalizedUsername.length < 3 || normalizedUsername.length > 32) {
-      toast.warning('Invalid username', 'Username must be 3–32 characters.');
+    if (normalizedUsername.length < PRICING_USERNAME_MIN_LENGTH || normalizedUsername.length > PRICING_USERNAME_MAX_LENGTH) {
+      toast.warning('Invalid username', `Username must be ${PRICING_USERNAME_MIN_LENGTH}–${PRICING_USERNAME_MAX_LENGTH} characters.`);
       return;
     }
 
@@ -211,13 +222,7 @@ export default function Pricing() {
     }
 
     // Calculate price for the tier (in microSTX)
-    const tierPrices: Record<number, number> = {
-      0: 0,         // Free
-      1: 1000000,   // 1 STX for Basic
-      2: 5000000,   // 5 STX for Pro
-      3: 20000000,  // 20 STX for Premium
-    };
-    const price = tierPrices[selectedTier] || 0;    setIsLoading(true);
+    const price = TIER_PRICES_MICRO_STX[selectedTier] ?? 0;    setIsLoading(true);
     setSubscribingTier(selectedTier);
     try {
       setUsername(normalizedUsername);
@@ -583,7 +588,7 @@ export default function Pricing() {
                       </div>
                       <p className="text-white text-xs font-bold mb-1">{chan.label}</p>
                       <p className={`text-[10px] font-medium truncate ${chan.value ? 'text-emerald-400' : 'text-gray-500 italic'}`}>
-                        {chan.value ? (chan.value.slice(0, 12) + (chan.value.length > 12 ? '..' : '')) : 'Add now'}
+                        {chan.value ? (chan.value.slice(0, PRICING_CHANNEL_PREVIEW_LENGTH) + (chan.value.length > PRICING_CHANNEL_PREVIEW_LENGTH ? '..' : '')) : 'Add now'}
                       </p>
                     </button>
                   ))}
