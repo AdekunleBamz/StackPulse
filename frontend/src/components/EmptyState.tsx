@@ -13,6 +13,8 @@ interface EmptyStateProps {
   description: string;
   /** Optional additional CSS classes */
   className?: string;
+  /** Optional secondary description shown below the main one. */
+  hint?: string;
   /** Optional action button configuration */
   action?: {
     /** Button label text */
@@ -22,7 +24,7 @@ interface EmptyStateProps {
   };
 }
 
-export default function EmptyState({ icon: Icon, title, description, action, className = "" }: EmptyStateProps) {
+export default function EmptyState({ icon: Icon, title, description, hint, action, className = "" }: EmptyStateProps) {
   return (
     <section 
       className={`flex flex-col items-center justify-center py-16 px-4 text-center animate-zoom-in duration-500 group ${className}`}
@@ -39,7 +41,9 @@ export default function EmptyState({ icon: Icon, title, description, action, cla
       </div>
       
       <h3 id="empty-state-title" className="text-xl font-bold text-white mb-2 tracking-tight">{title}</h3>
-      <p id="empty-state-description" className="text-gray-400 max-w-md mb-8 leading-relaxed">{description}</p>
+      <p id="empty-state-description" className="text-gray-400 max-w-md mb-2 leading-relaxed">{description}</p>
+      {hint && <p className="text-gray-500 text-sm max-w-md mb-6 leading-relaxed">{hint}</p>}
+      {!hint && <div className="mb-6" />}
       
       {action && (
         <button
