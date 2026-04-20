@@ -35,6 +35,8 @@ interface UseWebSocketReturn {
   reconnectCount: number;
   /** True when the last connection attempt ended with an error. */
   hasError: boolean;
+  /** True when websocket is open and send() can publish immediately. */
+  canSend: boolean;
   lastMessage: unknown;
   subscribe: (channel: string) => void;
   unsubscribe: (channel: string) => void;
@@ -184,6 +186,7 @@ export function useWebSocket(options: UseWebSocketOptions = {}): UseWebSocketRet
     isDisconnected: !isConnected && !isConnecting,
     reconnectCount,
     hasError,
+    canSend: isConnected,
     lastMessage,
     subscribe,
     unsubscribe,
