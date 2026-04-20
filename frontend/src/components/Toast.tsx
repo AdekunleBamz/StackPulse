@@ -3,6 +3,10 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { CheckCircle, AlertCircle, Info, AlertTriangle, X, Loader2 } from 'lucide-react';
 
+const TOAST_DEFAULT_DURATION_MS = 5000;
+const TOAST_LEAVE_ANIMATION_DURATION_MS = 300;
+const TOAST_PROGRESS_INTERVAL_MS = 16;
+
 /**
  * Props for the Toast component.
  */
@@ -59,7 +63,7 @@ const toastStyles = {
   },
 };
 
-function Toast({ id, type, title, message, duration = 5000, onClose }: ToastProps) {
+function Toast({ id, type, title, message, duration = TOAST_DEFAULT_DURATION_MS, onClose }: ToastProps) {
   const [isLeaving, setIsLeaving] = useState(false);
   const [progress, setProgress] = useState(100);
   const styles = toastStyles[type];
@@ -88,8 +92,7 @@ function Toast({ id, type, title, message, duration = 5000, onClose }: ToastProp
     startTimeRef.current = Date.now();
     timerRef.current = window.setTimeout(() => {
       setIsLeaving(true);
-      leavingTimerRef.current = window.setTimeout(() => onClose(id), 300);
-    }, remainingMsRef.current);
+      leavingTimerRef.current = window.setTimeout(() => onClose(id), TOAST_LEAVE_ANIMATION_DURATION_MS);
 
     progressIntervalRef.current = window.setInterval(() => {
       if (startTimeRef.current) {
@@ -97,7 +100,7 @@ function Toast({ id, type, title, message, duration = 5000, onClose }: ToastProp
         const newProgress = Math.max(0, ((remainingMsRef.current - elapsed) / duration) * 100);
         setProgress(newProgress);
       }
-    }, 16);
+    }, TOAST_PROGRESS_INTERVAL_MS);
   }, [clearTimers, duration, id, onClose]);
 
   useEffect(() => {
@@ -109,7 +112,7 @@ function Toast({ id, type, title, message, duration = 5000, onClose }: ToastProp
   const handleClose = () => {
     clearTimers();
     setIsLeaving(true);
-    leavingTimerRef.current = window.setTimeout(() => onClose(id), 300);
+    leavingTimerRef.current = window.setTimeout(() => onClose(id), TOAST_LEAVE_ANIMATION_DURATION_MS);
   };
 
   const pause = () => {
