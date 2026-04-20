@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { apiUrl } from '@/lib/env';
 import logger from '@/lib/logger';
 
@@ -35,6 +35,12 @@ interface UseUserReturn {
   user: User | null;
   loading: boolean;
   error: string | null;
+  /** True when the user is registered (non-null user record). */
+  isAuthenticated: boolean;
+  /** True when the user has a non-zero referral count or badges. */
+  hasActivity: boolean;
+  /** True when the user's subscription has not expired. */
+  isSubscriptionActive: boolean;
   fetchUser: () => Promise<void>;
   register: (referrer?: string) => Promise<boolean>;
   upgrade: (tier: number, txId: string) => Promise<boolean>;
@@ -154,10 +160,21 @@ export function useUser(address: string | null, options: UseUserOptions = {}): U
     }
   }, [address, autoFetch, fetchUser]);
 
+  const isAuthenticated = user !== null;
+  const hasActivity = useMemo(() => !!user && (user.referralCount > 0 || user.badges.length > 0 || user.totalAlertsTriggers > 0), [user]);
+  const isSubscriptionActive = useMemo(() => {
+    if (!user) return false;
+    if (!user.expiresAt) return true;
+    return user.expiresAt > new Date();
+  }, [user]);
+
   return {
     user,
     loading,
     error,
+    isAuthenticated,
+    hasActivity,
+    isSubscriptionActive,
     fetchUser,
     register,
     upgrade,
