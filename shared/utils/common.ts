@@ -12,8 +12,8 @@
 export function isValidStacksAddress(address: string): boolean {
   const normalizedAddress = typeof address === 'string' ? address.trim() : '';
   if (!normalizedAddress) return false;
-  // Mainnet: SP..., Testnet: ST... (c32check encodes to exactly 41 characters)
-  return /^S[PT][A-Z0-9]{39}$/.test(normalizedAddress);
+  // Mainnet: SP/SM, Testnet: ST/SN — body is 38–40 base-58 characters
+  return /^(S[PMN]|ST)[A-Z0-9]{38,40}$/.test(normalizedAddress);
 }
 
 /**
