@@ -59,6 +59,22 @@ export const WS_URL =
   trimTrailingSlashes(process.env.NEXT_PUBLIC_WS_URL || `${toWebSocketProtocol(SERVER_URL)}/ws`);
 
 /**
+ * Application name constant for display purposes.
+ */
+export const APP_NAME = process.env.NEXT_PUBLIC_APP_NAME || 'StackPulse';
+
+/**
+ * Application version sourced from the environment.
+ * Typically set at build time via CI/CD.
+ */
+export const APP_VERSION = process.env.NEXT_PUBLIC_APP_VERSION || '0.0.0';
+
+/**
+ * Returns true when the app is running in a production environment.
+ */
+export const IS_PRODUCTION = process.env.NODE_ENV === 'production';
+
+/**
  * Constructs a full API URL by combining SERVER_URL with a path.
  *
  * @param path - The API path (with or without leading slash).
