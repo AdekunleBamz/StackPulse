@@ -3,7 +3,7 @@
 import { cn } from '@/lib/cn';
 import { forwardRef } from 'react';
 
-export type ButtonVariant = 'primary' | 'secondary' | 'ghost' | 'danger';
+export type ButtonVariant = 'primary' | 'secondary' | 'ghost' | 'danger' | 'outline';
 export type ButtonSize = 'sm' | 'md' | 'lg';
 
 export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
@@ -23,6 +23,8 @@ const variantClasses: Record<ButtonVariant, string> = {
     'bg-transparent text-gray-400 hover:bg-white/5 hover:text-white active:bg-white/10 transition-colors duration-200',
   danger:
     'bg-rose-600 text-white hover:bg-rose-500 shadow-lg shadow-rose-500/20 hover:shadow-rose-500/40 active:bg-rose-700 transition-all duration-200',
+  outline:
+    'bg-transparent text-purple-400 border border-purple-500/50 hover:bg-purple-500/10 hover:border-purple-400 hover:text-purple-300 active:bg-purple-500/20 transition-all duration-200',
 };
 
 const sizeClasses: Record<ButtonSize, string> = {
