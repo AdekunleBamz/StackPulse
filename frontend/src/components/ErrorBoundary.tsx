@@ -7,6 +7,8 @@ import logger from '@/lib/logger';
 interface Props {
   children: ReactNode;
   fallback?: ReactNode;
+  /** Optional callback invoked when an error is caught, in addition to logging. */
+  onError?: (error: Error, info: React.ErrorInfo) => void;
 }
 
 interface State {
@@ -30,6 +32,7 @@ export default class ErrorBoundary extends Component<Props, State> {
 
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo): void {
     logger.error('ErrorBoundary caught an error:', error, { componentStack: errorInfo.componentStack });
+    this.props.onError?.(error, errorInfo);
   }
 
   handleRetry = (): void => {
