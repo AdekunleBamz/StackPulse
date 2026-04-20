@@ -13,6 +13,8 @@ type TierRequest = Request & {
 const METRICS_RATE_LIMIT_WINDOW_MS = 60_000;
 const METRICS_DEFAULT_MAX_REQUESTS = 10;
 const METRICS_TIER_REQUEST_LIMITS = [10, 100, 500, 2000];
+const METRICS_HEAP_UNHEALTHY_THRESHOLD_PERCENT = 90;
+const METRICS_SERVICE_UNAVAILABLE_STATUS = 503;
 
 // Tiered rate limiter for metrics ingestion
 const metricsLimiter = rateLimiter({
@@ -177,8 +179,8 @@ router.get('/health', (req: Request, res: Response) => {
   const heapUsedPercent = (memUsage.heapUsed / memUsage.heapTotal) * 100;
   
   // Check if memory usage is too high
-  if (heapUsedPercent > 90) {
-    return res.status(503).json({
+  if (heapUsedPercent > METRICS_HEAP_UNHEALTHY_THRESHOLD_PERCENT) {
+    return res.status(METRICS_SERVICE_UNAVAILABLE_STATUS).json({
       status: 'unhealthy',
       reason: 'high_memory_usage',
       memory: {
