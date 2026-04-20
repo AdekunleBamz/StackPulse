@@ -61,6 +61,10 @@ describe('shared/format formatRelativeTime', () => {
   it('returns just now for very recent past timestamps', () => {
     expect(formatRelativeTime(Date.now() - 20 * 1000)).toBe('just now');
   });
+
+  it('formats multi-week future timestamps in weeks', () => {
+    expect(formatRelativeTime(Date.now() + 14 * 24 * 60 * 60 * 1000)).toBe('in 2w');
+  });
 });
 
 describe('shared/format truncateAddress', () => {
