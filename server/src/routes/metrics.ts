@@ -10,13 +10,17 @@ type TierRequest = Request & {
   };
 };
 
+const METRICS_RATE_LIMIT_WINDOW_MS = 60_000;
+const METRICS_DEFAULT_MAX_REQUESTS = 10;
+const METRICS_TIER_REQUEST_LIMITS = [10, 100, 500, 2000];
+
 // Tiered rate limiter for metrics ingestion
 const metricsLimiter = rateLimiter({
-  windowMs: 60000,
-  maxRequests: 10, // Default
+  windowMs: METRICS_RATE_LIMIT_WINDOW_MS,
+  maxRequests: METRICS_DEFAULT_MAX_REQUESTS,
   maxRequestsGenerator: (req) => {
     const userTier = (req as TierRequest).user?.tier || 0;
-    const limits = [10, 100, 500, 2000];
+    const limits = METRICS_TIER_REQUEST_LIMITS;
     const safeTier = Number.isInteger(userTier) && userTier >= 0 ? userTier : 0;
     return limits[Math.min(safeTier, limits.length - 1)];
   }
