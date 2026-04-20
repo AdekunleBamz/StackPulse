@@ -114,6 +114,20 @@ class CacheService {
   }
 
   /**
+   * Fetches multiple keys at once. Returns a Map of key → value for
+   * keys that exist and have not expired. Missing or expired keys are
+   * omitted from the result.
+   */
+  mget<T>(keys: string[]): Map<string, T> {
+    const result = new Map<string, T>();
+    for (const key of keys) {
+      const value = this.get<T>(key);
+      if (value !== null) result.set(key, value);
+    }
+    return result;
+  }
+
+  /**
    * Clear all cache
    */
   clear(): void {
