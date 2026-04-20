@@ -1,5 +1,9 @@
 import { describe, expect, it } from 'vitest';
 import {
+  formatBalance,
+  formatDate,
+  formatDateTime,
+  formatDuration,
   formatFileSize,
   formatNumber,
   formatTxId,
@@ -82,6 +86,12 @@ describe('shared/format formatFileSize', () => {
 
   it('handles non-finite byte counts safely', () => {
     expect(formatFileSize(Number.POSITIVE_INFINITY)).toBe('0.00 B');
+  });
+});
+
+describe('shared/format formatDuration', () => {
+  it('formats day-scale durations with hours', () => {
+    expect(formatDuration(26 * 60 * 60 * 1000)).toBe('1d 2h');
   });
 });
 
