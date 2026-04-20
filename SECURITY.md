@@ -16,6 +16,7 @@ We take the security of StackPulse seriously. If you believe you have found a se
 **Please do not open a public GitHub issue for security vulnerabilities.**
 
 Instead, please send an email to security@stackpulse.io with a detailed description of the issue, steps to reproduce it, and any potential impact.
+Please redact secrets (mnemonics, API tokens, `.env` values) from all reports and logs.
 
 ### Our Process
 
