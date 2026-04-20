@@ -110,3 +110,31 @@ export function sleep(ms: number): Promise<void> {
   const safeDuration = Number.isFinite(ms) ? Math.max(0, ms) : 0;
   return new Promise((resolve) => setTimeout(resolve, safeDuration));
 }
+
+/**
+ * Returns a new object containing only the specified keys from the source object.
+ * @param obj - The source object.
+ * @param keys - The keys to include.
+ */
+export function pick<T extends object, K extends keyof T>(obj: T, keys: K[]): Pick<T, K> {
+  const result = {} as Pick<T, K>;
+  for (const key of keys) {
+    if (Object.prototype.hasOwnProperty.call(obj, key)) {
+      result[key] = obj[key];
+    }
+  }
+  return result;
+}
+
+/**
+ * Returns a new object with the specified keys removed from the source object.
+ * @param obj - The source object.
+ * @param keys - The keys to exclude.
+ */
+export function omit<T extends object, K extends keyof T>(obj: T, keys: K[]): Omit<T, K> {
+  const result = { ...obj };
+  for (const key of keys) {
+    delete result[key];
+  }
+  return result as Omit<T, K>;
+}
