@@ -12,6 +12,8 @@ interface ProgressBarProps {
   animate?: boolean;
   /** Accessible label for the progress bar */
   label?: string;
+  /** Optional custom label text for the "Processing..." string when showLabel is true */
+  processingLabel?: string;
 }
 
 export default function ProgressBar({
@@ -22,6 +24,7 @@ export default function ProgressBar({
   className = '',
   animate = true,
   label,
+  processingLabel = 'Processing...',
 }: ProgressBarProps) {
   const clampedProgress = Math.min(100, Math.max(0, progress));
   
@@ -43,7 +46,7 @@ export default function ProgressBar({
     <div className={`w-full ${className}`}>
       {showLabel && (
         <div className="flex justify-between text-xs font-medium text-gray-400 mb-1.5 px-0.5">
-          <span>Processing...</span>
+          <span>{processingLabel}</span>
           <span>{clampedProgress}%</span>
         </div>
       )}
