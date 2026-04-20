@@ -20,9 +20,12 @@ const defaultOptions: RequestLogOptions = {
   excludePaths: ['/health', '/health/ready', '/health/live', '/health/full']
 };
 
+const HTTP_SERVER_ERROR_THRESHOLD = 500;
+const HTTP_CLIENT_ERROR_THRESHOLD = 400;
+
 function getLogLevel(statusCode: number): 'error' | 'warn' | 'info' {
-  if (statusCode >= 500) return 'error';
-  if (statusCode >= 400) return 'warn';
+  if (statusCode >= HTTP_SERVER_ERROR_THRESHOLD) return 'error';
+  if (statusCode >= HTTP_CLIENT_ERROR_THRESHOLD) return 'warn';
   return 'info';
 }
 
