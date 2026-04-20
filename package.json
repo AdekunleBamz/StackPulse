@@ -18,6 +18,7 @@
   "homepage": "https://github.com/AdekunleBamz/StackPulse#readme",
   "scripts": {
     "test": "vitest run",
+    "test:format": "vitest run tests/shared-format-utils.test.ts tests/shared-common-utils.test.ts",
     "test:watch": "vitest",
     "test:ci": "vitest run --coverage --reporter=junit --outputFile=./junit.xml",
     "clarinet:check": "clarinet check",
