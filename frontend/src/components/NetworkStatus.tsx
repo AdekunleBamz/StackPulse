@@ -21,10 +21,16 @@ interface NetworkStatusProps {
 
 const STACKS_INFO_API_URL = 'https://api.mainnet.hiro.so/extended/v1/info';
 const STACKS_CORE_INFO_API_URL = 'https://api.mainnet.hiro.so/v2/info';
-const DEFAULT_REFRESH_INTERVAL_MS = 30000;
-const MIN_REFRESH_INTERVAL_MS = 5000;
+const DEFAULT_REFRESH_INTERVAL_MS = 30_000;
+const MIN_REFRESH_INTERVAL_MS = 5_000;
 const JSON_ACCEPT_HEADERS = { Accept: 'application/json' } as const;
 const LAST_UPDATED_TIME_OPTIONS: Intl.DateTimeFormatOptions = { hour: '2-digit', minute: '2-digit' };
+/** Approximate average block time in seconds for Stacks mainnet. */
+const APPROX_AVG_BLOCK_TIME_SECONDS = 10;
+/** Approximate stacking participation rate (as a fraction). */
+const APPROX_STACKING_PARTICIPATION = 0.45;
+/** Approximate total STX locked in stacking. */
+const APPROX_TOTAL_STX_LOCKED = 400_000_000;
 
 export default function NetworkStatus({ refreshInterval = DEFAULT_REFRESH_INTERVAL_MS }: NetworkStatusProps) {
   const [stats, setStats] = useState<NetworkStats | null>(null);
@@ -66,11 +72,11 @@ export default function NetworkStatus({ refreshInterval = DEFAULT_REFRESH_INTERV
       setStats({
         blockHeight: core.stacks_tip_height || 0,
         txCount24h: info.tx_count_per_24h || 0,
-        avgBlockTime: core.stacks_tip_consensus_hash ? 10 : 0, // Approximate
+        avgBlockTime: core.stacks_tip_consensus_hash ? APPROX_AVG_BLOCK_TIME_SECONDS : 0,
         hashRate: 'N/A',
         difficulty: 'N/A',
-        stackingParticipation: 0.45, // Approximate
-        totalSTXLocked: 400000000, // Approximate
+        stackingParticipation: APPROX_STACKING_PARTICIPATION,
+        totalSTXLocked: APPROX_TOTAL_STX_LOCKED,
         activeContracts: info.smart_contract_count || 0,
       });
       hasStatsRef.current = true;
