@@ -79,6 +79,10 @@ describe('shared/format formatFileSize', () => {
   it('clamps negative byte counts to zero', () => {
     expect(formatFileSize(-12)).toBe('0.00 B');
   });
+
+  it('handles non-finite byte counts safely', () => {
+    expect(formatFileSize(Number.POSITIVE_INFINITY)).toBe('0.00 B');
+  });
 });
 
 describe('shared/format parseStxAmount', () => {
