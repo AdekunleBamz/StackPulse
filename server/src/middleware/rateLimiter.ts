@@ -13,12 +13,18 @@ interface RateLimitEntry {
 }
 
 const rateLimitStore = new Map<string, RateLimitEntry>();
-const RATE_LIMIT_CLEANUP_INTERVAL_MS = 60000;
-const DEFAULT_RATE_LIMIT_WINDOW_MS = 60000;
+const RATE_LIMIT_CLEANUP_INTERVAL_MS = 60_000;
+const DEFAULT_RATE_LIMIT_WINDOW_MS = 60_000;
 const DEFAULT_RATE_LIMIT_MAX_REQUESTS = 100;
 const RATE_LIMIT_UNKNOWN_KEY = 'unknown';
 const TOO_MANY_REQUESTS_STATUS = 429;
 const MILLISECONDS_PER_SECOND = 1000;
+/** Rate limit window for auth endpoints (15 minutes in ms). */
+const AUTH_RATE_LIMIT_WINDOW_MS = 900_000;
+/** Maximum auth requests allowed within the auth rate limit window. */
+const AUTH_RATE_LIMIT_MAX_REQUESTS = 5;
+/** Maximum requests allowed for webhook endpoints per window. */
+const WEBHOOK_RATE_LIMIT_MAX_REQUESTS = 1000;
 
 type TierRequest = Request & {
   user?: {
@@ -138,13 +144,13 @@ export const tieredApiLimiter = rateLimiter({
 });
 
 export const authLimiter = rateLimiter({
-  windowMs: 900000, // 15 minutes
-  maxRequests: 5
+  windowMs: AUTH_RATE_LIMIT_WINDOW_MS,
+  maxRequests: AUTH_RATE_LIMIT_MAX_REQUESTS
 });
 
 export const webhookLimiter = rateLimiter({
   windowMs: DEFAULT_RATE_LIMIT_WINDOW_MS,
-  maxRequests: 1000
+  maxRequests: WEBHOOK_RATE_LIMIT_MAX_REQUESTS
 });
 
 export default {
