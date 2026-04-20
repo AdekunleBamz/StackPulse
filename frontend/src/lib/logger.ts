@@ -51,4 +51,26 @@ export const logger: Readonly<Logger> = Object.freeze({
   error: (...args: unknown[]) => writeLog('error', ...args),
 });
 
+/**
+ * Creates a logger that automatically prepends a fixed prefix to every message.
+ * Useful for scoping log output to a component or module name.
+ *
+ * @param prefix - The prefix string shown before every log message.
+ * @returns A logger-compatible object with the prefix applied.
+ *
+ * @example
+ * ```ts
+ * const log = createPrefixedLogger('[WalletContext]');
+ * log.info('connected'); // logs: "[WalletContext] connected"
+ * ```
+ */
+export function createPrefixedLogger(prefix: string): Readonly<Logger> {
+  return Object.freeze({
+    debug: (...args: unknown[]) => writeLog('debug', prefix, ...args),
+    info: (...args: unknown[]) => writeLog('info', prefix, ...args),
+    warn: (...args: unknown[]) => writeLog('warn', prefix, ...args),
+    error: (...args: unknown[]) => writeLog('error', prefix, ...args),
+  });
+}
+
 export default logger;
