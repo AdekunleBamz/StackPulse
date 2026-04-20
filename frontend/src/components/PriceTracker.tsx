@@ -26,7 +26,12 @@ const toFiniteNumber = (value: unknown): number => {
   return typeof value === 'number' && Number.isFinite(value) ? value : 0;
 };
 
-export default function PriceTracker() {
+interface PriceTrackerProps {
+  /** Whether to show the BTC price alongside STX (default: true). */
+  showBTC?: boolean;
+}
+
+export default function PriceTracker({ showBTC = true }: PriceTrackerProps) {
   const [prices, setPrices] = useState<PriceData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -162,9 +167,10 @@ export default function PriceTracker() {
       </div>
 
       {/* Divider */}
-      <div className="w-px h-4 bg-gray-700" />
+      {showBTC && <div className="w-px h-4 bg-gray-700" />}
 
       {/* BTC Price */}
+      {showBTC && (
       <div className="flex items-center gap-2">
         <span className="font-medium text-white">BTC</span>
         <span className="text-gray-300">{formatPrice(prices.btc.usd)}</span>
@@ -176,10 +182,11 @@ export default function PriceTracker() {
           {formatChange(prices.btc.change24h)}
         </span>
       </div>
+      )}
 
       {/* Last update tooltip */}
       {lastUpdate && (
-        <div className="hidden lg:block text-xs text-gray-500">
+        <div className="hidden lg:block text-xs text-gray-500" title={`Last fetched at ${lastUpdate.toLocaleTimeString()}`}>
           Updated {lastUpdate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
         </div>
       )}
