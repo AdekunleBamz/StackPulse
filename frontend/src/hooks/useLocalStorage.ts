@@ -77,4 +77,50 @@ export function removeLocalStorageItem(key: string): void {
   }
 }
 
+/**
+ * A hook that synchronizes state with browser sessionStorage.
+ * Works like useLocalStorage but the value is cleared when the browser tab closes.
+ *
+ * @template T - The type of the stored value.
+ * @param key - The sessionStorage key.
+ * @param initialValue - The fallback value when nothing is stored.
+ * @returns A tuple of [storedValue, setValue, removeValue].
+ */
+export function useSessionStorage<T>(key: string, initialValue: T): [T, (value: T | ((val: T) => T)) => void, () => void] {
+  const [storedValue, setStoredValue] = useState<T>(() => {
+    if (typeof window === 'undefined' || !key) return initialValue;
+    try {
+      const item = window.sessionStorage.getItem(key);
+      if (!item) return initialValue;
+      const parsed = JSON.parse(item) as T | undefined;
+      return parsed === undefined ? initialValue : parsed;
+    } catch (error) {
+      logger.error('Error reading from sessionStorage:', error);
+      return initialValue;
+    }
+  });
+
+  useEffect(() => {
+    if (typeof window === 'undefined' || !key) return;
+    try {
+      window.sessionStorage.setItem(key, JSON.stringify(storedValue));
+    } catch (error) {
+      logger.error('Error writing to sessionStorage:', error);
+    }
+  }, [key, storedValue]);
+
+  const removeValue = () => {
+    if (typeof window !== 'undefined' && key) {
+      try {
+        window.sessionStorage.removeItem(key);
+      } catch (error) {
+        logger.error('Error removing sessionStorage key:', error);
+      }
+    }
+    setStoredValue(initialValue);
+  };
+
+  return [storedValue, setStoredValue, removeValue];
+}
+
 export default useLocalStorage;
