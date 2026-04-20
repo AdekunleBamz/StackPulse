@@ -13,10 +13,13 @@
  * // Returns: "SP1234...QRST"
  * ```
  */
-export function truncateAddress(address: string, startChars = 6, endChars = 4): string {
+const TRUNCATE_ADDRESS_DEFAULT_START = 6;
+const TRUNCATE_ADDRESS_DEFAULT_END = 4;
+
+export function truncateAddress(address: string, startChars = TRUNCATE_ADDRESS_DEFAULT_START, endChars = TRUNCATE_ADDRESS_DEFAULT_END): string {
   if (!address) return '';
-  const safeStart = Number.isFinite(startChars) ? Math.max(0, Math.floor(startChars)) : 6;
-  const safeEnd = Number.isFinite(endChars) ? Math.max(0, Math.floor(endChars)) : 4;
+  const safeStart = Number.isFinite(startChars) ? Math.max(0, Math.floor(startChars)) : TRUNCATE_ADDRESS_DEFAULT_START;
+  const safeEnd = Number.isFinite(endChars) ? Math.max(0, Math.floor(endChars)) : TRUNCATE_ADDRESS_DEFAULT_END;
   if (safeStart + safeEnd <= 0) return '';
   if (address.length <= safeStart + safeEnd) return address;
   const tail = safeEnd > 0 ? address.slice(-safeEnd) : '';
