@@ -52,6 +52,11 @@
 ;; Maximum valid tier
 (define-constant MAX-TIER u3)
 
+;; User profile constraints
+(define-constant MIN-USERNAME-LEN u1)
+(define-constant MAX-USERNAME-LEN u32)
+(define-constant MAX-EMAIL-LEN u64)
+
 ;; Maximum alerts bitmask (all 5 alert types)
 (define-constant MAX-ALERTS-BITMASK u31)
 
@@ -142,7 +147,7 @@
 ;; V3: Validate username (non-empty, proper length)
 (define-private (is-valid-username (username (string-ascii 32)))
   (let ((username-len (len username)))
-    (and (>= username-len u1) (<= username-len u32))
+    (and (>= username-len MIN-USERNAME-LEN) (<= username-len MAX-USERNAME-LEN))
   )
 )
 
