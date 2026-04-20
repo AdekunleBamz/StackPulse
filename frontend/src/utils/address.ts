@@ -64,6 +64,17 @@ export function isSameAddress(a: string, b: string): boolean {
 }
 
 /**
+ * Normalizes a Stacks address for stable comparisons/storage.
+ * Trims whitespace and lowercases the value.
+ *
+ * @param address - Address to normalize.
+ */
+export function normalizeStacksAddress(address: string): string {
+  if (typeof address !== 'string') return '';
+  return address.trim().toLowerCase();
+}
+
+/**
  * Returns true if the given Stacks address looks like a contract address
  * (contains a dot separator between the deployer and contract name).
  *
