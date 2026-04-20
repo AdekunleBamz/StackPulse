@@ -202,3 +202,36 @@ export function mapValues<T extends object, R>(
   }
   return result;
 }
+
+/**
+ * Returns true if two dates fall on the same calendar day (ignores time).
+ * @param a - First date.
+ * @param b - Second date.
+ */
+export function isSameDate(a: Date, b: Date): boolean {
+  return (
+    a.getFullYear() === b.getFullYear() &&
+    a.getMonth() === b.getMonth() &&
+    a.getDate() === b.getDate()
+  );
+}
+
+/**
+ * Returns a new Date set to midnight (00:00:00.000) at the start of the given date's day.
+ * @param date - The reference date.
+ */
+export function startOfDay(date: Date): Date {
+  const d = new Date(date);
+  d.setHours(0, 0, 0, 0);
+  return d;
+}
+
+/**
+ * Returns a new Date set to 23:59:59.999 at the end of the given date's day.
+ * @param date - The reference date.
+ */
+export function endOfDay(date: Date): Date {
+  const d = new Date(date);
+  d.setHours(23, 59, 59, 999);
+  return d;
+}
