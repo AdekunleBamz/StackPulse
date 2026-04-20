@@ -10,7 +10,7 @@ By participating in this project, you agree to abide by our Code of Conduct. Ple
 
 1. **Fork the Repo**: Create your own fork of the repository.
 2. **Setup Dev Environment**: Follow the instructions in [README.md](README.md) to install dependencies.
-3. **Sign Your Commits**: We require all commits to be cryptographically signed (GPG or SSH) for security and verification.
+3. **Sign Your Commits**: We require all commits to be signed for security and verification.
    ```bash
    git config --global user.signingkey <your-key-id>
    git commit -S -m "Your commit message"
