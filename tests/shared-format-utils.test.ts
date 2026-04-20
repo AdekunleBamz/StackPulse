@@ -49,6 +49,10 @@ describe('shared/format formatRelativeTime', () => {
   it('describes timestamps a few minutes in the future', () => {
     expect(formatRelativeTime(Date.now() + 3 * 60 * 1000 + 5000)).toBe('in 3m');
   });
+
+  it('returns just now for very recent past timestamps', () => {
+    expect(formatRelativeTime(Date.now() - 20 * 1000)).toBe('just now');
+  });
 });
 
 describe('shared/format truncateAddress', () => {
