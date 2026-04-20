@@ -18,7 +18,7 @@ import logger from '@/lib/logger';
  * setTheme('dark'); // Updates both state and localStorage
  * ```
  */
-export function useLocalStorage<T>(key: string, initialValue: T): [T, (value: T | ((val: T) => T)) => void] {
+export function useLocalStorage<T>(key: string, initialValue: T): [T, (value: T | ((val: T) => T)) => void, () => void] {
   // Get stored value or initial value
   const [storedValue, setStoredValue] = useState<T>(() => {
     if (typeof window === 'undefined' || !key) {
@@ -49,7 +49,18 @@ export function useLocalStorage<T>(key: string, initialValue: T): [T, (value: T 
     }
   }, [key, storedValue]);
 
-  return [storedValue, setStoredValue];
+  const removeValue = () => {
+    if (typeof window !== 'undefined' && key) {
+      try {
+        window.localStorage.removeItem(key);
+      } catch (error) {
+        logger.error('Error removing localStorage key:', error);
+      }
+    }
+    setStoredValue(initialValue);
+  };
+
+  return [storedValue, setStoredValue, removeValue];
 }
 
 /**
