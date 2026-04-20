@@ -76,4 +76,23 @@ export const useIsDesktop = () => useMediaQuery(`(min-width: ${BREAKPOINT_DESKTO
  */
 export const useIsLargeScreen = () => useMediaQuery(`(min-width: ${BREAKPOINT_LARGE_SCREEN_MIN_PX}px)`);
 
+/**
+ * Hook to check if the user prefers reduced motion.
+ * Useful for disabling animations for accessibility.
+ * @returns True when the user has requested reduced motion.
+ */
+export const usePreferReducedMotion = () => useMediaQuery('(prefers-reduced-motion: reduce)');
+
+/**
+ * Hook to check if the user's system is in dark mode.
+ * @returns True when the system colour scheme is dark.
+ */
+export const usePrefersDarkMode = () => useMediaQuery('(prefers-color-scheme: dark)');
+
+/**
+ * Hook to detect portrait orientation.
+ * @returns True when the viewport is in portrait orientation.
+ */
+export const useIsPortrait = () => useMediaQuery('(orientation: portrait)');
+
 export default useMediaQuery;
