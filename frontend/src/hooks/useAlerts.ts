@@ -48,6 +48,8 @@ interface UseAlertsReturn {
   disabledAlerts: Alert[];
   /** Number of enabled alerts. */
   enabledCount: number;
+  /** Most recently triggered alert, if any. */
+  latestTriggeredAlert: Alert | null;
   fetchAlerts: () => Promise<void>;
   createAlert: (input: CreateAlertInput) => Promise<boolean>;
   updateAlert: (id: string, updates: Partial<Alert>) => Promise<boolean>;
@@ -277,6 +279,11 @@ export function useAlerts(address: string | null): UseAlertsReturn {
   const activeAlerts = useMemo(() => alerts.filter(a => a.enabled), [alerts]);
   const disabledAlerts = useMemo(() => alerts.filter(a => !a.enabled), [alerts]);
   const enabledCount = activeAlerts.length;
+  const latestTriggeredAlert = useMemo(() => {
+    const triggered = alerts.filter((a) => a.lastTriggered);
+    if (triggered.length === 0) return null;
+    return triggered.sort((a, b) => (b.lastTriggered?.getTime() ?? 0) - (a.lastTriggered?.getTime() ?? 0))[0] ?? null;
+  }, [alerts]);
 
   return {
     alerts,
@@ -287,6 +294,7 @@ export function useAlerts(address: string | null): UseAlertsReturn {
     activeAlerts,
     disabledAlerts,
     enabledCount,
+    latestTriggeredAlert,
     fetchAlerts,
     createAlert,
     updateAlert,
