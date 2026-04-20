@@ -69,6 +69,10 @@ describe('shared/format truncateString', () => {
   it('adds an ellipsis when trimming long text', () => {
     expect(truncateString('stackpulse-alert', 10)).toBe('stackpulse...');
   });
+
+  it('returns only ellipsis when max length is zero', () => {
+    expect(truncateString('alert', 0)).toBe('...');
+  });
 });
 
 describe('shared/format formatFileSize', () => {
