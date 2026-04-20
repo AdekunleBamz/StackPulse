@@ -93,6 +93,10 @@ describe('shared/format formatDuration', () => {
   it('formats day-scale durations with hours', () => {
     expect(formatDuration(26 * 60 * 60 * 1000)).toBe('1d 2h');
   });
+
+  it('formats minute-scale durations with seconds', () => {
+    expect(formatDuration(125_000)).toBe('2m 5s');
+  });
 });
 
 describe('shared/format parseStxAmount', () => {
