@@ -99,6 +99,12 @@ describe('shared/format formatDuration', () => {
   });
 });
 
+describe('shared/format formatDate', () => {
+  it('returns an explicit invalid marker for invalid timestamps', () => {
+    expect(formatDate(new Date('invalid'))).toBe('Invalid date');
+  });
+});
+
 describe('shared/format parseStxAmount', () => {
   it('removes commas and units before parsing', () => {
     expect(parseStxAmount('1,234.567 STX')).toBe(1234567000);
