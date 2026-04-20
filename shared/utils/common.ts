@@ -158,3 +158,20 @@ export function groupBy<T>(items: T[], keyFn: (item: T) => string): Map<string, 
   }
   return result;
 }
+
+/**
+ * Creates a new object by applying a transform function to each value of the source object.
+ * @param obj - The source object.
+ * @param fn - A function to apply to each value.
+ * @returns A new object with the same keys but transformed values.
+ */
+export function mapValues<T extends object, R>(
+  obj: T,
+  fn: (value: T[keyof T], key: keyof T) => R
+): Record<string, R> {
+  const result: Record<string, R> = {};
+  for (const key of Object.keys(obj) as (keyof T)[]) {
+    result[key as string] = fn(obj[key], key);
+  }
+  return result;
+}
