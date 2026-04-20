@@ -15,9 +15,10 @@ interface PriceData {
   };
 }
 
-const PRICE_REFRESH_INTERVAL_MS = 60000;
+const PRICE_REFRESH_INTERVAL_MS = 60_000;
 const PRICE_CHANGE_NEUTRAL_THRESHOLD = 0.1;
 const PRICE_STALE_THRESHOLD_MS = PRICE_REFRESH_INTERVAL_MS * 5;
+const PRICE_FORMAT_LARGE_THRESHOLD = 1000;
 const COINGECKO_SIMPLE_PRICE_URL =
   'https://api.coingecko.com/api/v3/simple/price?ids=blockstack,bitcoin&vs_currencies=usd&include_24hr_change=true';
 
@@ -90,7 +91,7 @@ export default function PriceTracker() {
   }, [refreshKey]);
 
   const formatPrice = (price: number) => {
-    if (price >= 1000) {
+    if (price >= PRICE_FORMAT_LARGE_THRESHOLD) {
       return `$${price.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
     }
     return `$${price.toFixed(4)}`;
