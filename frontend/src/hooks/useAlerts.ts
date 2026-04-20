@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { apiUrl } from '@/lib/env';
 import logger from '@/lib/logger';
 
@@ -38,6 +38,14 @@ interface UseAlertsReturn {
   alerts: Alert[];
   loading: boolean;
   error: string | null;
+  /** Total number of alerts. */
+  alertCount: number;
+  /** True when the user has at least one alert. */
+  hasAlerts: boolean;
+  /** Alerts that are currently enabled. */
+  activeAlerts: Alert[];
+  /** Number of enabled alerts. */
+  enabledCount: number;
   fetchAlerts: () => Promise<void>;
   createAlert: (input: CreateAlertInput) => Promise<boolean>;
   updateAlert: (id: string, updates: Partial<Alert>) => Promise<boolean>;
@@ -259,10 +267,17 @@ export function useAlerts(address: string | null): UseAlertsReturn {
     }
   }, [address, fetchAlerts]);
 
+  const activeAlerts = useMemo(() => alerts.filter(a => a.enabled), [alerts]);
+  const enabledCount = activeAlerts.length;
+
   return {
     alerts,
     loading,
     error,
+    alertCount: alerts.length,
+    hasAlerts: alerts.length > 0,
+    activeAlerts,
+    enabledCount,
     fetchAlerts,
     createAlert,
     updateAlert,
