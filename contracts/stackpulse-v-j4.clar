@@ -57,8 +57,16 @@
 (define-constant MAX-USERNAME-LEN u32)
 (define-constant MAX-EMAIL-LEN u64)
 
-;; Maximum alerts bitmask (all 5 alert types)
-(define-constant MAX-ALERTS-BITMASK u31)
+;; Alert bitmasks
+(define-constant ALERT-WHALE u1)
+(define-constant ALERT-NFT u2)
+(define-constant ALERT-TOKEN u4)
+(define-constant ALERT-SWAP u8)
+(define-constant ALERT-CONTRACT u16)
+(define-constant ALL-ALERTS-MASK u31)
+
+;; Maximum alerts bitmask (deprecated in favor of ALL-ALERTS-MASK)
+(define-constant MAX-ALERTS-BITMASK ALL-ALERTS-MASK)
 
 ;; ============================================
 ;; DATA STORAGE
