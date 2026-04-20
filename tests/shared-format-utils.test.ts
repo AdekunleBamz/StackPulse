@@ -29,6 +29,10 @@ describe('shared/format formatNumber', () => {
   it('parses comma-separated strings before formatting', () => {
     expect(formatNumber('12,345.67')).toBe('12,345.67');
   });
+
+  it('returns zero for invalid numeric strings', () => {
+    expect(formatNumber('not-a-number')).toBe('0');
+  });
 });
 
 describe('shared/format formatPercent', () => {
