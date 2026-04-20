@@ -33,6 +33,10 @@ interface WalletContextType {
 
 const WalletContext = createContext<WalletContextType | null>(null);
 
+const WALLET_APP_NAME = 'StackPulse';
+const WALLET_APP_ICON = '/logo.svg';
+const WALLET_APP_PERMISSIONS = ['store_write', 'publish_data'] as const;
+
 /**
  * Provider component for Stacks wallet state and actions
  */
@@ -85,13 +89,13 @@ export function WalletProvider({ children }: { children: ReactNode }) {
     
     try {
       const { authenticate, AppConfig, UserSession } = await import('@stacks/connect');
-      const appConfig = new AppConfig(['store_write', 'publish_data']);
+      const appConfig = new AppConfig([...WALLET_APP_PERMISSIONS]);
       const session = new UserSession({ appConfig });
       
       await authenticate({
         appDetails: {
-          name: 'StackPulse',
-          icon: '/logo.svg',
+          name: WALLET_APP_NAME,
+          icon: WALLET_APP_ICON,
         },
         onFinish: () => {
           const userData = session.loadUserData();
