@@ -17,6 +17,8 @@ interface NetworkStats {
 
 interface NetworkStatusProps {
   refreshInterval?: number;
+  /** When true, hides the manual refresh button. */
+  hideRefreshButton?: boolean;
 }
 
 const STACKS_INFO_API_URL = 'https://api.mainnet.hiro.so/extended/v1/info';
@@ -32,7 +34,7 @@ const APPROX_STACKING_PARTICIPATION = 0.45;
 /** Approximate total STX locked in stacking. */
 const APPROX_TOTAL_STX_LOCKED = 400_000_000;
 
-export default function NetworkStatus({ refreshInterval = DEFAULT_REFRESH_INTERVAL_MS }: NetworkStatusProps) {
+export default function NetworkStatus({ refreshInterval = DEFAULT_REFRESH_INTERVAL_MS, hideRefreshButton = false }: NetworkStatusProps) {
   const [stats, setStats] = useState<NetworkStats | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -153,6 +155,7 @@ export default function NetworkStatus({ refreshInterval = DEFAULT_REFRESH_INTERV
               Updated {lastUpdated.toLocaleTimeString([], LAST_UPDATED_TIME_OPTIONS)}
             </span>
           )}
+          {!hideRefreshButton && (
           <button
             type="button"
             onClick={fetchNetworkStats}
@@ -161,6 +164,7 @@ export default function NetworkStatus({ refreshInterval = DEFAULT_REFRESH_INTERV
           >
             {refreshing ? 'Refreshing…' : 'Refresh'}
           </button>
+          )}
           <div className="flex items-center gap-2" aria-live="polite">
             <span 
               className={`w-2 h-2 rounded-full ${healthColor} animate-pulse`}
