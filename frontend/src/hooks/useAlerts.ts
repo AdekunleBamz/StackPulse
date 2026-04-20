@@ -44,6 +44,8 @@ interface UseAlertsReturn {
   hasAlerts: boolean;
   /** Alerts that are currently enabled. */
   activeAlerts: Alert[];
+  /** Alerts that are currently disabled. */
+  disabledAlerts: Alert[];
   /** Number of enabled alerts. */
   enabledCount: number;
   fetchAlerts: () => Promise<void>;
@@ -271,6 +273,7 @@ export function useAlerts(address: string | null): UseAlertsReturn {
   }, [address, fetchAlerts]);
 
   const activeAlerts = useMemo(() => alerts.filter(a => a.enabled), [alerts]);
+  const disabledAlerts = useMemo(() => alerts.filter(a => !a.enabled), [alerts]);
   const enabledCount = activeAlerts.length;
 
   return {
@@ -280,6 +283,7 @@ export function useAlerts(address: string | null): UseAlertsReturn {
     alertCount: alerts.length,
     hasAlerts: alerts.length > 0,
     activeAlerts,
+    disabledAlerts,
     enabledCount,
     fetchAlerts,
     createAlert,
