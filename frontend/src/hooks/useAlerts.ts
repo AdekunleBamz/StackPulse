@@ -220,6 +220,9 @@ export function useAlerts(address: string | null): UseAlertsReturn {
   const toggleAlert = useCallback(async (id: string): Promise<boolean> => {
     if (!address) return false;
 
+    const current = alerts.find(a => a.id === id);
+    const nextEnabled = current ? !current.enabled : true;
+
     setLoading(true);
     setError(null);
 
@@ -227,7 +230,7 @@ export function useAlerts(address: string | null): UseAlertsReturn {
       const response = await fetch(apiUrl(`/api/v1/users/${address}/alerts/${id}`), {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ enabled: false }),
+        body: JSON.stringify({ enabled: nextEnabled }),
       });
 
       const data = await response.json();
