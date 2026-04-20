@@ -63,9 +63,9 @@ git clone https://github.com/AdekunleBamz/StackPulse.git
 cd StackPulse
 
 # Install all dependencies
-npm ci
-npm --prefix server install
-npm --prefix shared ci
+npm install
+npm --prefix server ci
+npm --prefix shared install
 npm --prefix frontend install
 ```
 
