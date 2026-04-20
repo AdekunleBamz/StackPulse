@@ -48,16 +48,19 @@ export default function AlertHistory({ userAddress }: AlertHistoryProps) {
   const [filter, setFilter] = useState<number | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [showFilters, setShowFilters] = useState(false);
-  const debouncedSearchQuery = useDebounce(searchQuery, 300);
+  const debouncedSearchQuery = useDebounce(searchQuery, ALERT_HISTORY_SEARCH_DEBOUNCE_MS);
 
-  const pageSize = 10;
+  const ALERT_HISTORY_PAGE_SIZE = 10;
+  const ALERT_HISTORY_MOCK_COUNT = 50;
+  const ALERT_HISTORY_SEARCH_DEBOUNCE_MS = 300;
+  const pageSize = ALERT_HISTORY_PAGE_SIZE;
 
   const fetchHistory = useCallback(async () => {
     setLoading(true);
     setError(null);
     try {
       // Simulated data - replace with actual API call
-      const mockHistory: AlertHistoryEntry[] = Array.from({ length: 50 }, (_, i) => ({
+      const mockHistory: AlertHistoryEntry[] = Array.from({ length: ALERT_HISTORY_MOCK_COUNT }, (_, i) => ({
         id: `hist-${userAddress || 'global'}-${i}`,
         alertId: Math.floor(Math.random() * 10) + 1,
         alertName: `Alert #${Math.floor(Math.random() * 10) + 1}`,
