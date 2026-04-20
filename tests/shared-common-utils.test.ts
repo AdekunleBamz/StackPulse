@@ -96,3 +96,16 @@ describe('shared/common debounce', () => {
     expect(handler).toHaveBeenCalledWith('instant');
   });
 });
+
+describe('shared/common sleep', () => {
+  it('treats negative durations as zero-delay', async () => {
+    vi.useFakeTimers();
+    const done = vi.fn();
+
+    void sleep(-50).then(done);
+    vi.advanceTimersByTime(0);
+    await vi.runAllTimersAsync();
+
+    expect(done).toHaveBeenCalledTimes(1);
+  });
+});
