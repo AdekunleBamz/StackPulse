@@ -19,6 +19,8 @@ interface ConfirmDialogProps {
   onCancel: () => void;
   /** Visual style variant of the dialog (defaults to "danger") */
   variant?: 'danger' | 'warning' | 'info';
+  /** When true, the confirm button is disabled regardless of loading state. */
+  confirmDisabled?: boolean;
 }
 
 export default function ConfirmDialog({
@@ -29,7 +31,8 @@ export default function ConfirmDialog({
   cancelLabel = 'Cancel',
   onConfirm,
   onCancel,
-  variant = 'danger'
+  variant = 'danger',
+  confirmDisabled = false,
 }: ConfirmDialogProps) {
   const [isLoading, setIsLoading] = useState(false);
   const titleId = useId();
@@ -146,7 +149,7 @@ export default function ConfirmDialog({
           </button>
           <button
             onClick={handleConfirm}
-            disabled={isLoading}
+            disabled={isLoading || confirmDisabled}
             aria-busy={isLoading}
             className={`flex-1 px-4 py-2 ${styles.button} text-white rounded-lg font-semibold disabled:opacity-50 flex items-center justify-center gap-2 shadow-sm hover:-translate-y-0.5 hover:shadow-lg active:scale-95 transition-all duration-300`}
           >
