@@ -9,9 +9,11 @@ interface BreadcrumbsProps {
   className?: string;
   /** Override the home label (default: visually hidden "Home") */
   homeLabel?: string;
+  /** When true, hides the home icon/link as the first breadcrumb. */
+  hideHome?: boolean;
 }
 
-export default function Breadcrumbs({ className, homeLabel = 'Home' }: BreadcrumbsProps) {
+export default function Breadcrumbs({ className, homeLabel = 'Home', hideHome = false }: BreadcrumbsProps) {
   const pathname = usePathname();
   
   // Don't show breadcrumbs on the home page
@@ -25,6 +27,7 @@ export default function Breadcrumbs({ className, homeLabel = 'Home' }: Breadcrum
       className={cn("flex items-center px-4 py-2.5 mb-6 bg-gray-900/40 border border-white/5 rounded-2xl backdrop-blur-md w-fit shadow-xl shadow-black/20 animate-fade-in duration-500 hover:shadow-purple-500/10 transition-shadow", className)}
     >
       <ol className="flex items-center space-x-2">
+        {!hideHome && (
         <li>
             <Link
               href="/"
@@ -34,6 +37,7 @@ export default function Breadcrumbs({ className, homeLabel = 'Home' }: Breadcrum
               <span className="sr-only">{homeLabel}</span>
             </Link>
           </li>
+        )}
           
           {paths.map((path, index) => {
             const href = `/${paths.slice(0, index + 1).join('/')}`;
