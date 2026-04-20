@@ -92,6 +92,13 @@ class HealthService {
   isHealthy(): boolean {
     return this.getHealth().status === 'ok';
   }
+
+  /**
+   * Returns true when the health status is 'degraded' (not fully healthy but not critical).
+   */
+  isDegraded(): boolean {
+    return this.getHealth().status === 'degraded';
+  }
 }
 
 export default new HealthService();
