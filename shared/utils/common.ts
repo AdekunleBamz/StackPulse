@@ -68,11 +68,36 @@ export function clamp(value: number, min: number, max: number): number {
   return Math.min(Math.max(value, lower), upper);
 }
 
+/**
+ * Creates a throttled version of a function that invokes at most once per
+ * every `wait` milliseconds. The first call fires immediately; subsequent
+ * calls within the window are dropped.
+ * @param func - The function to throttle.
+ * @param wait - The throttle window in milliseconds.
+ * @returns A throttled version of the function.
+ */
+export function throttle<T extends (...args: unknown[]) => unknown>(
+  func: T,
+  wait: number
+): (...args: Parameters<T>) => void {
+  let lastCall = 0;
+  const safeWait = Number.isFinite(wait) ? Math.max(0, wait) : 0;
+
+  return function throttled(...args: Parameters<T>) {
+    const now = Date.now();
+    if (now - lastCall >= safeWait) {
+      lastCall = now;
+      func(...args);
+    }
+  };
+}
+
 // Default export for convenience
 export default {
   isValidStacksAddress,
   generateId,
   debounce,
+  throttle,
   clamp,
 };
 
