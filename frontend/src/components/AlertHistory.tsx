@@ -36,13 +36,15 @@ const alertTypeInfo: Record<number, { name: string; icon: string; color: string 
 
 interface AlertHistoryProps {
   userAddress?: string;
+  /** Initial page to display (default: 1). */
+  initialPage?: number;
 }
 
-export default function AlertHistory({ userAddress }: AlertHistoryProps) {
+export default function AlertHistory({ userAddress, initialPage = 1 }: AlertHistoryProps) {
   const [history, setHistory] = useState<AlertHistoryEntry[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [page, setPage] = useState(1);
+  const [page, setPage] = useState(initialPage);
   const [totalPages, setTotalPages] = useState(1);
   const [totalItems, setTotalItems] = useState(0);
   const [filter, setFilter] = useState<number | null>(null);
