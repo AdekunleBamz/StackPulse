@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { clamp, debounce, generateId, isValidStacksAddress } from '../shared/utils/common';
+import { clamp, debounce, generateId, isValidStacksAddress, sleep } from '../shared/utils/common';
 
 afterEach(() => {
   vi.useRealTimers();
@@ -82,5 +82,17 @@ describe('shared/common debounce', () => {
 
     expect(handler).toHaveBeenCalledTimes(1);
     expect(handler).toHaveBeenCalledWith('now');
+  });
+
+  it('treats negative waits as immediate', () => {
+    vi.useFakeTimers();
+    const handler = vi.fn();
+    const debounced = debounce(handler, -10);
+
+    debounced('instant');
+    vi.advanceTimersByTime(0);
+
+    expect(handler).toHaveBeenCalledTimes(1);
+    expect(handler).toHaveBeenCalledWith('instant');
   });
 });
