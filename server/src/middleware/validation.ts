@@ -10,7 +10,7 @@ import { Request, Response, NextFunction, RequestHandler } from 'express';
 import logger from '../utils/logger';
 
 /** Payload size limits by subscription tier (in bytes) */
-const PAYLOAD_SIZE_LIMITS_BY_TIER = [10240, 102400, 1048576, 10485760] as const; // 10K, 100K, 1M, 10M
+const PAYLOAD_SIZE_LIMITS_BY_TIER = [10_240, 102_400, 1_048_576, 10_485_760] as const; // 10K, 100K, 1M, 10M
 const DEFAULT_TIER_INDEX = 0;
 const PAYLOAD_TOO_LARGE_STATUS = 413;
 const BAD_REQUEST_STATUS = 400;
@@ -336,14 +336,24 @@ export const patterns = {
   slug: /^[a-zA-Z0-9-_]+$/,
 };
 
+/** Predefined schema field length limits */
+const SCHEMA_ALERT_NAME_MAX = 100;
+const SCHEMA_ALERT_TYPE_MAX = 6;
+const SCHEMA_USERNAME_MAX = 50;
+const SCHEMA_DISCORD_MIN = 2;
+const SCHEMA_DISCORD_MAX = 32;
+const SCHEMA_TELEGRAM_MAX = 32;
+const SCHEMA_PAGINATION_PAGE_MAX = 1000;
+const SCHEMA_PAGINATION_LIMIT_MAX = 100;
+
 /**
  * Predefined validation schemas for common use cases.
  */
 export const schemas: Record<string, ValidationSchema> = {
   /** Schema for creating a new alert */
   createAlert: {
-    name: { type: 'string', required: true, min: 1, max: 100 },
-    type: { type: 'number', required: true, min: 1, max: 6 },
+    name: { type: 'string', required: true, min: 1, max: SCHEMA_ALERT_NAME_MAX },
+    type: { type: 'number', required: true, min: 1, max: SCHEMA_ALERT_TYPE_MAX },
     threshold: { type: 'number', required: false, min: 0 },
     targetAddress: { type: 'string', required: false, pattern: patterns.stacksAddress },
     webhookUrl: { type: 'string', required: false, pattern: patterns.url },
@@ -351,7 +361,7 @@ export const schemas: Record<string, ValidationSchema> = {
 
   /** Schema for updating an existing alert */
   updateAlert: {
-    name: { type: 'string', required: false, min: 1, max: 100 },
+    name: { type: 'string', required: false, min: 1, max: SCHEMA_ALERT_NAME_MAX },
     threshold: { type: 'number', required: false, min: 0 },
     targetAddress: { type: 'string', required: false, pattern: patterns.stacksAddress },
     webhookUrl: { type: 'string', required: false, pattern: patterns.url },
@@ -361,16 +371,16 @@ export const schemas: Record<string, ValidationSchema> = {
   /** Schema for creating a user */
   createUser: {
     address: { type: 'string', required: true, pattern: patterns.stacksAddress },
-    username: { type: 'string', required: false, min: 1, max: 50 },
+    username: { type: 'string', required: false, min: 1, max: SCHEMA_USERNAME_MAX },
     email: { type: 'string', required: false, pattern: patterns.email },
-    discord: { type: 'string', required: false, min: 2, max: 32 },
-    telegram: { type: 'string', required: false, min: 1, max: 32 },
+    discord: { type: 'string', required: false, min: SCHEMA_DISCORD_MIN, max: SCHEMA_DISCORD_MAX },
+    telegram: { type: 'string', required: false, min: 1, max: SCHEMA_TELEGRAM_MAX },
   },
 
   /** Schema for pagination parameters */
   pagination: {
-    page: { type: 'number', required: false, min: 1, max: 1000 },
-    limit: { type: 'number', required: false, min: 1, max: 100 },
+    page: { type: 'number', required: false, min: 1, max: SCHEMA_PAGINATION_PAGE_MAX },
+    limit: { type: 'number', required: false, min: 1, max: SCHEMA_PAGINATION_LIMIT_MAX },
   },
 
   /** Schema for address-based lookups */
