@@ -7,13 +7,17 @@ import { Request, Response, NextFunction } from 'express';
 
 const DEFAULT_ALLOWED_ORIGINS = ['http://localhost:3000', 'http://localhost:3001'] as const;
 const PREFLIGHT_SUCCESS_STATUS = 200;
+/** HSTS max-age in seconds (1 year). */
+const HSTS_MAX_AGE_SECONDS = 31_536_000;
+/** CORS preflight cache duration in seconds (24 hours). */
+const CORS_MAX_AGE_SECONDS = 86_400;
 
 /**
  * Security headers middleware
  */
 export function securityHeaders(req: Request, res: Response, next: NextFunction): void {
   // HSTS
-  res.setHeader('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
+  res.setHeader('Strict-Transport-Security', `max-age=${HSTS_MAX_AGE_SECONDS}; includeSubDomains`);
   
   // X-Frame-Options
   res.setHeader('X-Frame-Options', 'DENY');
@@ -61,7 +65,7 @@ export function corsMiddleware(req: Request, res: Response, next: NextFunction):
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE, OPTIONS');
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With');
     res.setHeader('Access-Control-Allow-Credentials', 'true');
-    res.setHeader('Access-Control-Max-Age', '86400');
+    res.setHeader('Access-Control-Max-Age', String(CORS_MAX_AGE_SECONDS));
   }
   
   // Handle preflight
