@@ -42,6 +42,7 @@ export {
   isSameDate,
   startOfDay,
   endOfDay,
+  isExpiredDate,
 } from './common';
 
 // Default export for convenience
