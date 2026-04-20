@@ -138,3 +138,23 @@ export function omit<T extends object, K extends keyof T>(obj: T, keys: K[]): Om
   }
   return result as Omit<T, K>;
 }
+
+/**
+ * Groups an array of items by the value returned from the key function.
+ * @param items - The array to group.
+ * @param keyFn - A function that returns a string group key for each item.
+ * @returns A Map of group key → array of items in that group.
+ */
+export function groupBy<T>(items: T[], keyFn: (item: T) => string): Map<string, T[]> {
+  const result = new Map<string, T[]>();
+  for (const item of items) {
+    const key = keyFn(item);
+    const group = result.get(key);
+    if (group) {
+      group.push(item);
+    } else {
+      result.set(key, [item]);
+    }
+  }
+  return result;
+}
