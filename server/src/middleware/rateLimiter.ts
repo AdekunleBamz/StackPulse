@@ -19,12 +19,15 @@ const DEFAULT_RATE_LIMIT_MAX_REQUESTS = 100;
 const RATE_LIMIT_UNKNOWN_KEY = 'unknown';
 const TOO_MANY_REQUESTS_STATUS = 429;
 const MILLISECONDS_PER_SECOND = 1000;
+/** Maximum requests allowed for webhook endpoints per window. */
+const WEBHOOK_RATE_LIMIT_MAX_REQUESTS = 1000;
+/** Tier limits (requests per window) for tiers 0–3 (free, basic, pro, enterprise). */
+const TIER_RATE_LIMITS = [100, 1000, 5000, 20_000];
+
 /** Rate limit window for auth endpoints (15 minutes in ms). */
 const AUTH_RATE_LIMIT_WINDOW_MS = 900_000;
 /** Maximum auth requests allowed within the auth rate limit window. */
 const AUTH_RATE_LIMIT_MAX_REQUESTS = 5;
-/** Maximum requests allowed for webhook endpoints per window. */
-const WEBHOOK_RATE_LIMIT_MAX_REQUESTS = 1000;
 
 type TierRequest = Request & {
   user?: {
@@ -137,7 +140,7 @@ export const tieredApiLimiter = rateLimiter({
   maxRequestsGenerator: (req) => {
     // In a real app, fetch tier from user store
     const userTier = (req as TierRequest).user?.tier || 0;
-    const limits = [100, 1000, 5000, 20000]; // Defined earlier in tier.ts
+    const limits = TIER_RATE_LIMITS;
     const safeTier = Number.isInteger(userTier) && userTier >= 0 ? userTier : 0;
     return limits[safeTier] || DEFAULT_RATE_LIMIT_MAX_REQUESTS;
   }
