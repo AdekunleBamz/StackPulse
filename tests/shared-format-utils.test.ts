@@ -93,6 +93,10 @@ describe('shared/format parseStxAmount', () => {
   it('clamps negative parsed amounts to zero', () => {
     expect(parseStxAmount('-1 STX')).toBe(0);
   });
+
+  it('returns zero for malformed decimal amounts', () => {
+    expect(parseStxAmount('1.2.3')).toBe(0);
+  });
 });
 
 describe('shared/format formatTxId', () => {
