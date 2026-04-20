@@ -39,7 +39,7 @@ interface UseWebSocketReturn {
   subscribe: (channel: string) => void;
   unsubscribe: (channel: string) => void;
   authenticate: (address: string) => void;
-  send: (message: unknown) => void;
+  send: (message: unknown) => boolean;
   reconnect: () => void;
   disconnect: () => void;
 }
@@ -138,7 +138,9 @@ export function useWebSocket(options: UseWebSocketOptions = {}): UseWebSocketRet
   const send = useCallback((message: unknown) => {
     if (wsRef.current?.readyState === WebSocket.OPEN) {
       wsRef.current.send(JSON.stringify(message));
+      return true;
     }
+    return false;
   }, []);
 
   const subscribe = useCallback((channel: string) => {
