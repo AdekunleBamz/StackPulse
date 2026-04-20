@@ -51,6 +51,10 @@ const alertTypeNames: Record<number, string> = {
   6: 'Address Watch',
 };
 
+const ALERTS_DEFAULT_PAGE = 1;
+const ALERTS_DEFAULT_LIMIT = 10;
+const ALERTS_MAX_LIMIT = 100;
+const ALERTS_CACHE_TTL_MS = 60_000;
 const VALID_ALERT_SORT_FIELDS = new Set(['createdAt', 'name', 'alertType', 'enabled', 'triggerCount']);
 const VALID_SORT_ORDERS = new Set(['asc', 'desc']);
 
@@ -99,8 +103,8 @@ router.get(
     let userAlerts = Array.from(alerts.values()).filter((alert) => alert.userId === address);
 
     // Pagination
-    const page = parsePositiveInt(req.query.page as string | undefined, 1);
-    const limit = parsePositiveInt(req.query.limit as string | undefined, 10, 100);
+    const page = parsePositiveInt(req.query.page as string | undefined, ALERTS_DEFAULT_PAGE);
+    const limit = parsePositiveInt(req.query.limit as string | undefined, ALERTS_DEFAULT_LIMIT, ALERTS_MAX_LIMIT);
     const sortByInput = typeof req.query.sortBy === 'string' ? req.query.sortBy : 'createdAt';
     const sortOrderInput = typeof req.query.sortOrder === 'string' ? req.query.sortOrder : 'desc';
     const sortBy = VALID_ALERT_SORT_FIELDS.has(sortByInput) ? sortByInput : 'createdAt';
@@ -147,7 +151,7 @@ router.get(
     const paginatedAlerts = userAlerts.slice(startIndex, endIndex);
 
     // Cache for 1 minute
-    cache.set(cacheKey, paginatedAlerts, 60000);
+    cache.set(cacheKey, paginatedAlerts, ALERTS_CACHE_TTL_MS);
 
     res.json({
       success: true,
