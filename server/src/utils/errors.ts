@@ -63,6 +63,18 @@ export class ServiceUnavailableError extends AppError {
   }
 }
 
+export class GatewayTimeoutError extends AppError {
+  constructor(message: string = 'Gateway Timeout') {
+    super(message, 504);
+  }
+}
+
+export class NotImplementedError extends AppError {
+  constructor(message: string = 'Not Implemented') {
+    super(message, 501);
+  }
+}
+
 export class UnprocessableEntityError extends AppError {
   constructor(message: string = 'Unprocessable Entity') {
     super(message, 422);
