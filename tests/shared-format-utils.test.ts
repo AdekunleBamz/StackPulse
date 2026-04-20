@@ -54,6 +54,10 @@ describe('shared/format formatRelativeTime', () => {
     expect(formatRelativeTime(Date.now() + 3 * 60 * 1000 + 5000)).toBe('in 3m');
   });
 
+  it('uses in a moment for near-future timestamps', () => {
+    expect(formatRelativeTime(Date.now() + 30 * 1000)).toBe('in a moment');
+  });
+
   it('returns just now for very recent past timestamps', () => {
     expect(formatRelativeTime(Date.now() - 20 * 1000)).toBe('just now');
   });
