@@ -89,6 +89,10 @@ describe('shared/format parseStxAmount', () => {
   it('removes commas and units before parsing', () => {
     expect(parseStxAmount('1,234.567 STX')).toBe(1234567000);
   });
+
+  it('clamps negative parsed amounts to zero', () => {
+    expect(parseStxAmount('-1 STX')).toBe(0);
+  });
 });
 
 describe('shared/format formatTxId', () => {

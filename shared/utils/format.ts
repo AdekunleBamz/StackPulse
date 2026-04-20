@@ -206,9 +206,12 @@ export function formatDuration(ms: number): string {
  * @returns The amount in micro-STX as a number.
  */
 export function parseStxAmount(amount: string): number {
-  const cleaned = amount.trim().replace(/[^\d.]/g, '');
-  if (!cleaned) return 0;
-  const stx = parseFloat(cleaned);
+  const normalized = amount
+    .trim()
+    .replace(/,/g, '')
+    .replace(/\s*stx\s*$/i, '');
+  if (!/^-?\d*\.?\d+$/.test(normalized)) return 0;
+  const stx = parseFloat(normalized);
   if (Number.isNaN(stx)) return 0;
   return Math.max(0, Math.floor(stx * MICROSTX_PER_STX));
 }
