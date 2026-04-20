@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react';
 
+const DEBOUNCE_DEFAULT_DELAY_MS = 500;
+
 /**
  * A hook that debounces a value by delaying updates until after the specified delay.
  * Useful for rate-limiting expensive operations like API calls or filtering.
@@ -16,7 +18,7 @@ import { useState, useEffect } from 'react';
  * // debouncedSearch will only update 300ms after the user stops typing
  * ```
  */
-export function useDebounce<T>(value: T, delay: number = 500): T {
+export function useDebounce<T>(value: T, delay: number = DEBOUNCE_DEFAULT_DELAY_MS): T {
   const [debouncedValue, setDebouncedValue] = useState<T>(() => value);
   const safeDelay = Number.isFinite(delay) ? Math.max(0, delay) : 0;
 
