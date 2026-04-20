@@ -55,7 +55,7 @@ This guide covers deploying StackPulse to production environments.
 clarinet check
 
 # Run tests
-npm test
+npm run test
 
 # Deploy contracts (requires wallet)
 clarinet deployments apply -p deployments/v-j4-mainnet-plan.yaml --no-dashboard
