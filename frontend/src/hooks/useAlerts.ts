@@ -53,6 +53,8 @@ interface UseAlertsReturn {
   updateAlert: (id: string, updates: Partial<Alert>) => Promise<boolean>;
   deleteAlert: (id: string) => Promise<boolean>;
   toggleAlert: (id: string) => Promise<boolean>;
+  /** Clears the current error state. */
+  clearError: () => void;
   refetch: () => Promise<void>;
 }
 
@@ -290,6 +292,7 @@ export function useAlerts(address: string | null): UseAlertsReturn {
     updateAlert,
     deleteAlert,
     toggleAlert,
+    clearError: () => setError(null),
     refetch: fetchAlerts,
   };
 }
