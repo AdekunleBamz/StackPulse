@@ -83,6 +83,37 @@ class MetricsService {
       logger.warn('Performance degraded: high average request duration', { avgDuration: `${avgDuration.toFixed(2)}ms` });
     }
   }
+
+  /**
+   * Returns the total number of data points recorded for a metric.
+   */
+  getMetricCount(name: string): number {
+    return this.metrics.get(name)?.length ?? 0;
+  }
+
+  /**
+   * Returns the running error count for a given error type, or 0 if not recorded.
+   */
+  getErrorCount(type: string): number {
+    return this.errorCounts.get(type) ?? 0;
+  }
+
+  /**
+   * Removes all stored data points for the named metric, resetting it to zero.
+   */
+  resetMetric(name: string): void {
+    this.metrics.delete(name);
+    logger.debug(`Metric reset: ${name}`);
+  }
+
+  /**
+   * Returns the most recently recorded value for a metric, or null if none exists.
+   */
+  getLatest(name: string): number | null {
+    const values = this.metrics.get(name);
+    if (!values || values.length === 0) return null;
+    return values[values.length - 1].value;
+  }
 }
 
 export default new MetricsService();
