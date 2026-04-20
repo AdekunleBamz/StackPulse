@@ -22,9 +22,8 @@ Please include the following in your report:
 - Proof-of-concept or exploit code (if possible)
 - Impact of the issue, including how an attacker might exploit the issue
 
-### Response Timeline
-- **Acknowledgement**: Within 24 hours of receipt.
-- **Triage**: Within 3 business days.
-- **Disclosure Policy**: 90 days after the initial report, or sooner if a fix is released.
+Instead, please send an email to security@stackpulse.io with a detailed description of the issue, steps to reproduce it, and any potential impact.
+Please redact secrets (mnemonics, API tokens, `.env` values) from all reports and logs.
+You can also use GitHub"""s private advisory flow: https://github.com/AdekunleBamz/StackPulse/security/advisories/new
 
 We will provide regular status updates until the issue is resolved.
