@@ -176,3 +176,28 @@ export async function sendWebhook(
     return false;
   }
 }
+
+/**
+ * Returns the maximum number of webhooks allowed for a given user tier.
+ * Returns 0 for unrecognised tiers.
+ *
+ * @param tier - Numeric tier identifier (0 = FREE, 1 = PRO, 2 = WHALE, 3 = EXCHANGE).
+ */
+export function getMaxWebhooksForTier(tier: number): number {
+  return MAX_WEBHOOKS_PER_USER.get(tier) ?? 0;
+}
+
+/**
+ * Returns true if a given URL is a valid absolute HTTP(S) URL suitable for webhook delivery.
+ *
+ * @param url - The URL string to validate.
+ */
+export function isValidWebhookUrl(url: string): boolean {
+  if (typeof url !== 'string') return false;
+  try {
+    const parsed = new URL(url);
+    return parsed.protocol === 'http:' || parsed.protocol === 'https:';
+  } catch {
+    return false;
+  }
+}
