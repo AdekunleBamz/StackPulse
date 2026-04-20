@@ -47,6 +47,10 @@ describe('shared/format formatPercent', () => {
   it('clamps negative decimal precision to zero', () => {
     expect(formatPercent(12.9, -3)).toBe('13%');
   });
+
+  it('falls back to default precision when decimals are non-finite', () => {
+    expect(formatPercent(3.14159, Number.NaN)).toBe('3.14%');
+  });
 });
 
 describe('shared/format formatRelativeTime', () => {
