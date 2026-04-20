@@ -200,9 +200,11 @@ function BadgeCard({ badge, onClick }: BadgeCardProps) {
 
 interface BadgeShowcaseProps {
   userBadges?: number[];
+  /** Optional callback fired when a badge card is selected. */
+  onBadgeSelect?: (badge: Badge) => void;
 }
 
-export default function BadgeShowcase({ userBadges = [] }: BadgeShowcaseProps) {
+export default function BadgeShowcase({ userBadges = [], onBadgeSelect }: BadgeShowcaseProps) {
   const [selectedBadge, setSelectedBadge] = useState<Badge | null>(null);
   const [filter, setFilter] = useState<'all' | 'earned' | 'locked'>('all');
 
@@ -284,7 +286,7 @@ export default function BadgeShowcase({ userBadges = [] }: BadgeShowcaseProps) {
           <BadgeCard
             key={badge.id}
             badge={badge}
-            onClick={() => setSelectedBadge(badge)}
+            onClick={() => { setSelectedBadge(badge); onBadgeSelect?.(badge); }}
           />
         ))}
       </div>
