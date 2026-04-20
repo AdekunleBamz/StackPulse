@@ -39,6 +39,10 @@ describe('shared/format formatPercent', () => {
   it('caps decimals at six places', () => {
     expect(formatPercent(12.3456789, 9)).toBe('12.345679%');
   });
+
+  it('clamps negative decimal precision to zero', () => {
+    expect(formatPercent(12.9, -3)).toBe('13%');
+  });
 });
 
 describe('shared/format formatRelativeTime', () => {
