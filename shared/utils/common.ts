@@ -235,3 +235,12 @@ export function endOfDay(date: Date): Date {
   d.setHours(23, 59, 59, 999);
   return d;
 }
+
+/**
+ * Returns true if the given date is in the past relative to now.
+ * Useful for checking subscription or token expiry.
+ * @param date - The date to check.
+ */
+export function isExpiredDate(date: Date): boolean {
+  return date.getTime() < Date.now();
+}
