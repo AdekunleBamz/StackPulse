@@ -38,6 +38,7 @@ export interface UserPreferences {
 const MAX_NOTIFICATIONS_PER_USER = 100;
 const DEFAULT_NOTIFICATION_RETRIES = 3;
 const RETRY_BACKOFF_BASE_MS = 1000;
+const NOTIFICATIONS_DEFAULT_FETCH_LIMIT = 50;
 const userPreferencesStore: Map<string, UserPreferences> = new Map();
 
 class NotificationsService {
@@ -96,11 +97,11 @@ class NotificationsService {
   /**
    * Get user notifications
    */
-  getNotifications(userAddress: string, limit: number = 50): Notification[] {
+  getNotifications(userAddress: string, limit: number = NOTIFICATIONS_DEFAULT_FETCH_LIMIT): Notification[] {
     const userNotifications = this.getUserNotificationList(userAddress);
     const safeLimit = Number.isFinite(limit)
       ? Math.min(MAX_NOTIFICATIONS_PER_USER, Math.max(1, Math.floor(limit)))
-      : 50;
+      : NOTIFICATIONS_DEFAULT_FETCH_LIMIT;
     return userNotifications.slice(0, safeLimit);
   }
 
