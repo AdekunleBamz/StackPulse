@@ -114,6 +114,21 @@ class CacheService {
   }
 
   /**
+   * Refreshes the TTL of an existing cache entry without changing its value.
+   * Returns true if the key was found and extended, false if it was missing or expired.
+   */
+  bump(key: string, ttlMs: number = CACHE_DEFAULT_TTL_MS): boolean {
+    const entry = this.cache.get(key);
+    if (!entry || this.isExpired(entry)) {
+      this.cache.delete(key);
+      return false;
+    }
+    const safeTtlMs = Number.isFinite(ttlMs) ? Math.max(0, Math.floor(ttlMs)) : 0;
+    this.cache.set(key, { ...entry, expiresAt: Date.now() + safeTtlMs });
+    return true;
+  }
+
+  /**
    * Fetches multiple keys at once. Returns a Map of key → value for
    * keys that exist and have not expired. Missing or expired keys are
    * omitted from the result.
