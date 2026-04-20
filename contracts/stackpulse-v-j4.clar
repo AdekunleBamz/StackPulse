@@ -95,18 +95,25 @@
 ;; READ-ONLY FUNCTIONS
 ;; ============================================
 
+;; @description Returns the current version of the contract.
 (define-read-only (get-version)
   (var-get contract-version)
 )
 
+;; @description Returns the profile data for a specific user.
+;; @param who The principal of the user to query.
 (define-read-only (get-user (who principal))
   (map-get? users who)
 )
 
+;; @description Checks if a principal is registered in the StackPulse system.
+;; @param who The principal to check.
 (define-read-only (is-registered (who principal))
   (is-some (map-get? users who))
 )
 
+;; @description Returns the subscription status and basic stats for a user.
+;; @param who The principal to query.
 (define-read-only (get-subscription-status (who principal))
   (match (map-get? users who)
     user-data 
@@ -122,6 +129,8 @@
   )
 )
 
+;; @description Returns the required microSTX payment for a given tier.
+;; @param tier The tier number (0-3).
 (define-read-only (get-tier-price (tier uint))
   (if (is-eq tier u0) PRICE-FREE
     (if (is-eq tier u1) PRICE-BASIC
@@ -130,6 +139,7 @@
           u0))))
 )
 
+;; @description Returns global registry statistics.
 (define-read-only (get-stats)
   {
     total-users: (var-get total-users),
@@ -139,6 +149,8 @@
 )
 
 ;; V3: Check if subscription is active
+;; @description Checks if a user has an active paid subscription or is on the free tier.
+;; @param who The principal to check.
 (define-read-only (is-subscription-active (who principal))
   (match (map-get? users who)
     user-data
@@ -171,6 +183,11 @@
 ;; Register and subscribe in one transaction
 ;; tier: 0=Free, 1=Basic, 2=Pro, 3=Premium
 ;; alerts: bitmask (1=whale, 2=nft, 4=token, 8=swap, 16=contract) or just pass 31 for all
+;; @description Registers a new user and starts a subscription in a single transaction.
+;; @param username The desired username (1-32 chars).
+;; @param email The user's contact email.
+;; @param tier The subscription tier (0=Free, 1=Basic, 2=Pro, 3=Premium).
+;; @param alerts Bitmask of enabled alerts (1=Whale, 2=NFT, 4=Token, 8=Swap, 16=Contract).
 (define-public (register-and-subscribe 
     (username (string-ascii 32))
     (email (string-ascii 64))
@@ -236,6 +253,10 @@
 )
 
 ;; Update profile (username, email, alerts) - no payment
+;; @description Updates the user's profile information and alert preferences.
+;; @param username New username.
+;; @param email New email.
+;; @param alerts New alert bitmask.
 (define-public (update-profile 
     (username (string-ascii 32))
     (email (string-ascii 64))
@@ -270,6 +291,8 @@
 )
 
 ;; Upgrade or renew subscription
+;; @description Upgrades or renews an existing user subscription.
+;; @param new-tier The target subscription tier.
 (define-public (upgrade-subscription (new-tier uint))
   (let
     (
@@ -315,6 +338,8 @@
 )
 
 ;; Set alert preferences only
+;; @description Sets the user's alert preferences directly.
+;; @param alerts The new alert bitmask.
 (define-public (set-alerts (alerts uint))
   (let
     (
@@ -359,11 +384,17 @@
 ;; 8 = Fee Collected
 ;; 9 = Badge Earned
 
+;; @description Returns the total number of triggers recorded for a specific user and hook type.
+;; @param user The principal of the user.
+;; @param hook-type The type of chainhook (1-9).
 (define-read-only (get-trigger-count (user principal) (hook-type uint))
   (default-to u0 (map-get? chainhook-triggers { user: user, hook-type: hook-type }))
 )
 
 ;; Record a chainhook trigger (called by authorized services or contracts)
+;; @description Records a chainhook trigger event.
+;; @param user The target user principal.
+;; @param hook-type The type identifier for the triggered hook.
 (define-public (record-chainhook-trigger (user principal) (hook-type uint))
   (let
     (
@@ -403,6 +434,8 @@
 )
 
 ;; Get all chainhook stats for a user
+;; @description Returns a consolidated report of all chainhook trigger stats for a user.
+;; @param user The principal of the user.
 (define-read-only (get-user-chainhook-stats (user principal))
   {
     whale-alerts: (get-trigger-count user HOOK-WHALE-TRANSFER),
@@ -422,6 +455,9 @@
 ;; ============================================
 
 ;; Withdraw collected fees (owner only)
+;; @description Allows the contract owner to withdraw collected fees.
+;; @param amount The amount in microSTX to withdraw.
+;; @param recipient The principal to receive the funds.
 (define-public (withdraw-fees (amount uint) (recipient principal))
   (begin
     (asserts! (is-eq tx-sender CONTRACT-OWNER) ERR-NOT-AUTHORIZED)
@@ -440,6 +476,10 @@
 )
 
 ;; Admin grant subscription (for promotions, etc.)
+;; @description Allows the contract owner to grant a subscription tier and duration to a user (e.g., for trials or rewards).
+;; @param user The target user principal.
+;; @param tier The subscription tier to grant.
+;; @param duration-blocks The length of the grant in blocks.
 (define-public (admin-grant-subscription (user principal) (tier uint) (duration-blocks uint))
   (let
     (
