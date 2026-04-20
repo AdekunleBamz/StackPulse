@@ -5,6 +5,9 @@
 
 import logger from '../utils/logger';
 
+const EMAIL_SUBJECT_MIN_LENGTH = 3;
+const EMAIL_BODY_MIN_LENGTH = 10;
+
 // Email configuration
 interface EmailConfig {
   smtpHost: string;
@@ -89,8 +92,8 @@ class EmailService {
 
   private validateTemplate(options: EmailOptions): boolean {
     if (!options.to || (Array.isArray(options.to) && options.to.length === 0)) return false;
-    if (!options.subject || options.subject.trim().length < 3) return false;
-    if (!options.body || options.body.trim().length < 10) return false;
+    if (!options.subject || options.subject.trim().length < EMAIL_SUBJECT_MIN_LENGTH) return false;
+    if (!options.body || options.body.trim().length < EMAIL_BODY_MIN_LENGTH) return false;
     return true;
   }
 }
