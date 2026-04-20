@@ -68,7 +68,7 @@ cd StackPulse
 npm install
 npm --prefix server install
 npm --prefix shared install
-npm --prefix frontend install
+npm --prefix frontend ci
 ```
 
 ### Environment Setup
