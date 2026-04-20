@@ -111,6 +111,12 @@ describe('shared/format formatDateTime', () => {
   });
 });
 
+describe('shared/format formatBalance', () => {
+  it('caps decimal precision at twelve places', () => {
+    expect(formatBalance(1.234567890123456, 20)).toBe('1.234567890123');
+  });
+});
+
 describe('shared/format parseStxAmount', () => {
   it('removes commas and units before parsing', () => {
     expect(parseStxAmount('1,234.567 STX')).toBe(1234567000);
