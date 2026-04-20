@@ -29,6 +29,12 @@ interface UseWebSocketOptions {
 interface UseWebSocketReturn {
   isConnected: boolean;
   isConnecting: boolean;
+  /** True when not connected and not currently trying to connect. */
+  isDisconnected: boolean;
+  /** Number of reconnect attempts made in the current session. */
+  reconnectCount: number;
+  /** True when the last connection attempt ended with an error. */
+  hasError: boolean;
   lastMessage: unknown;
   subscribe: (channel: string) => void;
   unsubscribe: (channel: string) => void;
@@ -53,6 +59,8 @@ export function useWebSocket(options: UseWebSocketOptions = {}): UseWebSocketRet
   const [isConnected, setIsConnected] = useState(false);
   const [isConnecting, setIsConnecting] = useState(false);
   const [lastMessage, setLastMessage] = useState<unknown>(null);
+  const [reconnectCount, setReconnectCount] = useState(0);
+  const [hasError, setHasError] = useState(false);
   
   const wsRef = useRef<WebSocket | null>(null);
   const reconnectAttemptsRef = useRef(0);
@@ -73,6 +81,7 @@ export function useWebSocket(options: UseWebSocketOptions = {}): UseWebSocketRet
       ws.onopen = (event) => {
         setIsConnected(true);
         setIsConnecting(false);
+        setHasError(false);
         reconnectAttemptsRef.current = 0;
         onOpen?.(event);
       };
@@ -86,12 +95,14 @@ export function useWebSocket(options: UseWebSocketOptions = {}): UseWebSocketRet
         if (!manualDisconnectRef.current && reconnect && reconnectAttemptsRef.current < maxReconnectAttempts) {
           reconnectTimeoutRef.current = setTimeout(() => {
             reconnectAttemptsRef.current++;
+            setReconnectCount(reconnectAttemptsRef.current);
             connectSocket();
           }, reconnectInterval);
         }
       };
 
       ws.onerror = (event) => {
+        setHasError(true);
         onError?.(event);
       };
 
@@ -168,6 +179,9 @@ export function useWebSocket(options: UseWebSocketOptions = {}): UseWebSocketRet
   return {
     isConnected,
     isConnecting,
+    isDisconnected: !isConnected && !isConnecting,
+    reconnectCount,
+    hasError,
     lastMessage,
     subscribe,
     unsubscribe,
