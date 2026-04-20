@@ -53,12 +53,14 @@ const logger = createLogger({
 
 // Initialize Express app
 const app = express();
-const PORT = Number.parseInt(process.env.PORT || '3000', 10);
+const DEFAULT_PORT = 3000;
+const PORT = Number.parseInt(process.env.PORT || String(DEFAULT_PORT), 10);
 
 // Middleware
 app.use(helmet());
 app.use(cors());
-app.use(express.json({ limit: '10mb' }));
+const JSON_BODY_LIMIT = '10mb';
+app.use(express.json({ limit: JSON_BODY_LIMIT }));
 app.use(requestLogger());
 
 // Authentication middleware for chainhook endpoints.
