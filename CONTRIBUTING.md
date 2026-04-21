@@ -28,8 +28,8 @@ By participating in this project, you agree to abide by our Code of Conduct. Ple
 Before submitting a pull request, ensure that all tests pass:
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/StackPulse.git
-cd StackPulse
+# Frontend lint checks
+npm --prefix frontend run lint
 
 npm install
 npm --prefix server install
