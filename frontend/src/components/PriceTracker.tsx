@@ -101,9 +101,9 @@ export default function PriceTracker() {
   };
 
   const getChangeIcon = (change: number) => {
-    if (change > PRICE_CHANGE_NEUTRAL_THRESHOLD) return <ArrowUp className="w-3 h-3" />;
-    if (change < -PRICE_CHANGE_NEUTRAL_THRESHOLD) return <ArrowDown className="w-3 h-3" />;
-    return <Minus className="w-3 h-3" />;
+    if (change > PRICE_CHANGE_NEUTRAL_THRESHOLD) return <ArrowUp className="w-3 h-3" aria-hidden="true" />;
+    if (change < -PRICE_CHANGE_NEUTRAL_THRESHOLD) return <ArrowDown className="w-3 h-3" aria-hidden="true" />;
+    return <Minus className="w-3 h-3" aria-hidden="true" />;
   };
 
   const getChangeColor = (change: number) => {
