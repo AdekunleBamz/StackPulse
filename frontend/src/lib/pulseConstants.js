@@ -34,3 +34,5 @@ export const PULSE_ALERT_COOLDOWN_MS = 10000
 export const PULSE_FEED_PAGE_SIZE = 25
 
 export const PULSE_VERSION = "1.0.0"
+
+export const PULSE_BLOCKS_PER_HOUR = 6
