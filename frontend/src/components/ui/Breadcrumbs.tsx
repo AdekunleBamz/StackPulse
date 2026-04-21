@@ -47,7 +47,7 @@ export default function Breadcrumbs({ className, homeLabel = 'Home', hideHome = 
               .replace(/^\w/, (c) => c.toUpperCase());
   
             return (
-              <li key={path} className="flex items-center">
+              <li key={href} className="flex items-center">
                 <ChevronRight className="w-3.5 h-3.5 text-gray-700 mx-1.5 shrink-0" />
                 {isLast ? (
                   <span className="text-purple-400 font-bold text-xs tracking-wider uppercase" aria-current="page">
