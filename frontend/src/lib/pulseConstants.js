@@ -1,0 +1,2 @@
+
+export const PULSE_CONTRACT_ADDRESS = "SP1234PULSE"
