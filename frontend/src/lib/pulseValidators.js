@@ -20,3 +20,5 @@ export const isValidRetryCount = (n) => Number.isInteger(n) && n >= 0;
 export const isValidCacheTTL = (t) => Number.isInteger(t) && t > 0;
 
 export const isValidChartPoints = (n) => Number.isInteger(n) && n > 0 && n <= 10000;
+
+export const isValidAlertCooldown = (ms) => Number.isInteger(ms) && ms >= 0;
