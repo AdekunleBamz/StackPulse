@@ -25,6 +25,7 @@
     "clarinet:test": "clarinet test",
     "check:fast": "npm run clarinet:check && npm run test:format",
     "dev:all": "npm run dev --prefix frontend & npm run dev --prefix server",
+    "server:dev": "npm run dev --prefix server",
     "frontend:dev": "npm run dev --prefix frontend",
     "lint:all": "npm run lint --prefix frontend && npm run lint --prefix server",
     "lint:fix": "npm run lint --prefix frontend -- --fix && npm run lint --prefix server -- --fix",
