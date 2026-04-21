@@ -66,7 +66,7 @@ cd StackPulse
 
 # Install all dependencies
 npm install
-npm --prefix server install
+npm --prefix server ci
 npm --prefix shared install
 npm --prefix frontend install
 ```
