@@ -8,3 +8,5 @@ export const isValidPulseTxId = (id) => typeof id === "string" && id.length === 
 export const isValidPulseAddress = (a) => typeof a === "string" && a.startsWith("SP") && a.length > 10;
 
 export const isValidPulseNetwork = (n) => ["mainnet","testnet"].includes(n);
+
+export const isValidPulseVersion = (v) => typeof v === "string" && /^\d+\.\d+\.\d+$/.test(v);
