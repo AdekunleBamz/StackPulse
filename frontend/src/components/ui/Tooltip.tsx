@@ -25,6 +25,9 @@ export default function Tooltip({
   const id = useId();
 
   const showTooltip = () => {
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+    }
     timeoutRef.current = setTimeout(() => {
       setIsVisible(true);
     }, delay);
