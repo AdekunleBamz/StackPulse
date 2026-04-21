@@ -12,6 +12,7 @@ export default function ConnectWallet() {
   const [showDropdown, setShowDropdown] = useState(false);
   const wrapperRef = useRef<HTMLDivElement>(null);
   const safeAddress = address || '';
+  const shortAddress = safeAddress ? truncateAddress(safeAddress) : 'connected wallet';
   const closeDropdown = useCallback(() => setShowDropdown(false), []);
 
   useEffect(() => {
@@ -68,11 +69,10 @@ export default function ConnectWallet() {
         aria-haspopup="menu"
         aria-expanded={showDropdown}
         aria-label={`Wallet menu for ${shortAddress}`}
-        title={`Wallet menu for ${shortAddress}`}
         className="focus:ring-2 focus:ring-purple-500/50"
       >
         <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" aria-hidden="true" />
-        <span className="font-mono text-sm">{truncateAddress(safeAddress)}</span>
+        <span className="font-mono text-sm">{shortAddress}</span>
         <ChevronDown className="w-4 h-4" aria-hidden="true" />
       </Button>
 
@@ -96,7 +96,6 @@ export default function ConnectWallet() {
               className="mt-2 inline-flex text-xs text-purple-300 hover:text-purple-200 transition-colors focus:outline-none focus:underline"
               role="menuitem"
               aria-label={`View address ${safeAddress} on Hiro Explorer (opens in new tab)`}
-              title="View on Hiro Explorer"
             >
               View on explorer
               <span className="sr-only">(opens in new tab)</span>
