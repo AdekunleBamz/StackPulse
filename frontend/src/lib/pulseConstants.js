@@ -20,3 +20,5 @@ export const PULSE_STALE_THRESHOLD_MS = 30000
 export const PULSE_DEFAULT_NETWORK = "mainnet"
 
 export const PULSE_PRICE_DECIMALS = 6
+
+export const PULSE_STX_DECIMALS = 6
