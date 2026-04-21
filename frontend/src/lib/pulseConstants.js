@@ -28,3 +28,5 @@ export const PULSE_MIN_TICK_VALUE = 0.001
 export const PULSE_CACHE_TTL_MS = 60000
 
 export const PULSE_MAX_CHART_POINTS = 500
+
+export const PULSE_ALERT_COOLDOWN_MS = 10000
