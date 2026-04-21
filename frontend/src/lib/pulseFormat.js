@@ -34,3 +34,5 @@ export const formatPulseMicroStx = (v) => (v / 1e6).toFixed(6) + " STX";
 export const formatPulseFeedItem = (item) => item.type + " @ " + item.block;
 
 export const formatPulseError = (e) => e && e.message ? e.message : "Unknown error";
+
+export const formatPulseVersion = (v) => "v" + v;
