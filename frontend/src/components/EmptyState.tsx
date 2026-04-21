@@ -40,7 +40,7 @@ export default function EmptyState({ icon: Icon, title, description, action, cla
           {action.label}
         </button>
       )}
-    </div>
+    </section>
   );
 }
 
