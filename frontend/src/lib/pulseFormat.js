@@ -36,3 +36,5 @@ export const formatPulseFeedItem = (item) => item.type + " @ " + item.block;
 export const formatPulseError = (e) => e && e.message ? e.message : "Unknown error";
 
 export const formatPulseVersion = (v) => "v" + v;
+
+export const formatPulseCategory = (c) => c.split("-").map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(" ");
