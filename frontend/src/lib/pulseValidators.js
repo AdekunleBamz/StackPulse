@@ -16,3 +16,5 @@ export const isValidTickInterval = (t) => Number.isInteger(t) && t > 0;
 export const isValidFeedSize = (n) => Number.isInteger(n) && n > 0 && n <= 1000;
 
 export const isValidRetryCount = (n) => Number.isInteger(n) && n >= 0;
+
+export const isValidCacheTTL = (t) => Number.isInteger(t) && t > 0;
