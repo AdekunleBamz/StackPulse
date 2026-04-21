@@ -30,3 +30,5 @@ export const isValidPulseStatus = (s) => ["pending","confirmed","failed"].includ
 export const isValidReconnectDelay = (ms) => Number.isInteger(ms) && ms >= 0;
 
 export const isValidStaleThreshold = (ms) => Number.isInteger(ms) && ms > 0;
+
+export const isValidPulseDelta = (d) => typeof d === "number" && isFinite(d);
