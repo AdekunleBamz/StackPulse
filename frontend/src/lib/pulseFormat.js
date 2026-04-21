@@ -22,3 +22,5 @@ export const formatPulseStatus = (s) => s.toUpperCase();
 export const formatPulseAge = (blocks) => blocks * 10 + " min ago";
 
 export const formatPulseCount = (n) => n.toLocaleString();
+
+export const formatPulseRatio = (a, b) => b > 0 ? (a / b * 100).toFixed(1) + "%" : "0%";
