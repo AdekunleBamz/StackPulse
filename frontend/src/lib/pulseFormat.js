@@ -28,3 +28,5 @@ export const formatPulseRatio = (a, b) => b > 0 ? (a / b * 100).toFixed(1) + "%"
 export const formatPulseLabel = (s) => s.replace(/_/g, " ").toLowerCase();
 
 export const formatPulseDecimal = (v, d) => parseFloat(v).toFixed(d || 6);
+
+export const formatPulseMicroStx = (v) => (v / 1e6).toFixed(6) + " STX";
