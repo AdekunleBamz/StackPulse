@@ -234,6 +234,8 @@ export default function NetworkStatus({ refreshInterval = DEFAULT_REFRESH_INTERV
           target="_blank"
           rel="noopener noreferrer"
           className="text-purple-400 hover:text-purple-300 flex items-center gap-1"
+          aria-label="Open Stacking information in a new tab"
+          title="Open Stacking information"
         >
           <Users className="w-3 h-3" />
           Stacking
