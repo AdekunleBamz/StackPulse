@@ -10,3 +10,5 @@ export const PULSE_MAX_FEED_SIZE = 100
 export const PULSE_API_BASE = "https://api.stackpulse.io"
 
 export const PULSE_WS_URL = "wss://ws.stackpulse.io"
+
+export const PULSE_RECONNECT_DELAY_MS = 3000
