@@ -21,7 +21,7 @@ export default function Tooltip({
   delay = 200
 }: TooltipProps) {
   const [isVisible, setIsVisible] = useState(false);
-  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const id = useId();
 
   const showTooltip = () => {
