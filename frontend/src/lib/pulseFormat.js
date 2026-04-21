@@ -26,3 +26,5 @@ export const formatPulseCount = (n) => n.toLocaleString();
 export const formatPulseRatio = (a, b) => b > 0 ? (a / b * 100).toFixed(1) + "%" : "0%";
 
 export const formatPulseLabel = (s) => s.replace(/_/g, " ").toLowerCase();
+
+export const formatPulseDecimal = (v, d) => parseFloat(v).toFixed(d || 6);
