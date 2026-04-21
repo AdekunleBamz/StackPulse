@@ -22,3 +22,5 @@ export const PULSE_DEFAULT_NETWORK = "mainnet"
 export const PULSE_PRICE_DECIMALS = 6
 
 export const PULSE_STX_DECIMALS = 6
+
+export const PULSE_MIN_TICK_VALUE = 0.001
