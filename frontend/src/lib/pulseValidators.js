@@ -12,3 +12,5 @@ export const isValidPulseNetwork = (n) => ["mainnet","testnet"].includes(n);
 export const isValidPulseVersion = (v) => typeof v === "string" && /^\d+\.\d+\.\d+$/.test(v);
 
 export const isValidTickInterval = (t) => Number.isInteger(t) && t > 0;
+
+export const isValidFeedSize = (n) => Number.isInteger(n) && n > 0 && n <= 1000;
