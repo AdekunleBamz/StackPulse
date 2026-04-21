@@ -24,3 +24,5 @@ export const isValidChartPoints = (n) => Number.isInteger(n) && n > 0 && n <= 10
 export const isValidAlertCooldown = (ms) => Number.isInteger(ms) && ms >= 0;
 
 export const isValidPageSize = (n) => Number.isInteger(n) && n > 0 && n <= 100;
+
+export const isValidPulseStatus = (s) => ["pending","confirmed","failed"].includes(s);
