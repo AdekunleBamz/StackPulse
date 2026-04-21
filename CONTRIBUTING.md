@@ -2,7 +2,30 @@
 
 Use small, reviewable changes and keep documentation close to the code it describes.
 
-## Local setup
+## 📜 Code of Conduct
+
+By participating in this project, you agree to abide by our Code of Conduct. Please be respectful and professional in all interactions.
+
+## 🛠️ Getting Started
+
+1. **Fork the Repo**: Create your own fork of the repository.
+2. **Setup Dev Environment**: Follow the instructions in [README.md](README.md) to install dependencies.
+3. **Sign Your Commits**: We require all commits to be cryptographically signed (GPG or SSH) for security and verification.
+   ```bash
+   git config --global user.signingkey <your-key-id>
+   git commit -S -m "Your commit message"
+   ```
+
+## 🌿 Branching Strategy
+
+- `main`: Production-ready code.
+- `feat/*`: New features.
+- `fix/*`: Bug fixes.
+- `docs/*`: Documentation updates.
+
+## 🧪 Testing Guidelines
+
+Before submitting a pull request, ensure that all tests pass:
 
 ```bash
 git clone https://github.com/YOUR_USERNAME/StackPulse.git
