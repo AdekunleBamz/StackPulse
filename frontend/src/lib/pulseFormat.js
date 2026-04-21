@@ -16,3 +16,5 @@ export const formatPulseVolume = (v) => (v / 1e6).toFixed(2) + "M STX";
 export const formatPulseMarketCap = (m) => "$" + (m / 1e9).toFixed(2) + "B";
 
 export const formatPulseNetwork = (n) => n.charAt(0).toUpperCase() + n.slice(1);
+
+export const formatPulseStatus = (s) => s.toUpperCase();
