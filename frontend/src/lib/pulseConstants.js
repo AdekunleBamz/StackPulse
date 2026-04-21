@@ -18,3 +18,5 @@ export const PULSE_MAX_RETRIES = 5
 export const PULSE_STALE_THRESHOLD_MS = 30000
 
 export const PULSE_DEFAULT_NETWORK = "mainnet"
+
+export const PULSE_PRICE_DECIMALS = 6
