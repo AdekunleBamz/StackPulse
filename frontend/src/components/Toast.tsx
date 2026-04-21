@@ -93,6 +93,7 @@ function Toast({ id, type, title, message, duration = TOAST_DEFAULT_DURATION_MS,
     timerRef.current = window.setTimeout(() => {
       setIsLeaving(true);
       leavingTimerRef.current = window.setTimeout(() => onClose(id), TOAST_LEAVE_ANIMATION_DURATION_MS);
+    }, remainingMsRef.current);
 
     progressIntervalRef.current = window.setInterval(() => {
       if (startTimeRef.current) {
