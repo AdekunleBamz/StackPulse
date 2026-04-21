@@ -197,7 +197,10 @@ interface ToastData {
 const toastListeners = new Set<(toasts: ToastData[]) => void>();
 let toasts: ToastData[] = [];
 
-const createToastId = () => `toast-${Date.now()}-${Math.random().toString(36).slice(2, 11)}`;
+const createToastId = () =>
+  typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function'
+    ? crypto.randomUUID()
+    : `toast-${Date.now()}-${Math.random().toString(36).slice(2, 11)}`;
 
 const notifyListeners = () => {
   for (const listener of toastListeners) {
