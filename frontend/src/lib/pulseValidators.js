@@ -34,3 +34,5 @@ export const isValidStaleThreshold = (ms) => Number.isInteger(ms) && ms > 0;
 export const isValidPulseDelta = (d) => typeof d === "number" && isFinite(d);
 
 export const isValidPulseVolume = (v) => typeof v === "number" && v >= 0;
+
+export const isValidPriceDecimals = (d) => Number.isInteger(d) && d >= 0 && d <= 18;
