@@ -28,3 +28,5 @@ export const isValidPageSize = (n) => Number.isInteger(n) && n > 0 && n <= 100;
 export const isValidPulseStatus = (s) => ["pending","confirmed","failed"].includes(s);
 
 export const isValidReconnectDelay = (ms) => Number.isInteger(ms) && ms >= 0;
+
+export const isValidStaleThreshold = (ms) => Number.isInteger(ms) && ms > 0;
