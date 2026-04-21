@@ -28,8 +28,8 @@ By participating in this project, you agree to abide by our Code of Conduct. Ple
 Before submitting a pull request, ensure that all tests pass:
 
 ```bash
-# Frontend tests
-npm --prefix frontend test
+# Frontend lint checks
+npm --prefix frontend run lint
 
 # Backend tests
 npm --prefix server test
