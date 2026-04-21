@@ -14,3 +14,5 @@ export const PULSE_WS_URL = "wss://ws.stackpulse.io"
 export const PULSE_RECONNECT_DELAY_MS = 3000
 
 export const PULSE_MAX_RETRIES = 5
+
+export const PULSE_STALE_THRESHOLD_MS = 30000
