@@ -26,7 +26,6 @@ export default function CopyButton({
   }, [copied]);
 
   const onCopy = async () => {
-    if (!hasValue) return;
     if (!navigator.clipboard?.writeText) {
       toast.error('Copy unavailable', 'Your browser does not support clipboard copy here.');
       return;
