@@ -52,7 +52,7 @@ export default function EmptyState({ icon: Icon, title, description, hint, actio
           {action.label}
         </button>
       )}
-    </div>
+    </section>
   );
 }
 
