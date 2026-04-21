@@ -57,6 +57,8 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button(
   ref
 ) {
   const isDisabled = disabled || isLoading;
+  const baseAriaLabel = props['aria-label'];
+  const loadingAriaLabel = baseAriaLabel ? `Loading ${baseAriaLabel}` : 'Loading';
 
   return (
     <button
@@ -74,7 +76,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button(
         className
       )}
       aria-busy={isLoading}
-      aria-label={isLoading ? `Loading ${props['aria-label'] || ''}` : props['aria-label']}
+      aria-label={isLoading ? loadingAriaLabel : baseAriaLabel}
       {...props}
     >
       {isLoading ? (
@@ -90,4 +92,3 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button(
 });
 
 export default Button;
-
