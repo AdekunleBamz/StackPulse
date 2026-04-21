@@ -46,7 +46,10 @@ export default function NotificationCenter({ maxNotifications = 50 }: Notificati
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const safeMaxNotifications = Number.isFinite(maxNotifications)
     ? Math.max(1, Math.floor(maxNotifications))
-    : 50;
+    : NOTIFICATION_DEFAULT_MAX;
+  const safePollInterval = Number.isFinite(pollInterval)
+    ? Math.max(1_000, Math.floor(pollInterval))
+    : NOTIFICATION_POLL_INTERVAL_MS;
 
   // Fetch notifications from server
   useEffect(() => {
@@ -74,11 +77,10 @@ export default function NotificationCenter({ maxNotifications = 50 }: Notificati
       }
     };
 
-    fetchNotifications();
-    // Poll for new notifications every 30 seconds
-    const interval = setInterval(fetchNotifications, NOTIFICATION_POLL_INTERVAL_MS);
+    fetchNotifications(true);
+    const interval = setInterval(() => fetchNotifications(false), safePollInterval);
     return () => clearInterval(interval);
-  }, [safeMaxNotifications]);
+  }, [safeMaxNotifications, safePollInterval]);
 
   const unreadCount = useMemo(() => notifications.filter((n) => !n.read).length, [notifications]);
 
