@@ -10,3 +10,5 @@ export const isValidPulseAddress = (a) => typeof a === "string" && a.startsWith(
 export const isValidPulseNetwork = (n) => ["mainnet","testnet"].includes(n);
 
 export const isValidPulseVersion = (v) => typeof v === "string" && /^\d+\.\d+\.\d+$/.test(v);
+
+export const isValidTickInterval = (t) => Number.isInteger(t) && t > 0;
