@@ -165,6 +165,10 @@ describe('shared/format truncateString', () => {
   it('returns only ellipsis when max length is zero', () => {
     expect(truncateString('alert', 0)).toBe('...');
   });
+
+  it('treats non-finite max lengths as zero', () => {
+    expect(truncateString('alert', Number.NaN)).toBe('...');
+  });
 });
 
 describe('shared/format formatFileSize', () => {
