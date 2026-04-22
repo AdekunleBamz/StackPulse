@@ -24,4 +24,8 @@ describe('pulse validator utils', () => {
   it('accepts non-negative pulse prices', () => {
     expect(isValidPulsePrice('12.5')).toBe(true);
   });
+
+  it('rejects negative pulse prices', () => {
+    expect(isValidPulsePrice('-1')).toBe(false);
+  });
 });
