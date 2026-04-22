@@ -57,4 +57,8 @@ describe('pulse validator utils', () => {
   it('accepts feed sizes at the upper bound', () => {
     expect(isValidFeedSize(1000)).toBe(true);
   });
+
+  it('accepts non-negative retry counts', () => {
+    expect(isValidRetryCount(0)).toBe(true);
+  });
 });
