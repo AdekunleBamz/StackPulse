@@ -12,12 +12,18 @@ import {
   parseStxAmount,
   formatPercent,
   formatRelativeTime,
+  formatSignedNumber,
   formatStxAmount,
+  formatTime,
   truncateAddress,
   truncateString,
 } from '../shared/utils/format';
 
 describe('shared/format formatStxAmount', () => {
+  it('formats zero micro-STX amounts', () => {
+    expect(formatStxAmount(0)).toBe('0.000000 STX');
+  });
+
   it('formats million-scale STX amounts', () => {
     expect(formatStxAmount('2000000000000')).toBe('2.00M STX');
   });
