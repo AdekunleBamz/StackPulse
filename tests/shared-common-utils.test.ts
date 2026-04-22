@@ -49,6 +49,10 @@ describe('shared/common isValidStacksAddress', () => {
   it('rejects non-string address inputs', () => {
     expect(isValidStacksAddress(12 as unknown as string)).toBe(false);
   });
+
+  it('rejects too-short stack addresses', () => {
+    expect(isValidStacksAddress('SP123')).toBe(false);
+  });
 });
 
 describe('shared/common object helpers', () => {
