@@ -125,14 +125,16 @@ export async function retryWithBackoff<T>(
   maxAttempts: number = 3,
   baseDelayMs: number = 200
 ): Promise<T> {
+  const safeMaxAttempts = Number.isFinite(maxAttempts) ? Math.max(1, Math.floor(maxAttempts)) : 3;
+  const safeBaseDelayMs = Number.isFinite(baseDelayMs) ? Math.max(0, baseDelayMs) : 200;
   let lastError: unknown;
-  for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
+  for (let attempt = 1; attempt <= safeMaxAttempts; attempt += 1) {
     try {
       return await fn();
     } catch (err) {
       lastError = err;
-      if (attempt < maxAttempts) {
-        await sleep(baseDelayMs * 2 ** (attempt - 1));
+      if (attempt < safeMaxAttempts) {
+        await sleep(safeBaseDelayMs * 2 ** (attempt - 1));
       }
     }
   }

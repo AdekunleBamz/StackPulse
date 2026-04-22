@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { clamp, debounce, generateId, isValidStacksAddress, sleep } from '../shared/utils/common';
+import { clamp, debounce, generateId, isValidStacksAddress, retryWithBackoff, sleep } from '../shared/utils/common';
 
 afterEach(() => {
   vi.useRealTimers();
@@ -126,5 +126,13 @@ describe('shared/common sleep', () => {
     await vi.runAllTimersAsync();
 
     expect(done).toHaveBeenCalledTimes(1);
+  });
+});
+
+describe('shared/common retryWithBackoff', () => {
+  it('normalizes non-finite maxAttempts to a safe default', async () => {
+    const fn = vi.fn().mockResolvedValue('ok');
+    await expect(retryWithBackoff(fn, Number.NaN, 1)).resolves.toBe('ok');
+    expect(fn).toHaveBeenCalledTimes(1);
   });
 });
