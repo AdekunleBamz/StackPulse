@@ -231,6 +231,12 @@ describe('shared/common retryWithBackoff', () => {
     await expect(retryWithBackoff(fn, 2, 0)).rejects.toThrow('nope');
     expect(fn).toHaveBeenCalledTimes(2);
   });
+
+  it('floors decimal retry attempt counts', async () => {
+    const fn = vi.fn().mockRejectedValue(new Error('nope'));
+    await expect(retryWithBackoff(fn, 2.9, 0)).rejects.toThrow('nope');
+    expect(fn).toHaveBeenCalledTimes(2);
+  });
 });
 
 describe('shared/common throttle', () => {
