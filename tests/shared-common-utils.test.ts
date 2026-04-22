@@ -185,6 +185,12 @@ describe('shared/common sleep', () => {
   });
 });
 
+describe('shared/common date helpers', () => {
+  it('matches dates that fall on the same calendar day', () => {
+    expect(isSameDate(new Date(2024, 0, 2, 1), new Date(2024, 0, 2, 23))).toBe(true);
+  });
+});
+
 describe('shared/common retryWithBackoff', () => {
   it('normalizes non-finite maxAttempts to a safe default', async () => {
     const fn = vi.fn().mockResolvedValue('ok');
