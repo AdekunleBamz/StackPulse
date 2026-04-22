@@ -53,4 +53,8 @@ describe('pulse validator utils', () => {
   it('accepts positive tick intervals', () => {
     expect(isValidTickInterval(1)).toBe(true);
   });
+
+  it('accepts feed sizes at the upper bound', () => {
+    expect(isValidFeedSize(1000)).toBe(true);
+  });
 });
