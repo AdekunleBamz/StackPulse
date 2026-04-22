@@ -239,6 +239,10 @@ describe('shared/format formatBalance', () => {
   it('parses whitespace-padded balance strings', () => {
     expect(formatBalance(' 1,234.5 ', 1)).toBe('1234.5');
   });
+
+  it('clamps negative balance precision to whole numbers', () => {
+    expect(formatBalance(1.6, -1)).toBe('2');
+  });
 });
 
 describe('shared/format parseStxAmount', () => {
