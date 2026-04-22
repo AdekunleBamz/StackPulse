@@ -88,4 +88,8 @@ describe('pulse format utils', () => {
   it('formats pulse microSTX values as STX', () => {
     expect(formatPulseMicroStx(1_500_000)).toBe('1.500000 STX');
   });
+
+  it('formats pulse feed item summaries', () => {
+    expect(formatPulseFeedItem({ type: 'transfer', block: 123 })).toBe('transfer @ 123');
+  });
 });
