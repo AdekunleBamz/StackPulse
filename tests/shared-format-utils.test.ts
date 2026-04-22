@@ -197,6 +197,10 @@ describe('shared/format formatDuration', () => {
   it('formats minute-scale durations with seconds', () => {
     expect(formatDuration(125_000)).toBe('2m 5s');
   });
+
+  it('formats sub-minute durations in seconds', () => {
+    expect(formatDuration(45_000)).toBe('45s');
+  });
 });
 
 describe('shared/format formatDate', () => {
