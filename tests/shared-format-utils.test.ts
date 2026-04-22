@@ -151,6 +151,10 @@ describe('shared/format truncateAddress', () => {
   it('uses default truncation when start chars are non-finite', () => {
     expect(truncateAddress('SP3K8BC0PPEVCV7NZ6QSRWPQ2JE9E5B6N3PA0KBR9', Number.NaN, 4)).toBe('SP3K8B...KBR9');
   });
+
+  it('floors decimal truncation windows', () => {
+    expect(truncateAddress('SP3K8BC0PPEVCV7NZ6QSRWPQ2JE9E5B6N3PA0KBR9', 3.9, 2.9)).toBe('SP3...R9');
+  });
 });
 
 describe('shared/format truncateString', () => {
