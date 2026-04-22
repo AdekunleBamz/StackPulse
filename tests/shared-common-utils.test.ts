@@ -55,6 +55,11 @@ describe('shared/common object helpers', () => {
   it('omits requested keys from objects', () => {
     expect(omit({ one: 1, two: 2 }, ['two'])).toEqual({ one: 1 });
   });
+
+  it('groups values by a derived key', () => {
+    const grouped = groupBy(['alpha', 'alert'], value => value[0]);
+    expect(grouped.get('a')).toEqual(['alpha', 'alert']);
+  });
 });
 
 describe('shared/common generateId', () => {
