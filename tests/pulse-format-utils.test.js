@@ -60,4 +60,8 @@ describe('pulse format utils', () => {
   it('formats pulse status labels in uppercase', () => {
     expect(formatPulseStatus('pending')).toBe('PENDING');
   });
+
+  it('formats pulse ages from block counts', () => {
+    expect(formatPulseAge(6)).toBe('60 min ago');
+  });
 });
