@@ -91,6 +91,10 @@ describe('shared/format formatPercent', () => {
   it('formats non-finite percentage values as zero', () => {
     expect(formatPercent(Number.NaN)).toBe('0.00%');
   });
+
+  it('floors fractional percentage precision values', () => {
+    expect(formatPercent(3.14159, 3.9)).toBe('3.142%');
+  });
 });
 
 describe('shared/format formatRelativeTime', () => {
