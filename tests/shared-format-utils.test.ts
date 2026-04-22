@@ -183,6 +183,10 @@ describe('shared/format formatFileSize', () => {
   it('formats kilobyte-scale file sizes', () => {
     expect(formatFileSize(1024)).toBe('1.00 KB');
   });
+
+  it('formats megabyte-scale file sizes', () => {
+    expect(formatFileSize(1024 * 1024)).toBe('1.00 MB');
+  });
 });
 
 describe('shared/format formatDuration', () => {
