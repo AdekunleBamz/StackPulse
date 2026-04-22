@@ -69,6 +69,10 @@ describe('shared/common object helpers', () => {
     expect(grouped.get('a')).toEqual(['alpha', 'alert']);
   });
 
+  it('returns an empty map for empty groups', () => {
+    expect(groupBy([], value => String(value)).size).toBe(0);
+  });
+
   it('maps object values while preserving keys', () => {
     expect(mapValues({ one: 1, two: 2 }, value => value * 2)).toEqual({ one: 2, two: 4 });
   });
