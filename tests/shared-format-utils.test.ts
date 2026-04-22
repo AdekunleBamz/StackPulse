@@ -147,6 +147,10 @@ describe('shared/format truncateAddress', () => {
   it('returns an empty label for non-string addresses', () => {
     expect(truncateAddress(12 as unknown as string)).toBe('');
   });
+
+  it('uses default truncation when start chars are non-finite', () => {
+    expect(truncateAddress('SP3K8BC0PPEVCV7NZ6QSRWPQ2JE9E5B6N3PA0KBR9', Number.NaN, 4)).toBe('SP3K8B...KBR9');
+  });
 });
 
 describe('shared/format truncateString', () => {
