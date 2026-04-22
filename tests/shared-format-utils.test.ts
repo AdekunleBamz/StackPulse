@@ -179,6 +179,10 @@ describe('shared/format formatDate', () => {
   it('returns an explicit invalid marker for invalid timestamps', () => {
     expect(formatDate(new Date('invalid'))).toBe('Invalid date');
   });
+
+  it('supports custom date formatting options', () => {
+    expect(formatDate(Date.UTC(2024, 0, 2), { year: 'numeric' })).toBe('2024');
+  });
 });
 
 describe('shared/format formatDateTime', () => {
