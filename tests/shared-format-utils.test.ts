@@ -201,6 +201,10 @@ describe('shared/format formatDuration', () => {
   it('formats sub-minute durations in seconds', () => {
     expect(formatDuration(45_000)).toBe('45s');
   });
+
+  it('formats zero durations in seconds', () => {
+    expect(formatDuration(0)).toBe('0s');
+  });
 });
 
 describe('shared/format formatDate', () => {
