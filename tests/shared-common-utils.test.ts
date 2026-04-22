@@ -190,6 +190,18 @@ describe('shared/common debounce', () => {
 });
 
 describe('shared/common sleep', () => {
+  it('waits for positive durations', async () => {
+    vi.useFakeTimers();
+    const done = vi.fn();
+
+    void sleep(25).then(done);
+    vi.advanceTimersByTime(24);
+    expect(done).not.toHaveBeenCalled();
+    await vi.advanceTimersByTimeAsync(1);
+
+    expect(done).toHaveBeenCalledTimes(1);
+  });
+
   it('treats negative durations as zero-delay', async () => {
     vi.useFakeTimers();
     const done = vi.fn();
