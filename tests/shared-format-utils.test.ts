@@ -179,6 +179,10 @@ describe('shared/format formatFileSize', () => {
   it('handles non-finite byte counts safely', () => {
     expect(formatFileSize(Number.POSITIVE_INFINITY)).toBe('0.00 B');
   });
+
+  it('formats kilobyte-scale file sizes', () => {
+    expect(formatFileSize(1024)).toBe('1.00 KB');
+  });
 });
 
 describe('shared/format formatDuration', () => {
