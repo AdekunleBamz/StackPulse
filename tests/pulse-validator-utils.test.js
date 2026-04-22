@@ -32,4 +32,8 @@ describe('pulse validator utils', () => {
   it('accepts non-negative block heights', () => {
     expect(isValidBlockHeight(0)).toBe(true);
   });
+
+  it('accepts 64-character pulse transaction ids', () => {
+    expect(isValidPulseTxId('a'.repeat(64))).toBe(true);
+  });
 });
