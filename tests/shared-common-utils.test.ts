@@ -52,6 +52,10 @@ describe('shared/common object helpers', () => {
     expect(pick({ one: 1, two: 2 }, ['one'])).toEqual({ one: 1 });
   });
 
+  it('skips missing keys when picking objects', () => {
+    expect(pick({ one: 1 }, ['two' as never])).toEqual({});
+  });
+
   it('omits requested keys from objects', () => {
     expect(omit({ one: 1, two: 2 }, ['two'])).toEqual({ one: 1 });
   });
