@@ -40,4 +40,9 @@ describe('pulse validator utils', () => {
   it('accepts pulse mainnet addresses', () => {
     expect(isValidPulseAddress('SP3K8BC0PPEVCV7NZ6QSRWPQ2JE9E5B6N3PA0KBR9')).toBe(true);
   });
+
+  it('accepts supported pulse networks', () => {
+    expect(isValidPulseNetwork('mainnet')).toBe(true);
+    expect(isValidPulseNetwork('testnet')).toBe(true);
+  });
 });
