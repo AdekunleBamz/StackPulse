@@ -193,6 +193,10 @@ describe('shared/common date helpers', () => {
   it('separates dates on different calendar days', () => {
     expect(isSameDate(new Date(2024, 0, 2, 23), new Date(2024, 0, 3, 1))).toBe(false);
   });
+
+  it('returns the start of a calendar day', () => {
+    expect(startOfDay(new Date('2024-01-02T12:34:56')).getHours()).toBe(0);
+  });
 });
 
 describe('shared/common retryWithBackoff', () => {
