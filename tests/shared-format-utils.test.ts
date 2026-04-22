@@ -91,6 +91,10 @@ describe('shared/format truncateAddress', () => {
   it('returns short addresses unchanged', () => {
     expect(truncateAddress('SP1234', 4, 4)).toBe('SP1234');
   });
+
+  it('trims address input before truncation', () => {
+    expect(truncateAddress('  SP3K8BC0PPEVCV7NZ6QSRWPQ2JE9E5B6N3PA0KBR9  ', 4, 4)).toBe('SP3K...KBR9');
+  });
 });
 
 describe('shared/format truncateString', () => {
