@@ -197,6 +197,10 @@ describe('shared/common date helpers', () => {
   it('returns the start of a calendar day', () => {
     expect(startOfDay(new Date('2024-01-02T12:34:56')).getHours()).toBe(0);
   });
+
+  it('returns the end of a calendar day', () => {
+    expect(endOfDay(new Date('2024-01-02T12:34:56')).getHours()).toBe(23);
+  });
 });
 
 describe('shared/common retryWithBackoff', () => {
