@@ -242,6 +242,10 @@ describe('shared/format formatBalance', () => {
 });
 
 describe('shared/format parseStxAmount', () => {
+  it('parses plain STX amounts into micro-STX', () => {
+    expect(parseStxAmount('2.5')).toBe(2_500_000);
+  });
+
   it('removes commas and units before parsing', () => {
     expect(parseStxAmount('1,234.567 STX')).toBe(1234567000);
   });
