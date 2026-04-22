@@ -113,6 +113,10 @@ describe('shared/common clamp', () => {
     expect(clamp(5, 10, 0)).toBe(5);
   });
 
+  it('keeps values already inside bounds', () => {
+    expect(clamp(5, 0, 10)).toBe(5);
+  });
+
   it('caps values above the upper bound', () => {
     expect(clamp(15, 0, 10)).toBe(10);
   });
