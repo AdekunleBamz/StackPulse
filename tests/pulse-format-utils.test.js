@@ -44,4 +44,8 @@ describe('pulse format utils', () => {
   it('formats pulse addresses with visible ends', () => {
     expect(formatPulseAddress('SP3K8BC0PPEVCV7NZ6QSRWPQ2JE9E5B6N3PA0KBR9')).toBe('SP3K8B...KBR9');
   });
+
+  it('formats pulse volumes in million STX units', () => {
+    expect(formatPulseVolume(2_500_000)).toBe('2.50M STX');
+  });
 });
