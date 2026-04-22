@@ -43,6 +43,10 @@ describe('shared/common generateId', () => {
   it('falls back to minimum length for non-finite values', () => {
     expect(generateId(Number.NaN)).toHaveLength(1);
   });
+
+  it('caps very large id lengths to keep generation bounded', () => {
+    expect(generateId(500)).toHaveLength(128);
+  });
 });
 
 describe('shared/common clamp', () => {

@@ -22,7 +22,7 @@ export function isValidStacksAddress(address: string): boolean {
  * @returns A random ID string of the specified length.
  */
 export function generateId(length: number = 8): string {
-  const safeLength = Number.isFinite(length) ? Math.max(1, Math.floor(length)) : 1;
+  const safeLength = Number.isFinite(length) ? Math.min(128, Math.max(1, Math.floor(length))) : 1;
   let id = '';
   while (id.length < safeLength) {
     id += Math.random().toString(36).slice(2);
