@@ -201,6 +201,10 @@ describe('shared/common date helpers', () => {
   it('returns the end of a calendar day', () => {
     expect(endOfDay(new Date('2024-01-02T12:34:56')).getHours()).toBe(23);
   });
+
+  it('detects expired past dates', () => {
+    expect(isExpiredDate(new Date(Date.now() - 1000))).toBe(true);
+  });
 });
 
 describe('shared/common retryWithBackoff', () => {
