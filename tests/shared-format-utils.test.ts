@@ -28,6 +28,10 @@ describe('shared/format formatStxAmount', () => {
     expect(formatStxAmount(1_000_000)).toBe('1.000000 STX');
   });
 
+  it('formats fractional STX amounts with six decimals', () => {
+    expect(formatStxAmount(1_234_567)).toBe('1.234567 STX');
+  });
+
   it('formats million-scale STX amounts', () => {
     expect(formatStxAmount('2000000000000')).toBe('2.00M STX');
   });
