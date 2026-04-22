@@ -87,6 +87,10 @@ describe('shared/format formatPercent', () => {
   it('falls back to default precision when decimals are non-finite', () => {
     expect(formatPercent(3.14159, Number.NaN)).toBe('3.14%');
   });
+
+  it('formats non-finite percentage values as zero', () => {
+    expect(formatPercent(Number.NaN)).toBe('0.00%');
+  });
 });
 
 describe('shared/format formatRelativeTime', () => {
