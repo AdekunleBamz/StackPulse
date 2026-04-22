@@ -73,4 +73,8 @@ describe('pulse validator utils', () => {
   it('accepts zero alert cooldown values', () => {
     expect(isValidAlertCooldown(0)).toBe(true);
   });
+
+  it('accepts page sizes at the upper bound', () => {
+    expect(isValidPageSize(100)).toBe(true);
+  });
 });
