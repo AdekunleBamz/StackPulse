@@ -72,4 +72,8 @@ describe('pulse format utils', () => {
   it('formats pulse ratios as percentages', () => {
     expect(formatPulseRatio(1, 4)).toBe('25.0%');
   });
+
+  it('formats zero-denominator pulse ratios safely', () => {
+    expect(formatPulseRatio(1, 0)).toBe('0%');
+  });
 });
