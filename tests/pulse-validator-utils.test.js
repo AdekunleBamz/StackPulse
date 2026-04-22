@@ -89,4 +89,8 @@ describe('pulse validator utils', () => {
   it('accepts positive stale threshold values', () => {
     expect(isValidStaleThreshold(1)).toBe(true);
   });
+
+  it('accepts finite pulse delta values', () => {
+    expect(isValidPulseDelta(-1.5)).toBe(true);
+  });
 });
