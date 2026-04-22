@@ -113,6 +113,10 @@ describe('shared/format formatRelativeTime', () => {
   it('formats multi-week future timestamps in weeks', () => {
     expect(formatRelativeTime(Date.now() + 14 * 24 * 60 * 60 * 1000)).toBe('in 2w');
   });
+
+  it('formats hour-old timestamps in hours', () => {
+    expect(formatRelativeTime(Date.now() - 2 * 60 * 60 * 1000)).toBe('2h ago');
+  });
 });
 
 describe('shared/format truncateAddress', () => {
