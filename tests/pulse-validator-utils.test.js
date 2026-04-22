@@ -65,4 +65,8 @@ describe('pulse validator utils', () => {
   it('accepts positive cache TTL values', () => {
     expect(isValidCacheTTL(1)).toBe(true);
   });
+
+  it('accepts chart point counts at the upper bound', () => {
+    expect(isValidChartPoints(10000)).toBe(true);
+  });
 });
