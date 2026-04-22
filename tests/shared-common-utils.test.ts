@@ -171,6 +171,17 @@ describe('shared/common debounce', () => {
     expect(handler).toHaveBeenCalledWith('instant');
   });
 
+  it('treats zero waits as immediate', () => {
+    vi.useFakeTimers();
+    const handler = vi.fn();
+    const debounced = debounce(handler, 0);
+
+    debounced('zero');
+    vi.advanceTimersByTime(0);
+
+    expect(handler).toHaveBeenCalledWith('zero');
+  });
+
   it('preserves caller context when invoking debounced functions', () => {
     vi.useFakeTimers();
     const calls: number[] = [];
