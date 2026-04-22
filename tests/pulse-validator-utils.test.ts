@@ -93,4 +93,8 @@ describe('pulse validator utils', () => {
   it('accepts finite pulse delta values', () => {
     expect(isValidPulseDelta(-1.5)).toBe(true);
   });
+
+  it('accepts dotted pulse contract addresses', () => {
+    expect(isValidPulseContractAddress('SP123.contract')).toBe(true);
+  });
 });
