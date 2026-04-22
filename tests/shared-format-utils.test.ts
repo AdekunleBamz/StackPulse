@@ -65,6 +65,10 @@ describe('shared/format formatNumber', () => {
   it('handles whitespace-padded numeric strings', () => {
     expect(formatNumber(' 1234 ')).toBe('1,234');
   });
+
+  it('formats negative numeric inputs with grouping', () => {
+    expect(formatNumber(-1234)).toBe('-1,234');
+  });
 });
 
 describe('shared/format formatPercent', () => {
