@@ -147,6 +147,10 @@ describe('shared/format formatBalance', () => {
   it('returns a zero balance string for invalid values', () => {
     expect(formatBalance('oops', 4)).toBe('0.0000');
   });
+
+  it('parses whitespace-padded balance strings', () => {
+    expect(formatBalance(' 1,234.5 ', 1)).toBe('1234.5');
+  });
 });
 
 describe('shared/format parseStxAmount', () => {
