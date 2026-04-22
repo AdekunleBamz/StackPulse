@@ -69,4 +69,8 @@ describe('pulse validator utils', () => {
   it('accepts chart point counts at the upper bound', () => {
     expect(isValidChartPoints(10000)).toBe(true);
   });
+
+  it('accepts zero alert cooldown values', () => {
+    expect(isValidAlertCooldown(0)).toBe(true);
+  });
 });
