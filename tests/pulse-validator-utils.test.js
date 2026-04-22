@@ -61,4 +61,8 @@ describe('pulse validator utils', () => {
   it('accepts non-negative retry counts', () => {
     expect(isValidRetryCount(0)).toBe(true);
   });
+
+  it('accepts positive cache TTL values', () => {
+    expect(isValidCacheTTL(1)).toBe(true);
+  });
 });
