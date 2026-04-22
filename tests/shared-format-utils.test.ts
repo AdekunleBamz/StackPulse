@@ -24,6 +24,10 @@ describe('shared/format formatStxAmount', () => {
     expect(formatStxAmount(0)).toBe('0.000000 STX');
   });
 
+  it('formats one whole STX amount', () => {
+    expect(formatStxAmount(1_000_000)).toBe('1.000000 STX');
+  });
+
   it('formats million-scale STX amounts', () => {
     expect(formatStxAmount('2000000000000')).toBe('2.00M STX');
   });
