@@ -45,4 +45,8 @@ describe('pulse validator utils', () => {
     expect(isValidPulseNetwork('mainnet')).toBe(true);
     expect(isValidPulseNetwork('testnet')).toBe(true);
   });
+
+  it('accepts semantic pulse versions', () => {
+    expect(isValidPulseVersion('1.0.0')).toBe(true);
+  });
 });
