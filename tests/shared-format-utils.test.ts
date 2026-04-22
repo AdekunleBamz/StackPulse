@@ -295,6 +295,12 @@ describe('shared/format formatCompactNumber', () => {
   });
 });
 
+describe('shared/format formatTime', () => {
+  it('formats valid time values as strings', () => {
+    expect(formatTime(Date.UTC(2024, 0, 2, 13, 5))).toContain(':');
+  });
+});
+
 describe('shared/format formatOrdinal', () => {
   it('falls back to 0th for non-finite inputs', () => {
     expect(formatOrdinal(Number.NaN)).toBe('0th');
