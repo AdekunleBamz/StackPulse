@@ -36,4 +36,8 @@ describe('pulse validator utils', () => {
   it('accepts 64-character pulse transaction ids', () => {
     expect(isValidPulseTxId('a'.repeat(64))).toBe(true);
   });
+
+  it('accepts pulse mainnet addresses', () => {
+    expect(isValidPulseAddress('SP3K8BC0PPEVCV7NZ6QSRWPQ2JE9E5B6N3PA0KBR9')).toBe(true);
+  });
 });
