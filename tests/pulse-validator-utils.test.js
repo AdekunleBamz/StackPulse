@@ -77,4 +77,8 @@ describe('pulse validator utils', () => {
   it('accepts page sizes at the upper bound', () => {
     expect(isValidPageSize(100)).toBe(true);
   });
+
+  it('accepts supported pulse statuses', () => {
+    expect(isValidPulseStatus('confirmed')).toBe(true);
+  });
 });
