@@ -250,6 +250,10 @@ describe('shared/format parseStxAmount', () => {
     expect(parseStxAmount('1,234.567 STX')).toBe(1234567000);
   });
 
+  it('parses uppercase STX unit suffixes', () => {
+    expect(parseStxAmount('1 STX')).toBe(1_000_000);
+  });
+
   it('clamps negative parsed amounts to zero', () => {
     expect(parseStxAmount('-1 STX')).toBe(0);
   });
