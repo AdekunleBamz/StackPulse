@@ -28,4 +28,8 @@ describe('pulse format utils', () => {
   it('formats positive pulse deltas with an explicit sign', () => {
     expect(formatPulseDelta(1.234)).toBe('+1.23%');
   });
+
+  it('formats negative pulse deltas without a plus sign', () => {
+    expect(formatPulseDelta(-1.234)).toBe('-1.23%');
+  });
 });
