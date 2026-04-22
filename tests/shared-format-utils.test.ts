@@ -305,6 +305,12 @@ describe('shared/format formatTime', () => {
   });
 });
 
+describe('shared/format formatSignedNumber', () => {
+  it('adds an explicit sign for positive values', () => {
+    expect(formatSignedNumber(7)).toBe('+7');
+  });
+});
+
 describe('shared/format formatOrdinal', () => {
   it('falls back to 0th for non-finite inputs', () => {
     expect(formatOrdinal(Number.NaN)).toBe('0th');
