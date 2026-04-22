@@ -65,6 +65,7 @@ export function debounce<T extends (...args: unknown[]) => unknown>(
 export function clamp(value: number, min: number, max: number): number {
   const lower = Math.min(min, max);
   const upper = Math.max(min, max);
+  if (!Number.isFinite(value)) return lower;
   return Math.min(Math.max(value, lower), upper);
 }
 

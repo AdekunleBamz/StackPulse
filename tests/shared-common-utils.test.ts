@@ -57,6 +57,10 @@ describe('shared/common clamp', () => {
   it('raises values below the lower bound', () => {
     expect(clamp(-5, 0, 10)).toBe(0);
   });
+
+  it('falls back to lower bound for non-finite values', () => {
+    expect(clamp(Number.NaN, 0, 10)).toBe(0);
+  });
 });
 
 describe('shared/common debounce', () => {
