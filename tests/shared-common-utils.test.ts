@@ -234,4 +234,16 @@ describe('shared/common throttle', () => {
     throttled.call(target);
     expect(calls).toEqual([11]);
   });
+
+  it('drops calls inside the throttle window', () => {
+    vi.useFakeTimers();
+    const handler = vi.fn();
+    const throttled = throttle(handler, 10);
+
+    throttled('first');
+    throttled('second');
+
+    expect(handler).toHaveBeenCalledTimes(1);
+    expect(handler).toHaveBeenCalledWith('first');
+  });
 });
