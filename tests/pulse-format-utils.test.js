@@ -48,4 +48,8 @@ describe('pulse format utils', () => {
   it('formats pulse volumes in million STX units', () => {
     expect(formatPulseVolume(2_500_000)).toBe('2.50M STX');
   });
+
+  it('formats pulse market caps in billions', () => {
+    expect(formatPulseMarketCap(1_500_000_000)).toBe('$1.50B');
+  });
 });
