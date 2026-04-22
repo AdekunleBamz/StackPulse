@@ -68,4 +68,8 @@ describe('pulse format utils', () => {
   it('formats pulse counts with separators', () => {
     expect(formatPulseCount(1234567)).toBe('1,234,567');
   });
+
+  it('formats pulse ratios as percentages', () => {
+    expect(formatPulseRatio(1, 4)).toBe('25.0%');
+  });
 });
