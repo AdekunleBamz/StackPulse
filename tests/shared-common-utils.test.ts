@@ -76,6 +76,10 @@ describe('shared/common object helpers', () => {
   it('maps object values while preserving keys', () => {
     expect(mapValues({ one: 1, two: 2 }, value => value * 2)).toEqual({ one: 2, two: 4 });
   });
+
+  it('passes keys while mapping object values', () => {
+    expect(mapValues({ one: 1 }, (_value, key) => key)).toEqual({ one: 'one' });
+  });
 });
 
 describe('shared/common generateId', () => {
