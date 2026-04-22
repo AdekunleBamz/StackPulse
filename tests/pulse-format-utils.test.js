@@ -80,4 +80,8 @@ describe('pulse format utils', () => {
   it('formats pulse labels by replacing underscores', () => {
     expect(formatPulseLabel('WHALE_TRANSFER')).toBe('whale transfer');
   });
+
+  it('formats pulse decimal strings with default precision', () => {
+    expect(formatPulseDecimal('1.23456789')).toBe('1.234568');
+  });
 });
