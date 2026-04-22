@@ -117,6 +117,10 @@ describe('shared/format formatRelativeTime', () => {
   it('formats hour-old timestamps in hours', () => {
     expect(formatRelativeTime(Date.now() - 2 * 60 * 60 * 1000)).toBe('2h ago');
   });
+
+  it('formats day-old timestamps in days', () => {
+    expect(formatRelativeTime(Date.now() - 3 * 24 * 60 * 60 * 1000)).toBe('3d ago');
+  });
 });
 
 describe('shared/format truncateAddress', () => {
