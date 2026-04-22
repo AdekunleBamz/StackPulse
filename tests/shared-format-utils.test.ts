@@ -125,6 +125,10 @@ describe('shared/format formatRelativeTime', () => {
   it('formats future timestamps in hours', () => {
     expect(formatRelativeTime(Date.now() + 2 * 60 * 60 * 1000)).toBe('in 2h');
   });
+
+  it('formats month-scale past timestamps', () => {
+    expect(formatRelativeTime(Date.now() - 60 * 24 * 60 * 60 * 1000)).toBe('2mo ago');
+  });
 });
 
 describe('shared/format truncateAddress', () => {
