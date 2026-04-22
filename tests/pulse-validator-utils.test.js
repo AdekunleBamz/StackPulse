@@ -49,4 +49,8 @@ describe('pulse validator utils', () => {
   it('accepts semantic pulse versions', () => {
     expect(isValidPulseVersion('1.0.0')).toBe(true);
   });
+
+  it('accepts positive tick intervals', () => {
+    expect(isValidTickInterval(1)).toBe(true);
+  });
 });
