@@ -92,4 +92,8 @@ describe('pulse format utils', () => {
   it('formats pulse feed item summaries', () => {
     expect(formatPulseFeedItem({ type: 'transfer', block: 123 })).toBe('transfer @ 123');
   });
+
+  it('formats missing pulse errors with a fallback', () => {
+    expect(formatPulseError(null)).toBe('Unknown error');
+  });
 });
