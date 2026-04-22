@@ -81,4 +81,8 @@ describe('pulse validator utils', () => {
   it('accepts supported pulse statuses', () => {
     expect(isValidPulseStatus('confirmed')).toBe(true);
   });
+
+  it('accepts zero reconnect delays', () => {
+    expect(isValidReconnectDelay(0)).toBe(true);
+  });
 });
