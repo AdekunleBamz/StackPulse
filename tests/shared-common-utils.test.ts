@@ -60,6 +60,10 @@ describe('shared/common object helpers', () => {
     const grouped = groupBy(['alpha', 'alert'], value => value[0]);
     expect(grouped.get('a')).toEqual(['alpha', 'alert']);
   });
+
+  it('maps object values while preserving keys', () => {
+    expect(mapValues({ one: 1, two: 2 }, value => value * 2)).toEqual({ one: 2, two: 4 });
+  });
 });
 
 describe('shared/common generateId', () => {
