@@ -28,4 +28,8 @@ describe('pulse validator utils', () => {
   it('rejects negative pulse prices', () => {
     expect(isValidPulsePrice('-1')).toBe(false);
   });
+
+  it('accepts non-negative block heights', () => {
+    expect(isValidBlockHeight(0)).toBe(true);
+  });
 });
