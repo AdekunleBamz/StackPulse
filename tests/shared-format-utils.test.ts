@@ -283,6 +283,10 @@ describe('shared/format formatTxId', () => {
   it('trims transaction ids before formatting', () => {
     expect(formatTxId('  0x1234567890abcdef1234567890abcdef  ')).toBe('0x123456...90abcdef');
   });
+
+  it('returns empty transaction labels for non-string values', () => {
+    expect(formatTxId(12 as unknown as string)).toBe('');
+  });
 });
 
 describe('shared/format formatCompactNumber', () => {
