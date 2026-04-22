@@ -205,6 +205,10 @@ describe('shared/common date helpers', () => {
   it('detects expired past dates', () => {
     expect(isExpiredDate(new Date(Date.now() - 1000))).toBe(true);
   });
+
+  it('does not expire future dates', () => {
+    expect(isExpiredDate(new Date(Date.now() + 1000))).toBe(false);
+  });
 });
 
 describe('shared/common retryWithBackoff', () => {
