@@ -85,4 +85,8 @@ describe('pulse validator utils', () => {
   it('accepts zero reconnect delays', () => {
     expect(isValidReconnectDelay(0)).toBe(true);
   });
+
+  it('accepts positive stale threshold values', () => {
+    expect(isValidStaleThreshold(1)).toBe(true);
+  });
 });
