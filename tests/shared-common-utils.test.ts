@@ -217,6 +217,14 @@ describe('shared/common retryWithBackoff', () => {
     await expect(retryWithBackoff(fn, Number.NaN, 1)).resolves.toBe('ok');
     expect(fn).toHaveBeenCalledTimes(1);
   });
+
+  it('retries after a failed attempt', async () => {
+    const fn = vi.fn()
+      .mockRejectedValueOnce(new Error('try again'))
+      .mockResolvedValueOnce('ok');
+    await expect(retryWithBackoff(fn, 2, 0)).resolves.toBe('ok');
+    expect(fn).toHaveBeenCalledTimes(2);
+  });
 });
 
 describe('shared/common throttle', () => {
