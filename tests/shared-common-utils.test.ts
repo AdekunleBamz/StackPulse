@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { clamp, debounce, generateId, isValidStacksAddress, retryWithBackoff, sleep } from '../shared/utils/common';
+import { clamp, debounce, generateId, isValidStacksAddress, retryWithBackoff, sleep, throttle } from '../shared/utils/common';
 
 afterEach(() => {
   vi.useRealTimers();
@@ -155,5 +155,22 @@ describe('shared/common retryWithBackoff', () => {
     const fn = vi.fn().mockResolvedValue('ok');
     await expect(retryWithBackoff(fn, Number.NaN, 1)).resolves.toBe('ok');
     expect(fn).toHaveBeenCalledTimes(1);
+  });
+});
+
+describe('shared/common throttle', () => {
+  it('preserves caller context when executing throttled callbacks', () => {
+    vi.useFakeTimers();
+    const calls: number[] = [];
+    const target = {
+      value: 11,
+      handler(this: { value: number }) {
+        calls.push(this.value);
+      },
+    };
+    const throttled = throttle(target.handler, 10);
+
+    throttled.call(target);
+    expect(calls).toEqual([11]);
   });
 });

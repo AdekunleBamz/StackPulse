@@ -85,11 +85,11 @@ export function throttle<T extends (...args: unknown[]) => unknown>(
   let lastCall = 0;
   const safeWait = Number.isFinite(wait) ? Math.max(0, wait) : 0;
 
-  return function throttled(...args: Parameters<T>) {
+  return function throttled(this: unknown, ...args: Parameters<T>) {
     const now = Date.now();
     if (now - lastCall >= safeWait) {
       lastCall = now;
-      func(...args);
+      func.apply(this, args);
     }
   };
 }
