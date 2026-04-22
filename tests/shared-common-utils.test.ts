@@ -51,6 +51,10 @@ describe('shared/common object helpers', () => {
   it('picks requested keys from objects', () => {
     expect(pick({ one: 1, two: 2 }, ['one'])).toEqual({ one: 1 });
   });
+
+  it('omits requested keys from objects', () => {
+    expect(omit({ one: 1, two: 2 }, ['two'])).toEqual({ one: 1 });
+  });
 });
 
 describe('shared/common generateId', () => {
