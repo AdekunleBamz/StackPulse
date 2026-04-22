@@ -179,4 +179,8 @@ describe('shared/format formatTxId', () => {
   it('returns short transaction ids unchanged', () => {
     expect(formatTxId('0x1234')).toBe('0x1234');
   });
+
+  it('trims transaction ids before formatting', () => {
+    expect(formatTxId('  0x1234567890abcdef1234567890abcdef  ')).toBe('0x123456...90abcdef');
+  });
 });

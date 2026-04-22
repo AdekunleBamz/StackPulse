@@ -240,7 +240,8 @@ export function formatBalance(balance: number | string, decimals: number = DEFAU
  * @returns A truncated transaction ID string (prefix...suffix).
  */
 export function formatTxId(txId: string): string {
-  return truncateAddress(txId, TX_ID_PREFIX_LENGTH, TX_ID_SUFFIX_LENGTH);
+  const normalizedTxId = typeof txId === 'string' ? txId.trim() : '';
+  return truncateAddress(normalizedTxId, TX_ID_PREFIX_LENGTH, TX_ID_SUFFIX_LENGTH);
 }
 
 /**
