@@ -52,4 +52,8 @@ describe('pulse format utils', () => {
   it('formats pulse market caps in billions', () => {
     expect(formatPulseMarketCap(1_500_000_000)).toBe('$1.50B');
   });
+
+  it('formats pulse network labels with title casing', () => {
+    expect(formatPulseNetwork('mainnet')).toBe('Mainnet');
+  });
 });
