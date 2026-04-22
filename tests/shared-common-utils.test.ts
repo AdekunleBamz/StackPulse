@@ -189,6 +189,10 @@ describe('shared/common date helpers', () => {
   it('matches dates that fall on the same calendar day', () => {
     expect(isSameDate(new Date(2024, 0, 2, 1), new Date(2024, 0, 2, 23))).toBe(true);
   });
+
+  it('separates dates on different calendar days', () => {
+    expect(isSameDate(new Date(2024, 0, 2, 23), new Date(2024, 0, 3, 1))).toBe(false);
+  });
 });
 
 describe('shared/common retryWithBackoff', () => {
