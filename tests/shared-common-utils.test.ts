@@ -107,6 +107,23 @@ describe('shared/common debounce', () => {
     expect(handler).toHaveBeenCalledTimes(1);
     expect(handler).toHaveBeenCalledWith('instant');
   });
+
+  it('preserves caller context when invoking debounced functions', () => {
+    vi.useFakeTimers();
+    const calls: number[] = [];
+    const target = {
+      value: 7,
+      handler(this: { value: number }) {
+        calls.push(this.value);
+      },
+    };
+    const debounced = debounce(target.handler, 5);
+
+    debounced.call(target);
+    vi.advanceTimersByTime(5);
+
+    expect(calls).toEqual([7]);
+  });
 });
 
 describe('shared/common sleep', () => {

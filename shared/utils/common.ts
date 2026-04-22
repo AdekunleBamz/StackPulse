@@ -44,10 +44,11 @@ export function debounce<T extends (...args: unknown[]) => unknown>(
   let timeout: ReturnType<typeof setTimeout> | null = null;
   const safeWait = Number.isFinite(wait) ? Math.max(0, wait) : 0;
 
-  return function executedFunction(...args: Parameters<T>) {
+  return function executedFunction(this: unknown, ...args: Parameters<T>) {
+    const context = this;
     const later = () => {
       timeout = null;
-      func(...args);
+      func.apply(context, args);
     };
 
     if (timeout) clearTimeout(timeout);
