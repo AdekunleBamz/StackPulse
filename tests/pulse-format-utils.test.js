@@ -96,4 +96,8 @@ describe('pulse format utils', () => {
   it('formats missing pulse errors with a fallback', () => {
     expect(formatPulseError(null)).toBe('Unknown error');
   });
+
+  it('formats pulse categories from kebab case', () => {
+    expect(formatPulseCategory('whale-transfer')).toBe('Whale Transfer');
+  });
 });
