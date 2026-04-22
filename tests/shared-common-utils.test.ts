@@ -22,6 +22,10 @@ describe('shared/common isValidStacksAddress', () => {
     expect(isValidStacksAddress('ST3K8BC0PPEVCV7NZ6QSRWPQ2JE9E5B6N3PA0KBR9')).toBe(true);
   });
 
+  it('accepts a valid devnet-style SN address', () => {
+    expect(isValidStacksAddress('SN3K8BC0PPEVCV7NZ6QSRWPQ2JE9E5B6N3PA0KBR9')).toBe(true);
+  });
+
   it('rejects addresses with unsupported network prefix', () => {
     expect(isValidStacksAddress('SM3K8BC0PPEVCV7NZ6QSRWPQ2JE9E5B6N3PA0KBR9')).toBe(false);
   });

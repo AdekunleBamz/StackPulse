@@ -12,8 +12,8 @@
 export function isValidStacksAddress(address: string): boolean {
   const normalizedAddress = typeof address === 'string' ? address.trim() : '';
   if (!normalizedAddress) return false;
-  // Mainnet: SP/SM, Testnet: ST/SN — body is 38–40 base-58 characters
-  return /^(S[PMN]|ST)[A-Z0-9]{38,40}$/.test(normalizedAddress);
+  // Mainnet: SP, Testnet: ST/SN — body is 38–40 uppercase base-58 characters
+  return /^(SP|ST|SN)[A-Z0-9]{38,40}$/.test(normalizedAddress);
 }
 
 /**
