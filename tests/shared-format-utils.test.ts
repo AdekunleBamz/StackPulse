@@ -305,4 +305,8 @@ describe('shared/format formatOrdinal', () => {
     expect(formatOrdinal(2)).toBe('2nd');
     expect(formatOrdinal(3)).toBe('3rd');
   });
+
+  it('formats teen ordinal suffixes as th', () => {
+    expect(formatOrdinal(11)).toBe('11th');
+  });
 });
