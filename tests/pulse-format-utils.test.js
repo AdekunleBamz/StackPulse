@@ -84,4 +84,8 @@ describe('pulse format utils', () => {
   it('formats pulse decimal strings with default precision', () => {
     expect(formatPulseDecimal('1.23456789')).toBe('1.234568');
   });
+
+  it('formats pulse microSTX values as STX', () => {
+    expect(formatPulseMicroStx(1_500_000)).toBe('1.500000 STX');
+  });
 });
