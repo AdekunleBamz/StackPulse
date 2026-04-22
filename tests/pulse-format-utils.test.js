@@ -36,4 +36,8 @@ describe('pulse format utils', () => {
   it('formats pulse block labels', () => {
     expect(formatPulseBlock(123)).toBe('#123');
   });
+
+  it('formats pulse transaction ids for compact display', () => {
+    expect(formatPulseTxId('abcdef123456')).toBe('abcdef12...');
+  });
 });
