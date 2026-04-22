@@ -250,7 +250,7 @@ export function formatTxId(txId: string): string {
  * @returns A string with the number and its ordinal suffix.
  */
 export function formatOrdinal(n: number): string {
-  const safeN = Math.floor(n);
+  const safeN = Number.isFinite(n) ? Math.floor(n) : 0;
   const s = ["th", "st", "nd", "rd"];
   const v = safeN % 100;
   return safeN + (s[(v - 20) % 10] || s[v] || s[0]);

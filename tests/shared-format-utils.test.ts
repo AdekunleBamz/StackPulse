@@ -7,6 +7,7 @@ import {
   formatDuration,
   formatFileSize,
   formatNumber,
+  formatOrdinal,
   formatTxId,
   parseStxAmount,
   formatPercent,
@@ -189,5 +190,11 @@ describe('shared/format formatTxId', () => {
 describe('shared/format formatCompactNumber', () => {
   it('normalizes negative zero to plain zero', () => {
     expect(formatCompactNumber(-0)).toBe('0');
+  });
+});
+
+describe('shared/format formatOrdinal', () => {
+  it('falls back to 0th for non-finite inputs', () => {
+    expect(formatOrdinal(Number.NaN)).toBe('0th');
   });
 });
