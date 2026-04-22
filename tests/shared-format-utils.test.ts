@@ -69,6 +69,10 @@ describe('shared/format formatNumber', () => {
   it('formats negative numeric inputs with grouping', () => {
     expect(formatNumber(-1234)).toBe('-1,234');
   });
+
+  it('formats decimal numeric strings with grouping', () => {
+    expect(formatNumber('1234.5')).toBe('1,234.5');
+  });
 });
 
 describe('shared/format formatPercent', () => {
