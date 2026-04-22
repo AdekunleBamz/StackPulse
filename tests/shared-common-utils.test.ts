@@ -83,6 +83,10 @@ describe('shared/common object helpers', () => {
 });
 
 describe('shared/common generateId', () => {
+  it('uses eight characters by default', () => {
+    expect(generateId()).toHaveLength(8);
+  });
+
   it('floors decimal lengths', () => {
     expect(generateId(5.9)).toHaveLength(5);
   });
