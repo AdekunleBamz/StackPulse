@@ -299,4 +299,10 @@ describe('shared/format formatOrdinal', () => {
   it('falls back to 0th for non-finite inputs', () => {
     expect(formatOrdinal(Number.NaN)).toBe('0th');
   });
+
+  it('formats common ordinal suffixes', () => {
+    expect(formatOrdinal(1)).toBe('1st');
+    expect(formatOrdinal(2)).toBe('2nd');
+    expect(formatOrdinal(3)).toBe('3rd');
+  });
 });
