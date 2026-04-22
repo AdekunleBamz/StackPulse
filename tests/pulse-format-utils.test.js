@@ -76,4 +76,8 @@ describe('pulse format utils', () => {
   it('formats zero-denominator pulse ratios safely', () => {
     expect(formatPulseRatio(1, 0)).toBe('0%');
   });
+
+  it('formats pulse labels by replacing underscores', () => {
+    expect(formatPulseLabel('WHALE_TRANSFER')).toBe('whale transfer');
+  });
 });
