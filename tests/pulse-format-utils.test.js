@@ -56,4 +56,8 @@ describe('pulse format utils', () => {
   it('formats pulse network labels with title casing', () => {
     expect(formatPulseNetwork('mainnet')).toBe('Mainnet');
   });
+
+  it('formats pulse status labels in uppercase', () => {
+    expect(formatPulseStatus('pending')).toBe('PENDING');
+  });
 });
