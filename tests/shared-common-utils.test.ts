@@ -45,6 +45,10 @@ describe('shared/common isValidStacksAddress', () => {
   it('rejects addresses with unsupported network prefix', () => {
     expect(isValidStacksAddress('SM3K8BC0PPEVCV7NZ6QSRWPQ2JE9E5B6N3PA0KBR9')).toBe(false);
   });
+
+  it('rejects non-string address inputs', () => {
+    expect(isValidStacksAddress(12 as unknown as string)).toBe(false);
+  });
 });
 
 describe('shared/common object helpers', () => {
