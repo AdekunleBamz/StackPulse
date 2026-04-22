@@ -293,6 +293,10 @@ describe('shared/format formatCompactNumber', () => {
   it('normalizes negative zero to plain zero', () => {
     expect(formatCompactNumber(-0)).toBe('0');
   });
+
+  it('formats thousand-scale compact numbers', () => {
+    expect(formatCompactNumber(1_500)).toBe('1.5K');
+  });
 });
 
 describe('shared/format formatTime', () => {
