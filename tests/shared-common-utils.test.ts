@@ -1,5 +1,21 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { clamp, debounce, generateId, isValidStacksAddress, retryWithBackoff, sleep, throttle } from '../shared/utils/common';
+import {
+  clamp,
+  debounce,
+  endOfDay,
+  generateId,
+  groupBy,
+  isExpiredDate,
+  isSameDate,
+  isValidStacksAddress,
+  mapValues,
+  omit,
+  pick,
+  retryWithBackoff,
+  sleep,
+  startOfDay,
+  throttle,
+} from '../shared/utils/common';
 
 afterEach(() => {
   vi.useRealTimers();
@@ -28,6 +44,12 @@ describe('shared/common isValidStacksAddress', () => {
 
   it('rejects addresses with unsupported network prefix', () => {
     expect(isValidStacksAddress('SM3K8BC0PPEVCV7NZ6QSRWPQ2JE9E5B6N3PA0KBR9')).toBe(false);
+  });
+});
+
+describe('shared/common object helpers', () => {
+  it('picks requested keys from objects', () => {
+    expect(pick({ one: 1, two: 2 }, ['one'])).toEqual({ one: 1 });
   });
 });
 
