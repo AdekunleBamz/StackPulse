@@ -64,4 +64,8 @@ describe('pulse format utils', () => {
   it('formats pulse ages from block counts', () => {
     expect(formatPulseAge(6)).toBe('60 min ago');
   });
+
+  it('formats pulse counts with separators', () => {
+    expect(formatPulseCount(1234567)).toBe('1,234,567');
+  });
 });
