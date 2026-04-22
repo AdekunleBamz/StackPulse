@@ -282,7 +282,7 @@ export function formatCompactNumber(value: number): string {
   if (Math.abs(safe) >= 1_000_000_000) return `${(safe / 1_000_000_000).toFixed(1)}B`;
   if (Math.abs(safe) >= 1_000_000) return `${(safe / 1_000_000).toFixed(1)}M`;
   if (Math.abs(safe) >= 1_000) return `${(safe / 1_000).toFixed(1)}K`;
-  return String(safe);
+  return String(Object.is(safe, -0) ? 0 : safe);
 }
 
 /**

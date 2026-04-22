@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import {
   formatBalance,
+  formatCompactNumber,
   formatDate,
   formatDateTime,
   formatDuration,
@@ -182,5 +183,11 @@ describe('shared/format formatTxId', () => {
 
   it('trims transaction ids before formatting', () => {
     expect(formatTxId('  0x1234567890abcdef1234567890abcdef  ')).toBe('0x123456...90abcdef');
+  });
+});
+
+describe('shared/format formatCompactNumber', () => {
+  it('normalizes negative zero to plain zero', () => {
+    expect(formatCompactNumber(-0)).toBe('0');
   });
 });
