@@ -27,6 +27,10 @@ describe('shared/format formatStxAmount', () => {
   it('falls back to zero for invalid stx amount strings', () => {
     expect(formatStxAmount('NaN')).toBe('0.000000 STX');
   });
+
+  it('parses numeric strings with surrounding whitespace', () => {
+    expect(formatStxAmount(' 1000000 ')).toBe('1.000000 STX');
+  });
 });
 
 describe('shared/format formatNumber', () => {
