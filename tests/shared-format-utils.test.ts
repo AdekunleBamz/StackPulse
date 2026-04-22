@@ -143,6 +143,10 @@ describe('shared/format truncateAddress', () => {
   it('trims address input before truncation', () => {
     expect(truncateAddress('  SP3K8BC0PPEVCV7NZ6QSRWPQ2JE9E5B6N3PA0KBR9  ', 4, 4)).toBe('SP3K...KBR9');
   });
+
+  it('returns an empty label for non-string addresses', () => {
+    expect(truncateAddress(12 as unknown as string)).toBe('');
+  });
 });
 
 describe('shared/format truncateString', () => {
