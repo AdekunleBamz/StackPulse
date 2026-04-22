@@ -211,7 +211,7 @@ export function parseStxAmount(amount: string): number {
     .trim()
     .replace(/,/g, '')
     .replace(/\s*stx\s*$/i, '');
-  if (!/^-?\d*\.?\d+$/.test(normalized)) return 0;
+  if (!/^[+-]?\d*\.?\d+$/.test(normalized)) return 0;
   const stx = parseFloat(normalized);
   if (Number.isNaN(stx)) return 0;
   return Math.max(0, Math.floor(stx * MICROSTX_PER_STX));

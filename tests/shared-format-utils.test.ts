@@ -161,6 +161,10 @@ describe('shared/format parseStxAmount', () => {
   it('returns zero for malformed decimal amounts', () => {
     expect(parseStxAmount('1.2.3')).toBe(0);
   });
+
+  it('parses STX amounts with an explicit plus sign', () => {
+    expect(parseStxAmount('+1.5 STX')).toBe(1500000);
+  });
 });
 
 describe('shared/format formatTxId', () => {
