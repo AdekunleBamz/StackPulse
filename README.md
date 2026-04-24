@@ -121,7 +121,7 @@ npm run check:fast
 npm run clarinet:test
 
 # Run all tests
-npm test
+npm run test
 
 # Run focused shared-format/common utility tests
 npm run test:format
