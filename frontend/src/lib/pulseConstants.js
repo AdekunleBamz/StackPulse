@@ -23,6 +23,8 @@ export const PULSE_PRICE_DECIMALS = 6
 
 export const PULSE_STX_DECIMALS = 6
 
+export const PULSE_MICROSTX_PER_STX = 1000000
+
 export const PULSE_MIN_TICK_VALUE = 0.001
 
 export const PULSE_CACHE_TTL_MS = 60000
