@@ -17,7 +17,11 @@ export const formatPulseVolume = (v) => (v / PULSE_MICROSTX_PER_STX).toFixed(2) 
 
 export const formatPulseMarketCap = (m) => "$" + (m / 1e9).toFixed(2) + "B";
 
-export const formatPulseNetwork = (n) => n.charAt(0).toUpperCase() + n.slice(1);
+export const formatPulseNetwork = (n) => {
+	const normalized = typeof n === 'string' ? n.trim().toLowerCase() : '';
+	if (!normalized) return 'Unknown';
+	return normalized.charAt(0).toUpperCase() + normalized.slice(1);
+};
 
 export const formatPulseStatus = (s) => s.toUpperCase();
 
