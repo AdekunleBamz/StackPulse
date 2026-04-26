@@ -320,6 +320,11 @@ export function formatBlocksToTime(blocks: number, secondsPerBlock = 10): string
   return `~${totalSeconds}s`;
 }
 
+export function formatConfirmationCount(n: number): string {
+  const safe = Number.isFinite(n) ? Math.max(0, Math.floor(n)) : 0;
+  return `${safe} confirmation${safe === 1 ? '' : 's'}`;
+}
+
 // Default export for convenience
 export default {
   formatStxAmount,
