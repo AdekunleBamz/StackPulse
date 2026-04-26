@@ -271,6 +271,8 @@ export const BADGE_TYPES = {
   STREAK_7: 'streak_7',
 } as const;
 
+export const MIN_TX_FEE_USTX = 180;
+
 export default {
   API_URLS,
   CONTRACT_ADDRESSES,
