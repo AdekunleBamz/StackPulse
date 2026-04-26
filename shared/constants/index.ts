@@ -237,6 +237,13 @@ export const FEATURE_FLAGS = {
   PROMETHEUS_METRICS: true,
 } as const;
 
+export const ALERT_LIMITS = {
+  FREE: 3,
+  BASIC: 10,
+  PRO: 50,
+  PREMIUM: 200,
+} as const;
+
 export default {
   API_URLS,
   CONTRACT_ADDRESSES,
