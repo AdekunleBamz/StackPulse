@@ -330,6 +330,11 @@ export function formatPulseScore(score: number): string {
   return `${Math.round(safe)} pts`;
 }
 
+export function formatNetworkLabel(network: string): string {
+  if (!network || typeof network !== 'string') return 'Unknown';
+  return network.charAt(0).toUpperCase() + network.slice(1).toLowerCase();
+}
+
 // Default export for convenience
 export default {
   formatStxAmount,
