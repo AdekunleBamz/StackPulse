@@ -249,6 +249,12 @@ export const SORT_ORDERS = {
   DESC: 'desc',
 } as const;
 
+export const TRANSACTION_TYPES = {
+  STX_TRANSFER: 'token_transfer',
+  CONTRACT_CALL: 'contract_call',
+  CONTRACT_DEPLOY: 'smart_contract',
+} as const;
+
 export default {
   API_URLS,
   CONTRACT_ADDRESSES,
