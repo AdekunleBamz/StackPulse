@@ -264,6 +264,13 @@ export const UI_CONSTANTS = {
   TOAST_DURATION_MS: 4000,
 } as const;
 
+export const BADGE_TYPES = {
+  EARLY_ADOPTER: 'early_adopter',
+  POWER_USER: 'power_user',
+  WHALE_WATCHER: 'whale_watcher',
+  STREAK_7: 'streak_7',
+} as const;
+
 export default {
   API_URLS,
   CONTRACT_ADDRESSES,
