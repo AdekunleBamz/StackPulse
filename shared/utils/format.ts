@@ -295,6 +295,11 @@ export function formatSignedNumber(value: number): string {
   return safe > 0 ? `+${safe}` : `${safe}`;
 }
 
+export function formatBlockHeight(block: number): string {
+  const safe = Number.isFinite(block) ? Math.max(0, Math.floor(block)) : 0;
+  return `Block #${safe.toLocaleString('en-US')}`;
+}
+
 // Default export for convenience
 export default {
   formatStxAmount,
