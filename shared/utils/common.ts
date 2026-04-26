@@ -260,3 +260,12 @@ export function isPositiveNumber(v: unknown): v is number {
 export function isValidBlockHeight(n: unknown): boolean {
   return Number.isInteger(n) && (n as number) >= 0;
 }
+
+export function chunk<T>(arr: T[], size: number): T[][] {
+  const safeSize = Number.isFinite(size) ? Math.max(1, Math.floor(size)) : 1;
+  const result: T[][] = [];
+  for (let i = 0; i < arr.length; i += safeSize) {
+    result.push(arr.slice(i, i + safeSize));
+  }
+  return result;
+}
