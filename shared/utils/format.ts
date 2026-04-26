@@ -335,6 +335,11 @@ export function formatNetworkLabel(network: string): string {
   return network.charAt(0).toUpperCase() + network.slice(1).toLowerCase();
 }
 
+export function formatMicroStxRaw(ustx: number): string {
+  const safe = Number.isFinite(ustx) ? Math.max(0, Math.floor(ustx)) : 0;
+  return `${safe.toLocaleString()} uSTX`;
+}
+
 // Default export for convenience
 export default {
   formatStxAmount,
