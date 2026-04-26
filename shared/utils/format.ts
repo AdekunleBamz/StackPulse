@@ -310,6 +310,16 @@ export function formatSubscriptionTier(tier: number): string {
   return names[tier] ?? 'Unknown';
 }
 
+export function formatBlocksToTime(blocks: number, secondsPerBlock = 10): string {
+  const safe = Number.isFinite(blocks) ? Math.max(0, Math.floor(blocks)) : 0;
+  const totalSeconds = safe * secondsPerBlock;
+  const minutes = Math.floor(totalSeconds / 60);
+  const hours = Math.floor(minutes / 60);
+  if (hours > 0) return `~${hours}h ${minutes % 60}m`;
+  if (minutes > 0) return `~${minutes}m`;
+  return `~${totalSeconds}s`;
+}
+
 // Default export for convenience
 export default {
   formatStxAmount,
