@@ -244,6 +244,11 @@ export const ALERT_LIMITS = {
   PREMIUM: 200,
 } as const;
 
+export const SORT_ORDERS = {
+  ASC: 'asc',
+  DESC: 'desc',
+} as const;
+
 export default {
   API_URLS,
   CONTRACT_ADDRESSES,
