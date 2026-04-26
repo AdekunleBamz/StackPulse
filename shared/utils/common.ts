@@ -277,3 +277,7 @@ export function unique<T>(arr: T[]): T[] {
 export function isValidTxId(v: unknown): boolean {
   return typeof v === 'string' && /^(0x)?[a-f0-9]{64}$/i.test(v.trim());
 }
+
+export function isValidEmail(v: unknown): boolean {
+  return typeof v === 'string' && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim());
+}
