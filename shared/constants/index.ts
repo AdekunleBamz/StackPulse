@@ -257,6 +257,13 @@ export const TRANSACTION_TYPES = {
 
 export const MAX_ALERT_NAME_LENGTH = 100;
 
+export const UI_CONSTANTS = {
+  DEBOUNCE_MS: 300,
+  MIN_SEARCH_LENGTH: 2,
+  PAGE_SIZE: 20,
+  TOAST_DURATION_MS: 4000,
+} as const;
+
 export default {
   API_URLS,
   CONTRACT_ADDRESSES,
