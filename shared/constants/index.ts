@@ -255,6 +255,8 @@ export const TRANSACTION_TYPES = {
   CONTRACT_DEPLOY: 'smart_contract',
 } as const;
 
+export const MAX_ALERT_NAME_LENGTH = 100;
+
 export default {
   API_URLS,
   CONTRACT_ADDRESSES,
