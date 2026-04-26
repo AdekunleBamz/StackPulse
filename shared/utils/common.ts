@@ -256,3 +256,7 @@ export function isNonEmptyString(v: unknown): v is string {
 export function isPositiveNumber(v: unknown): v is number {
   return typeof v === 'number' && Number.isFinite(v) && v > 0;
 }
+
+export function isValidBlockHeight(n: unknown): boolean {
+  return Number.isInteger(n) && (n as number) >= 0;
+}
