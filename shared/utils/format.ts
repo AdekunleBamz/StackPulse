@@ -325,6 +325,11 @@ export function formatConfirmationCount(n: number): string {
   return `${safe} confirmation${safe === 1 ? '' : 's'}`;
 }
 
+export function formatPulseScore(score: number): string {
+  const safe = Number.isFinite(score) ? Math.max(0, score) : 0;
+  return `${Math.round(safe)} pts`;
+}
+
 // Default export for convenience
 export default {
   formatStxAmount,
