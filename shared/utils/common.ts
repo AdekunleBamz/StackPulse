@@ -281,3 +281,7 @@ export function isValidTxId(v: unknown): boolean {
 export function isValidEmail(v: unknown): boolean {
   return typeof v === 'string' && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim());
 }
+
+export function flatten<T>(arr: T[][]): T[] {
+  return arr.flat();
+}
