@@ -305,6 +305,11 @@ export function formatAlertCount(n: number): string {
   return safe === 1 ? '1 alert' : `${safe} alerts`;
 }
 
+export function formatSubscriptionTier(tier: number): string {
+  const names: Record<number, string> = { 0: 'Free', 1: 'Basic', 2: 'Pro', 3: 'Premium' };
+  return names[tier] ?? 'Unknown';
+}
+
 // Default export for convenience
 export default {
   formatStxAmount,
