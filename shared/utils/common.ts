@@ -269,3 +269,7 @@ export function chunk<T>(arr: T[], size: number): T[][] {
   }
   return result;
 }
+
+export function unique<T>(arr: T[]): T[] {
+  return [...new Set(arr)];
+}
