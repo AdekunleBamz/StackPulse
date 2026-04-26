@@ -248,3 +248,7 @@ export function endOfDay(date: Date): Date {
 export function isExpiredDate(date: Date): boolean {
   return date.getTime() < Date.now();
 }
+
+export function isNonEmptyString(v: unknown): v is string {
+  return typeof v === 'string' && v.trim().length > 0;
+}
