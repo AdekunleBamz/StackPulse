@@ -273,3 +273,7 @@ export function chunk<T>(arr: T[], size: number): T[][] {
 export function unique<T>(arr: T[]): T[] {
   return [...new Set(arr)];
 }
+
+export function isValidTxId(v: unknown): boolean {
+  return typeof v === 'string' && /^(0x)?[a-f0-9]{64}$/i.test(v.trim());
+}
