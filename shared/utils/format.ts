@@ -300,6 +300,11 @@ export function formatBlockHeight(block: number): string {
   return `Block #${safe.toLocaleString('en-US')}`;
 }
 
+export function formatAlertCount(n: number): string {
+  const safe = Number.isFinite(n) ? Math.max(0, Math.floor(n)) : 0;
+  return safe === 1 ? '1 alert' : `${safe} alerts`;
+}
+
 // Default export for convenience
 export default {
   formatStxAmount,
