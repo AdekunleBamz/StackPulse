@@ -19,14 +19,23 @@
 (impl-trait 'SP2PABAF9FTAJYNFZH93XENAJ8FVY99RRM50D2JG9.nft-trait.nft-trait)
 
 ;; ============================================
-;; CONSTANTS
+;; ERROR CODES
 ;; ============================================
+;; @desc Error returned when a caller lacks required permissions (owner or authorized minter)
+(define-constant ERR-NOT-AUTHORIZED (err u401))
+;; @desc Error returned when a requested badge or metadata does not exist
+(define-constant ERR-NOT-FOUND (err u404))
+;; @desc Error returned when a user attempts to mint a badge type they already possess
+(define-constant ERR-ALREADY-MINTED (err u409))
+;; @desc Error returned when an invalid or unsupported badge type is requested
+(define-constant ERR-INVALID-BADGE (err u400))
+;; @desc Error returned when an operation involves an invalid principal (e.g. principal-0)
+(define-constant ERR-INVALID-PRINCIPAL (err u403))
+
+;; @desc Error returned when the contract is currently paused for maintenance
+(define-constant ERR-CONTRACT-PAUSED (err u503))
 
 (define-constant CONTRACT-OWNER tx-sender)
-(define-constant ERR-NOT-AUTHORIZED (err u100))
-(define-constant ERR-NOT-FOUND (err u101))
-(define-constant ERR-ALREADY-MINTED (err u102))
-(define-constant ERR-INVALID-BADGE (err u103))
 
 ;; Base URI for metadata
 (define-constant BASE-URI "https://stackpulse.vercel.app/api/badges/")
