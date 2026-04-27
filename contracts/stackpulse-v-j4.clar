@@ -101,6 +101,9 @@
   )
 )
 
+;; @desc Returns the microSTX cost for a specific tier.
+;; @param tier (uint) The tier number to query.
+;; @returns (uint) The price in microSTX.
 (define-read-only (get-tier-price (tier uint))
   (if (is-eq tier u0) PRICE-FREE
     (if (is-eq tier u1) PRICE-BASIC
@@ -109,10 +112,15 @@
           u0))))
 )
 
+;; @desc Retrieves the current tier level of a user.
+;; @param who (principal) The user to query.
+;; @returns (uint) The tier number.
 (define-read-only (get-user-tier (who principal))
   (default-to u0 (get tier (map-get? users who)))
 )
 
+;; @desc Returns high-level statistics for the StackPulse registry.
+;; @returns (response {total-users: uint, total-revenue: uint, version: (string-ascii 8)} uint)
 (define-read-only (get-stats)
   {
     total-users: (var-get total-users),
@@ -122,6 +130,9 @@
 )
 
 ;; V3: Check if subscription is active
+;; @desc Checks if a user's subscription is currently active or on free tier.
+;; @param who (principal) The user to check.
+;; @returns (bool) True if active or free tier.
 (define-read-only (is-subscription-active (who principal))
   (match (map-get? users who)
     user-data
