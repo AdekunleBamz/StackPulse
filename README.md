@@ -83,12 +83,12 @@ Run backend and frontend in separate terminals for end-to-end local development:
 
 ```bash
 # Terminal 1
-npm --prefix server run dev
+npm run server:dev
 npm --prefix server run build
-npm --prefix server run test
+npm run server:test
 
 # Terminal 2
-npm --prefix frontend run dev
+npm run frontend:dev
 ```
 
 ## Key docs
