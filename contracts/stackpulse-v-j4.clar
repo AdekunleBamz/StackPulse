@@ -131,9 +131,19 @@
   )
 )
 
+;; Check if contract is active
+(define-private (check-not-paused)
+  (ok (asserts! (not (var-get is-paused)) (err u120))) ;; ERR-CONTRACT-PAUSED
+)
+
 ;; ============================================
-;; PRIVATE HELPER FUNCTIONS
+;; READ-ONLY FUNCTIONS
 ;; ============================================
+
+;; @desc Checks if the contract is currently in a paused state.
+(define-read-only (is-contract-paused)
+  (var-get is-paused)
+)
 
 ;; V3: Validate username (non-empty, proper length)
 (define-private (is-valid-username (username (string-ascii 32)))
