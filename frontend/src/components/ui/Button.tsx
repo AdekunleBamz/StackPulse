@@ -68,7 +68,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button(
       type={type}
       disabled={isDisabled}
       className={cn(
-        'inline-flex items-center justify-center gap-2 font-semibold transition-all duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)]',
+        'inline-flex items-center justify-center gap-2 font-semibold transition-all duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)] touch-manipulation',
         'focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-purple-500',
         'disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:translate-y-0 disabled:active:scale-100',
         'hover:-translate-y-1 hover:shadow-lg active:scale-95 active:translate-y-0',
