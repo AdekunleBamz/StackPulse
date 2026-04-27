@@ -15,19 +15,33 @@
 ;; 6 = Custom Address Watch
 
 ;; ============================================
-;; CONSTANTS
+;; ERROR CODES
 ;; ============================================
+;; @desc Error returned when a caller lacks required permissions (owner-only or user-only)
+(define-constant ERR-NOT-AUTHORIZED (err u100))
+;; @desc Error returned when a caller attempt to use a feature without a registered profile
+(define-constant ERR-NOT-REGISTERED (err u101))
+;; @desc Error returned when a requested alert ID does not exist in the system
+(define-constant ERR-ALERT-NOT-FOUND (err u102))
+;; @desc Error returned when a user has reached their tier-limited maximum alert count
+(define-constant ERR-MAX-ALERTS-REACHED (err u103))
+;; @desc Error returned when an unsupported or out-of-range alert type is specified
+(define-constant ERR-INVALID-ALERT-TYPE (err u104))
+;; @desc Error returned when an alert name is empty or otherwise invalid
+(define-constant ERR-INVALID-NAME (err u105))
+;; @desc Error returned when an attempt is made to trigger an alert that is currently disabled
+(define-constant ERR-ALERT-DISABLED (err u106))
+;; @desc Error returned when a duplicate alert configuration is detected (potential spam)
+(define-constant ERR-DUPLICATE-ALERT (err u107))
+;; @desc Error returned when a payment-required action is attempted with an inactive subscription
+(define-constant ERR-SUBSCRIPTION-INACTIVE (err u108))
+;; @desc Error returned when an operation involves an invalid principal (e.g. principal-0)
+(define-constant ERR-INVALID-PRINCIPAL (err u109))
+
+;; @desc Error returned when the contract is currently paused for maintenance
+(define-constant ERR-CONTRACT-PAUSED (err u120))
 
 (define-constant CONTRACT-OWNER tx-sender)
-(define-constant ERR-NOT-AUTHORIZED (err u100))
-(define-constant ERR-NOT-REGISTERED (err u101))
-(define-constant ERR-ALERT-NOT-FOUND (err u102))
-(define-constant ERR-MAX-ALERTS-REACHED (err u103))
-(define-constant ERR-INVALID-ALERT-TYPE (err u104))
-(define-constant ERR-INVALID-NAME (err u105))
-(define-constant ERR-ALERT-DISABLED (err u106))
-(define-constant ERR-DUPLICATE-ALERT (err u107))
-(define-constant ERR-SUBSCRIPTION-INACTIVE (err u108))
 
 ;; Max alerts per tier
 (define-constant MAX-ALERTS-FREE u3)
