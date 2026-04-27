@@ -9,7 +9,7 @@ export const isValidPulseTxId = (id) => typeof id === "string" && id.length === 
 
 export const isValidPulseAddress = (a) => typeof a === "string" && a.startsWith("SP") && a.length > 10;
 
-export const isValidPulseNetwork = (n) => ["mainnet","testnet"].includes(n);
+export const isValidPulseNetwork = (n) => ["mainnet", "testnet"].includes(n);
 
 export const isValidPulseVersion = (v) => typeof v === "string" && /^\d+\.\d+\.\d+$/.test(v);
 
@@ -27,7 +27,7 @@ export const isValidAlertCooldown = (ms) => Number.isInteger(ms) && ms >= 0;
 
 export const isValidPageSize = (n) => Number.isInteger(n) && n > 0 && n <= 100;
 
-export const isValidPulseStatus = (s) => ["pending","confirmed","failed"].includes(s);
+export const isValidPulseStatus = (s) => ["pending", "confirmed", "failed"].includes(s);
 
 export const isValidReconnectDelay = (ms) => Number.isInteger(ms) && ms >= 0;
 
@@ -40,3 +40,5 @@ export const isValidPulseVolume = (v) => typeof v === "number" && v >= 0;
 export const isValidPriceDecimals = (d) => Number.isInteger(d) && d >= 0 && d <= 18;
 
 export const isValidPulseContractAddress = (a) => typeof a === "string" && a.includes(".");
+
+export const isValidPulseEmail = (e) => typeof e === "string" && (e.length === 0 || (e.length <= 64 && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e)));
