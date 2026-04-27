@@ -1,7 +1,12 @@
 
-export const PULSE_CONTRACT_ADDRESS = "SP1234PULSE"
+export const PULSE_CONTRACT_ADDRESS = "SP2PABAF9FTAJYNFZH93XENAJ8FVY99RRM50D2JG9"
 
-export const PULSE_CONTRACT_NAME = "stackpulse-core"
+export const PULSE_CONTRACTS = {
+    CORE: "stackpulse-v-j4",
+    ALERTS: "alert-manager-v-j4",
+    VAULT: "fee-vault-v-j4",
+    BADGES: "reputation-badges-v-j4"
+}
 
 export const PULSE_TICK_INTERVAL_MS = 5000
 
