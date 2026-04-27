@@ -25,6 +25,7 @@
     "server:install": "npm run ci --prefix server",
     "server:dev": "npm run dev --prefix server",
     "server:test": "npm run test --prefix server",
+    "shared:install": "npm run ci --prefix shared",
     "frontend:dev": "npm run dev --prefix frontend",
     "lint:all": "npm run lint --prefix frontend && npm run lint --prefix server",
     "build:all": "npm run build --prefix shared && npm run build --prefix server && npm run build --prefix frontend"
