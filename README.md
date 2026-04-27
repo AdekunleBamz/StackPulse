@@ -61,9 +61,9 @@ More detail lives in [docs/WORKSPACES.md](docs/WORKSPACES.md).
 
 ```bash
 npm ci
-npm --prefix server install
-npm --prefix shared install
-npm --prefix frontend install
+npm run server:install
+npm run shared:install
+npm run frontend:install
 ```
 
 ### Environment Setup
