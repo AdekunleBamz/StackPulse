@@ -156,6 +156,18 @@
 ;; @param email: Optional contact email (max 64 chars)
 ;; @param tier: 0=Free, 1=Basic, 2=Pro, 3=Premium
 ;; @param alerts: A bitmask representing enabled alert types (e.g., u31 enables all)
+;; @desc Records a generic activity ping and returns the current block height
+;; @returns (ok uint) The block height at time of ping
+(define-public (ping)
+  (ok block-height)
+)
+
+;; @desc Full registration and subscription for new users.
+;; @param username (string-ascii 32) Unique user identifier.
+;; @param email (string-ascii 64) User contact address.
+;; @param tier (uint) Selected subscription level (0-3).
+;; @param alerts (uint) Alert bitmask configuration.
+;; @returns (ok uint) The newly assigned user ID.
 (define-public (register-and-subscribe 
     (username (string-ascii 32))
     (email (string-ascii 64))
@@ -221,6 +233,11 @@
 )
 
 ;; Update profile (username, email, alerts) - no payment
+;; @desc Updates the public profile of a registered user.
+;; @param username (string-ascii 32) New desired username.
+;; @param email (string-ascii 64) New desired email.
+;; @param alerts (uint) New alert selection bitmask.
+;; @returns (ok bool) True if update was successful.
 (define-public (update-profile 
     (username (string-ascii 32))
     (email (string-ascii 64))
@@ -256,6 +273,9 @@
 )
 
 ;; Upgrade or renew subscription
+;; @desc Modifies the existing subscription tier and extends duration.
+;; @param new-tier (uint) The target tier to upgrade to.
+;; @returns (ok uint) The new expiration block height.
 (define-public (upgrade-subscription (new-tier uint))
   (let
     (
