@@ -158,6 +158,12 @@
 
 ;; Create a new alert
 ;; alert-type: 1=whale, 2=contract, 3=nft, 4=token, 5=swap, 6=address
+;; @desc Registers a new alert for the calling user.
+;; @param alert-type (uint) Type identifier (1-6).
+;; @param name (string-ascii 64) Human-readable alert name.
+;; @param target-address (optional principal) Specific address to watch (type dependent).
+;; @param threshold (uint) Metric value that triggers the alert.
+;; @returns (ok uint) The assigned unique alert ID.
 (define-public (create-alert 
     (alert-type uint)
     (name (string-ascii 64))
@@ -220,6 +226,9 @@
 )
 
 ;; Toggle alert enabled/disabled
+;; @desc Flips the active/inactive state of a specific alert.
+;; @param alert-id (uint) The ID of the alert to toggle.
+;; @returns (ok bool) The new state of the alert (true=enabled).
 (define-public (toggle-alert (alert-id uint))
   (let
     (
@@ -246,6 +255,9 @@
 )
 
 ;; Delete an alert
+;; @desc Permanently removes an alert and updates user counts.
+;; @param alert-id (uint) The ID of the alert to purge.
+;; @returns (ok bool) Returns true on successful deletion.
 (define-public (delete-alert (alert-id uint))
   (let
     (
@@ -281,6 +293,9 @@
 )
 
 ;; Record alert trigger (called by chainhook server or authorized caller)
+;; @desc Increments the trigger count for an alert and updates global metrics.
+;; @param alert-id (uint) The ID that was triggered.
+;; @returns (ok uint) The updated total trigger count for this alert.
 (define-public (record-trigger (alert-id uint))
   (let
     (
