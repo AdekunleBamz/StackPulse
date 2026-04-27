@@ -79,10 +79,14 @@
   (map-get? users who)
 )
 
+;; @desc Retrieves the registration status of a principal.
+;; @param who (principal) The address to check.
 (define-read-only (is-registered (who principal))
   (is-some (map-get? users who))
 )
 
+;; @desc Returns a comprehensive subscription status for a user.
+;; @param who (principal) The user address.
 (define-read-only (get-subscription-status (who principal))
   (match (map-get? users who)
     user-data 
@@ -98,6 +102,8 @@
   )
 )
 
+;; @desc Returns the microSTX price for a given subscription tier.
+;; @param tier (uint) The tier level (0-3).
 (define-read-only (get-tier-price (tier uint))
   (if (is-eq tier u0) PRICE-FREE
     (if (is-eq tier u1) PRICE-BASIC
@@ -106,6 +112,7 @@
           u0))))
 )
 
+;; @desc Returns global stats including total user count and revenue.
 (define-read-only (get-stats)
   {
     total-users: (var-get total-users),
