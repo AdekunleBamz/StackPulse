@@ -78,6 +78,8 @@
   (var-get contract-version)
 )
 
+(define-data-var is-paused bool false)
+
 (define-read-only (get-user (who principal))
   (map-get? users who)
 )
