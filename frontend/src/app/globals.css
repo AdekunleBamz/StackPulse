@@ -83,11 +83,6 @@ html {
     animation: none !important;
   }
 
-  .shimmer {
-    animation: none !important;
-  }
-}
-
 body {
   font-family: var(--font-sans), ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
     "Noto Sans", "Helvetica Neue", Arial, "Apple Color Emoji", "Segoe UI Emoji";
