@@ -160,6 +160,12 @@
 ;; Register and subscribe in one transaction
 ;; tier: 0=Free, 1=Basic, 2=Pro, 3=Premium
 ;; alerts: bitmask (1=whale, 2=nft, 4=token, 8=swap, 16=contract) or just pass 31 for all
+;; @desc Registers a new user and sets their initial subscription tier.
+;; @param username (string-ascii 32) A unique identifier for the user.
+;; @param email (string-ascii 64) Optional contact email.
+;; @param tier (uint) Selected subscription level (0-3).
+;; @param alerts (uint) Alert selection bitmask.
+;; @returns (ok uint) The assigned internal user ID.
 (define-public (register-and-subscribe 
     (username (string-ascii 32))
     (email (string-ascii 64))
@@ -225,6 +231,11 @@
 )
 
 ;; Update profile (username, email, alerts) - no payment
+;; @desc Updates the metadata for a registered user's profile.
+;; @param username (string-ascii 32) New desired username.
+;; @param email (string-ascii 64) New desired contact email.
+;; @param alerts (uint) New alert preference bitmask.
+;; @returns (ok bool) True on successful update.
 (define-public (update-profile 
     (username (string-ascii 32))
     (email (string-ascii 64))
@@ -259,6 +270,9 @@
 )
 
 ;; Upgrade or renew subscription
+;; @desc Modifies the existing subscription tier and extends duration.
+;; @param new-tier (uint) Target subscription level.
+;; @returns (ok uint) The new subscription end block height.
 (define-public (upgrade-subscription (new-tier uint))
   (let
     (
@@ -353,6 +367,10 @@
 )
 
 ;; Record a chainhook trigger (called by authorized services or contracts)
+;; @desc Records an off-chain activity trigger from an authorized source.
+;; @param user (principal) The user involved in the trigger.
+;; @param hook-type (uint) Type of event that occurred (1-9).
+;; @returns (ok uint) The updated trigger count for this user/type.
 (define-public (record-chainhook-trigger (user principal) (hook-type uint))
   (let
     (
