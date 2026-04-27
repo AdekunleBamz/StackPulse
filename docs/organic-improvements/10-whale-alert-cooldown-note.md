@@ -1,0 +1,5 @@
+# Whale Alert Cooldown
+
+- Add cooldown windows for repeated whale alerts from same wallet cluster.
+- Keep override controls for emergency monitoring.
+- This cuts alert fatigue while preserving important signals.
