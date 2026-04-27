@@ -60,6 +60,9 @@
 html {
   color-scheme: dark;
   scroll-behavior: smooth;
+  scroll-padding-top: 5rem;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
   scrollbar-color: rgba(168, 85, 247, 0.45) rgba(17, 24, 39, 0.85);
 }
 
