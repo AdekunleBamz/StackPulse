@@ -37,6 +37,13 @@ export const PULSE_FEED_PAGE_SIZE = 25
 
 export const PULSE_VERSION = "1.0.0"
 
+export const PULSE_LAYOUT = {
+    SIDEBAR_WIDTH_NAV: 240,
+    SIDEBAR_WIDTH_COLLAPSED: 80,
+    HEADER_HEIGHT: 64,
+    MOBILE_BREAKPOINT: 768
+}
+
 export const PULSE_BLOCKS_PER_HOUR = 6
 
 export const PULSE_BLOCKS_PER_DAY = 144
