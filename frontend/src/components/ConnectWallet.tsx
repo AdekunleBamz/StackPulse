@@ -44,6 +44,7 @@ export default function ConnectWallet() {
   if (!isConnected) {
     return (
       <button
+        type="button"
         onClick={connect}
         className="px-6 py-2.5 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white rounded-xl font-bold shadow-[0_10px_20px_-5px_rgba(168,85,247,0.3)] hover:shadow-[0_15px_25px_-5px_rgba(168,85,247,0.4)] transition-all hover:scale-105 active:scale-95 flex items-center gap-2 group/btn"
         aria-label="Connect your Stacks wallet"
