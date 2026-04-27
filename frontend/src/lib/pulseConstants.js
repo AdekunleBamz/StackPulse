@@ -37,6 +37,15 @@ export const PULSE_FEED_PAGE_SIZE = 25
 
 export const PULSE_VERSION = "1.0.0"
 
+export const PULSE_ALERT_TYPES = {
+    WHALE: 1,
+    CONTRACT: 2,
+    NFT: 3,
+    TOKEN: 4,
+    SWAP: 5,
+    ADDRESS: 6
+}
+
 export const PULSE_BLOCKS_PER_HOUR = 6
 
 export const PULSE_BLOCKS_PER_DAY = 144
