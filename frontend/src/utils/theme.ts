@@ -42,3 +42,14 @@ export const SHADOWS = {
   brand: '0 20px 50px rgba(0,0,0,0.5)',
   glow: '0 0 20px rgba(139, 92, 246, 0.2)',
 };
+
+export const Z_INDEX = {
+  base: 0,
+  dropdown: 1000,
+  sticky: 1100,
+  fixed: 1200,
+  modal: 1300,
+  popover: 1400,
+  tooltip: 1500,
+  toast: 1600,
+};
