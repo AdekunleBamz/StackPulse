@@ -37,6 +37,16 @@ export const PULSE_FEED_PAGE_SIZE = 25
 
 export const PULSE_VERSION = "1.0.0"
 
+export const PULSE_MESSAGES = {
+    ERROR_GENERIC: "We've encountered an unexpected pulse error. Don't worry, your data is safe. Please try refreshing or return home.",
+    ERROR_SYSTEM_HICCUP: "System Hiccup",
+    ACTION_TRY_AGAIN: "Try Again",
+    ACTION_GO_HOME: "Go Home",
+    CONFIRM_DELETE_ALERT: "Are you sure you want to delete this alert? This action cannot be undone.",
+    SUCCESS_ALERT_CREATED: "Alert successfully created!",
+    SUCCESS_PROFILE_UPDATED: "Profile updated successfully!"
+}
+
 export const PULSE_BLOCKS_PER_HOUR = 6
 
 export const PULSE_BLOCKS_PER_DAY = 144
