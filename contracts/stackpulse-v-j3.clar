@@ -14,20 +14,33 @@
 ;; 5. User can upgrade tier with (upgrade-subscription)
 
 ;; ============================================
-;; CONSTANTS
+;; ERROR CODES
 ;; ============================================
-
-(define-constant CONTRACT-OWNER tx-sender)
+;; @desc Error returned when a user is already registered in the system
 (define-constant ERR-ALREADY-REGISTERED (err u101))
+;; @desc Error returned when a user attempt to operate on a non-existent profile
 (define-constant ERR-NOT-REGISTERED (err u102))
+;; @desc Error returned when an invalid subscription tier is specified
 (define-constant ERR-INVALID-TIER (err u103))
+;; @desc Error returned when a microSTX transfer operation fails
 (define-constant ERR-TRANSFER-FAILED (err u104))
+;; @desc Error returned when a caller lacks the required administrative or user permissions
 (define-constant ERR-NOT-AUTHORIZED (err u105))
+;; @desc Error returned when a username does not meet length requirements
 (define-constant ERR-INVALID-USERNAME (err u106))
+;; @desc Error returned when an invalid alert configuration bitmask is provided
 (define-constant ERR-INVALID-ALERTS (err u107))
+;; @desc Error returned when a subscription-required action is performed after expiration
 (define-constant ERR-SUBSCRIPTION-EXPIRED (err u108))
+;; @desc Error returned when an upgrade is attempted to the same tier
 (define-constant ERR-SAME-TIER (err u109))
+;; @desc Error returned when an invalid chainhook type is specified
 (define-constant ERR-INVALID-HOOK-TYPE (err u110))
+;; @desc Error returned when an invalid principal is provided (e.g. principal-0)
+(define-constant ERR-INVALID-PRINCIPAL (err u111))
+
+;; @desc Error returned when the contract is currently paused by admin
+(define-constant ERR-CONTRACT-PAUSED (err u120))
 
 ;; Subscription duration: ~30 days in blocks (assuming 10 min blocks)
 (define-constant BLOCKS-PER-MONTH u4320)
