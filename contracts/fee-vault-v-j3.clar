@@ -13,18 +13,30 @@
 ;; - Referral bonus tracking
 
 ;; ============================================
-;; CONSTANTS
+;; ERROR CODES
 ;; ============================================
+;; @desc Error returned when a caller lacks required permissions (owner-only)
+(define-constant ERR-NOT-AUTHORIZED (err u100))
+;; @desc Error returned when an input amount is invalid or out of expected range
+(define-constant ERR-INVALID-AMOUNT (err u101))
+;; @desc Error returned when the contract account lacks sufficient STX to perform a withdrawal
+(define-constant ERR-INSUFFICIENT-BALANCE (err u102))
+;; @desc Error returned when an unsupported or invalid subscription tier is specified
+(define-constant ERR-INVALID-TIER (err u103))
+;; @desc Error returned when an operation involves a zero-value STX amount
+(define-constant ERR-ZERO-AMOUNT (err u104))
+;; @desc Error returned when a user attempts to refer themselves (fraud prevention)
+(define-constant ERR-SELF-REFERRAL (err u105))
+;; @desc Error returned when a withdrawal is requested by a user with no accumulated earnings
+(define-constant ERR-NO-EARNINGS (err u106))
+;; @desc Error returned when an operation involves an invalid principal (e.g. principal-0)
+(define-constant ERR-INVALID-PRINCIPAL (err u107))
+
+;; @desc Error returned when the contract is currently paused for maintenance
+(define-constant ERR-CONTRACT-PAUSED (err u120))
 
 (define-constant CONTRACT-OWNER tx-sender)
 (define-constant TREASURY-ADDRESS tx-sender)
-(define-constant ERR-NOT-AUTHORIZED (err u100))
-(define-constant ERR-INVALID-AMOUNT (err u101))
-(define-constant ERR-INSUFFICIENT-BALANCE (err u102))
-(define-constant ERR-INVALID-TIER (err u103))
-(define-constant ERR-ZERO-AMOUNT (err u104))
-(define-constant ERR-SELF-REFERRAL (err u105))
-(define-constant ERR-NO-EARNINGS (err u106))
 
 ;; Subscription prices in microSTX
 (define-constant PRICE-FREE u0)
