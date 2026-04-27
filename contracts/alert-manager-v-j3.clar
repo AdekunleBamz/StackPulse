@@ -220,6 +220,9 @@
 )
 
 ;; Toggle alert enabled/disabled
+;; @desc Flips the active/inactive state of a specific alert.
+;; @param alert-id (uint) The ID of the alert to toggle.
+;; @returns (ok bool) The new state of the alert (true=enabled).
 (define-public (toggle-alert (alert-id uint))
   (let
     (
@@ -246,6 +249,9 @@
 )
 
 ;; Delete an alert
+;; @desc Permanently removes an alert and updates user counts.
+;; @param alert-id (uint) The ID of the alert to purge.
+;; @returns (ok bool) Returns true on successful deletion.
 (define-public (delete-alert (alert-id uint))
   (let
     (
@@ -281,6 +287,9 @@
 )
 
 ;; Record alert trigger (called by chainhook server or authorized caller)
+;; @desc Increments the trigger count for an alert and updates global metrics.
+;; @param alert-id (uint) The ID that was triggered.
+;; @returns (ok uint) The updated total trigger count for this alert.
 (define-public (record-trigger (alert-id uint))
   (let
     (
