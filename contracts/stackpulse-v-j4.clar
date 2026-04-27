@@ -28,6 +28,7 @@
 (define-constant ERR-SUBSCRIPTION-EXPIRED (err u108)) ;; User's paid subscription has ended
 (define-constant ERR-SAME-TIER (err u109))          ;; User is already on this subscription tier
 (define-constant ERR-INVALID-HOOK-TYPE (err u110))  ;; Requested chainhook type is out of range
+(define-constant ERR-CONTRACT-PAUSED (err u120))    ;; Contract is currently paused
 
 ;; Subscription duration: ~30 days in blocks (assuming 10 min blocks)
 (define-constant BLOCKS-PER-MONTH u4320)
@@ -54,6 +55,7 @@
 (define-data-var total-revenue uint u0)
 ;; Semantic version of the contract for tracking migrations
 (define-data-var contract-version (string-ascii 8) "v3.0.0")
+(define-data-var is-paused bool false)
 
 ;; Main user profile map
 (define-map users principal
@@ -142,9 +144,19 @@
   )
 )
 
+;; @desc Checks if the contract is currently in a paused state.
+(define-read-only (is-contract-paused)
+  (var-get is-paused)
+)
+
 ;; ============================================
 ;; PRIVATE HELPER FUNCTIONS
 ;; ============================================
+
+;; Check if contract is active
+(define-private (check-not-paused)
+  (ok (asserts! (not (var-get is-paused)) ERR-CONTRACT-PAUSED))
+)
 
 ;; V3: Validate username (non-empty, proper length)
 (define-private (is-valid-username (username (string-ascii 32)))
@@ -193,6 +205,9 @@
                     u0 
                     (+ block-height BLOCKS-PER-MONTH)))
     )
+    ;; Check contract is active
+    (try! (check-not-paused))
+    
     ;; V3: Enhanced validation
     (asserts! (is-valid-username username) ERR-INVALID-USERNAME)
     (asserts! (is-none (map-get? users caller)) ERR-ALREADY-REGISTERED)
@@ -258,6 +273,9 @@
       (caller tx-sender)
       (user-data (unwrap! (map-get? users caller) ERR-NOT-REGISTERED))
     )
+    ;; Check contract is active
+    (try! (check-not-paused))
+    
     ;; V3: Validate inputs
     (asserts! (is-valid-username username) ERR-INVALID-USERNAME)
     (asserts! (<= alerts MAX-ALERTS-BITMASK) ERR-INVALID-ALERTS)
@@ -299,6 +317,9 @@
                     (+ current-ends BLOCKS-PER-MONTH)
                     (+ block-height BLOCKS-PER-MONTH)))
     )
+    ;; Check contract is active
+    (try! (check-not-paused))
+    
     ;; V3: Enhanced validation
     (asserts! (> new-tier u0) ERR-INVALID-TIER)
     (asserts! (is-valid-tier new-tier) ERR-INVALID-TIER)
@@ -338,6 +359,9 @@
       (caller tx-sender)
       (user-data (unwrap! (map-get? users caller) ERR-NOT-REGISTERED))
     )
+    ;; Check contract is active
+    (try! (check-not-paused))
+    
     ;; V3: Validate alerts bitmask
     (asserts! (<= alerts MAX-ALERTS-BITMASK) ERR-INVALID-ALERTS)
     
@@ -460,7 +484,7 @@
 (define-public (admin-grant-subscription (user principal) (tier uint) (duration-blocks uint))
   (let
     (
-      (user-data (unwrap! (map-get? users user) ERR-NOT-REGISTERED))
+      (user-data (unwrap! (map-get? users caller) ERR-NOT-REGISTERED))
     )
     (asserts! (is-eq tx-sender CONTRACT-OWNER) ERR-NOT-AUTHORIZED)
     (asserts! (is-valid-tier tier) ERR-INVALID-TIER)
@@ -480,6 +504,26 @@
       block: block-height
     })
     
+    (ok true)
+  )
+)
+
+;; Admin: Pause contract
+(define-public (pause)
+  (begin
+    (asserts! (is-eq tx-sender CONTRACT-OWNER) ERR-NOT-AUTHORIZED)
+    (var-set is-paused true)
+    (print { event: "pause", by: tx-sender, block: block-height })
+    (ok true)
+  )
+)
+
+;; Admin: Unpause contract
+(define-public (unpause)
+  (begin
+    (asserts! (is-eq tx-sender CONTRACT-OWNER) ERR-NOT-AUTHORIZED)
+    (var-set is-paused false)
+    (print { event: "unpause", by: tx-sender, block: block-height })
     (ok true)
   )
 )
