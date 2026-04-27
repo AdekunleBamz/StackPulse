@@ -97,10 +97,18 @@
   (ok (some (concat BASE-URI (uint-to-string token-id))))
 )
 
+;; @desc Retrieves the current owner of a specific badge NFT.
+;; @param token-id (uint) The unique identifier of the badge.
+;; @returns (ok (optional principal)) The owner principal or none if not found.
 (define-read-only (get-owner (token-id uint))
   (ok (nft-get-owner? stackpulse-badge token-id))
 )
 
+;; @desc SIP-009 standard transfer function for badge NFTs.
+;; @param token-id (uint) The ID of the badge to transfer.
+;; @param sender (principal) The current owner of the badge.
+;; @param recipient (principal) The new owner of the badge.
+;; @returns (ok bool) True on successful transfer.
 (define-public (transfer (token-id uint) (sender principal) (recipient principal))
   (begin
     (asserts! (is-eq tx-sender sender) ERR-NOT-AUTHORIZED)
@@ -144,6 +152,10 @@
 ;; ============================================
 
 ;; Mint a badge to a user
+;; @desc Mints a reputation badge to a user based on a specific achievement type.
+;; @param recipient (principal) The user receiving the badge.
+;; @param badge-type (uint) Identifier for the achievement (1-9).
+;; @returns (ok uint) The newly minted token identifier.
 (define-public (mint-badge (recipient principal) (badge-type uint))
   (let
     (
