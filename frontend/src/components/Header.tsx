@@ -167,7 +167,7 @@ export default function Header() {
 
             <button
               type="button"
-              className="md:hidden inline-flex items-center justify-center w-10 h-10 rounded-xl border border-white/5 bg-white/5 text-gray-200 hover:bg-white/10 hover:scale-110 active:scale-90 transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-purple-500/50 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-950 hover:shadow-lg hover:shadow-purple-500/20"
+              className="md:hidden inline-flex items-center justify-center w-10 h-10 rounded-xl border border-white/5 bg-white/5 text-gray-200 hover:bg-white/10 hover:scale-110 active:scale-90 transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-purple-500/50 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-950 hover:shadow-lg hover:shadow-purple-500/20 touch-manipulation"
               aria-expanded={isOpen}
               aria-controls={mobileNavId}
               aria-label={isOpen ? 'Close mobile menu' : 'Open mobile menu'}
