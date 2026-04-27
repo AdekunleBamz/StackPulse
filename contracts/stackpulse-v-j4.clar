@@ -289,7 +289,7 @@
       event: "subscription-upgraded",
       version: "v3",
       user: caller,
-      old-tier: current-tier,
+      previous-tier: current-tier,
       new-tier: new-tier,
       price: price,
       ends-at: new-ends,
