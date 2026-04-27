@@ -225,6 +225,10 @@
 )
 
 ;; Collect platform fee (called on alert triggers, etc.)
+;; @desc Collects a platform fee based on an activity amount.
+;; @param amount (uint) The base amount of the activity.
+;; @param fee-type (string-ascii 32) A label for the fee type (e.g., "alert").
+;; @returns (ok uint) The calculated and collected fee amount.
 (define-public (collect-platform-fee (amount uint) (fee-type (string-ascii 32)))
   (let
     (
@@ -256,6 +260,8 @@
 )
 
 ;; Withdraw referral earnings
+;; @desc Allows a referrer to withdraw their accumulated referral earnings.
+;; @returns (ok uint) The total amount withdrawn in microSTX.
 (define-public (withdraw-referral-earnings)
   (let
     (
@@ -291,6 +297,9 @@
 ;; ============================================
 
 ;; Admin: Withdraw to treasury
+;; @desc Transfers a specified amount from the vault to the multi-sig treasury.
+;; @param amount (uint) MicroSTX to withdraw.
+;; @returns (ok uint) The amount successfully transferred.
 (define-public (withdraw-to-treasury (amount uint))
   (begin
     (asserts! (is-eq tx-sender CONTRACT-OWNER) ERR-NOT-AUTHORIZED)
