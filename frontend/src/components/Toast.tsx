@@ -128,7 +128,7 @@ function Toast({ id, type, title, message, duration = 5000, onClose }: ToastProp
   return (
     <div
       role={type === 'error' || type === 'warning' ? 'alert' : 'status'}
-      aria-live={type === 'error' || type === 'warning' ? 'assertive' : 'polite'}
+      aria-live={type === 'error' || type === 'warning' || type === 'loading' ? 'assertive' : 'polite'}
       aria-atomic="true"
       className={`relative flex items-start gap-3.5 p-4.5 rounded-2xl border backdrop-blur-xl shadow-[0_20px_40px_rgba(0,0,0,0.4)] transition-all duration-500 overflow-hidden ${
         styles.bg
