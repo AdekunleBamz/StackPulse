@@ -42,3 +42,23 @@ export const SHADOWS = {
   brand: '0 20px 50px rgba(0,0,0,0.5)',
   glow: '0 0 20px rgba(139, 92, 246, 0.2)',
 };
+
+export const TYPOGRAPHY = {
+  fontFamily: {
+    sans: 'Inter, system-ui, -apple-system, sans-serif',
+    mono: 'Fira Code, monospace',
+  },
+  fontSize: {
+    xs: '0.75rem',
+    sm: '0.875rem',
+    base: '1rem',
+    lg: '1.125rem',
+    xl: '1.25rem',
+    '2xl': '1.5rem',
+  }
+};
+
+export const SPACING = {
+  container: 'max-w-7xl mx-auto px-4 sm:px-6 lg:px-8',
+  section: 'py-12 sm:py-16 lg:py-20',
+};
