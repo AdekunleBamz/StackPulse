@@ -98,6 +98,7 @@ a {
 :where(a, button, input, textarea, select, summary):focus-visible {
   outline: 2px solid rgba(96, 165, 250, 0.9);
   outline-offset: 2px;
+  box-shadow: 0 0 0 5px rgba(96, 165, 250, 0.2);
 }
 
 ::selection {
