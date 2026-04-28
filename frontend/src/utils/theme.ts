@@ -42,3 +42,17 @@ export const SHADOWS = {
   brand: '0 20px 50px rgba(0,0,0,0.5)',
   glow: '0 0 20px rgba(139, 92, 246, 0.2)',
 };
+
+export const ANIMATIONS = {
+  duration: {
+    fast: '150ms',
+    normal: '300ms',
+    slow: '500ms',
+  },
+  easing: {
+    DEFAULT: 'cubic-bezier(0.4, 0, 0.2, 1)',
+    in: 'cubic-bezier(0.4, 0, 1, 1)',
+    out: 'cubic-bezier(0, 0, 0.2, 1)',
+    inOut: 'cubic-bezier(0.4, 0, 0.2, 1)',
+  }
+};
