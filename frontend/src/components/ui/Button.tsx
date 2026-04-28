@@ -76,7 +76,12 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button(
       aria-label={isLoading ? `Loading ${props['aria-label'] || ''}` : props['aria-label']}
       {...props}
     >
-      {isLoading ? <Spinner /> : leftIcon}
+      {isLoading ? (
+        <span className="inline-flex items-center" role="status" aria-live="polite">
+          <Spinner />
+          <span className="sr-only">Loading</span>
+        </span>
+      ) : leftIcon}
       <span className="min-w-0 truncate">{children}</span>
       {rightIcon}
     </button>
