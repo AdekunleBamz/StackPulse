@@ -42,3 +42,14 @@ export const SHADOWS = {
   brand: '0 20px 50px rgba(0,0,0,0.5)',
   glow: '0 0 20px rgba(139, 92, 246, 0.2)',
 };
+
+export const RADII = {
+  xs: '0.125rem',
+  sm: '0.25rem',
+  DEFAULT: '0.375rem',
+  md: '0.375rem',
+  lg: '0.5rem',
+  xl: '0.75rem',
+  '2xl': '1rem',
+  full: '9999px',
+};
