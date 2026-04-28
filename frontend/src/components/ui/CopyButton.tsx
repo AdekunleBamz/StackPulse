@@ -62,6 +62,9 @@ export default function CopyButton({
           )} 
         />
       </div>
+      <span className="sr-only" aria-live="polite" aria-atomic="true">
+        {copied ? copiedLabel : ''}
+      </span>
     </button>
   );
 }
