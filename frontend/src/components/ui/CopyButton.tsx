@@ -17,6 +17,7 @@ export default function CopyButton({
   label?: string;
 }) {
   const [copied, setCopied] = useState(false);
+  const hasValue = typeof value === 'string' && value.trim().length > 0;
 
   useEffect(() => {
     if (!copied) return;
@@ -25,6 +26,12 @@ export default function CopyButton({
   }, [copied]);
 
   const onCopy = async () => {
+    if (!hasValue) return;
+    if (!navigator.clipboard?.writeText) {
+      toast.error('Copy unavailable', 'Your browser does not support clipboard copy here.');
+      return;
+    }
+
     try {
       await navigator.clipboard.writeText(value);
       setCopied(true);
@@ -46,7 +53,9 @@ export default function CopyButton({
         className
       )}
       aria-label={copied ? copiedLabel : label}
-      title={copied ? copiedLabel : label}
+      title={hasValue ? (copied ? copiedLabel : label) : 'Nothing to copy yet'}
+      disabled={!hasValue}
+      aria-disabled={!hasValue}
     >
       <div className="relative h-4 w-4">
         <Check 
