@@ -35,12 +35,20 @@ export default function TextField({ label, hint, error, className, id, ...props 
           )}
         {...props}
       />
-      {error ? (
-        <p id={errorId} className="text-xs text-red-500/90 font-medium px-1 leading-tight">{error}</p>
-      ) : hint ? (
-        <p id={hintId} className="text-xs text-gray-500 px-1 leading-tight italic">{hint}</p>
-      ) : null}
+      <div className="flex items-start justify-between gap-2">
+        <div className="min-w-0">
+          {error ? (
+            <p id={errorId} className="text-xs text-red-500/90 font-medium px-1 leading-tight">{error}</p>
+          ) : hint ? (
+            <p id={hintId} className="text-xs text-gray-500 px-1 leading-tight italic">{hint}</p>
+          ) : null}
+        </div>
+        {showCharCount && maxLength ? (
+          <span className="px-1 text-xs text-gray-500 tabular-nums" aria-live="polite" aria-atomic="true">
+            {currentLength}/{maxLength}
+          </span>
+        ) : null}
+      </div>
     </div>
   );
 }
-
