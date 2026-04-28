@@ -81,6 +81,7 @@ export default function Tooltip({
             positionClasses[position]
           )}
           role="tooltip"
+          aria-hidden={!isVisible}
         >
           {content}
           <div className={cn('absolute border-4 border-transparent', arrowClasses[position])} aria-hidden="true" />
