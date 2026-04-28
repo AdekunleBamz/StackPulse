@@ -78,6 +78,7 @@ export default function Tooltip({
           id={id}
           className={cn(
             'absolute z-50 w-max max-w-xs px-3 py-2 text-sm font-medium text-gray-200 tracking-tight bg-gray-900/95 backdrop-blur-xl border border-purple-500/20 rounded-xl shadow-xl shadow-purple-900/40 animate-zoom-in transition-all duration-200 ease-out',
+            'break-words',
             positionClasses[position]
           )}
           role="tooltip"
