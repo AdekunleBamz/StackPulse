@@ -16,3 +16,5 @@ These files break the backend into route-focused modules while `../index.ts` rem
 - Push reusable logic into `../services/`.
 - Update `docs/API.md` when a mounted path changes.
 - When introducing route-version changes, keep deprecation windows explicit in both route docs and public API notes.
+
+- Route ownership tip: record the primary maintainer for each externally exposed path.
