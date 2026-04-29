@@ -50,3 +50,5 @@ This document outlines the standard workflow for contributing to StackPulse.
 - Use Prettier for formatting.
 - Ensure TypeScript types are updated in the `shared` package if they affect multiple components.
 - Keep components small and focused.
+
+- Workflow tip: include a short risk summary before merging operational changes.
