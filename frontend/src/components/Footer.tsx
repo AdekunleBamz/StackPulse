@@ -66,6 +66,7 @@ export default function Footer() {
                   href={social.href}
                   className="w-11 h-11 rounded-2xl bg-white/5 border border-white/5 flex items-center justify-center text-gray-400 hover:text-white hover:border-purple-500/40 hover:bg-white/10 hover:shadow-[0_0_20px_rgba(168,85,247,0.2)] transition-all duration-500 hover:-translate-y-1 active:scale-95 outline-none focus-visible:ring-2 focus-visible:ring-purple-500/50 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-950 touch-manipulation"
                   aria-label={social.label}
+                  title={social.label}
                   target={social.href.startsWith('mailto:') ? undefined : '_blank'}
                   rel={social.href.startsWith('mailto:') ? undefined : 'noopener noreferrer'}
                 >
