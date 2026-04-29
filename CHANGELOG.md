@@ -31,3 +31,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Hiro Chainhook manifests for multi-event detection.
 - Express ingestion server and WebSocket notification engine.
 - Premium Next.js frontend with real-time analytics and management dashboards.
+
+- Maintainer note: summarize deployment-impacting changes in unreleased entries.
