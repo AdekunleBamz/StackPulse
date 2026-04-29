@@ -169,6 +169,7 @@ function Toast({ id, type, title, message, duration = TOAST_DEFAULT_DURATION_MS,
         onClick={handleClose}
         className="text-white/30 hover:text-white transition-all duration-300 rounded-xl p-2 -mr-1.5 hover:bg-white/10 active:scale-90"
         aria-label="Dismiss notification"
+        title="Dismiss notification"
       >
         <X className="w-4 h-4" />
       </button>
