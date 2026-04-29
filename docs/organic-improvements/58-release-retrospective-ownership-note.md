@@ -3,3 +3,5 @@
 - Capture release retrospective actions with clear owners and due dates.
 - Track completion status in weekly operations review.
 - This turns lessons learned into follow-through.
+
+- Close every retrospective action with a verification update in the next ops review.
