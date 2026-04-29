@@ -83,6 +83,7 @@ export default function Header() {
             href="/" 
             className="flex items-center space-x-2 group/logo outline-none focus-visible:ring-2 focus-visible:ring-purple-500/50 focus-visible:ring-offset-4 focus-visible:ring-offset-gray-950 rounded-xl transition-all"
             aria-label="StackPulse Home"
+            title="Go to StackPulse home"
           >
             <div 
               className="w-9 h-9 bg-gradient-to-br from-purple-500 via-purple-600 to-blue-600 rounded-xl flex items-center justify-center shadow-lg shadow-purple-500/10 group-hover/logo:scale-125 group-hover/logo:shadow-purple-500/40 transition-all duration-300"
