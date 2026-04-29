@@ -48,6 +48,7 @@ export default function ConnectWallet() {
         size="lg"
         leftIcon={<Wallet className="w-5 h-5" />}
         aria-label="Connect your Stacks wallet"
+        title="Connect your Stacks wallet"
       >
         Connect Wallet
       </Button>
