@@ -46,7 +46,7 @@ export default function Footer() {
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-x-8 gap-y-12 mb-20">
           {/* Brand Column */}
           <div className="sm:col-span-2 lg:col-span-2 sm:pr-8">
-            <Link href="/" className="flex items-center space-x-3.5 mb-10 group/footer-logo">
+            <Link href="/" className="flex items-center space-x-3.5 mb-10 group/footer-logo" title="Go to StackPulse home">
               <div className="w-12 h-12 bg-gradient-to-br from-purple-500 via-indigo-600 to-indigo-800 rounded-2xl flex items-center justify-center shadow-[0_15px_35px_-5px_rgba(168,85,247,0.35)] group-hover/footer-logo:scale-110 group-hover/footer-logo:rotate-6 transition-all duration-500 relative overflow-hidden ring-1 ring-white/10">
                 <div className="absolute inset-0 bg-white/20 opacity-0 group-hover/footer-logo:opacity-100 transition-opacity" />
                 <Zap className="w-6 h-6 text-white relative z-10" fill="white" />
