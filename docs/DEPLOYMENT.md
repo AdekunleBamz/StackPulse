@@ -382,3 +382,5 @@ git push origin main
 ### Rollout Window Note
 
 Prefer deploying contracts and API updates inside the same announced window to reduce temporary mismatches between server assumptions and on-chain state.
+
+- Deployment tip: capture chainhook registration output in release artifacts.
