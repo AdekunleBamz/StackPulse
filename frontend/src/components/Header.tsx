@@ -114,6 +114,8 @@ export default function Header() {
               href="/#features" 
               className="group/nav text-sm font-semibold text-gray-400 hover:text-white transition-all duration-300 px-3 py-1.5 rounded-lg outline-none focus-visible:ring-2 focus-visible:ring-purple-500/50 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-950 hover:bg-white/5 hover:scale-105 active:scale-95 aria-[current=page]:bg-white/10 aria-[current=page]:text-white aria-[current=page]:shadow-sm relative"
               aria-current={pathname === '/#features' ? 'page' : undefined}
+              aria-label="View platform features"
+              title="View platform features"
             >
               Features
               <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 bg-purple-500 rounded-full opacity-0 group-aria-[current=page]/nav:opacity-100 transition-opacity" />
