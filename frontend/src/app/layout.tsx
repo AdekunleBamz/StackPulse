@@ -24,7 +24,7 @@ export const metadata: Metadata = {
     apple: "/favicon.svg",
   },
   other: {
-    "talentapp:project_verification": "284a312c9318227a714ef3051b305073e5184c2841cd432a64f5966b69df2a8f77279ba3b4dcf29a8d97db05d8ae39251535897c2d28ec9fcf608b96f4483235",
+    "talentapp:project_verification": "844833b40c40f26a619a180579e5ca6a351183e87aa983caf3db1fe5da27dff0c258b12d3db5e5cff0086b04e6d4de049ea3eb132dd4b957b6d6bbf12fb2a15d",
   },
 };
 
@@ -35,6 +35,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        <meta name="talentapp:project_verification" content="844833b40c40f26a619a180579e5ca6a351183e87aa983caf3db1fe5da27dff0c258b12d3db5e5cff0086b04e6d4de049ea3eb132dd4b957b6d6bbf12fb2a15d" />
+      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-gray-950 text-white`}
       >
