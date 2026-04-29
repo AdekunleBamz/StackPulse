@@ -73,6 +73,7 @@ export default function Header() {
       <a
         href="#main"
         className="sr-only focus:not-sr-only focus:absolute focus:top-6 focus:left-6 focus:z-[100] h-12 px-6 flex items-center justify-center rounded-xl bg-purple-600 text-white font-bold shadow-[0_10px_30px_rgba(168,85,247,0.4)] transition-all active:scale-95 outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-purple-600"
+        title="Skip to main content"
       >
         Skip to content
       </a>
