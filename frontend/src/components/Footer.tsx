@@ -99,7 +99,8 @@ export default function Footer() {
                 <li key={link.label}>
                   <a 
                     href={link.href} 
-                    className="text-gray-400 hover:text-white transition-all duration-300 text-[13px] font-semibold hover:translate-x-1 flex items-center gap-1 group/flink px-2 py-1 rounded-lg outline-none focus-visible:ring-2 focus-visible:ring-purple-500/50 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-950 -ml-2 w-fit"
+                    className="text-gray-500 hover:text-purple-400 transition-all duration-200 text-sm font-medium hover:translate-x-1 flex items-center gap-1 group/flink rounded-md outline-none focus-visible:ring-2 focus-visible:ring-purple-500/50 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-950"
+                    title={link.label}
                     target={link.href.startsWith('http') ? '_blank' : undefined}
                     rel={link.href.startsWith('http') ? 'noopener noreferrer' : undefined}
                   >
