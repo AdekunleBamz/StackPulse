@@ -99,6 +99,7 @@ export default function ConnectWallet() {
               className="mt-2 inline-flex text-xs text-purple-300 hover:text-purple-200 transition-colors focus:outline-none focus:underline"
               role="menuitem"
               aria-label={`View address ${safeAddress} on Hiro Explorer (opens in new tab)`}
+              title="View on Hiro Explorer"
             >
               View on Hiro Explorer
               <span className="sr-only">(opens in new tab)</span>
