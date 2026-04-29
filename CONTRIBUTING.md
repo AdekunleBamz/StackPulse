@@ -118,3 +118,5 @@ Please do not report security vulnerabilities via GitHub issues. Refer to [SECUR
 - Call out versioned or legacy behavior explicitly when older docs remain in the tree.
 - Avoid leaving stale deployment plan names, route paths, or package commands in docs.
 - Small docs-only PRs should still explain operational context in the description (what changed and why now).
+
+- Review tip: include rollback notes in every non-trivial pull request description.

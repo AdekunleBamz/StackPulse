@@ -39,9 +39,17 @@ export function securityHeaders(req: Request, res: Response, next: NextFunction)
   
   // Permissions-Policy
   res.setHeader(
-    'Permissions-Policy',
-    'camera=(), microphone=(), geolocation=()'
-  );
+  // COOP
+  res.setHeader('Cross-Origin-Opener-Policy', 'same-origin');
+  
+  // CORP
+  res.setHeader('Cross-Origin-Resource-Policy', 'same-origin');
+
+  // Content Security Policy
+  res.setHeader('Content-Security-Policy', "default-src 'self'; script-src 'self'; object-src 'none';");
+
+  // Permissions Policy
+  res.setHeader('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');
   
   next();
 }
@@ -51,12 +59,13 @@ export function securityHeaders(req: Request, res: Response, next: NextFunction)
  */
 export function corsMiddleware(req: Request, res: Response, next: NextFunction) {
   const allowedOrigins = process.env.ALLOWED_ORIGINS 
-    ? process.env.ALLOWED_ORIGINS.split(',') 
+    ? process.env.ALLOWED_ORIGINS.split(',').map((origin) => origin.trim()).filter(Boolean)
     : ['http://localhost:3000', 'http://localhost:3001'];
   
   const origin = req.headers.origin;
   
   if (origin && allowedOrigins.includes(origin)) {
+    res.setHeader('Vary', 'Origin');
     res.setHeader('Access-Control-Allow-Origin', origin);
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE, OPTIONS');
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With');

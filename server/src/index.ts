@@ -217,23 +217,29 @@ app.post(CHAINHOOK_ENDPOINTS.whaleTransfer, tieredApiLimiter, authenticateWebhoo
         const transferData = parseWhaleTransfer(event);
         
         if (transferData) {
-          logger.info('🐋 Whale Transfer Detected', {
+          const isMicroWhale = parseFloat(transferData.amountSTX) < 100000;
+          const emoji = isMicroWhale ? '🦐' : '🐋';
+          const title = `${emoji} ${isMicroWhale ? 'Large' : 'Whale'} Transfer Detected`;
+
+          logger.info(title, {
             amount: transferData.amountFormatted,
             amountSTX: transferData.amountSTX,
             sender: transferData.sender,
             recipient: transferData.recipient,
             txHash: tx.transaction_identifier.hash,
-            block: block.block_identifier.index
+            block: block.block_identifier.index,
+            isWhale: !isMicroWhale
           });
           
           await broadcastNotification({
-            title: '🐋 Whale Transfer Detected',
-            message: `${transferData.amountSTX} STX transferred from ${transferData.sender.slice(0, 8)}... to ${transferData.recipient.slice(0, 8)}...`,
+            title,
+            message: `${transferData.amountSTX} STX moved from ${transferData.sender.slice(0, 8)}... to ${transferData.recipient.slice(0, 8)}...`,
             type: 'whale',
             data: {
-              Amount: transferData.amountSTX + ' STX',
-              Sender: transferData.sender,
-              Recipient: transferData.recipient
+              'Transfer Amount': `${transferData.amountSTX} STX`,
+              'Sender': transferData.sender,
+              'Recipient': transferData.recipient,
+              'Scale': isMicroWhale ? 'High Volume' : 'Ultra High Volume'
             },
             txHash: tx.transaction_identifier.hash,
             blockHeight: block.block_identifier.index
@@ -683,7 +689,9 @@ app.get('/health', (req: Request, res: Response) => {
   res.json({ 
     status: 'healthy', 
     timestamp: new Date().toISOString(),
-    version: '1.0.0'
+    version: '3.0.0',
+    uptime: process.uptime(),
+    network: process.env.NEXT_PUBLIC_STACKS_NETWORK || 'mainnet'
   });
 });
 

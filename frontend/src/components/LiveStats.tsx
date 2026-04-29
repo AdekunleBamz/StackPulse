@@ -1,7 +1,7 @@
 'use client';
 
 import { Activity, ExternalLink } from 'lucide-react';
-import { useEffect, useState, memo } from 'react';
+import { useEffect, useRef, useState, memo } from 'react';
 import { StatsCardSkeleton } from './LoadingSkeleton';
 import { apiUrl } from '@/lib/env';
 import logger from '@/lib/logger';
@@ -19,12 +19,6 @@ interface EventStats {
 }
 
 const LIVE_STATS_REFRESH_INTERVAL_MS = 30000;
-const LIVE_STATS_STALE_THRESHOLD_MS = LIVE_STATS_REFRESH_INTERVAL_MS * 3;
-
-interface StatsResponse {
-  stats?: EventStats;
-  [key: string]: any;
-}
 
 const LiveStats = memo(() => {
   const [stats, setStats] = useState<EventStats | null>(null);

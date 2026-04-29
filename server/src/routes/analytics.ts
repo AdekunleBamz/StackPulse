@@ -1,4 +1,5 @@
 import { Router, Request, Response } from 'express';
+import { trackEvent } from '../services/analytics';
 
 const router = Router();
 
@@ -45,18 +46,34 @@ router.get('/summary', (req: Request, res: Response) => {
 });
 
 /**
- * GET /api/analytics/trends
- * Get analytics trends
+ * POST /api/analytics/track
+ * Track an analytics event
  */
-router.get('/trends', (req: Request, res: Response) => {
-  const { period = '7d' } = req.query;
+router.post('/track', (req: Request, res: Response) => {
+  const { eventType, metadata } = req.body;
+  const address = req.headers['x-user-address'] as string;
+
+  if (!eventType || typeof eventType !== 'string') {
+    return res.status(400).json({
+      success: false,
+      error: 'eventType is required',
+    });
+  }
+  if (metadata != null && (typeof metadata !== 'object' || Array.isArray(metadata))) {
+    return res.status(400).json({
+      success: false,
+      error: 'metadata must be an object',
+    });
+  }
+  
+  // In a real app, fetch tier from user store
+  const tier = 0; // Default to FREE
+
+  trackEvent(eventType, metadata, address, tier);
   
   res.json({
     success: true,
-    trends: {
-      period,
-      data: []
-    }
+    message: 'Event tracked'
   });
 });
 

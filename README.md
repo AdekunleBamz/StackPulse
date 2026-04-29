@@ -107,3 +107,5 @@ Join our community to get help, stay updated, and contribute:
 - **Telegram**: [Follow us](https://t.me/stackpulse)
 - **Twitter**: [Follow @StackPulse](https://twitter.com/StackPulse)
 - When asking for incident help, include affected network and one transaction ID for faster triage.
+
+- Operational tip: run a quick end-to-end alert drill after dependency upgrades.

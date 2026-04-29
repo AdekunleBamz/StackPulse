@@ -275,7 +275,7 @@ Get user profile and notification preferences.
 }
 ```
 
-#### PUT /api/users/:address
+#### PATCH /api/users/:address
 
 Update user notification preferences.
 
@@ -762,3 +762,5 @@ ws.onmessage = (event) => {
 ### Reliability Note
 
 Clients should apply exponential backoff with jitter when reconnecting WebSocket sessions to avoid synchronized reconnect storms during outages.
+
+- API reliability tip: include correlation id values in support tickets for faster triage.

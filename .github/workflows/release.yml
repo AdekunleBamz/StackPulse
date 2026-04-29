@@ -63,10 +63,10 @@ jobs:
             ## Smart Contracts
             
             Deployed contracts on Stacks mainnet:
-            - `stackpulse-v-j3`
-            - `alert-manager-v-j3`
-            - `fee-vault-v-j3`
-            - `reputation-badges-v-j3`
+            - `stackpulse-v-j4`
+            - `alert-manager-v-j4`
+            - `fee-vault-v-j4`
+            - `reputation-badges-v-j4`
             
             Deployer: `SP3FKNEZ86RG5RT7SZ5FBRGH85FZNG94ZH1MCGG6N`
           generate_release_notes: true

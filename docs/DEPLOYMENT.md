@@ -84,7 +84,7 @@ plan:
       transactions:
         - contract-publish:
             contract-name: alert-manager-v-j3
-            path: contracts/alert-manager-v3.clar
+            path: contracts/alert-manager-v-j3.clar
             anchor-block-only: true
             cost: 500000
             
@@ -92,7 +92,7 @@ plan:
       transactions:
         - contract-publish:
             contract-name: fee-vault-v-j3
-            path: contracts/fee-vault-v3.clar
+            path: contracts/fee-vault-v-j3.clar
             anchor-block-only: true
             cost: 500000
             
@@ -100,7 +100,7 @@ plan:
       transactions:
         - contract-publish:
             contract-name: reputation-badges-v-j3
-            path: contracts/reputation-badges-v3.clar
+            path: contracts/reputation-badges-v-j3.clar
             anchor-block-only: true
             cost: 500000
 ```
@@ -182,8 +182,8 @@ CHAINHOOK_AUTH_TOKEN=your-secure-token
 DEPLOYER_ADDRESS=SP5K2RHMSBH4PAP4PGX77MCVNK1ZEED07CWX9TJT
 REGISTRY_CONTRACT=stackpulse-v-j3
 ALERT_CONTRACT=alert-manager-v-j3
-VAULT_CONTRACT=fee-vault-v3
-BADGE_CONTRACT=reputation-badges-v3
+VAULT_CONTRACT=fee-vault-v-j3
+BADGE_CONTRACT=reputation-badges-v-j3
 
 # Optional: Redis for caching
 REDIS_URL=redis://...
@@ -328,7 +328,7 @@ npx tsx scripts/check-chainhook-status.ts
 
 ### Contract Upgrades
 
-1. Create new contract version (e.g., `stackpulse-v4.clar`)
+1. Create new contract version (e.g., `stackpulse-v-j4.clar`)
 2. Deploy to testnet first
 3. Run comprehensive tests
 4. Deploy to mainnet
@@ -382,3 +382,5 @@ git push origin main
 ### Rollout Window Note
 
 Prefer deploying contracts and API updates inside the same announced window to reduce temporary mismatches between server assumptions and on-chain state.
+
+- Deployment tip: capture chainhook registration output in release artifacts.

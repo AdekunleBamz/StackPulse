@@ -135,12 +135,12 @@ function BadgeCard({ badge, onClick }: BadgeCardProps) {
     <button
       type="button"
       onClick={onClick}
-      className={`relative p-4 rounded-xl border-2 transition-all cursor-pointer hover:scale-105 text-left w-full focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 focus:ring-offset-gray-900 ${
+      className={`relative p-4 rounded-xl border-2 transition-all cursor-pointer hover:scale-105 hover:-translate-y-1.5 text-left w-full focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 focus:ring-offset-gray-900 ${
         badge.earned
-          ? `bg-gradient-to-br ${rarityColors[badge.rarity]} bg-opacity-20 ${rarityBorders[badge.rarity]} hover:shadow-lg hover:border-white/20 ${
+          ? `bg-gradient-to-br ${rarityColors[badge.rarity]} bg-opacity-20 ${rarityBorders[badge.rarity]} hover:shadow-xl hover:shadow-purple-500/20 hover:border-white/20 ${
               badge.rarity === 'legendary' || badge.rarity === 'epic' ? 'shadow-[0_0_20px_rgba(168,85,247,0.2)]' : ''
             }`
-          : 'bg-gray-800/50 border-gray-700 opacity-60 hover:opacity-80'
+          : 'bg-gray-800/50 border-gray-700 opacity-60 hover:opacity-100 hover:bg-gray-800 hover:shadow-lg'
       }`}
       aria-label={`${badge.name} badge, ${badge.rarity} rarity. ${badge.earned ? 'Earned' : 'Locked'}. ${badge.description}`}
     >
@@ -293,9 +293,17 @@ export default function BadgeShowcase({ userBadges = [], onBadgeSelect }: BadgeS
       </div>
 
       {filteredBadges.length === 0 && (
-        <div className="text-center py-12 text-gray-500">
-          <Lock className="w-12 h-12 mx-auto mb-2 opacity-50" />
-          <p>No badges in this category yet</p>
+        <div className="flex flex-col items-center justify-center py-16 px-4 bg-gray-800/10 border border-dashed border-gray-700/50 rounded-2xl animate-in fade-in zoom-in-95 duration-500">
+          <div className="relative mb-4">
+            <Lock className="w-12 h-12 text-gray-700 opacity-50" />
+            <div className="absolute inset-0 bg-purple-500/5 blur-xl rounded-full" />
+          </div>
+          <h3 className="text-white font-bold text-sm mb-1">No {filter} badges</h3>
+          <p className="text-gray-500 text-xs text-center max-w-[200px] leading-relaxed">
+            {filter === 'earned' 
+              ? "Start participating in the ecosystem to unlock your first badge!" 
+              : "You've earned all available badges in this category. Impressive!"}
+          </p>
         </div>
       )}
 

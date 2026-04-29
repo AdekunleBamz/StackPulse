@@ -57,18 +57,12 @@ export default function Header() {
     };
   }, [isOpen]);
 
-  const navLinks = [
-    { href: '/#features', label: 'Features', aria: 'View platform features' },
-    { href: '/#pricing', label: 'Pricing', aria: 'View subscription pricing' },
-    { href: '/#stats', label: 'Live Stats', aria: 'View live blockchain statistics' },
-    { href: '/register', label: 'Register', aria: 'Register for whale alerts', primary: true },
-  ];
-
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-gray-950/80 backdrop-blur-xl border-b border-white/5 shadow-sm shadow-white/[0.02]">
       <a
         href="#main"
         className="sr-only focus:not-sr-only focus:absolute focus:top-6 focus:left-6 focus:z-[100] h-12 px-6 flex items-center justify-center rounded-xl bg-purple-600 text-white font-bold shadow-[0_10px_30px_rgba(168,85,247,0.4)] transition-all active:scale-95 outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-purple-600"
+        title="Skip to main content"
       >
         Skip to content
       </a>
@@ -79,6 +73,7 @@ export default function Header() {
             href="/" 
             className="flex items-center space-x-2 group/logo outline-none focus-visible:ring-2 focus-visible:ring-purple-500/50 focus-visible:ring-offset-4 focus-visible:ring-offset-gray-950 rounded-xl transition-all"
             aria-label="StackPulse Home"
+            title="Go to StackPulse home"
           >
             <div 
               className="w-9 h-9 bg-gradient-to-br from-purple-500 via-purple-600 to-blue-600 rounded-xl flex items-center justify-center shadow-lg shadow-purple-500/10 group-hover/logo:scale-125 group-hover/logo:shadow-purple-500/40 transition-all duration-300"
@@ -111,6 +106,7 @@ export default function Header() {
               className="group/nav text-sm font-semibold text-gray-400 hover:text-white transition-all duration-300 px-3 py-1.5 rounded-lg outline-none focus-visible:ring-2 focus-visible:ring-purple-500/50 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-950 hover:bg-white/5 hover:scale-105 active:scale-95 aria-[current=page]:bg-white/10 aria-[current=page]:text-white aria-[current=page]:shadow-sm relative"
               aria-current={pathname === '/#features' ? 'page' : undefined}
               aria-label="View platform features"
+              title="View platform features"
             >
               Features
               <span className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-1.5 h-1.5 bg-gradient-to-t from-purple-500 to-indigo-400 rounded-full opacity-0 group-aria-[current=page]/nav:opacity-100 shadow-[0_0_10px_rgba(168,85,247,0.8)] transition-all duration-500" />
@@ -120,6 +116,7 @@ export default function Header() {
               className="group/nav text-sm font-semibold text-gray-400 hover:text-white transition-all duration-300 px-3 py-1.5 rounded-lg outline-none focus-visible:ring-2 focus-visible:ring-purple-500/50 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-950 hover:bg-white/5 hover:scale-105 active:scale-95 aria-[current=page]:bg-white/10 aria-[current=page]:text-white aria-[current=page]:shadow-sm relative"
               aria-current={pathname === '/#pricing' ? 'page' : undefined}
               aria-label="View subscription pricing"
+              title="View subscription pricing"
             >
               Pricing
               <span className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-1.5 h-1.5 bg-gradient-to-t from-purple-500 to-indigo-400 rounded-full opacity-0 group-aria-[current=page]/nav:opacity-100 shadow-[0_0_10px_rgba(168,85,247,0.8)] transition-all duration-500" />
@@ -129,6 +126,7 @@ export default function Header() {
               className="group/nav text-sm font-semibold text-gray-400 hover:text-white transition-all duration-300 px-3 py-1.5 rounded-xl outline-none focus-visible:ring-2 focus-visible:ring-purple-500/50 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-950 hover:bg-white/5 hover:scale-105 active:scale-95 aria-[current=page]:bg-white/10 aria-[current=page]:text-white aria-[current=page]:shadow-sm relative"
               aria-current={pathname === '/#stats' ? 'page' : undefined}
               aria-label="View live blockchain statistics"
+              title="View live blockchain statistics"
             >
               Live Stats
               <span className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-1.5 h-1.5 bg-gradient-to-t from-purple-500 to-indigo-400 rounded-full opacity-0 group-aria-[current=page]/nav:opacity-100 shadow-[0_0_10px_rgba(168,85,247,0.8)] transition-all duration-500" />
@@ -138,6 +136,7 @@ export default function Header() {
               className="group/nav text-sm font-bold text-purple-400 hover:text-purple-300 transition-all px-3 py-1.5 rounded-xl outline-none focus-visible:ring-2 focus-visible:ring-purple-500/50 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-950 hover:bg-purple-500/5 aria-[current=page]:bg-purple-500/10 aria-[current=page]:text-white aria-[current=page]:shadow-sm relative"
               aria-current={pathname === '/register' ? 'page' : undefined}
               aria-label="Register for whale alerts"
+              title="Register for whale alerts"
             >
               Register
               <span className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-1.5 h-1.5 bg-gradient-to-t from-purple-400 to-indigo-300 rounded-full opacity-0 group-aria-[current=page]/nav:opacity-100 shadow-[0_0_10px_rgba(168,85,247,0.8)] transition-all duration-500" />
@@ -157,7 +156,7 @@ export default function Header() {
 
           <div className="flex items-center gap-3">
             {/* Network Status Indicator */}
-            <div className="hidden lg:flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/5 shadow-inner group/network-status">
+            <div className="hidden lg:flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/5 shadow-inner group/network-status" aria-label="Current network: mainnet" title="Connected to mainnet">
               <div className="relative flex h-1.5 w-1.5">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
                 <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-500"></span>
@@ -171,6 +170,7 @@ export default function Header() {
               aria-expanded={isOpen}
               aria-controls={mobileNavId}
               aria-label={isOpen ? 'Close mobile menu' : 'Open mobile menu'}
+              title={isOpen ? 'Close mobile menu' : 'Open mobile menu'}
               onClick={() => setIsOpen((v) => !v)}
             >
               {isOpen ? <X className="w-5 h-5 transition-transform duration-300 rotate-90" /> : <Menu className="w-5 h-5 transition-transform duration-300 rotate-0" />}
@@ -193,7 +193,7 @@ export default function Header() {
             />
             <div
               ref={mobileNavRef}
-              className="md:hidden fixed top-16 left-0 right-0 z-50 bg-gray-950/90 backdrop-blur-xl border-b border-white/10 shadow-2xl shadow-purple-500/10 animate-slide-down"
+              className="md:hidden fixed top-16 left-0 right-0 z-50 bg-gray-950/90 backdrop-blur-2xl border-b border-white/10 shadow-2xl shadow-purple-500/10 animate-slide-down"
               id={mobileNavId}
               role="dialog"
               aria-modal="true"
@@ -204,6 +204,7 @@ export default function Header() {
                   href="/#features"
                   className="block rounded-2xl px-5 py-3.5 text-base font-bold text-gray-400 hover:bg-white/10 hover:text-white transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-purple-500/50 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-950 active:scale-[0.98] aria-[current=page]:bg-white/10 aria-[current=page]:text-white animate-slide-down animate-stagger-1 fill-mode-backwards"
                   aria-current={pathname === '/#features' ? 'page' : undefined}
+                  title="View platform features"
                   onClick={() => setIsOpen(false)}
                 >
                   Features
@@ -212,6 +213,7 @@ export default function Header() {
                   href="/#pricing"
                   className="block rounded-2xl px-5 py-3.5 text-base font-bold text-gray-400 hover:bg-white/10 hover:text-white transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-purple-500/50 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-950 active:scale-[0.98] aria-[current=page]:bg-white/10 aria-[current=page]:text-white animate-slide-down animate-stagger-2 fill-mode-backwards"
                   aria-current={pathname === '/#pricing' ? 'page' : undefined}
+                  title="View subscription pricing"
                   onClick={() => setIsOpen(false)}
                 >
                   Pricing
@@ -220,6 +222,7 @@ export default function Header() {
                   href="/#stats"
                   className="block rounded-2xl px-5 py-3.5 text-base font-bold text-gray-400 hover:bg-white/10 hover:text-white transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-purple-500/50 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-950 active:scale-[0.98] aria-[current=page]:bg-white/10 aria-[current=page]:text-white animate-slide-down animate-stagger-3 fill-mode-backwards"
                   aria-current={pathname === '/#stats' ? 'page' : undefined}
+                  title="View live blockchain statistics"
                   onClick={() => setIsOpen(false)}
                 >
                   Live Stats
@@ -229,6 +232,7 @@ export default function Header() {
                     href="/register"
                     className="flex items-center justify-center h-14 rounded-2xl bg-gradient-to-r from-purple-600 via-indigo-600 to-indigo-700 text-base font-black text-white transition-all shadow-[0_10px_30px_-5px_rgba(168,85,247,0.4)] hover:shadow-[0_15px_35px_-5px_rgba(168,85,247,0.5)] hover:scale-[1.02] active:scale-95 outline-none focus-visible:ring-2 focus-visible:ring-purple-500/50 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-950 tracking-tight"
                     aria-current={pathname === '/register' ? 'page' : undefined}
+                    title="Register for whale alerts"
                     onClick={() => setIsOpen(false)}
                   >
                     Get Started
@@ -241,6 +245,7 @@ export default function Header() {
                   className="mt-2 flex items-center justify-center h-14 rounded-2xl bg-white/5 border border-white/5 text-base font-bold text-gray-400 hover:bg-white/10 hover:text-white transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-purple-500/50 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-950 active:scale-[0.98] animate-slide-down animate-stagger-5 fill-mode-backwards"
                   onClick={() => setIsOpen(false)}
                   aria-label="Open Chainhook documentation in a new tab"
+                  title="Open Chainhook documentation"
                 >
                   View Documentation
                   <span className="sr-only">(opens in new tab)</span>

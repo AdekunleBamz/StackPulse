@@ -94,36 +94,80 @@ router.get(
     if (cached) {
       return res.json({
         success: true,
-        alerts: cached,
+        data: { alerts: cached },
         fromCache: true,
+        message: 'Alerts retrieved from cache'
       });
     }
 
-    // Extraction and filtering
-    const { address, type, cursor, limit: limitStr } = req.query;
-    const limit = Math.min(parseInt(limitStr as string) || 20, 100);
-    const cursorTime = cursor ? new Date(cursor as string).getTime() : Date.now();
-
-    // Filter and aggregate
-    let filteredAlerts = Array.from(alerts.values())
+    // Filter alerts by user
+    let userAlerts = Array.from(alerts.values())
       .filter(alert => alert.userId === address)
-      .filter(alert => !type || alert.alertType === parseInt(type as string))
-      .filter(alert => alert.createdAt.getTime() < cursorTime)
       .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
 
-    const total = filteredAlerts.length;
-    const paginated = filteredAlerts.slice(0, limit);
-    const nextCursor = paginated.length === limit ? paginated[paginated.length - 1].createdAt.toISOString() : null;
+    // Pagination
+    const page = parseInt(req.query.page as string) || 1;
+    const limit = parseInt(req.query.limit as string) || 10;
+    const sortBy = req.query.sortBy as string || 'createdAt';
+    const sortOrder = req.query.sortOrder as string || 'desc';
+
+    // Apply sorting
+    userAlerts.sort((a, b) => {
+      let aVal: number | string;
+      let bVal: number | string;
+      
+      switch (sortBy) {
+        case 'name':
+          aVal = a.name.toLowerCase();
+          bVal = b.name.toLowerCase();
+          break;
+        case 'alertType':
+          aVal = a.alertType;
+          bVal = b.alertType;
+          break;
+        case 'enabled':
+          aVal = a.enabled ? 1 : 0;
+          bVal = b.enabled ? 1 : 0;
+          break;
+        case 'triggerCount':
+          aVal = a.triggerCount;
+          bVal = b.triggerCount;
+          break;
+        default:
+          aVal = a.createdAt.getTime();
+          bVal = b.createdAt.getTime();
+      }
+      
+      if (sortOrder === 'asc') {
+        return aVal > bVal ? 1 : -1;
+      }
+      return aVal < bVal ? 1 : -1;
+    });
+
+    // Calculate pagination
+    const total = userAlerts.length;
+    const totalPages = Math.ceil(total / limit);
+    const startIndex = (page - 1) * limit;
+    const endIndex = startIndex + limit;
+    const paginatedAlerts = userAlerts.slice(startIndex, endIndex);
+
+    // Cache for 1 minute
+    cache.set(cacheKey, paginatedAlerts, 60000);
 
     res.json({
       success: true,
-      alerts: paginated,
-      pagination: {
-        limit,
-        total,
-        nextCursor,
-        hasMore: !!nextCursor
-      }
+      data: {
+        alerts: paginatedAlerts,
+        pagination: {
+          page,
+          limit,
+          total,
+          totalPages,
+          hasNext: page < totalPages,
+          hasPrev: page > 1
+        }
+      },
+      message: 'Alerts retrieved successfully'
     });
   })
 );
@@ -148,7 +192,8 @@ router.get(
 
     res.json({
       success: true,
-      alert,
+      data: { alert },
+      message: 'Alert retrieved successfully'
     });
   })
 );
@@ -214,7 +259,7 @@ router.post(
 
     res.status(201).json({
       success: true,
-      alert,
+      data: { alert },
       message: `${alertTypeNames[body.alertType]} alert created successfully`,
     });
   })

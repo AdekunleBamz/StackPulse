@@ -141,7 +141,7 @@ function Toast({ id, type, title, message, duration = TOAST_DEFAULT_DURATION_MS,
   return (
     <div
       role={type === 'error' || type === 'warning' ? 'alert' : 'status'}
-      aria-live={type === 'error' || type === 'loading' ? 'assertive' : 'polite'}
+      aria-live={type === 'error' || type === 'warning' || type === 'loading' ? 'assertive' : 'polite'}
       aria-atomic="true"
       className={`relative flex items-start gap-3.5 p-4.5 rounded-2xl border backdrop-blur-xl shadow-[0_20px_40px_rgba(0,0,0,0.4)] transition-all duration-500 overflow-hidden ${
         styles.bg
@@ -169,6 +169,7 @@ function Toast({ id, type, title, message, duration = TOAST_DEFAULT_DURATION_MS,
         onClick={handleClose}
         className="text-white/30 hover:text-white transition-all duration-300 rounded-xl p-2 -mr-1.5 hover:bg-white/10 active:scale-90"
         aria-label="Dismiss notification"
+        title="Dismiss notification"
       >
         <X className="w-4 h-4" />
       </button>
@@ -274,12 +275,12 @@ export function ToastContainer({ position = 'top-right', maxToasts = 5 }: ToastC
   };
 
   const positionClasses = {
-    'top-right': 'top-4 right-4',
-    'top-left': 'top-4 left-4',
-    'bottom-right': 'bottom-4 right-4',
-    'bottom-left': 'bottom-4 left-4',
-    'top-center': 'top-4 left-1/2 -translate-x-1/2',
-    'bottom-center': 'bottom-4 left-1/2 -translate-x-1/2',
+    'top-right': 'top-[calc(1rem+env(safe-area-inset-top,0px))] right-[calc(1rem+env(safe-area-inset-right,0px))]',
+    'top-left': 'top-[calc(1rem+env(safe-area-inset-top,0px))] left-[calc(1rem+env(safe-area-inset-left,0px))]',
+    'bottom-right': 'bottom-[calc(1rem+env(safe-area-inset-bottom,0px))] right-[calc(1rem+env(safe-area-inset-right,0px))]',
+    'bottom-left': 'bottom-[calc(1rem+env(safe-area-inset-bottom,0px))] left-[calc(1rem+env(safe-area-inset-left,0px))]',
+    'top-center': 'top-[calc(1rem+env(safe-area-inset-top,0px))] left-1/2 -translate-x-1/2',
+    'bottom-center': 'bottom-[calc(1rem+env(safe-area-inset-bottom,0px))] left-1/2 -translate-x-1/2',
   };
 
   return (

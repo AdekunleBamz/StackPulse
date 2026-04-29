@@ -6,6 +6,7 @@
 import { Request, Response, NextFunction } from 'express';
 import logger from '../utils/logger';
 import MetricsService from '../services/metrics';
+import { randomUUID } from 'crypto';
 
 export interface RequestLogOptions {
   logBody?: boolean;
@@ -37,8 +38,8 @@ export function requestLogger(options: RequestLogOptions = defaultOptions) {
       return next();
     }
 
-    const startTime = process.hrtime();
-    const requestId = Math.random().toString(36).substring(7);
+    const startTime = process.hrtime.bigint();
+    const requestId = randomUUID();
 
     // Log request
     logger.info('Incoming request', {
@@ -55,13 +56,13 @@ export function requestLogger(options: RequestLogOptions = defaultOptions) {
 
     // Capture response
     const originalSend = res.send;
-    res.send = function (body: any) {
-      const diff = process.hrtime(startTime);
-      const duration = (diff[0] * 1e3 + diff[1] * 1e-6).toFixed(2);
+    res.send = function (body: unknown) {
+      const durationMs = Number(process.hrtime.bigint() - startTime) / 1_000_000;
+      const duration = durationMs.toFixed(2);
       
       const logLevel = getLogLevel(res.statusCode);
       
-      MetricsService.recordMetric('http_request_duration', parseFloat(duration), {
+      MetricsService.recordMetric('http_request_duration', durationMs, {
         method: req.method,
         path: req.baseUrl + req.path,
         status: res.statusCode.toString()

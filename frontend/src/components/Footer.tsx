@@ -38,15 +38,15 @@ const socialLinks = [
 
 export default function Footer() {
   return (
-    <footer className="relative bg-gray-950 border-t border-white/[0.02] pt-24 pb-20 sm:pt-20 sm:pb-10 px-4 sm:px-6 lg:px-8 mt-12 overflow-hidden" aria-labelledby="footer-heading">
+    <footer className="relative bg-gray-950 border-t border-white/[0.02] pt-16 pb-12 sm:pt-20 sm:pb-10 px-4 sm:px-6 lg:px-8 mt-12 overflow-hidden" aria-labelledby="footer-heading">
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-4xl h-px bg-gradient-to-r from-transparent via-purple-500/20 to-transparent" />
       <h2 id="footer-heading" className="sr-only">Footer</h2>
       
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-x-8 gap-y-12 mb-20">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-x-8 gap-y-10 mb-20">
           {/* Brand Column */}
           <div className="sm:col-span-2 lg:col-span-2 sm:pr-8">
-            <Link href="/" className="flex items-center space-x-3.5 mb-10 group/footer-logo">
+            <Link href="/" className="flex items-center space-x-3.5 mb-10 group/footer-logo" title="Go to StackPulse home">
               <div className="w-12 h-12 bg-gradient-to-br from-purple-500 via-indigo-600 to-indigo-800 rounded-2xl flex items-center justify-center shadow-[0_15px_35px_-5px_rgba(168,85,247,0.35)] group-hover/footer-logo:scale-110 group-hover/footer-logo:rotate-6 transition-all duration-500 relative overflow-hidden ring-1 ring-white/10">
                 <div className="absolute inset-0 bg-white/20 opacity-0 group-hover/footer-logo:opacity-100 transition-opacity" />
                 <Zap className="w-6 h-6 text-white relative z-10" fill="white" />
@@ -66,6 +66,7 @@ export default function Footer() {
                   href={social.href}
                   className="w-11 h-11 rounded-2xl bg-white/5 border border-white/5 flex items-center justify-center text-gray-400 hover:text-white hover:border-purple-500/40 hover:bg-white/10 hover:shadow-[0_0_20px_rgba(168,85,247,0.2)] transition-all duration-500 hover:-translate-y-1 active:scale-95 outline-none focus-visible:ring-2 focus-visible:ring-purple-500/50 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-950 touch-manipulation"
                   aria-label={social.label}
+                  title={social.label}
                   target={social.href.startsWith('mailto:') ? undefined : '_blank'}
                   rel={social.href.startsWith('mailto:') ? undefined : 'noopener noreferrer'}
                 >
@@ -84,6 +85,7 @@ export default function Footer() {
                   <Link 
                     href={link.href} 
                     className="text-gray-400 hover:text-white transition-all duration-300 text-[13px] font-semibold hover:translate-x-1 px-2 py-1 rounded-lg outline-none focus-visible:ring-2 focus-visible:ring-purple-500/50 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-950 -ml-2"
+                    title={link.label}
                   >
                     {link.label}
                   </Link>
@@ -100,13 +102,14 @@ export default function Footer() {
                   <a 
                     href={link.href} 
                     className="text-gray-500 hover:text-purple-400 transition-all duration-200 text-sm font-medium hover:translate-x-1 flex items-center gap-1 group/flink rounded-md outline-none focus-visible:ring-2 focus-visible:ring-purple-500/50 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-950"
+                    title={link.label}
                     target={link.href.startsWith('http') ? '_blank' : undefined}
                     rel={link.href.startsWith('http') ? 'noopener noreferrer' : undefined}
                   >
                     {link.label}
                     {link.href.startsWith('http') && (
                       <>
-                        <ExternalLink className="w-3 h-3 opacity-30 group-hover/flink:opacity-100 transition-opacity" aria-hidden="true" />
+                        <ExternalLink className="w-3 h-3 opacity-30 group-hover/flink:opacity-100 group-focus-visible/flink:opacity-100 transition-opacity" aria-hidden="true" />
                         <span className="sr-only">(opens in new tab)</span>
                       </>
                     )}
@@ -121,7 +124,7 @@ export default function Footer() {
             <ul className="space-y-4">
               {footerLinks.legal.map((link) => (
                 <li key={link.label}>
-                  <Link href={link.href} className="text-gray-500 hover:text-purple-400 transition-all duration-200 text-sm font-medium hover:translate-x-1 inline-block rounded-md outline-none focus-visible:ring-2 focus-visible:ring-purple-500/50 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-950">
+                  <Link href={link.href} className="text-gray-500 hover:text-purple-400 transition-all duration-200 text-sm font-medium hover:translate-x-1 inline-block rounded-md outline-none focus-visible:ring-2 focus-visible:ring-purple-500/50 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-950" title={link.label}>
                     {link.label}
                   </Link>
                 </li>
@@ -141,7 +144,7 @@ export default function Footer() {
             </p>
           </div>
           <div className="flex items-center gap-4">
-            <div className="flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-emerald-500/[0.04] border border-emerald-500/10 shadow-inner group/status">
+            <div className="flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-emerald-500/[0.04] border border-emerald-500/10 shadow-inner group/status" aria-label="Stacks mainnet status is live" title="Stacks mainnet is live">
               <div className="relative flex h-2 w-2">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.5)]"></span>

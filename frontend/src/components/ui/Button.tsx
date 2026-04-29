@@ -67,6 +67,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button(
       ref={ref}
       type={type}
       disabled={isDisabled}
+      aria-disabled={isDisabled}
       className={cn(
         'inline-flex items-center justify-center gap-2 font-semibold transition-all duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)] touch-manipulation',
         'focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-purple-500',
@@ -80,7 +81,12 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button(
       aria-label={isLoading ? loadingAriaLabel : baseAriaLabel}
       {...props}
     >
-      {isLoading ? <Spinner /> : leftIcon}
+      {isLoading ? (
+        <span className="inline-flex items-center" role="status" aria-live="polite">
+          <Spinner />
+          <span className="sr-only">Loading</span>
+        </span>
+      ) : leftIcon}
       <span className="min-w-0 truncate">{children}</span>
       {rightIcon}
     </button>

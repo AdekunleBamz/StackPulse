@@ -45,11 +45,15 @@ export default function TextField({ label, hint, error, className, id, required,
         {...props}
       />
       {error ? (
-        <p className="text-xs text-red-500/90 font-medium px-1 leading-tight">{error}</p>
+        <p id={errorId} className="text-xs text-red-500/90 font-medium px-1 leading-tight">{error}</p>
       ) : hint ? (
-        <p className="text-xs text-gray-500 px-1 leading-tight italic">{hint}</p>
+        <p id={hintId} className="text-xs text-gray-500 px-1 leading-tight italic">{hint}</p>
+      ) : null}
+      {showCharCount && typeof maxLength === 'number' ? (
+        <p className="text-[11px] text-gray-500 px-1 leading-tight text-right">
+          {currentLength}/{maxLength}
+        </p>
       ) : null}
     </div>
   );
 }
-

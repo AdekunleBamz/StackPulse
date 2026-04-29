@@ -1,9 +1,30 @@
-/**
- * Validation Middleware
- * Request validation utilities
- */
-
 import { Request, Response, NextFunction } from 'express';
+import logger from '../utils/logger';
+
+type TierRequest = Request & {
+  user?: {
+    tier?: number;
+  };
+};
+
+/**
+ * Validate body payload size based on tier
+ */
+export function validatePayloadSize(req: Request, res: Response, next: NextFunction) {
+  const userTier = (req as TierRequest).user?.tier || 0;
+  const limits = [10240, 102400, 1048576, 10485760]; // 10K, 100K, 1M, 10M
+  const limit = limits[userTier] || 10240;
+  
+  const contentLength = parseInt(req.headers['content-length'] || '0');
+  if (contentLength > limit) {
+    logger.warn('Payload size limit exceeded', { userTier, limit, contentLength });
+    return res.status(413).json({
+      success: false,
+      error: `Payload too large for your tier. Limit: ${limit} bytes.`
+    });
+  }
+  next();
+}
 
 interface ValidationSchema {
   [key: string]: {
@@ -13,6 +34,19 @@ interface ValidationSchema {
     max?: number;
     pattern?: RegExp;
   };
+}
+
+function matchesType(
+  value: unknown,
+  expectedType: ValidationSchema[string]['type']
+): boolean {
+  if (expectedType === 'array') {
+    return Array.isArray(value);
+  }
+  if (expectedType === 'object') {
+    return typeof value === 'object' && value !== null && !Array.isArray(value);
+  }
+  return typeof value === expectedType;
 }
 
 /**
@@ -37,7 +71,7 @@ export function validateBody(schema: ValidationSchema) {
       }
 
       // Check type
-      if (typeof value !== rules.type) {
+      if (!matchesType(value, rules.type)) {
         errors.push(`Field '${field}' must be of type ${rules.type}`);
       }
 
@@ -100,8 +134,27 @@ export function validateQuery(schema: ValidationSchema) {
       }
 
       // Check type
-      const parsedValue = rules.type === 'number' ? parseFloat(value as string) : value;
-      if (typeof parsedValue !== rules.type) {
+      const rawValue = Array.isArray(value) ? value[0] : value;
+      if (typeof rawValue !== 'string') {
+        errors.push(`Query parameter '${field}' must be a string value`);
+        continue;
+      }
+      const normalizedValue = rawValue.trim();
+
+      if (rules.type === 'number') {
+        const parsedValue = Number.parseFloat(normalizedValue);
+        if (!Number.isFinite(parsedValue)) {
+          errors.push(`Query parameter '${field}' must be a valid number`);
+        }
+        continue;
+      }
+
+      if (rules.type === 'boolean' && normalizedValue !== 'true' && normalizedValue !== 'false') {
+        errors.push(`Query parameter '${field}' must be "true" or "false"`);
+        continue;
+      }
+
+      if (rules.type !== 'string' && rules.type !== 'array' && rules.type !== 'object') {
         errors.push(`Query parameter '${field}' must be of type ${rules.type}`);
       }
     }
@@ -134,8 +187,20 @@ export function validateParams(schema: ValidationSchema) {
       }
 
       // Check type
-      if (value && typeof value !== rules.type) {
-        errors.push(`Parameter '${field}' must be of type ${rules.type}`);
+      if (!value) {
+        continue;
+      }
+
+      if (rules.type === 'number') {
+        const parsed = Number.parseFloat(value);
+        if (!Number.isFinite(parsed)) {
+          errors.push(`Parameter '${field}' must be a valid number`);
+        }
+        continue;
+      }
+
+      if (rules.type === 'boolean' && value !== 'true' && value !== 'false') {
+        errors.push(`Parameter '${field}' must be "true" or "false"`);
       }
     }
 
@@ -151,7 +216,7 @@ export function validateParams(schema: ValidationSchema) {
 }
 
 // Predefined validation schemas
-export const schemas = {
+export const schemas: Record<string, ValidationSchema> = {
   createAlert: {
     name: { type: 'string', required: true, min: 1, max: 64 },
     alertType: { type: 'number', required: true, min: 1, max: 6 },
@@ -164,6 +229,13 @@ export const schemas = {
     threshold: { type: 'number', required: false, min: 0 },
     targetAddress: { type: 'string', required: false },
     webhookUrl: { type: 'string', required: false }
+  },
+  stxAddress: {
+    address: { 
+      type: 'string', 
+      required: true, 
+      pattern: /^(S[PM][0-9A-Z]{38,39}|[sp][pm][0-9a-z]{38,39})$/ 
+    }
   }
 };
 

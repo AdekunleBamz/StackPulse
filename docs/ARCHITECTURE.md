@@ -36,3 +36,5 @@ This document describes the high-level architecture of the StackPulse ecosystem,
 6. **Live Update**: WebSocket gateway broadcasts the event to active dashboard users.
 
 7. **Postmortem Loop**: Operations review alert misses and noisy triggers to tune matching rules and provider retry thresholds.
+
+- Architecture note: document ownership for each async processing boundary.

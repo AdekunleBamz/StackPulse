@@ -71,7 +71,8 @@ describe('Webhook Utilities', () => {
         timestamp: Date.now()
       };
       
-      expect(validateWebhookPayload(payload)).toBeNull();
+      const { payload: result } = validateWebhookPayload(payload);
+      expect(result).toBeNull();
     });
 
     it('should reject payload without data', () => {
@@ -80,7 +81,8 @@ describe('Webhook Utilities', () => {
         timestamp: Date.now()
       };
       
-      expect(validateWebhookPayload(payload)).toBeNull();
+      const { payload: result } = validateWebhookPayload(payload);
+      expect(result).toBeNull();
     });
 
     it('should reject payload with old timestamp', () => {
@@ -90,7 +92,8 @@ describe('Webhook Utilities', () => {
         timestamp: Date.now() - 600000 // 10 minutes ago
       };
       
-      expect(validateWebhookPayload(payload)).toBeNull();
+      const { payload: result } = validateWebhookPayload(payload);
+      expect(result).toBeNull();
     });
   });
 
@@ -143,6 +146,25 @@ describe('Webhook Utilities', () => {
       expect(result.valid).toBe(true);
       expect(result.payload?.event).toBe('stx_transfer');
       expect(result.payload?.data.amount).toBeDefined();
+    });
+
+    it('should process a simulated alert trigger payload', () => {
+      const alertPayload = {
+        event: 'alert.triggered',
+        data: {
+          alertId: '42',
+          owner: 'SP789...',
+          type: 'price_threshold',
+          value: '50000'
+        },
+        timestamp: Date.now()
+      };
+
+      const result = processWebhook(alertPayload, undefined, config);
+
+      expect(result.valid).toBe(true);
+      expect(result.payload?.event).toBe('alert.triggered');
+      expect(result.payload?.data.alertId).toBe('42');
     });
   });
 });
