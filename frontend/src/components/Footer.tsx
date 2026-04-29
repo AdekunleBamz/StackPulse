@@ -106,7 +106,7 @@ export default function Footer() {
                     {link.label}
                     {link.href.startsWith('http') && (
                       <>
-                        <ExternalLink className="w-3 h-3 opacity-30 group-hover/flink:opacity-100 transition-opacity" aria-hidden="true" />
+                        <ExternalLink className="w-3 h-3 opacity-30 group-hover/flink:opacity-100 group-focus-visible/flink:opacity-100 transition-opacity" aria-hidden="true" />
                         <span className="sr-only">(opens in new tab)</span>
                       </>
                     )}
