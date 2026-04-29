@@ -84,6 +84,7 @@ export default function Footer() {
                   <Link 
                     href={link.href} 
                     className="text-gray-400 hover:text-white transition-all duration-300 text-[13px] font-semibold hover:translate-x-1 px-2 py-1 rounded-lg outline-none focus-visible:ring-2 focus-visible:ring-purple-500/50 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-950 -ml-2"
+                    title={link.label}
                   >
                     {link.label}
                   </Link>
