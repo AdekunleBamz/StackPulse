@@ -35,3 +35,5 @@ import {
 - Clean up timers, listeners, and socket connections.
 - Return stable, well-typed shapes so components stay simple.
 - When reconnecting sockets, apply jittered delays to avoid synchronized reconnect spikes across many clients.
+
+- Hook reliability tip: include reconnect and teardown behavior in hook tests.
