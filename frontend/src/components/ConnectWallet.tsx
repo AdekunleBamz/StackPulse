@@ -147,6 +147,7 @@ export default function ConnectWallet() {
             }}
             className="w-full flex items-center gap-2 px-4 py-4 text-red-400 hover:bg-red-500/10 hover:text-red-300 transition-all duration-200 rounded-b-2xl font-semibold border-t border-white/5"
             role="menuitem"
+            title="Disconnect wallet"
           >
             <LogOut className="w-4 h-4" />
             Disconnect
