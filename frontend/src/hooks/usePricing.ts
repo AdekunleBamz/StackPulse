@@ -104,7 +104,6 @@ export function usePricing() {
   const handleSubscribe = async (
     tier: number, 
     isRegistered: boolean,
-    currentTier: number,
     username: string,
     onSuccess?: (tier: number) => void
   ) => {
@@ -118,7 +117,7 @@ export function usePricing() {
         toast.warning('Username required', 'Enter a username to register first.');
         return;
       }
-      await handleRegister(username, '', tier, (t, u) => onSuccess?.(t));
+      await handleRegister(username, '', tier, (t) => onSuccess?.(t));
       return;
     }
 

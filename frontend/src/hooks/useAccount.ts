@@ -1,9 +1,15 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useWallet } from '@/context/WalletContext';
 import { toast } from '@/components/Toast';
-import type { UserAccountData } from '@/app/dashboard/page';
 
 const DEPLOYER_ADDRESS = process.env.NEXT_PUBLIC_DEPLOYER_ADDRESS || '';
+
+export interface UserAccountData {
+  username: string;
+  tier: number;
+  alertsEnabled: number;
+  subscriptionEnds: number;
+}
 
 export function useAccount() {
   const { address, isConnected, connect } = useWallet();

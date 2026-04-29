@@ -47,7 +47,6 @@ interface NotificationCenterProps {
 export default function NotificationCenter({ maxNotifications = NOTIFICATION_DEFAULT_MAX, pollInterval = NOTIFICATION_POLL_INTERVAL_MS }: NotificationCenterProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [notifications, setNotifications] = useState<Notification[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
   const safeMaxNotifications = Number.isFinite(maxNotifications)
     ? Math.max(1, Math.floor(maxNotifications))
     : NOTIFICATION_DEFAULT_MAX;
@@ -57,8 +56,7 @@ export default function NotificationCenter({ maxNotifications = NOTIFICATION_DEF
 
   // Fetch notifications from server
   useEffect(() => {
-    const fetchNotifications = async (showLoading = false) => {
-      if (showLoading) setIsLoading(true);
+    const fetchNotifications = async () => {
       try {
         const response = await fetch(apiUrl(`/api/notifications?limit=${safeMaxNotifications}`), {
           headers: { Accept: 'application/json' },
@@ -79,13 +77,11 @@ export default function NotificationCenter({ maxNotifications = NOTIFICATION_DEF
         }
       } catch (error) {
         logger.error('Error fetching notifications:', error);
-      } finally {
-        if (showLoading) setIsLoading(false);
       }
     };
 
-    fetchNotifications(true);
-    const interval = setInterval(() => fetchNotifications(false), safePollInterval);
+    fetchNotifications();
+    const interval = setInterval(fetchNotifications, safePollInterval);
     return () => clearInterval(interval);
   }, [safeMaxNotifications, safePollInterval]);
 

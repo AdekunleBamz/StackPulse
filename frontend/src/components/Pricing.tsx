@@ -1,18 +1,20 @@
 'use client';
 
-import { useWallet } from '@/context/WalletContext';
 import { Check, Wallet, Mail, 
   MessageCircle, 
   Send, 
-  CheckCircle2
+  CheckCircle2,
+  Activity,
+  Zap,
+  X
 } from 'lucide-react';
 import { useEffect, useId, useState, memo } from 'react';
 import { toast } from '@/components/Toast';
 import Button from '@/components/ui/Button';
 import Link from 'next/link';
-import type { NotificationPreference, ChannelAction } from '@/types/settings';
 import { useAccount } from '@/hooks/useAccount';
-import type { UserPreferences, ApiResponse } from '@/types/api';
+import { DEPLOYER_ADDRESS, apiUrl } from '@/lib/env';
+import { logger } from '@/lib/logger';
 
 const tiers = [
   {
@@ -56,7 +58,28 @@ const tiers = [
   },
 ];
 
+const PRICING_USERNAME_MIN_LENGTH = 3;
+const PRICING_USERNAME_MAX_LENGTH = 20;
+const TIER_PRICES_MICRO_STX: Record<number, number> = {
+  0: 0,
+  1: 1_000_000,
+  2: 5_000_000,
+  3: 20_000_000,
+};
+
 type ChannelId = 'email' | 'discord' | 'telegram';
+
+interface UserPreferences {
+  username?: string;
+  email?: string;
+  discord?: string;
+  telegram?: string;
+}
+
+interface ApiResponse<T> {
+  user?: T;
+  data?: T;
+}
 
 export default function Pricing() {
   const { 
@@ -70,16 +93,15 @@ export default function Pricing() {
   } = useAccount();
   
   const [isSaving, setIsSaving] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [subscribingTier, setSubscribingTier] = useState<number | null>(null);
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState<string>('');
   const [discord, setDiscord] = useState<string>('');
   const [telegram, setTelegram] = useState<string>('');
-  const [showEditChannel, setShowEditChannel] = useState(false);
   const [editingChannel, setEditingChannel] = useState<'email' | 'discord' | 'telegram' | null>(null);
   const [tempValue, setTempValue] = useState('');
   const [showPreview, setShowPreview] = useState(false);
-  const [showBulkEdit, setShowBulkEdit] = useState(false);
   const editChannelTitleId = useId();
   const [isDataLoading, setIsDataLoading] = useState(false);
 
@@ -120,9 +142,9 @@ export default function Pricing() {
     fetchPrefs();
   }, [isRegistered, address]);
 
-  const isLoading = isAccountLoading || isDataLoading;
+  const isLoading = isAccountLoading || isDataLoading || isSubmitting;
   const currentTier = userData?.tier || 0;
-  const subscriptionEnds = userData?.subscriptionEnds || 0;
+  const alertsEnabled = userData?.alertsEnabled || 0;
 
   useEffect(() => {
     if (!editingChannel) return;
@@ -167,7 +189,8 @@ export default function Pricing() {
     }
 
     // Calculate price for the tier (in microSTX)
-    const price = TIER_PRICES_MICRO_STX[selectedTier] ?? 0;    setIsLoading(true);
+    const price = TIER_PRICES_MICRO_STX[selectedTier] ?? 0;
+    setIsSubmitting(true);
     setSubscribingTier(selectedTier);
     try {
       setUsername(normalizedUsername);
@@ -233,8 +256,8 @@ export default function Pricing() {
             }));
           }
           
-          setIsRegistered(true);
-          setCurrentTier(selectedTier);
+          setSubscribingTier(null);
+          await refreshAccount();
         },
         onCancel: () => {
           logger.debug('Registration cancelled');
@@ -246,7 +269,7 @@ export default function Pricing() {
       toast.error('Registration failed', 'Please try again.');
       setSubscribingTier(null);
     } finally {
-      setIsLoading(false);
+      setIsSubmitting(false);
     }
   };
 
@@ -273,12 +296,8 @@ export default function Pricing() {
     }
 
     // Calculate price for the tier (in microSTX)
-    const tierPrices: Record<number, number> = {
-      1: 1000000,   // 1 STX for Basic
-      2: 5000000,   // 5 STX for Pro
-      3: 20000000,  // 20 STX for Premium
-    };
-    const price = tierPrices[tier] || 0;    setIsLoading(true);
+    const price = TIER_PRICES_MICRO_STX[tier] || 0;
+    setIsSubmitting(true);
     setSubscribingTier(tier);
     try {
       const { openContractCall } = await import('@stacks/connect');
@@ -302,7 +321,7 @@ export default function Pricing() {
         postConditions,
         onFinish: async (data: { txId: string }) => {
           logger.info('Upgrade submitted:', data.txId);
-          setCurrentTier(tier);
+          await refreshAccount();
           // Update cache
           if (address) {
             const cached = localStorage.getItem(`stackpulse_registered_${address}`);
@@ -328,7 +347,7 @@ export default function Pricing() {
       toast.error('Upgrade failed', 'Please try again.');
       setSubscribingTier(null);
     } finally {
-      setIsLoading(false);
+      setIsSubmitting(false);
     }
   };
 
@@ -567,20 +586,6 @@ export default function Pricing() {
                   ))}
                 </div>
 
-                {/* Bulk Actions */}
-                <div className="mt-4 flex justify-end">
-                  <button
-                    onClick={() => {
-                      setTempValue(email); // Start with email as primary for bulk
-                      setShowBulkEdit(true);
-                    }}
-                    className="text-[10px] font-black uppercase tracking-widest text-purple-400 hover:text-purple-300 transition-colors flex items-center gap-1"
-                  >
-                    <Settings className="w-3 h-3" />
-                    Bulk Configuration
-                  </button>
-                </div>
-
                 {/* Dashboard Shortcut & Preview */}
                 <div className="mt-8 flex flex-col md:flex-row items-center justify-center gap-4">
                   <button
@@ -773,75 +778,16 @@ export default function Pricing() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-y-16 md:gap-8 lg:gap-8 items-stretch">
-            <div
-              key={index}
-              className={`group relative flex flex-col backdrop-blur-xl transition-all duration-500 rounded-[2.5rem] p-8 sm:p-12 hover:-translate-y-4 hover:ring-2 ${
-                tier.popular
-                  ? 'border-2 border-purple-500/50 shadow-[0_20px_50px_-20px_rgba(168,85,247,0.2)] scale-[1.02] hover:scale-[1.06] z-10 bg-gradient-to-br from-gray-900 via-gray-900/40 to-purple-900/20 hover:shadow-[0_40px_80px_-15px_rgba(168,85,247,0.5)] hover:border-purple-400 hover:ring-purple-500/40'
-                  : tier.tier === currentTier && isRegistered
-                    ? 'bg-emerald-500/[0.04] border border-emerald-500/40 shadow-xl shadow-emerald-500/10 hover:scale-[1.04] hover:border-emerald-500/60 hover:shadow-[0_40px_70px_-15px_rgba(16,185,129,0.3)] hover:ring-emerald-500/40'
-                    : 'bg-white/[0.02] border border-white/5 hover:border-white/20 hover:bg-white/[0.06] hover:scale-[1.04] hover:shadow-[0_40px_80px_-20px_rgba(0,0,0,0.8)] hover:ring-white/20'
-              } ${!isRegistered ? 'opacity-70 grayscale-[0.5] blur-[0.4px]' : ''}`}
-            >
-              {/* Animated Light Streak */}
-              <div className="absolute inset-0 overflow-hidden rounded-[2.5rem] pointer-events-none">
-                <div className="absolute -inset-x-full top-0 h-[200%] w-1/2 bg-gradient-to-r from-transparent via-white/[0.03] to-transparent -rotate-45 translate-y-[-50%] group-hover:inset-x-full transition-all duration-1000 ease-in-out" />
-              </div>
-                {/* Popular Badge */}
-                {tier.popular && (
-                  <div className="absolute -top-5 left-1/2 -translate-x-1/2 bg-gradient-to-r from-purple-600 to-indigo-600 text-white text-[10px] font-black uppercase tracking-[0.25em] px-6 py-2.5 rounded-full shadow-[0_10px_20px_-5px_rgba(168,85,247,0.5)] z-20">
-                    Most Popular
-                  </div>
-                )}
-                
-                {/* Current Plan Badge */}
-                {isRegistered && tier.tier === currentTier && (
-                  <div className="absolute -top-5 left-1/2 -translate-x-1/2 bg-emerald-600 text-white text-[10px] font-black uppercase tracking-[0.25em] px-6 py-2.5 rounded-full shadow-[0_10px_20px_-5px_rgba(16,185,129,0.3)] z-20">
-                    ✓ Your Plan
-                  </div>
-                )}
-
-                <div className="mb-12">
-                  <h3 className="text-xl font-black text-white mb-2 tracking-tighter uppercase opacity-50">{tier.name}</h3>
-                  <div className="flex items-baseline gap-1.5">
-                    <span className="text-6xl sm:text-7xl font-black text-white tracking-tighter drop-shadow-2xl">{tier.price}</span>
-                    <div className="flex flex-col mb-1 ml-1">
-                      <span className="text-gray-400 font-black text-xs tracking-[0.2em]">STX</span>
-                      <span className="text-gray-500/40 font-bold text-[10px] uppercase tracking-widest">/ Month</span>
-                    </div>
-                  </div>
-                </div>
-
-                <ul className="space-y-5 mb-14 flex-1">
-                  {tier.features.map((feature, i) => (
-                    <li key={i} className="group/feature flex items-start gap-4 text-gray-400 font-medium text-[13px] leading-relaxed transition-colors hover:text-white">
-                      <div className={`mt-0.5 w-5 h-5 rounded-full flex items-center justify-center shrink-0 transition-all duration-300 group-hover/feature:scale-110 ${
-                        tier.popular 
-                          ? 'bg-purple-500/20 text-purple-400 shadow-[0_0_10px_rgba(168,85,247,0.2)]' 
-                          : 'bg-emerald-500/10 text-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.1)]'
-                      }`}>
-                        <Check className="w-3 h-3" strokeWidth={4} />
-                      </div>
-                      <span className="group-hover/feature:translate-x-0.5 transition-transform duration-300">{feature}</span>
-                    </li>
-                  ))}
-                </ul>
-
-                <Button
-                  onClick={() => handleSubscribe(tier.tier)}
-                  disabled={!isRegistered || (isRegistered && tier.tier === currentTier) || isLoading}
-                  variant={tier.popular ? 'primary' : 'secondary'}
-                  size="lg"
-                  className={`w-full h-13 rounded-2xl font-black transition-all duration-300 transform active:scale-[0.97] ${
-                    tier.popular 
-                      ? 'shadow-xl shadow-purple-600/20 hover:shadow-purple-600/50 hover:scale-[1.02]' 
-                      : 'border border-white/5 hover:border-white/20 hover:bg-white/5'
-                  }`}
-                  isLoading={subscribingTier === tier.tier}
-                >
-                  {isRegistered && tier.tier === currentTier ? 'Active Plan' : tier.price === 0 ? 'Current Tier' : 'Upgrade Plan'}
-                </Button>
-              </div>
+            {tiers.map((tier) => (
+              <PricingCard
+                key={tier.tier}
+                tier={tier}
+                isRegistered={isRegistered}
+                currentTier={currentTier}
+                subscribingTier={subscribingTier}
+                isLoading={isLoading}
+                handleSubscribe={handleSubscribe}
+              />
             ))}
           </div>
 

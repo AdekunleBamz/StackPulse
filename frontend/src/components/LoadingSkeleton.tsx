@@ -99,6 +99,7 @@ export function DashboardSkeleton() {
       {/* Alert List */}
       <div className="space-y-3">
         {Array.from({ length: DASHBOARD_ALERT_SKELETON_COUNT }).map((_, i) => (
+          <AlertCardSkeleton key={i} />
         ))}
       </div>
     </div>

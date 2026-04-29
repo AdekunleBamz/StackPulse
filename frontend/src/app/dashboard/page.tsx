@@ -1,7 +1,6 @@
 'use client';
 
 import { useEffect, useId, useRef, useState } from 'react';
-import { useWallet } from '@/context/WalletContext';
 import { useRouter } from 'next/navigation';
 import { toast } from '@/components/Toast';
 import { useConfirmDialog } from '@/components/ConfirmDialog';
@@ -25,13 +24,14 @@ import {
   Trash2,
   ToggleLeft,
   ToggleRight,
-  Loader2,
   Volume2,
   VolumeX,
   Monitor,
   MonitorOff
 } from 'lucide-react';
 import { Breadcrumbs } from '@/components';
+import { apiUrl } from '@/lib/env';
+import { logger } from '@/lib/logger';
 
 const DEPLOYER_ADDRESS = process.env.NEXT_PUBLIC_DEPLOYER_ADDRESS || '';
 
@@ -66,20 +66,30 @@ export interface AlertHistoryItem {
   data?: any;
 }
 
-interface UserData {
-  username: string;
-  tier: number;
-  alertsEnabled: number;
-  subscriptionEnds: number;
-}
-
 export default function DashboardPage() {
-  const { address, isConnected, connect, isRegistered, userData, isLoading: isAccountLoading } = useAccount();
+  const { address, isConnected, connect, userData, isLoading: isAccountLoading } = useAccount();
+  const router = useRouter();
+  const { confirm, ConfirmDialog } = useConfirmDialog();
   const [alerts, setAlerts] = useState<DashboardAlert[]>([]);
   const [isDataLoading, setIsDataLoading] = useState(true);
-  const [syncingAlertIds, setSyncingAlertIds] = useState<Set<number>>(new Set());
+  const [showCreateAlert, setShowCreateAlert] = useState(false);
+  const [isCreating, setIsCreating] = useState(false);
+  const [newAlertType, setNewAlertType] = useState(1);
+  const [newAlertName, setNewAlertName] = useState('');
+  const [newAlertThreshold, setNewAlertThreshold] = useState('10000');
+  const [history, setHistory] = useState<AlertHistoryItem[]>([]);
+  const [visibleHistoryLimit, setVisibleHistoryLimit] = useState(10);
   const { enabled: soundEnabled, toggle: toggleSound, playSound } = useSound();
   const { permission: notifyPermission, requestPermission, sendNotification } = useNotifications();
+  const createAlertSelectRef = useRef<HTMLSelectElement>(null);
+  const createAlertTitleId = useId();
+  const createAlertDescId = useId();
+  const maxAlerts: Record<number, number> = { 0: 3, 1: 10, 2: 25, 3: 100 };
+  const tierNames = ['Free', 'Basic', 'Pro', 'Premium'];
+
+  const clearHistory = () => {
+    setHistory([]);
+  };
   
   // Load alerts from server when address changes
   useEffect(() => {
@@ -216,7 +226,7 @@ export default function DashboardPage() {
 
     // Update on server
     try {
-      await fetch(apiUrl(`/api/users/${address}/alerts/${alertId}`), {
+      const res = await fetch(apiUrl(`/api/users/${address}/alerts/${alertId}`), {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ enabled: nextEnabled })
@@ -228,7 +238,7 @@ export default function DashboardPage() {
       playSound('notification');
       sendNotification('Status Updated', { body: `${existing?.name || 'Alert'} is now ${nextEnabled ? 'enabled' : 'disabled'}.` });
     } catch (err) {
-      console.error('Error toggling alert:', err);
+      logger.error('Error toggling alert:', err);
       // Revert optimism
       setAlerts((prev) =>
         prev.map((a) => (a.id === alertId ? { ...a, enabled: !nextEnabled } : a))
@@ -236,13 +246,6 @@ export default function DashboardPage() {
       toast.error('Sync Failed', 'Could not update alert status. Please try again.');
     } finally {
       toast.dismiss(toastId);
-    } catch (err) {
-      logger.error('Error toggling alert:', err);
-      toast.dismiss(toastId);
-      setAlerts((prev) =>
-        prev.map((a) => (a.id === alertId ? { ...a, enabled: existing?.enabled ?? a.enabled } : a))
-      );
-      toast.error('Update failed', 'Could not toggle alert. Please try again.');
     }
   };
 
@@ -256,7 +259,7 @@ export default function DashboardPage() {
       variant: 'danger',
       onConfirm: async () => {
         const toastId = toast.loading('Deleting', 'Removing alert from dashboard...');
-        let removedAlert: UserAlert | undefined;
+        let removedAlert: DashboardAlert | undefined;
         setAlerts((prev) => {
           removedAlert = prev.find((a) => a.id === alertId);
           return prev.filter((a) => a.id !== alertId);
@@ -704,5 +707,32 @@ export default function DashboardPage() {
       </div>
       {ConfirmDialog}
     </main>
+  );
+}
+
+function HistorySkeleton() {
+  return (
+    <div className="space-y-4">
+      {Array.from({ length: 3 }).map((_, index) => (
+        <div
+          key={index}
+          className="h-20 rounded-2xl border border-gray-800/50 bg-gray-900/40 animate-pulse"
+        />
+      ))}
+    </div>
+  );
+}
+
+function ActivityItem({ item, index }: { item: AlertHistoryItem; index: number }) {
+  return (
+    <div
+      className="rounded-2xl border border-gray-800/50 bg-gray-900/40 p-4"
+      style={{ animationDelay: `${index * 80}ms` }}
+    >
+      <p className="text-sm text-white">{item.message}</p>
+      <p className="mt-1 text-xs text-gray-500">
+        {new Date(item.timestamp).toLocaleString()}
+      </p>
+    </div>
   );
 }

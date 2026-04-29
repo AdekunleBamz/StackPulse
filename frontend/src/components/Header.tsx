@@ -57,13 +57,6 @@ export default function Header() {
     };
   }, [isOpen]);
 
-  const navLinks = [
-    { href: '/#features', label: 'Features', aria: 'View platform features' },
-    { href: '/#pricing', label: 'Pricing', aria: 'View subscription pricing' },
-    { href: '/#stats', label: 'Live Stats', aria: 'View live blockchain statistics' },
-    { href: '/register', label: 'Register', aria: 'Register for whale alerts', primary: true },
-  ];
-
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-gray-950/80 backdrop-blur-xl border-b border-white/5 shadow-sm shadow-white/[0.02]">
       <a

@@ -4,9 +4,7 @@ import path from "path";
 const nextConfig: NextConfig = {
   /* config options here */
   reactCompiler: true,
-  experimental: {
-    ppr: 'incremental',
-  },
+  cacheComponents: true,
   turbopack: {
     root: path.join(__dirname),
   },

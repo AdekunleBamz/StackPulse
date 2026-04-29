@@ -50,12 +50,12 @@ export default function AlertHistory({ userAddress, initialPage = 1 }: AlertHist
   const [filter, setFilter] = useState<number | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [showFilters, setShowFilters] = useState(false);
-  const debouncedSearchQuery = useDebounce(searchQuery, ALERT_HISTORY_SEARCH_DEBOUNCE_MS);
 
   const ALERT_HISTORY_PAGE_SIZE = 10;
   const ALERT_HISTORY_MOCK_COUNT = 50;
   const ALERT_HISTORY_SEARCH_DEBOUNCE_MS = 300;
   const pageSize = ALERT_HISTORY_PAGE_SIZE;
+  const debouncedSearchQuery = useDebounce(searchQuery, ALERT_HISTORY_SEARCH_DEBOUNCE_MS);
 
   const fetchHistory = useCallback(async () => {
     setLoading(true);

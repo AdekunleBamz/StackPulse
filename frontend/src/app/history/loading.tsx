@@ -13,7 +13,7 @@ export default function HistoryLoading() {
 
         <div className="bg-gray-900 border border-gray-800 rounded-2xl overflow-hidden shadow-xl shadow-black/20">
           <div className="grid grid-cols-4 gap-4 p-4 border-b border-gray-800 bg-gray-950/50">
-            {['Date/Time', 'Alert Name', 'Type', 'Trigger Val'].map((header, i) => (
+            {['Date/Time', 'Alert Name', 'Type', 'Trigger Val'].map((_, i) => (
               <div key={i} className="h-4 w-24 bg-gray-800 rounded animate-pulse" />
             ))}
           </div>
