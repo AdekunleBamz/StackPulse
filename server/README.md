@@ -45,3 +45,5 @@ REDIS_URL=redis://optional
 - `data/`: local persistence artifacts
 - `logs/`: runtime log output when enabled
 - Include a correlation ID in alert dispatch logs to connect inbound chainhook events with downstream notification attempts.
+
+- Backend ops tip: verify health checks after middleware order changes.
