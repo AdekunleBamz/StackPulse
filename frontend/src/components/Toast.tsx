@@ -21,6 +21,8 @@ interface ToastProps {
   onClose: (id: string) => void;
 }
 
+const TOAST_LEAVE_ANIMATION_DURATION_MS = 300;
+
 const toastStyles = {
   success: {
     bg: 'bg-emerald-950/60',
