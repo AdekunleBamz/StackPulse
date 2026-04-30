@@ -51,7 +51,7 @@ export default function ConnectWallet() {
         title="Connect your Stacks wallet"
       >
         Connect Wallet
-      </Button>
+      </button>
     );
   }
 
