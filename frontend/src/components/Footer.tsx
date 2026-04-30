@@ -145,7 +145,7 @@ export default function Footer() {
             <div className="flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-emerald-500/[0.04] border border-emerald-500/10 shadow-inner group/status" aria-label="Stacks mainnet status is live" title="Stacks mainnet is live">
               <div className="relative flex h-2 w-2">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.5)]"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.5)]" aria-hidden="true"></span>
               </div>
               <span className="text-[10px] font-black text-emerald-500 uppercase tracking-[0.25em] group-hover/status:text-emerald-400 transition-colors">
                 Mainnet Live
