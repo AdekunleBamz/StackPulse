@@ -20,7 +20,7 @@ const Footer = dynamic(() => import('@/components/Footer'), {
 });
 
 const Hero = memo(() => (
-  <section className="relative py-40 sm:py-48 px-4 sm:px-6 lg:px-8 overflow-hidden" aria-describedby="hero-subtitle">
+  <section className="relative py-40 sm:py-48 px-4 sm:px-6 lg:px-8 overflow-hidden" aria-describedby="hero-subtitle" title="StackPulse hero overview">
     {/* Background Image with priority loading */}
     <div className="absolute inset-0 z-0">
       <Image
