@@ -123,7 +123,7 @@ export default function Footer() {
             <ul className="space-y-4">
               {footerLinks.legal.map((link) => (
                 <li key={link.label}>
-                  <Link href={link.href} className="text-gray-500 hover:text-purple-400 transition-all duration-200 text-sm font-medium hover:translate-x-1 inline-block rounded-md outline-none focus-visible:ring-2 focus-visible:ring-purple-500/50 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-950">
+                  <Link href={link.href} className="text-gray-500 hover:text-purple-400 transition-all duration-200 text-sm font-medium hover:translate-x-1 inline-block rounded-md outline-none focus-visible:ring-2 focus-visible:ring-purple-500/50 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-950" title={link.label}>
                     {link.label}
                   </Link>
                 </li>
