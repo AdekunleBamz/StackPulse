@@ -1,7 +1,7 @@
 'use client';
 
 import { useWallet } from '@/context/WalletContext';
-import { Wallet, LogOut, ChevronDown } from 'lucide-react';
+import { LogOut, ChevronDown } from 'lucide-react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import Button from '@/components/ui/Button';
 import CopyButton from '@/components/ui/CopyButton';
