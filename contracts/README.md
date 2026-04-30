@@ -34,3 +34,4 @@ Current and historical deployment plans live in `deployments/`, including:
 
 Use the plan that matches the contract version you are deploying and update `docs/DEPLOYMENT.md` when a new plan becomes the default.
 - Re-run representative contract calls in Clarinet console after fee or limit changes to confirm expected runtime costs.
+- Confirm deployment plan metadata (network and deployer principal) matches the target environment before broadcasting mainnet transactions.
