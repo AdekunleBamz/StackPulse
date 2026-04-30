@@ -3,6 +3,7 @@
 import { createContext, useContext, useState, useEffect, ReactNode, useCallback, useMemo } from 'react';
 import { STACKS_MAINNET, STACKS_TESTNET } from '@stacks/network';
 import logger from '@/lib/logger';
+import { truncateAddress } from '@/utils';
 
 // Types for @stacks/connect - we'll dynamically import the actual module
 type UserSession = {
@@ -19,6 +20,12 @@ interface WalletContextType {
   isConnected: boolean;
   /** The current Stacks address of the connected user */
   address: string | null;
+  /** Truncated form of the address for display (e.g. "SP1234...5678"). Null when not connected. */
+  shortAddress: string | null;
+  /** True when the active network is mainnet. */
+  isMainnet: boolean;
+  /** True when the active network is testnet. */
+  isTestnet: boolean;
   /** The active Stacks network (mainnet or testnet) */
   network: 'mainnet' | 'testnet';
   /** The @stacks/connect UserSession instance */
@@ -32,6 +39,10 @@ interface WalletContextType {
 }
 
 const WalletContext = createContext<WalletContextType | null>(null);
+
+const WALLET_APP_NAME = 'StackPulse';
+const WALLET_APP_ICON = '/logo.svg';
+const WALLET_APP_PERMISSIONS = ['store_write', 'publish_data'] as const;
 
 /**
  * Provider component for Stacks wallet state and actions

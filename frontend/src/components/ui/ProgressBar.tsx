@@ -1,7 +1,5 @@
 'use client';
 
-import React from 'react';
-
 interface ProgressBarProps {
   progress: number; // 0 to 100
   size?: 'sm' | 'md' | 'lg';

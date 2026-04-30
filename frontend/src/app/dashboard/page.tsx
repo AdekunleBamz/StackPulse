@@ -1,15 +1,15 @@
 'use client';
 
 import { useEffect, useId, useRef, useState } from 'react';
-import { useWallet } from '@/context/WalletContext';
 import { useRouter } from 'next/navigation';
 import { toast } from '@/components/Toast';
 import { useConfirmDialog } from '@/components/ConfirmDialog';
 import { NoAlertsState } from '@/components/EmptyState';
 import { DashboardSkeleton } from '@/components/LoadingSkeleton';
 import Button from '@/components/ui/Button';
-import { apiUrl, DEPLOYER_ADDRESS } from '@/lib/env';
-import logger from '@/lib/logger';
+import { useAccount } from '@/hooks/useAccount';
+import { useSound } from '@/hooks/useSound';
+import { useNotifications } from '@/hooks/useNotifications';
 import { 
   Bell, 
   Wallet, 
@@ -30,6 +30,10 @@ import {
   MonitorOff
 } from 'lucide-react';
 import { Breadcrumbs } from '@/components';
+import { apiUrl } from '@/lib/env';
+import { logger } from '@/lib/logger';
+
+const DEPLOYER_ADDRESS = process.env.NEXT_PUBLIC_DEPLOYER_ADDRESS || '';
 
 // Alert types matching the contracts and chainhooks
 const alertTypes = [
@@ -66,12 +70,8 @@ export default function DashboardPage() {
   const { address, isConnected, connect, userData, isLoading: isAccountLoading } = useAccount();
   const router = useRouter();
   const { confirm, ConfirmDialog } = useConfirmDialog();
-  const createAlertTitleId = useId();
-  const createAlertDescId = useId();
-  const createAlertSelectRef = useRef<HTMLSelectElement>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [userData, setUserData] = useState<UserData | null>(null);
-  const [alerts, setAlerts] = useState<UserAlert[]>([]);
+  const [alerts, setAlerts] = useState<DashboardAlert[]>([]);
+  const [isDataLoading, setIsDataLoading] = useState(true);
   const [showCreateAlert, setShowCreateAlert] = useState(false);
   const [isCreating, setIsCreating] = useState(false);
   const [newAlertType, setNewAlertType] = useState(1);
@@ -96,55 +96,16 @@ export default function DashboardPage() {
     const loadAlerts = async () => {
       if (!address) return;
       try {
-        const { principalCV, cvToHex, hexToCV, cvToValue } = await import('@stacks/transactions');
-
-        // Check V3 contract for user data
-        const response = await fetch(
-          `https://api.mainnet.hiro.so/v2/contracts/call-read/${DEPLOYER_ADDRESS}/stackpulse-v-j4/get-user`,
-          {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              sender: address,
-              arguments: [cvToHex(principalCV(address))]
-            })
-          }
-        );
-
-        const data = await response.json();
-        
-        if (data.result && data.result !== '0x09') {
-          try {
-            const cv = hexToCV(data.result);
-            const parsed = cvToValue(cv);
-            if (parsed && parsed.value) {
-              setUserData({
-                username: parsed.value.username?.value || '',
-                tier: Number(parsed.value.tier?.value || 0),
-                alertsEnabled: Number(parsed.value['alerts-enabled']?.value || 0),
-                subscriptionEnds: Number(parsed.value['subscription-ends']?.value || 0)
-              });
-            }
-          } catch (parseErr) {
-            logger.error('Error parsing user data:', parseErr);
+        const serverUrl = process.env.NEXT_PUBLIC_SERVER_URL || 'https://stackpulse-b8fw.onrender.com';
+        const alertsResponse = await fetch(`${serverUrl}/api/users/${address}/alerts`);
+        if (alertsResponse.ok) {
+          const alertsData = await alertsResponse.json();
+          if (alertsData.alerts) {
+            setAlerts(alertsData.alerts);
           }
         }
-
-        // Load alerts from server
-        try {
-          const alertsResponse = await fetch(apiUrl(`/api/users/${address}/alerts`));
-          if (alertsResponse.ok) {
-            const alertsData = await alertsResponse.json();
-            if (alertsData.alerts) {
-              setAlerts(alertsData.alerts);
-            }
-          }
-        } catch (err) {
-          logger.error('Error loading alerts:', err);
-        }
-
-      } catch (error) {
-        logger.error('Error loading user data:', error);
+      } catch (err) {
+        console.error('Error loading alerts:', err);
       } finally {
         setIsDataLoading(false);
       }
@@ -152,6 +113,8 @@ export default function DashboardPage() {
 
     loadAlerts();
   }, [address]);
+
+  const isLoading = isAccountLoading || (isConnected && isDataLoading);
 
   useEffect(() => {
     if (!showCreateAlert) return;
@@ -217,6 +180,8 @@ export default function DashboardPage() {
           }
 
           toast.success('Alert created', `TX: ${data.txId}`);
+          playSound('success');
+          sendNotification('Alert Created', { body: `Alert "${newAlertName || alertTypes[newAlertType - 1].name}" is now active.` });
           setShowCreateAlert(false);
           setNewAlertName('');
           setNewAlertThreshold('10000');
@@ -261,19 +226,26 @@ export default function DashboardPage() {
 
     // Update on server
     try {
-      await fetch(apiUrl(`/api/users/${address}/alerts/${alertId}`), {
+      const res = await fetch(apiUrl(`/api/users/${address}/alerts/${alertId}`), {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ enabled: nextEnabled })
       });
-      toast.dismiss(toastId);
+      
+      if (!res.ok) throw new Error('Failed to update status');
+      
+      toast.success('Status Updated', `${existing?.name || 'Alert'} is now ${nextEnabled ? 'enabled' : 'disabled'}.`);
+      playSound('notification');
+      sendNotification('Status Updated', { body: `${existing?.name || 'Alert'} is now ${nextEnabled ? 'enabled' : 'disabled'}.` });
     } catch (err) {
       logger.error('Error toggling alert:', err);
-      toast.dismiss(toastId);
+      // Revert optimism
       setAlerts((prev) =>
-        prev.map((a) => (a.id === alertId ? { ...a, enabled: existing?.enabled ?? a.enabled } : a))
+        prev.map((a) => (a.id === alertId ? { ...a, enabled: !nextEnabled } : a))
       );
-      toast.error('Update failed', 'Could not toggle alert. Please try again.');
+      toast.error('Sync Failed', 'Could not update alert status. Please try again.');
+    } finally {
+      toast.dismiss(toastId);
     }
   };
 
@@ -287,7 +259,7 @@ export default function DashboardPage() {
       variant: 'danger',
       onConfirm: async () => {
         const toastId = toast.loading('Deleting', 'Removing alert from dashboard...');
-        let removedAlert: UserAlert | undefined;
+        let removedAlert: DashboardAlert | undefined;
         setAlerts((prev) => {
           removedAlert = prev.find((a) => a.id === alertId);
           return prev.filter((a) => a.id !== alertId);
@@ -402,6 +374,20 @@ export default function DashboardPage() {
 	            >
 	              {userData.tier === 0 ? 'Upgrade' : 'Manage Plan'}
 	            </Button>
+	            <button
+	              onClick={toggleSound}
+	              className="p-2.5 bg-gray-800 hover:bg-gray-700 rounded-xl border border-gray-700 transition-all text-purple-400"
+	              title={soundEnabled ? 'Mute sounds' : 'Unmute sounds'}
+	            >
+	              {soundEnabled ? <Volume2 className="w-5 h-5" /> : <VolumeX className="w-5 h-5 text-gray-500" />}
+	            </button>
+	            <button
+	              onClick={requestPermission}
+	              className={`p-2.5 bg-gray-800 hover:bg-gray-700 rounded-xl border border-gray-700 transition-all ${notifyPermission === 'granted' ? 'text-blue-400' : 'text-gray-500'}`}
+	              title={notifyPermission === 'granted' ? 'Notifications enabled' : 'Enable desktop notifications'}
+	            >
+	              {notifyPermission === 'granted' ? <Monitor className="w-5 h-5" /> : <MonitorOff className="w-5 h-5" />}
+	            </button>
 	          </div>
 	        </div>
 
