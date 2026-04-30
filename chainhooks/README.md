@@ -34,3 +34,4 @@ node scripts/register-stackpulse-chainhooks-v-j3.ts
 
 Adjust the runtime command to match your local toolchain if you run the TypeScript files directly.
 - Before registration, verify `start_block` values reflect your intended replay window so old events are not silently skipped.
+- Keep manifest UUIDs globally unique across environments to prevent accidental overwrites during bulk registration.
