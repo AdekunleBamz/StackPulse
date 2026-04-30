@@ -52,3 +52,4 @@ This document outlines the standard workflow for contributing to StackPulse.
 - Keep components small and focused.
 
 - Workflow tip: include a short risk summary before merging operational changes.
+- Workflow tip: if a change introduces deferred follow-up work, capture an explicit owner and due date in the PR description.
