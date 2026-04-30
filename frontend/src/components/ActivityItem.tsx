@@ -39,7 +39,7 @@ const ActivityItem = memo(({ item, index }: ActivityItemProps) => {
           onClick={(e) => e.stopPropagation()}
         >
           View Transaction
-          <ExternalLink className="w-3 h-3" />
+          <ExternalLink className="w-3 h-3" aria-hidden="true" />
         </a>
       )}
     </div>
