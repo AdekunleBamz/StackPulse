@@ -37,6 +37,7 @@ const ActivityItem = memo(({ item, index }: ActivityItemProps) => {
           rel="noopener noreferrer"
           className="text-[10px] font-bold text-purple-400 hover:text-purple-300 opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1"
           onClick={(e) => e.stopPropagation()}
+          title="Open transaction in Hiro Explorer"
         >
           View Transaction
           <ExternalLink className="w-3 h-3" />
