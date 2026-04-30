@@ -53,3 +53,4 @@ npm --prefix frontend run build
 - Keep chainhook manifest names aligned with the matching server handlers.
 - If a frontend page depends on shared constants or contract names, update both places in the same change.
 - Keep CI command aliases aligned with this workflow section so local verification matches pipeline behavior.
+- Keep release branches on a clean working tree before final verification runs to avoid carrying unrelated edits into production merges.
