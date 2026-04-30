@@ -43,7 +43,7 @@ const features = [
 
 export default function Features() {
   return (
-    <section className="py-32 px-4 sm:px-6 lg:px-8 relative overflow-hidden bg-gray-950/20">
+    <section className="py-32 px-4 sm:px-6 lg:px-8 relative overflow-hidden bg-gray-950/20" aria-label="Platform monitoring features">
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(99,102,241,0.05),transparent_70%)] pointer-events-none" />
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-24">
