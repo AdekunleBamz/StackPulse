@@ -15,9 +15,8 @@ interface PriceData {
   };
 }
 
-const PRICE_REFRESH_INTERVAL_MS = 60_000;
+const PRICE_REFRESH_INTERVAL_MS = 60000;
 const PRICE_CHANGE_NEUTRAL_THRESHOLD = 0.1;
-const PRICE_FORMAT_LARGE_THRESHOLD = 1000;
 const COINGECKO_SIMPLE_PRICE_URL =
   'https://api.coingecko.com/api/v3/simple/price?ids=blockstack,bitcoin&vs_currencies=usd&include_24hr_change=true';
 
@@ -25,12 +24,7 @@ const toFiniteNumber = (value: unknown): number => {
   return typeof value === 'number' && Number.isFinite(value) ? value : 0;
 };
 
-interface PriceTrackerProps {
-  /** Whether to show the BTC price alongside STX (default: true). */
-  showBTC?: boolean;
-}
-
-export default function PriceTracker({ showBTC = true }: PriceTrackerProps) {
+export default function PriceTracker() {
   const [prices, setPrices] = useState<PriceData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -95,7 +89,7 @@ export default function PriceTracker({ showBTC = true }: PriceTrackerProps) {
   }, [refreshKey]);
 
   const formatPrice = (price: number) => {
-    if (price >= PRICE_FORMAT_LARGE_THRESHOLD) {
+    if (price >= 1000) {
       return `$${price.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
     }
     return `$${price.toFixed(4)}`;
@@ -107,9 +101,9 @@ export default function PriceTracker({ showBTC = true }: PriceTrackerProps) {
   };
 
   const getChangeIcon = (change: number) => {
-    if (change > PRICE_CHANGE_NEUTRAL_THRESHOLD) return <ArrowUp className="w-3 h-3" aria-hidden="true" />;
-    if (change < -PRICE_CHANGE_NEUTRAL_THRESHOLD) return <ArrowDown className="w-3 h-3" aria-hidden="true" />;
-    return <Minus className="w-3 h-3" aria-hidden="true" />;
+    if (change > PRICE_CHANGE_NEUTRAL_THRESHOLD) return <ArrowUp className="w-3 h-3" />;
+    if (change < -PRICE_CHANGE_NEUTRAL_THRESHOLD) return <ArrowDown className="w-3 h-3" />;
+    return <Minus className="w-3 h-3" />;
   };
 
   const getChangeColor = (change: number) => {
@@ -118,13 +112,11 @@ export default function PriceTracker({ showBTC = true }: PriceTrackerProps) {
     return 'text-gray-400';
   };
 
-  if (loading && !prices) {
+  if (loading) {
     return (
-      <div className="flex items-center gap-4 px-4 py-2 bg-gray-900/40 backdrop-blur-md rounded-xl border border-white/5 animate-pulse shadow-sm">
-        <div className="w-4 h-4 bg-gray-800 rounded-md" />
-        <div className="w-24 h-4 bg-gray-800 rounded-md" />
-        <div className="w-px h-4 bg-gray-800" />
-        <div className="w-24 h-4 bg-gray-800 rounded-md" />
+      <div className="flex items-center gap-4 px-4 py-2 bg-gray-800/50 rounded-lg animate-pulse">
+        <div className="w-24 h-4 bg-gray-700 rounded"></div>
+        <div className="w-24 h-4 bg-gray-700 rounded"></div>
       </div>
     );
   }
@@ -148,16 +140,8 @@ export default function PriceTracker({ showBTC = true }: PriceTrackerProps) {
   return (
     <div className="flex items-center gap-6 px-4 py-2 bg-gray-800/50 rounded-lg">
       <div className="flex items-center gap-3">
-        <div className="relative">
-          <TrendingUp className="w-4 h-4 text-purple-400" />
-          {loading && (
-            <span className="absolute -top-1 -right-1 flex h-2 w-2">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-purple-400 opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-purple-500"></span>
-            </span>
-          )}
-        </div>
-        <span className="text-gray-400 text-sm hidden sm:inline">{loading ? 'Refreshing...' : 'Prices:'}</span>
+        <TrendingUp className="w-4 h-4 text-purple-400" />
+        <span className="text-gray-400 text-sm hidden sm:inline">Prices:</span>
       </div>
 
       {/* STX Price */}
@@ -174,10 +158,9 @@ export default function PriceTracker({ showBTC = true }: PriceTrackerProps) {
       </div>
 
       {/* Divider */}
-      {showBTC && <div className="w-px h-4 bg-gray-700" />}
+      <div className="w-px h-4 bg-gray-700" />
 
       {/* BTC Price */}
-      {showBTC && (
       <div className="flex items-center gap-2">
         <span className="font-medium text-white">BTC</span>
         <span className="text-gray-300">{formatPrice(prices.btc.usd)}</span>
@@ -189,11 +172,10 @@ export default function PriceTracker({ showBTC = true }: PriceTrackerProps) {
           {formatChange(prices.btc.change24h)}
         </span>
       </div>
-      )}
 
       {/* Last update tooltip */}
       {lastUpdate && (
-        <div className="hidden lg:block text-xs text-gray-500" title={`Last fetched at ${lastUpdate.toLocaleTimeString()}`}>
+        <div className="hidden lg:block text-xs text-gray-500">
           Updated {lastUpdate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
         </div>
       )}

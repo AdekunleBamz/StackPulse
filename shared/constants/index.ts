@@ -140,7 +140,7 @@ export const TIER_NAMES: Record<number, string> = {
  * Application-wide default values.
  */
 export const DEFAULTS = {
-  PAGE_SIZE: 10,
+  PAGE_SIZE: 20,
   MAX_PAGE_SIZE: 100,
   API_TIMEOUT: 30000,
   WS_RECONNECT_DELAY: 5000,
@@ -218,12 +218,12 @@ export const ERROR_CODES = {
  * Note: Event naming may vary by integration version.
  */
 export const CHAINHOOK_EVENTS = {
-  WHALE_TRANSFER: 'stacks::stx_transfer',
+  WHALE_TRANSFER: 'bitcoin::transfer',
   CONTRACT_DEPLOY: 'stacks::contract_deployment',
   NFT_MINT: 'stacks::nft_mint',
   TOKEN_LAUNCH: 'stacks::token_launch',
   LARGE_SWAP: 'stacks::large_swap',
-  ADDRESS_WATCH: 'stacks::address_activity',
+  ADDRESS_WATCH: 'bitcoin::address_activity',
 } as const;
 
 /**
@@ -236,42 +236,6 @@ export const FEATURE_FLAGS = {
   REAL_TIME_STATS: true,
   PROMETHEUS_METRICS: true,
 } as const;
-
-export const ALERT_LIMITS = {
-  FREE: 3,
-  BASIC: 10,
-  PRO: 50,
-  PREMIUM: 200,
-} as const;
-
-export const SORT_ORDERS = {
-  ASC: 'asc',
-  DESC: 'desc',
-} as const;
-
-export const TRANSACTION_TYPES = {
-  STX_TRANSFER: 'token_transfer',
-  CONTRACT_CALL: 'contract_call',
-  CONTRACT_DEPLOY: 'smart_contract',
-} as const;
-
-export const MAX_ALERT_NAME_LENGTH = 100;
-
-export const UI_CONSTANTS = {
-  DEBOUNCE_MS: 300,
-  MIN_SEARCH_LENGTH: 2,
-  PAGE_SIZE: 20,
-  TOAST_DURATION_MS: 4000,
-} as const;
-
-export const BADGE_TYPES = {
-  EARLY_ADOPTER: 'early_adopter',
-  POWER_USER: 'power_user',
-  WHALE_WATCHER: 'whale_watcher',
-  STREAK_7: 'streak_7',
-} as const;
-
-export const MIN_TX_FEE_USTX = 180;
 
 export default {
   API_URLS,

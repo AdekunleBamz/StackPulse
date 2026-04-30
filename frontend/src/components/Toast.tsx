@@ -3,25 +3,12 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { CheckCircle, AlertCircle, Info, AlertTriangle, X, Loader2 } from 'lucide-react';
 
-const TOAST_DEFAULT_DURATION_MS = 5000;
-const TOAST_LEAVE_ANIMATION_DURATION_MS = 300;
-const TOAST_PROGRESS_INTERVAL_MS = 16;
-
-/**
- * Props for the Toast component.
- */
 interface ToastProps {
-  /** Unique identifier for the toast */
   id: string;
-  /** The type/style of the toast */
   type: 'success' | 'error' | 'warning' | 'info' | 'loading';
-  /** The toast title */
   title: string;
-  /** Optional detailed message */
   message?: string;
-  /** Duration in milliseconds before auto-dismiss (default: 5000) */
   duration?: number;
-  /** Callback to close the toast */
   onClose: (id: string) => void;
 }
 
@@ -63,7 +50,7 @@ const toastStyles = {
   },
 };
 
-function Toast({ id, type, title, message, duration = TOAST_DEFAULT_DURATION_MS, onClose }: ToastProps) {
+function Toast({ id, type, title, message, duration = 5000, onClose }: ToastProps) {
   const [isLeaving, setIsLeaving] = useState(false);
   const [progress, setProgress] = useState(100);
   const styles = toastStyles[type];
@@ -92,7 +79,7 @@ function Toast({ id, type, title, message, duration = TOAST_DEFAULT_DURATION_MS,
     startTimeRef.current = Date.now();
     timerRef.current = window.setTimeout(() => {
       setIsLeaving(true);
-      leavingTimerRef.current = window.setTimeout(() => onClose(id), TOAST_LEAVE_ANIMATION_DURATION_MS);
+      leavingTimerRef.current = window.setTimeout(() => onClose(id), 300);
     }, remainingMsRef.current);
 
     progressIntervalRef.current = window.setInterval(() => {
@@ -101,7 +88,7 @@ function Toast({ id, type, title, message, duration = TOAST_DEFAULT_DURATION_MS,
         const newProgress = Math.max(0, ((remainingMsRef.current - elapsed) / duration) * 100);
         setProgress(newProgress);
       }
-    }, TOAST_PROGRESS_INTERVAL_MS);
+    }, 16);
   }, [clearTimers, duration, id, onClose]);
 
   useEffect(() => {
@@ -113,7 +100,7 @@ function Toast({ id, type, title, message, duration = TOAST_DEFAULT_DURATION_MS,
   const handleClose = () => {
     clearTimers();
     setIsLeaving(true);
-    leavingTimerRef.current = window.setTimeout(() => onClose(id), TOAST_LEAVE_ANIMATION_DURATION_MS);
+    leavingTimerRef.current = window.setTimeout(() => onClose(id), 300);
   };
 
   const pause = () => {
@@ -141,7 +128,7 @@ function Toast({ id, type, title, message, duration = TOAST_DEFAULT_DURATION_MS,
   return (
     <div
       role={type === 'error' || type === 'warning' ? 'alert' : 'status'}
-      aria-live={type === 'error' || type === 'warning' || type === 'loading' ? 'assertive' : 'polite'}
+      aria-live={type === 'error' || type === 'warning' ? 'assertive' : 'polite'}
       aria-atomic="true"
       className={`relative flex items-start gap-3.5 p-4.5 rounded-2xl border backdrop-blur-xl shadow-[0_20px_40px_rgba(0,0,0,0.4)] transition-all duration-500 overflow-hidden ${
         styles.bg
@@ -169,7 +156,6 @@ function Toast({ id, type, title, message, duration = TOAST_DEFAULT_DURATION_MS,
         onClick={handleClose}
         className="text-white/30 hover:text-white transition-all duration-300 rounded-xl p-2 -mr-1.5 hover:bg-white/10 active:scale-90"
         aria-label="Dismiss notification"
-        title="Dismiss notification"
       >
         <X className="w-4 h-4" />
       </button>
@@ -199,10 +185,7 @@ interface ToastData {
 const toastListeners = new Set<(toasts: ToastData[]) => void>();
 let toasts: ToastData[] = [];
 
-const createToastId = () =>
-  typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function'
-    ? crypto.randomUUID()
-    : `toast-${Date.now()}-${Math.random().toString(36).slice(2, 11)}`;
+const createToastId = () => `toast-${Date.now()}-${Math.random().toString(36).slice(2, 11)}`;
 
 const notifyListeners = () => {
   for (const listener of toastListeners) {
@@ -275,12 +258,12 @@ export function ToastContainer({ position = 'top-right', maxToasts = 5 }: ToastC
   };
 
   const positionClasses = {
-    'top-right': 'top-[calc(1rem+env(safe-area-inset-top,0px))] right-[calc(1rem+env(safe-area-inset-right,0px))]',
-    'top-left': 'top-[calc(1rem+env(safe-area-inset-top,0px))] left-[calc(1rem+env(safe-area-inset-left,0px))]',
-    'bottom-right': 'bottom-[calc(1rem+env(safe-area-inset-bottom,0px))] right-[calc(1rem+env(safe-area-inset-right,0px))]',
-    'bottom-left': 'bottom-[calc(1rem+env(safe-area-inset-bottom,0px))] left-[calc(1rem+env(safe-area-inset-left,0px))]',
-    'top-center': 'top-[calc(1rem+env(safe-area-inset-top,0px))] left-1/2 -translate-x-1/2',
-    'bottom-center': 'bottom-[calc(1rem+env(safe-area-inset-bottom,0px))] left-1/2 -translate-x-1/2',
+    'top-right': 'top-4 right-4',
+    'top-left': 'top-4 left-4',
+    'bottom-right': 'bottom-4 right-4',
+    'bottom-left': 'bottom-4 left-4',
+    'top-center': 'top-4 left-1/2 -translate-x-1/2',
+    'bottom-center': 'bottom-4 left-1/2 -translate-x-1/2',
   };
 
   return (

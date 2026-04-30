@@ -72,16 +72,9 @@ export default function Features() {
               <h3 className="text-lg sm:text-xl font-black text-white mb-2 sm:mb-3 group-hover:text-purple-300 transition-colors tracking-tighter">
                 {feature.title}
               </h3>
-              <p className="text-gray-400/90 leading-relaxed font-medium text-sm sm:text-base max-w-[280px] mb-4">
+              <p className="text-gray-400/90 leading-relaxed font-medium text-sm sm:text-base max-w-[280px]">
                 {feature.description}
               </p>
-              
-              <div className="flex items-center gap-2 text-xs font-bold text-gray-500 group-hover:text-purple-400 transition-colors uppercase tracking-widest">
-                Learn more
-                <svg className="w-3 h-3 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M13 7l5 5m0 0l-5 5m5-5H6" />
-                </svg>
-              </div>
               
               {/* Subtle background glows */}
               <div className="absolute -right-10 -bottom-10 w-40 h-40 bg-purple-500/5 rounded-full blur-3xl group-hover:bg-purple-500/10 group-hover:scale-150 transition-all duration-700" />

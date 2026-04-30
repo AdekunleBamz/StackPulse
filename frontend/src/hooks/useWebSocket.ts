@@ -4,14 +4,6 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 import { WS_URL } from '@/lib/env';
 import logger from '@/lib/logger';
 
-/** Default interval in ms between WebSocket reconnect attempts. */
-const WS_DEFAULT_RECONNECT_INTERVAL_MS = 5000;
-/** Default maximum number of reconnect attempts before giving up. */
-const WS_DEFAULT_MAX_RECONNECT_ATTEMPTS = 10;
-
-/**
- * Configuration options for the useWebSocket hook.
- */
 interface UseWebSocketOptions {
   url?: string;
   reconnect?: boolean;
@@ -23,25 +15,14 @@ interface UseWebSocketOptions {
   onMessage?: (data: unknown) => void;
 }
 
-/**
- * Return type for the useWebSocket hook.
- */
 interface UseWebSocketReturn {
   isConnected: boolean;
   isConnecting: boolean;
-  /** True when not connected and not currently trying to connect. */
-  isDisconnected: boolean;
-  /** Number of reconnect attempts made in the current session. */
-  reconnectCount: number;
-  /** True when the last connection attempt ended with an error. */
-  hasError: boolean;
-  /** True when websocket is open and send() can publish immediately. */
-  canSend: boolean;
   lastMessage: unknown;
   subscribe: (channel: string) => void;
   unsubscribe: (channel: string) => void;
   authenticate: (address: string) => void;
-  send: (message: unknown) => boolean;
+  send: (message: unknown) => void;
   reconnect: () => void;
   disconnect: () => void;
 }
@@ -50,8 +31,8 @@ export function useWebSocket(options: UseWebSocketOptions = {}): UseWebSocketRet
   const {
     url = WS_URL,
     reconnect = true,
-    reconnectInterval = WS_DEFAULT_RECONNECT_INTERVAL_MS,
-    maxReconnectAttempts = WS_DEFAULT_MAX_RECONNECT_ATTEMPTS,
+    reconnectInterval = 5000,
+    maxReconnectAttempts = 10,
     onOpen,
     onClose,
     onError,
@@ -61,8 +42,6 @@ export function useWebSocket(options: UseWebSocketOptions = {}): UseWebSocketRet
   const [isConnected, setIsConnected] = useState(false);
   const [isConnecting, setIsConnecting] = useState(false);
   const [lastMessage, setLastMessage] = useState<unknown>(null);
-  const [reconnectCount, setReconnectCount] = useState(0);
-  const [hasError, setHasError] = useState(false);
   
   const wsRef = useRef<WebSocket | null>(null);
   const reconnectAttemptsRef = useRef(0);
@@ -83,9 +62,7 @@ export function useWebSocket(options: UseWebSocketOptions = {}): UseWebSocketRet
       ws.onopen = (event) => {
         setIsConnected(true);
         setIsConnecting(false);
-        setHasError(false);
         reconnectAttemptsRef.current = 0;
-        setReconnectCount(0);
         onOpen?.(event);
       };
 
@@ -98,14 +75,12 @@ export function useWebSocket(options: UseWebSocketOptions = {}): UseWebSocketRet
         if (!manualDisconnectRef.current && reconnect && reconnectAttemptsRef.current < maxReconnectAttempts) {
           reconnectTimeoutRef.current = setTimeout(() => {
             reconnectAttemptsRef.current++;
-            setReconnectCount(reconnectAttemptsRef.current);
             connectSocket();
           }, reconnectInterval);
         }
       };
 
       ws.onerror = (event) => {
-        setHasError(true);
         onError?.(event);
       };
 
@@ -141,9 +116,7 @@ export function useWebSocket(options: UseWebSocketOptions = {}): UseWebSocketRet
   const send = useCallback((message: unknown) => {
     if (wsRef.current?.readyState === WebSocket.OPEN) {
       wsRef.current.send(JSON.stringify(message));
-      return true;
     }
-    return false;
   }, []);
 
   const subscribe = useCallback((channel: string) => {
@@ -184,10 +157,6 @@ export function useWebSocket(options: UseWebSocketOptions = {}): UseWebSocketRet
   return {
     isConnected,
     isConnecting,
-    isDisconnected: !isConnected && !isConnecting,
-    reconnectCount,
-    hasError,
-    canSend: isConnected,
     lastMessage,
     subscribe,
     unsubscribe,

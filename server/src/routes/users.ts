@@ -10,7 +10,6 @@ interface UserRecord {
   tier: UserTier;
   createdAt: number;
   alertCount: number;
-  badgeCount: number;
   username?: string;
   email?: string;
   discord?: string;
@@ -20,12 +19,6 @@ interface UserRecord {
 
 // In-memory user store
 const users = new Map<string, UserRecord>();
-
-const USER_DISPLAY_NAME_MAX_LENGTH = 64;
-const USER_USERNAME_MAX_LENGTH = 32;
-const USER_EMAIL_MAX_LENGTH = 128;
-const USER_SOCIAL_HANDLE_MAX_LENGTH = 64;
-const USER_ADDRESS_FALLBACK_PREFIX_LENGTH = 8;
 
 /**
  * GET /api/users
@@ -69,7 +62,7 @@ router.post('/', (req: Request, res: Response) => {
   const { address, displayName } = req.body;
   const normalizedAddress = typeof address === 'string' ? address.trim() : '';
   const normalizedDisplayName =
-    typeof displayName === 'string' ? displayName.trim().slice(0, USER_DISPLAY_NAME_MAX_LENGTH) : '';
+    typeof displayName === 'string' ? displayName.trim().slice(0, 64) : '';
   
   if (!normalizedAddress) {
     return res.status(400).json({
@@ -87,11 +80,10 @@ router.post('/', (req: Request, res: Response) => {
   
   const user: UserRecord = {
     address: normalizedAddress,
-    displayName: normalizedDisplayName || normalizedAddress.slice(0, USER_ADDRESS_FALLBACK_PREFIX_LENGTH),
+    displayName: normalizedDisplayName || normalizedAddress.slice(0, 8),
     tier: UserTier.FREE,
     createdAt: Date.now(),
-    alertCount: 0,
-    badgeCount: 0,
+    alertCount: 0
   };
   
   users.set(normalizedAddress, user);
@@ -123,15 +115,15 @@ router.patch('/:address', (req: Request, res: Response) => {
     Pick<UserRecord, 'displayName' | 'username' | 'email' | 'discord' | 'telegram' | 'enabledAlerts'>
   >;
   const normalizedDisplayName =
-    typeof updates.displayName === 'string' ? updates.displayName.trim().slice(0, USER_DISPLAY_NAME_MAX_LENGTH) : undefined;
+    typeof updates.displayName === 'string' ? updates.displayName.trim().slice(0, 64) : undefined;
   const normalizedUsername =
-    typeof updates.username === 'string' ? updates.username.trim().slice(0, USER_USERNAME_MAX_LENGTH) : undefined;
+    typeof updates.username === 'string' ? updates.username.trim().slice(0, 32) : undefined;
   const normalizedEmail =
-    typeof updates.email === 'string' ? updates.email.trim().slice(0, USER_EMAIL_MAX_LENGTH) : undefined;
+    typeof updates.email === 'string' ? updates.email.trim().slice(0, 128) : undefined;
   const normalizedDiscord =
-    typeof updates.discord === 'string' ? updates.discord.trim().slice(0, USER_SOCIAL_HANDLE_MAX_LENGTH) : undefined;
+    typeof updates.discord === 'string' ? updates.discord.trim().slice(0, 64) : undefined;
   const normalizedTelegram =
-    typeof updates.telegram === 'string' ? updates.telegram.trim().slice(0, USER_SOCIAL_HANDLE_MAX_LENGTH) : undefined;
+    typeof updates.telegram === 'string' ? updates.telegram.trim().slice(0, 64) : undefined;
   const normalizedEnabledAlerts = Array.isArray(updates.enabledAlerts)
     ? Array.from(
         new Set(

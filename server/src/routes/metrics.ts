@@ -10,21 +10,15 @@ type TierRequest = Request & {
   };
 };
 
-const METRICS_RATE_LIMIT_WINDOW_MS = 60_000;
-const METRICS_DEFAULT_MAX_REQUESTS = 10;
-const METRICS_TIER_REQUEST_LIMITS = [10, 100, 500, 2000];
-const METRICS_HEAP_UNHEALTHY_THRESHOLD_PERCENT = 90;
-const METRICS_SERVICE_UNAVAILABLE_STATUS = 503;
-
 // Tiered rate limiter for metrics ingestion
 const metricsLimiter = rateLimiter({
-  windowMs: METRICS_RATE_LIMIT_WINDOW_MS,
-  maxRequests: METRICS_DEFAULT_MAX_REQUESTS,
+  windowMs: 60000,
+  maxRequests: 10, // Default
   maxRequestsGenerator: (req) => {
     const userTier = (req as TierRequest).user?.tier || 0;
-    const limits = METRICS_TIER_REQUEST_LIMITS;
+    const limits = [10, 100, 500, 2000];
     const safeTier = Number.isInteger(userTier) && userTier >= 0 ? userTier : 0;
-    return limits[Math.min(safeTier, limits.length - 1)];
+    return limits[safeTier] || 10;
   }
 });
 
@@ -179,8 +173,8 @@ router.get('/health', (req: Request, res: Response) => {
   const heapUsedPercent = (memUsage.heapUsed / memUsage.heapTotal) * 100;
   
   // Check if memory usage is too high
-  if (heapUsedPercent > METRICS_HEAP_UNHEALTHY_THRESHOLD_PERCENT) {
-    return res.status(METRICS_SERVICE_UNAVAILABLE_STATUS).json({
+  if (heapUsedPercent > 90) {
+    return res.status(503).json({
       status: 'unhealthy',
       reason: 'high_memory_usage',
       memory: {

@@ -135,12 +135,12 @@ function BadgeCard({ badge, onClick }: BadgeCardProps) {
     <button
       type="button"
       onClick={onClick}
-      className={`relative p-4 rounded-xl border-2 transition-all cursor-pointer hover:scale-105 hover:-translate-y-1.5 text-left w-full focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 focus:ring-offset-gray-900 ${
+      className={`relative p-4 rounded-xl border-2 transition-all cursor-pointer hover:scale-105 text-left w-full focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 focus:ring-offset-gray-900 ${
         badge.earned
-          ? `bg-gradient-to-br ${rarityColors[badge.rarity]} bg-opacity-20 ${rarityBorders[badge.rarity]} hover:shadow-xl hover:shadow-purple-500/20 hover:border-white/20 ${
+          ? `bg-gradient-to-br ${rarityColors[badge.rarity]} bg-opacity-20 ${rarityBorders[badge.rarity]} hover:shadow-lg hover:border-white/20 ${
               badge.rarity === 'legendary' || badge.rarity === 'epic' ? 'shadow-[0_0_20px_rgba(168,85,247,0.2)]' : ''
             }`
-          : 'bg-gray-800/50 border-gray-700 opacity-60 hover:opacity-100 hover:bg-gray-800 hover:shadow-lg'
+          : 'bg-gray-800/50 border-gray-700 opacity-60 hover:opacity-80'
       }`}
       aria-label={`${badge.name} badge, ${badge.rarity} rarity. ${badge.earned ? 'Earned' : 'Locked'}. ${badge.description}`}
     >
@@ -200,11 +200,9 @@ function BadgeCard({ badge, onClick }: BadgeCardProps) {
 
 interface BadgeShowcaseProps {
   userBadges?: number[];
-  /** Optional callback fired when a badge card is selected. */
-  onBadgeSelect?: (badge: Badge) => void;
 }
 
-export default function BadgeShowcase({ userBadges = [], onBadgeSelect }: BadgeShowcaseProps) {
+export default function BadgeShowcase({ userBadges = [] }: BadgeShowcaseProps) {
   const [selectedBadge, setSelectedBadge] = useState<Badge | null>(null);
   const [filter, setFilter] = useState<'all' | 'earned' | 'locked'>('all');
 
@@ -245,7 +243,6 @@ export default function BadgeShowcase({ userBadges = [], onBadgeSelect }: BadgeS
           {(['all', 'earned', 'locked'] as const).map((f) => (
             <button
               key={f}
-              type="button"
               onClick={() => setFilter(f)}
               aria-pressed={filter === f}
               className={`px-3 py-1 rounded-md text-sm capitalize transition-all focus:outline-none focus:ring-2 focus:ring-purple-500/50 ${
@@ -287,23 +284,15 @@ export default function BadgeShowcase({ userBadges = [], onBadgeSelect }: BadgeS
           <BadgeCard
             key={badge.id}
             badge={badge}
-            onClick={() => { setSelectedBadge(badge); onBadgeSelect?.(badge); }}
+            onClick={() => setSelectedBadge(badge)}
           />
         ))}
       </div>
 
       {filteredBadges.length === 0 && (
-        <div className="flex flex-col items-center justify-center py-16 px-4 bg-gray-800/10 border border-dashed border-gray-700/50 rounded-2xl animate-in fade-in zoom-in-95 duration-500">
-          <div className="relative mb-4">
-            <Lock className="w-12 h-12 text-gray-700 opacity-50" />
-            <div className="absolute inset-0 bg-purple-500/5 blur-xl rounded-full" />
-          </div>
-          <h3 className="text-white font-bold text-sm mb-1">No {filter} badges</h3>
-          <p className="text-gray-500 text-xs text-center max-w-[200px] leading-relaxed">
-            {filter === 'earned' 
-              ? "Start participating in the ecosystem to unlock your first badge!" 
-              : "You've earned all available badges in this category. Impressive!"}
-          </p>
+        <div className="text-center py-12 text-gray-500">
+          <Lock className="w-12 h-12 mx-auto mb-2 opacity-50" />
+          <p>No badges in this category yet</p>
         </div>
       )}
 
@@ -361,20 +350,19 @@ export default function BadgeShowcase({ userBadges = [], onBadgeSelect }: BadgeS
 
             {selectedBadge.earned && selectedBadge.tokenId && (
               <a
-                href="https://explorer.hiro.so/address/SP1THTSTZ8RQGD8R3GKPGK3ABQ908BD8X85P3J6X9.reputation-badges-v-j4?chain=mainnet"
+                href={`https://explorer.hiro.so/txid/SP1THTSTZ8RQGD8R3GKPGK3ABQ908BD8X85P3J6X9.reputation-badges-v-j4?chain=mainnet`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-full flex items-center justify-center gap-2 py-3 bg-purple-600 hover:bg-purple-500 rounded-lg text-white font-medium transition-all focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 focus:ring-offset-gray-900"
-                aria-label="View badge contract on Hiro Explorer (opens in new tab)"
+                aria-label="View badge contract on Stacks Explorer (opens in new tab)"
               >
-                View on Hiro Explorer
+                View on Explorer
                 <ExternalLink className="w-4 h-4" aria-hidden="true" />
                 <span className="sr-only">(opens in new tab)</span>
               </a>
             )}
 
             <button
-              type="button"
               onClick={() => setSelectedBadge(null)}
               className="w-full mt-3 py-3 border border-gray-700 rounded-lg text-gray-400 hover:text-white hover:border-gray-600 transition-all focus:outline-none focus:ring-2 focus:ring-gray-600 focus:ring-offset-2 focus:ring-offset-gray-900"
               aria-label="Close badge details"

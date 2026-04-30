@@ -36,6 +36,8 @@ export interface UserPreferences {
 }
 
 const MAX_NOTIFICATIONS_PER_USER = 100;
+const DEFAULT_NOTIFICATION_RETRIES = 3;
+const RETRY_BACKOFF_BASE_MS = 1000;
 const userPreferencesStore: Map<string, UserPreferences> = new Map();
 
 class NotificationsService {
@@ -94,11 +96,11 @@ class NotificationsService {
   /**
    * Get user notifications
    */
-  getNotifications(userAddress: string, limit: number = NOTIFICATIONS_DEFAULT_FETCH_LIMIT): Notification[] {
+  getNotifications(userAddress: string, limit: number = 50): Notification[] {
     const userNotifications = this.getUserNotificationList(userAddress);
     const safeLimit = Number.isFinite(limit)
       ? Math.min(MAX_NOTIFICATIONS_PER_USER, Math.max(1, Math.floor(limit)))
-      : NOTIFICATIONS_DEFAULT_FETCH_LIMIT;
+      : 50;
     return userNotifications.slice(0, safeLimit);
   }
 
@@ -170,8 +172,8 @@ class NotificationsService {
     return this.createNotification(
       userAddress,
       'badge',
-      'New Badge Earned',
-      `You earned the "${badgeName}" badge.`
+      'Badge Earned!',
+      `You earned the "${badgeName}" badge!`
     );
   }
 
@@ -219,41 +221,21 @@ class NotificationsService {
   }
 
   /**
-   * Process a batch of notifications asynchronously
-   * Optimized for high-throughput webhook events
+   * Create notifications in batch
    */
-  async processWebhookBatch(
-    events: Array<{ address: string; payload: any; type: Notification['type'] }>
-  ): Promise<Notification[]> {
-    if (events.length === 0) return [];
-
-    logger.info(`Processing notification batch (${events.length} events)`);
-    
-    // Group by user to optimize storage operations (if we had a DB)
-    const results: Notification[] = [];
-    
-    // Process in parallel with controlled concurrency
-    const promises = events.map(async (event) => {
-      try {
-        const title = event.type === 'alert' ? 'Alert Triggered' : 'System Update';
-        const message = event.payload.message || `An event of type ${event.type} occurred.`;
-        
-        const notification = this.createNotification(
-          event.address,
-          event.type,
-          title,
-          message,
-          event.payload.priority || 'normal'
-        );
-        
-        results.push(notification);
-      } catch (err) {
-        logger.error('Error processing notification in batch', { event, err });
-      }
-    });
-
-    await Promise.all(promises);
-    return results;
+  createNotificationsBatch(
+    batch: Array<{
+      userAddress: string;
+      type: Notification['type'];
+      title: string;
+      message: string;
+      priority?: Notification['priority'];
+    }>
+  ): Notification[] {
+    logger.info('Creating notifications batch', { count: batch.length });
+    return batch.map(item => 
+      this.createNotification(item.userAddress, item.type, item.title, item.message, item.priority)
+    );
   }
 }
 

@@ -94,7 +94,7 @@ const SettingsSection = ({
         <Icon className="w-5 h-5 text-purple-400" />
       </div>
       <div>
-        <h2 className="text-lg font-semibold text-white">{title}</h2>
+        <h3 className="text-lg font-semibold text-white">{title}</h3>
         <p className="text-gray-400 text-sm">{description}</p>
       </div>
     </div>
@@ -328,9 +328,8 @@ export default function SettingsPage() {
               </div>
             </div>
             <div>
-              <label htmlFor="settings-username" className="block text-sm text-gray-400 mb-1">Username</label>
+              <label className="block text-sm text-gray-400 mb-1">Username</label>
               <input
-                id="settings-username"
                 type="text"
                 value={settings.profile.username}
                 onChange={(e) => updateProfile('username', e.target.value)}
@@ -339,9 +338,8 @@ export default function SettingsPage() {
               />
             </div>
             <div>
-              <label htmlFor="settings-email" className="block text-sm text-gray-400 mb-1">Email</label>
+              <label className="block text-sm text-gray-400 mb-1">Email</label>
               <input
-                id="settings-email"
                 type="email"
                 value={settings.profile.email}
                 onChange={(e) => updateProfile('email', e.target.value)}

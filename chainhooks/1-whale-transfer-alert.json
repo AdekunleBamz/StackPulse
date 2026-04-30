@@ -1,8 +1,6 @@
 {
   "name": "whale-transfer-alert",
-  "description": "Monitors large STX transfers on the Stacks blockchain",
   "version": 1,
-  "id": "stackpulse-whale-v1",
   "chain": "stacks",
   "networks": {
     "mainnet": {

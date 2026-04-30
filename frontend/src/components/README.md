@@ -18,6 +18,3 @@ Reusable React components for the StackPulse frontend.
 - Keep props typed and focused.
 - Prefer composition over oversized components.
 - Preserve accessible labels, focus states, and keyboard behavior when editing interactive UI.
-- Keep animation timing consistent across notification and loading components to avoid jarring UX during high event volume.
-
-- Component maintenance tip: prefer descriptive aria labels for all icon-only actions.

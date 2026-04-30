@@ -7,13 +7,9 @@ import { cn } from '@/lib/cn';
 
 interface BreadcrumbsProps {
   className?: string;
-  /** Override the home label (default: visually hidden "Home") */
-  homeLabel?: string;
-  /** When true, hides the home icon/link as the first breadcrumb. */
-  hideHome?: boolean;
 }
 
-export default function Breadcrumbs({ className, homeLabel = 'Home', hideHome = false }: BreadcrumbsProps) {
+export default function Breadcrumbs({ className }: BreadcrumbsProps) {
   const pathname = usePathname();
   
   // Don't show breadcrumbs on the home page
@@ -27,17 +23,15 @@ export default function Breadcrumbs({ className, homeLabel = 'Home', hideHome = 
       className={cn("flex items-center px-4 py-2.5 mb-6 bg-gray-900/40 border border-white/5 rounded-2xl backdrop-blur-md w-fit shadow-xl shadow-black/20 animate-fade-in duration-500 hover:shadow-purple-500/10 transition-shadow", className)}
     >
       <ol className="flex items-center space-x-2">
-        {!hideHome && (
         <li>
             <Link
               href="/"
               className="flex items-center text-gray-400 hover:text-white transition-all duration-300 hover:scale-110 active:scale-90"
             >
               <Home className="w-3.5 h-3.5 stroke-[2.5]" />
-              <span className="sr-only">{homeLabel}</span>
+              <span className="sr-only">Home</span>
             </Link>
           </li>
-        )}
           
           {paths.map((path, index) => {
             const href = `/${paths.slice(0, index + 1).join('/')}`;
@@ -47,7 +41,7 @@ export default function Breadcrumbs({ className, homeLabel = 'Home', hideHome = 
               .replace(/^\w/, (c) => c.toUpperCase());
   
             return (
-              <li key={href} className="flex items-center">
+              <li key={path} className="flex items-center">
                 <ChevronRight className="w-3.5 h-3.5 text-gray-700 mx-1.5 shrink-0" />
                 {isLast ? (
                   <span className="text-purple-400 font-bold text-xs tracking-wider uppercase" aria-current="page">

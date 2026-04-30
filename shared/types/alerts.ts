@@ -16,9 +16,6 @@ export enum AlertType {
   AddressWatch = 6,
 }
 
-/** Max numeric value of AlertType enum for range validation */
-export const MAX_ALERT_TYPE = AlertType.AddressWatch;
-
 export const AlertTypeNames: Record<AlertType, string> = {
   [AlertType.WhaleTransfer]: 'Whale Transfer',
   [AlertType.ContractDeploy]: 'Contract Deploy',
@@ -83,7 +80,6 @@ export interface CreateAlertRequest {
 
 /**
  * Request payload for updating an existing alert.
- * All fields are optional; only provided fields will be updated.
  */
 export interface UpdateAlertRequest {
   /** Updated name for the alert */

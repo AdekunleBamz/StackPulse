@@ -20,14 +20,14 @@ StackPulse is organized as a small monorepo. Each top-level package owns a diffe
 
 ```bash
 # Install each package used in day-to-day development
-npm ci
+npm install
 npm --prefix server install
-npm --prefix frontend ci
+npm --prefix frontend install
 npm --prefix shared install
 
 # Contract checks
 npm run clarinet:check
-npm run clarinet:test
+npm test
 
 # App surfaces
 npm --prefix server run dev
@@ -46,11 +46,8 @@ npm --prefix frontend run build
 - Shared exports: `shared/constants/index.ts`, `shared/types/index.ts`, `shared/utils/index.ts`
 - Contract deployment plans: `deployments/`
 
-## Dependency Management
+## When changing one package
 
 - Update nearby README files when behavior, commands, or file layout changes.
 - Keep chainhook manifest names aligned with the matching server handlers.
 - If a frontend page depends on shared constants or contract names, update both places in the same change.
-- Keep CI command aliases aligned with this workflow section so local verification matches pipeline behavior.
-
-- Workspace tip: keep command parity across packages to simplify incident triage.

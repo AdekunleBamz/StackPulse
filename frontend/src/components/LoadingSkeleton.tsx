@@ -9,8 +9,6 @@ interface SkeletonProps {
   width?: string | number;
   height?: string | number;
   animation?: 'pulse' | 'wave' | 'none';
-  /** Accessible label for the loading placeholder. Defaults to "Loading...". */
-  label?: string;
 }
 
 export default function LoadingSkeleton({
@@ -18,10 +16,9 @@ export default function LoadingSkeleton({
   variant = 'rectangular',
   width,
   height,
-  animation = 'wave',
-  label = 'Loading...',
+  animation = 'wave'
 }: SkeletonProps) {
-  const baseClasses = 'bg-gray-800/40 backdrop-blur-md shadow-inner border border-white/5 opacity-50';
+  const baseClasses = 'bg-gray-800/40 backdrop-blur-md shadow-inner border border-white/5';
   
   const variantClasses = {
     text: 'rounded-md',
@@ -37,13 +34,11 @@ export default function LoadingSkeleton({
   
   const style: React.CSSProperties = {
     width: width || '100%',
-    height: height || '1.25rem'
+    height: height || '1rem'
   };
   
   return (
     <div
-      role="status"
-      aria-label={label}
       className={`${baseClasses} ${variantClasses[variant]} ${animationClasses[animation]} ${className}`}
       style={style}
     />
@@ -51,9 +46,6 @@ export default function LoadingSkeleton({
 }
 
 // Predefined skeleton layouts for common use cases
-const DASHBOARD_STATS_COUNT = 4;
-const DASHBOARD_ALERT_SKELETON_COUNT = 5;
-const PRICING_FEATURE_SKELETON_COUNT = 5;
 export function AlertCardSkeleton() {
   return (
     <div className="bg-gray-950/40 backdrop-blur-md rounded-2xl p-5 border border-white/5 shadow-xl shadow-black/20">
@@ -91,14 +83,14 @@ export function DashboardSkeleton() {
     <div className="space-y-6">
       {/* Stats Row */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        {Array.from({ length: DASHBOARD_STATS_COUNT }).map((_, i) => (
+        {Array.from({ length: 4 }).map((_, i) => (
           <StatsCardSkeleton key={i} />
         ))}
       </div>
       
       {/* Alert List */}
       <div className="space-y-3">
-        {Array.from({ length: DASHBOARD_ALERT_SKELETON_COUNT }).map((_, i) => (
+        {Array.from({ length: 5 }).map((_, i) => (
           <AlertCardSkeleton key={i} />
         ))}
       </div>
@@ -111,9 +103,9 @@ export function UserProfileSkeleton() {
     <div className="flex items-center gap-6">
       <LoadingSkeleton variant="circular" width={80} height={80} />
       <div className="flex-1 space-y-2">
-        <LoadingSkeleton width={150} height={28} />
-        <LoadingSkeleton width={200} height={20} />
-        <LoadingSkeleton width={100} height={16} />
+        <LoadingSkeleton width={150} height={24} />
+        <LoadingSkeleton width={200} height={16} />
+        <LoadingSkeleton width={100} height={14} />
       </div>
     </div>
   );
@@ -130,7 +122,7 @@ export function PricingCardSkeleton({ popular = false }: { popular?: boolean }) 
       <LoadingSkeleton width={100} height={32} className="mb-4" />
       <LoadingSkeleton width={80} height={48} className="mb-6" />
       <div className="space-y-3 mb-8">
-        {Array.from({ length: PRICING_FEATURE_SKELETON_COUNT }).map((_, i) => (
+        {Array.from({ length: 5 }).map((_, i) => (
           <LoadingSkeleton key={i} width="80%" height={16} />
         ))}
       </div>

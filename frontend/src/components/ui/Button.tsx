@@ -3,7 +3,7 @@
 import { cn } from '@/lib/cn';
 import { forwardRef } from 'react';
 
-export type ButtonVariant = 'primary' | 'secondary' | 'ghost' | 'danger' | 'outline';
+export type ButtonVariant = 'primary' | 'secondary' | 'ghost' | 'danger';
 export type ButtonSize = 'sm' | 'md' | 'lg';
 
 export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
@@ -23,8 +23,6 @@ const variantClasses: Record<ButtonVariant, string> = {
     'bg-transparent text-gray-400 hover:bg-white/5 hover:text-white active:bg-white/10 transition-colors duration-200',
   danger:
     'bg-rose-600 text-white hover:bg-rose-500 shadow-lg shadow-rose-500/20 hover:shadow-rose-500/40 active:bg-rose-700 transition-all duration-200',
-  outline:
-    'bg-transparent text-purple-400 border border-purple-500/50 hover:bg-purple-500/10 hover:border-purple-400 hover:text-purple-300 active:bg-purple-500/20 transition-all duration-200',
 };
 
 const sizeClasses: Record<ButtonSize, string> = {
@@ -59,17 +57,14 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button(
   ref
 ) {
   const isDisabled = disabled || isLoading;
-  const baseAriaLabel = props['aria-label'];
-  const loadingAriaLabel = baseAriaLabel ? `Loading ${baseAriaLabel}` : 'Loading';
 
   return (
     <button
       ref={ref}
       type={type}
       disabled={isDisabled}
-      aria-disabled={isDisabled}
       className={cn(
-        'inline-flex items-center justify-center gap-2 font-semibold transition-all duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)] touch-manipulation',
+        'inline-flex items-center justify-center gap-2 font-semibold transition-all duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)]',
         'focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-purple-500',
         'disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:translate-y-0 disabled:active:scale-100',
         'hover:-translate-y-1 hover:shadow-lg active:scale-95 active:translate-y-0',
@@ -78,15 +73,10 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button(
         className
       )}
       aria-busy={isLoading}
-      aria-label={isLoading ? loadingAriaLabel : baseAriaLabel}
+      aria-label={isLoading ? `Loading ${props['aria-label'] || ''}` : props['aria-label']}
       {...props}
     >
-      {isLoading ? (
-        <span className="inline-flex items-center" role="status" aria-live="polite">
-          <Spinner />
-          <span className="sr-only">Loading</span>
-        </span>
-      ) : leftIcon}
+      {isLoading ? <Spinner /> : leftIcon}
       <span className="min-w-0 truncate">{children}</span>
       {rightIcon}
     </button>
@@ -94,3 +84,4 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button(
 });
 
 export default Button;
+

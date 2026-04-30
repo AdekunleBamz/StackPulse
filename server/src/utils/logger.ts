@@ -7,10 +7,8 @@ import { createLogger, format, transports } from 'winston';
 import path from 'path';
 import fs from 'fs';
 
-export const logDir = process.env.LOG_DIR || path.join(process.cwd(), 'logs');
+const logDir = process.env.LOG_DIR || path.join(process.cwd(), 'logs');
 fs.mkdirSync(logDir, { recursive: true });
-console.log(`Logger initialized. Logs directory: ${logDir}`);
-
 const LOG_FILE_MAX_SIZE_BYTES = 5 * 1024 * 1024;
 
 /**

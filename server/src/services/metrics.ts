@@ -11,7 +11,7 @@ interface MetricValue {
   labels?: Record<string, string>;
 }
 
-const MAX_METRIC_ENTRIES = 1_000;
+const MAX_METRIC_ENTRIES = 1000;
 const PERFORMANCE_WARN_THRESHOLD_MS = 500;
 
 class MetricsService {
@@ -21,12 +21,17 @@ class MetricsService {
   /**
    * Record an error metric
    */
-  recordError(type: string) {
-    const current = this.errorCounts.get(type) || 0;
+  recordError(type: string): void {
+    const current = this.errorCounts.get(type) ?? 0;
     this.errorCounts.set(type, current + 1);
     logger.error(`Error recorded: ${type}`, { count: current + 1 });
   }
-  recordMetric(name: string, value: number, labels?: Record<string, string>) {
+  recordMetric(name: string, value: number, labels?: Record<string, string>): void {
+    if (!Number.isFinite(value)) {
+      logger.warn(`Skipping non-finite metric: ${name}`, { value, labels });
+      return;
+    }
+
     const entry: MetricValue = {
       value,
       timestamp: Date.now(),
@@ -72,37 +77,6 @@ class MetricsService {
     if (avgDuration > PERFORMANCE_WARN_THRESHOLD_MS) {
       logger.warn('Performance degraded: high average request duration', { avgDuration: `${avgDuration.toFixed(2)}ms` });
     }
-  }
-
-  /**
-   * Returns the total number of data points recorded for a metric.
-   */
-  getMetricCount(name: string): number {
-    return this.metrics.get(name)?.length ?? 0;
-  }
-
-  /**
-   * Returns the running error count for a given error type, or 0 if not recorded.
-   */
-  getErrorCount(type: string): number {
-    return this.errorCounts.get(type) ?? 0;
-  }
-
-  /**
-   * Removes all stored data points for the named metric, resetting it to zero.
-   */
-  resetMetric(name: string): void {
-    this.metrics.delete(name);
-    logger.debug(`Metric reset: ${name}`);
-  }
-
-  /**
-   * Returns the most recently recorded value for a metric, or null if none exists.
-   */
-  getLatest(name: string): number | null {
-    const values = this.metrics.get(name);
-    if (!values || values.length === 0) return null;
-    return values[values.length - 1].value;
   }
 }
 

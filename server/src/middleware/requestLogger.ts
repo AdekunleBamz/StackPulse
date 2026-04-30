@@ -17,7 +17,7 @@ export interface RequestLogOptions {
 const defaultOptions: RequestLogOptions = {
   logBody: false,
   logHeaders: false,
-  excludePaths: ['/health', '/health/ready', '/health/live', '/health/full']
+  excludePaths: ['/health', '/health/ready', '/health/live']
 };
 
 function getLogLevel(statusCode: number): 'error' | 'warn' | 'info' {
@@ -40,6 +40,7 @@ export function requestLogger(options: RequestLogOptions = defaultOptions) {
 
     const startTime = process.hrtime.bigint();
     const requestId = randomUUID();
+    const queryData = Object.keys(req.query).length > 0 ? req.query : undefined;
 
     // Log request
     logger.info('Incoming request', {
@@ -49,7 +50,6 @@ export function requestLogger(options: RequestLogOptions = defaultOptions) {
       ...(queryData ? { query: queryData } : {}),
       ip: req.ip,
       userAgent: req.get('user-agent'),
-      referer: req.get('referer'),
       ...(logHeaders ? { headers: req.headers } : {}),
       ...(logBody ? { body: req.body } : {}),
     });

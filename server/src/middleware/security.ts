@@ -7,15 +7,11 @@ import { Request, Response, NextFunction } from 'express';
 
 const DEFAULT_ALLOWED_ORIGINS = ['http://localhost:3000', 'http://localhost:3001'] as const;
 const PREFLIGHT_SUCCESS_STATUS = 200;
-/** HSTS max-age in seconds (1 year). */
-const HSTS_MAX_AGE_SECONDS = 31_536_000;
-/** CORS preflight cache duration in seconds (24 hours). */
-const CORS_MAX_AGE_SECONDS = 86_400;
 
 /**
  * Security headers middleware
  */
-export function securityHeaders(req: Request, res: Response, next: NextFunction) {
+export function securityHeaders(req: Request, res: Response, next: NextFunction): void {
   // HSTS
   res.setHeader('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
   
@@ -37,16 +33,11 @@ export function securityHeaders(req: Request, res: Response, next: NextFunction)
     "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'"
   );
   
-  // Permissions-Policy
-  res.setHeader(
   // COOP
   res.setHeader('Cross-Origin-Opener-Policy', 'same-origin');
   
   // CORP
   res.setHeader('Cross-Origin-Resource-Policy', 'same-origin');
-
-  // Content Security Policy
-  res.setHeader('Content-Security-Policy', "default-src 'self'; script-src 'self'; object-src 'none';");
 
   // Permissions Policy
   res.setHeader('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');
@@ -57,10 +48,10 @@ export function securityHeaders(req: Request, res: Response, next: NextFunction)
 /**
  * CORS middleware
  */
-export function corsMiddleware(req: Request, res: Response, next: NextFunction) {
+export function corsMiddleware(req: Request, res: Response, next: NextFunction): Response | void {
   const allowedOrigins = process.env.ALLOWED_ORIGINS 
     ? process.env.ALLOWED_ORIGINS.split(',').map((origin) => origin.trim()).filter(Boolean)
-    : ['http://localhost:3000', 'http://localhost:3001'];
+    : [...DEFAULT_ALLOWED_ORIGINS];
   
   const origin = req.headers.origin;
   
@@ -75,7 +66,7 @@ export function corsMiddleware(req: Request, res: Response, next: NextFunction) 
   
   // Handle preflight
   if (req.method === 'OPTIONS') {
-    return res.sendStatus(200);
+    return res.sendStatus(PREFLIGHT_SUCCESS_STATUS);
   }
   
   next();
@@ -84,7 +75,7 @@ export function corsMiddleware(req: Request, res: Response, next: NextFunction) 
 /**
  * Prevent clickjacking
  */
-export function preventClickjacking(req: Request, res: Response, next: NextFunction) {
+export function preventClickjacking(req: Request, res: Response, next: NextFunction): void {
   res.setHeader('X-Frame-Options', 'DENY');
   next();
 }
@@ -92,7 +83,7 @@ export function preventClickjacking(req: Request, res: Response, next: NextFunct
 /**
  * Remove powered by header
  */
-export function removePoweredBy(req: Request, res: Response, next: NextFunction) {
+export function removePoweredBy(req: Request, res: Response, next: NextFunction): void {
   res.removeHeader('X-Powered-By');
   res.removeHeader('Server');
   next();

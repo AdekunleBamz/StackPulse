@@ -31,7 +31,7 @@ class CacheService {
   /**
    * Set a value in cache
    */
-  set<T>(key: string, value: T, ttlMs: number = CACHE_DEFAULT_TTL_MS): void {
+  set<T>(key: string, value: T, ttlMs: number = 3600000): void {
     if (this.cache.size >= MAX_CACHE_SIZE && !this.cache.has(key)) {
       logger.warn('Maximum cache size reached, dropping new entry', { key });
       return;
@@ -91,47 +91,6 @@ class CacheService {
   }
 
   /**
-   * Returns the cached value for key if it exists and has not expired.
-   * Otherwise calls factory(), stores the result, and returns it.
-   */
-  async getOrSet<T>(key: string, factory: () => T | Promise<T>, ttlMs: number = CACHE_DEFAULT_TTL_MS): Promise<T> {
-    const cached = this.get<T>(key);
-    if (cached !== null) return cached;
-    const value = await factory();
-    this.set(key, value, ttlMs);
-    return value;
-  }
-
-  /**
-   * Refreshes the TTL of an existing cache entry without changing its value.
-   * Returns true if the key was found and extended, false if it was missing or expired.
-   */
-  bump(key: string, ttlMs: number = CACHE_DEFAULT_TTL_MS): boolean {
-    const entry = this.cache.get(key);
-    if (!entry || this.isExpired(entry)) {
-      this.cache.delete(key);
-      return false;
-    }
-    const safeTtlMs = Number.isFinite(ttlMs) ? Math.max(0, Math.floor(ttlMs)) : 0;
-    this.cache.set(key, { ...entry, expiresAt: Date.now() + safeTtlMs });
-    return true;
-  }
-
-  /**
-   * Fetches multiple keys at once. Returns a Map of key → value for
-   * keys that exist and have not expired. Missing or expired keys are
-   * omitted from the result.
-   */
-  mget<T>(keys: string[]): Map<string, T> {
-    const result = new Map<string, T>();
-    for (const key of keys) {
-      const value = this.get<T>(key);
-      if (value !== null) result.set(key, value);
-    }
-    return result;
-  }
-
-  /**
    * Clear all cache
    */
   clear(): void {
@@ -146,41 +105,12 @@ class CacheService {
   }
 
   /**
-   * Returns remaining TTL in milliseconds for a cached key.
-   * Returns -1 if the key does not exist or has expired.
-   */
-  ttl(key: string): number {
-    const entry = this.cache.get(key);
-    if (!entry) return -1;
-    const remaining = entry.expiresAt - Date.now();
-    if (remaining <= 0) {
-      this.cache.delete(key);
-      return -1;
-    }
-    return remaining;
-  }
-
-  /**
-   * Returns an array of all non-expired keys currently held in the cache.
-   */
-  keys(): string[] {
-    const now = Date.now();
-    const result: string[] = [];
-    for (const [key, entry] of this.cache.entries()) {
-      if (!this.isExpired(entry, now)) {
-        result.push(key);
-      }
-    }
-    return result;
-  }
-
-  /**
    * Destroy cache service
    */
   destroy(): void {
     clearInterval(this.cleanupInterval);
     this.clear();
-    logger.info('Cache service destroyed');
+    logger.info('Cache cleared');
   }
 
   /**

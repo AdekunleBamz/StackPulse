@@ -1,11 +1,10 @@
-# ============================================================================
-# Global Owners
-# ============================================================================
+# Code Owners
+
+# Global owners
 *       @AdekunleBamz
 
-# ============================================================================
-# Component Owners
-# ============================================================================
-/contracts/     @AdekunleBamz
-/frontend/      @AdekunleBamz
-/server/        @AdekunleBamz
+# Components
+/contracts/    @AdekunleBamz
+/server/       @AdekunleBamz
+/frontend/     @AdekunleBamz
+/shared/       @AdekunleBamz

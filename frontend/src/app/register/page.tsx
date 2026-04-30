@@ -94,10 +94,9 @@ export default function RegisterPage() {
         {/* Back button */}
         <button
           onClick={() => router.push('/')}
-          className="group mb-10 text-gray-500 hover:text-white transition-all flex items-center gap-2.5 font-bold text-sm uppercase tracking-widest outline-none focus-visible:ring-2 focus-visible:ring-purple-500/50 focus-visible:ring-offset-8 focus-visible:ring-offset-gray-950 rounded-lg"
-          aria-label="Go back to home page"
+          className="group mb-10 text-gray-500 hover:text-white transition-all flex items-center gap-2.5 font-bold text-sm uppercase tracking-widest"
         >
-          <div className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center group-hover:bg-white/10 transition-colors" aria-hidden="true">
+          <div className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center group-hover:bg-white/10 transition-colors">
             <svg className="w-4 h-4 group-hover:-translate-x-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15 19l-7-7 7-7" />
             </svg>
@@ -179,11 +178,7 @@ export default function RegisterPage() {
 
             <div className="space-y-4">
               {submitError && (
-                <div 
-                  className="p-4 bg-red-500/5 border border-red-500/10 rounded-2xl flex items-center gap-3 animate-in fade-in slide-in-from-top-2"
-                  role="alert"
-                  aria-live="polite"
-                >
+                <div className="p-4 bg-red-500/5 border border-red-500/10 rounded-2xl flex items-center gap-3 animate-in fade-in slide-in-from-top-2">
                   <div className="shrink-0 w-1.5 h-1.5 rounded-full bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.5)]" />
                   <p className="text-red-400 text-[11px] font-bold uppercase tracking-wider">{submitError}</p>
                 </div>

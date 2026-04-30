@@ -35,24 +35,18 @@ const notificationIcons: Record<Notification['type'], string> = {
   badge: '🏆',
 };
 
-const NOTIFICATION_POLL_INTERVAL_MS = 30_000;
-const NOTIFICATION_DEFAULT_MAX = 50;
+const NOTIFICATION_POLL_INTERVAL_MS = 30000;
 
 interface NotificationCenterProps {
   maxNotifications?: number;
-  /** Polling interval in ms for new notifications (default: 30000) */
-  pollInterval?: number;
 }
 
-export default function NotificationCenter({ maxNotifications = NOTIFICATION_DEFAULT_MAX, pollInterval = NOTIFICATION_POLL_INTERVAL_MS }: NotificationCenterProps) {
+export default function NotificationCenter({ maxNotifications = 50 }: NotificationCenterProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const safeMaxNotifications = Number.isFinite(maxNotifications)
     ? Math.max(1, Math.floor(maxNotifications))
-    : NOTIFICATION_DEFAULT_MAX;
-  const safePollInterval = Number.isFinite(pollInterval)
-    ? Math.max(1_000, Math.floor(pollInterval))
-    : NOTIFICATION_POLL_INTERVAL_MS;
+    : 50;
 
   // Fetch notifications from server
   useEffect(() => {
@@ -81,9 +75,10 @@ export default function NotificationCenter({ maxNotifications = NOTIFICATION_DEF
     };
 
     fetchNotifications();
-    const interval = setInterval(fetchNotifications, safePollInterval);
+    // Poll for new notifications every 30 seconds
+    const interval = setInterval(fetchNotifications, NOTIFICATION_POLL_INTERVAL_MS);
     return () => clearInterval(interval);
-  }, [safeMaxNotifications, safePollInterval]);
+  }, [safeMaxNotifications]);
 
   const unreadCount = useMemo(() => notifications.filter((n) => !n.read).length, [notifications]);
 
@@ -212,8 +207,6 @@ export default function NotificationCenter({ maxNotifications = NOTIFICATION_DEF
                                 rel="noopener noreferrer"
                                 className="text-purple-400 hover:text-purple-300 text-xs flex items-center gap-1"
                                 onClick={(e) => e.stopPropagation()}
-                                aria-label={`View transaction ${notification.txHash} on Hiro Explorer`}
-                                title="View on Hiro Explorer"
                               >
                                 View TX
                                 <ExternalLink className="w-3 h-3" />

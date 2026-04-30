@@ -5,14 +5,13 @@ TypeScript + Express backend for chainhook ingestion, alert persistence, metrics
 ## Commands
 
 ```bash
-npm ci
+npm install
 npm run dev
 npm run build
 npm run lint
 npm test
 npm start
 npm run register-hooks
-npm run test
 ```
 
 ## Main responsibilities
@@ -44,6 +43,3 @@ REDIS_URL=redis://optional
 - `src/utils/`: logger, Stacks API helpers, and webhook signing utilities
 - `data/`: local persistence artifacts
 - `logs/`: runtime log output when enabled
-- Include a correlation ID in alert dispatch logs to connect inbound chainhook events with downstream notification attempts.
-
-- Backend ops tip: verify health checks after middleware order changes.

@@ -5,9 +5,9 @@
 
 export enum UserTier {
   FREE = 0,
-  BASIC = 1,
-  PRO = 2,
-  PREMIUM = 3,
+  PRO = 1,
+  WHALE = 2,
+  EXCHANGE = 3
 }
 
 export interface TierLimits {
@@ -19,27 +19,27 @@ export interface TierLimits {
 
 export const TIER_LIMITS: Record<UserTier, TierLimits> = {
   [UserTier.FREE]: {
-    maxAlerts: 3,
-    maxWebhooks: 0,
+    maxAlerts: 5,
+    maxWebhooks: 1,
     rateLimit: 100,
     priorityNotifications: false
   },
-  [UserTier.BASIC]: {
-    maxAlerts: 10,
-    maxWebhooks: 1,
-    rateLimit: 300,
-    priorityNotifications: false
-  },
   [UserTier.PRO]: {
-    maxAlerts: 25,
-    maxWebhooks: 5,
-    rateLimit: 1_000,
+    maxAlerts: 50,
+    maxWebhooks: 10,
+    rateLimit: 1000,
     priorityNotifications: true
   },
-  [UserTier.PREMIUM]: {
-    maxAlerts: 999,
-    maxWebhooks: 20,
-    rateLimit: 5_000,
+  [UserTier.WHALE]: {
+    maxAlerts: 500,
+    maxWebhooks: 100,
+    rateLimit: 5000,
+    priorityNotifications: true
+  },
+  [UserTier.EXCHANGE]: {
+    maxAlerts: 5000,
+    maxWebhooks: 1000,
+    rateLimit: 20000,
     priorityNotifications: true
   }
 };
@@ -55,7 +55,7 @@ export function getTierLimits(tier: number): TierLimits {
 }
 
 export function getUserTier(address: string): UserTier {
-  return tierCache.get(address) ?? UserTier.FREE;
+  return tierCache.get(address) || UserTier.FREE;
 }
 
 export function setUserTier(address: string, tier: UserTier): void {

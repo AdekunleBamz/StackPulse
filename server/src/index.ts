@@ -26,6 +26,7 @@ import {
   deleteUserPreferences
 } from './services/notifications';
 import { tieredApiLimiter } from './middleware/rateLimiter';
+import requestLogger from './middleware/requestLogger';
 import db from './services/db';
 import { clearOldData } from './services/analytics';
 
@@ -52,14 +53,12 @@ const logger = createLogger({
 
 // Initialize Express app
 const app = express();
-const DEFAULT_PORT = 3000;
-const PORT = Number.parseInt(process.env.PORT || String(DEFAULT_PORT), 10);
+const PORT = Number.parseInt(process.env.PORT || '3000', 10);
 
 // Middleware
 app.use(helmet());
 app.use(cors());
-const JSON_BODY_LIMIT = '10mb';
-app.use(express.json({ limit: JSON_BODY_LIMIT }));
+app.use(express.json({ limit: '10mb' }));
 app.use(requestLogger());
 
 // Authentication middleware for chainhook endpoints.
@@ -78,7 +77,7 @@ const authenticateWebhook = (req: Request, res: Response, next: NextFunction) =>
   }
 
   if (authHeader !== `Bearer ${expectedToken}`) {
-    logger.warn('Webhook request with invalid authorization token', { ip: req.ip, path: req.path });
+    logger.warn('Webhook request with invalid authorization token', { ip: req.ip });
     return res.status(401).json({ error: 'Unauthorized' });
   }
 
@@ -217,29 +216,23 @@ app.post(CHAINHOOK_ENDPOINTS.whaleTransfer, tieredApiLimiter, authenticateWebhoo
         const transferData = parseWhaleTransfer(event);
         
         if (transferData) {
-          const isMicroWhale = parseFloat(transferData.amountSTX) < 100000;
-          const emoji = isMicroWhale ? '🦐' : '🐋';
-          const title = `${emoji} ${isMicroWhale ? 'Large' : 'Whale'} Transfer Detected`;
-
-          logger.info(title, {
+          logger.info('🐋 Whale Transfer Detected', {
             amount: transferData.amountFormatted,
             amountSTX: transferData.amountSTX,
             sender: transferData.sender,
             recipient: transferData.recipient,
             txHash: tx.transaction_identifier.hash,
-            block: block.block_identifier.index,
-            isWhale: !isMicroWhale
+            block: block.block_identifier.index
           });
           
           await broadcastNotification({
-            title,
-            message: `${transferData.amountSTX} STX moved from ${transferData.sender.slice(0, 8)}... to ${transferData.recipient.slice(0, 8)}...`,
+            title: '🐋 Whale Transfer Detected',
+            message: `${transferData.amountSTX} STX transferred from ${transferData.sender.slice(0, 8)}... to ${transferData.recipient.slice(0, 8)}...`,
             type: 'whale',
             data: {
-              'Transfer Amount': `${transferData.amountSTX} STX`,
-              'Sender': transferData.sender,
-              'Recipient': transferData.recipient,
-              'Scale': isMicroWhale ? 'High Volume' : 'Ultra High Volume'
+              Amount: transferData.amountSTX + ' STX',
+              Sender: transferData.sender,
+              Recipient: transferData.recipient
             },
             txHash: tx.transaction_identifier.hash,
             blockHeight: block.block_identifier.index
@@ -730,7 +723,7 @@ app.get('/api/v1/chainhooks/status', (req: Request, res: Response) => {
 // ============================================
 
 // Save user notification preferences
-const saveUserPreferencesHandler = async (req: Request, res: Response) => {
+app.post('/api/v1/users', async (req: Request, res: Response) => {
   try {
     const { address, username, email, discord, telegram, enabledAlerts } = req.body;
     
@@ -902,7 +895,7 @@ const saveAlerts = (alerts: Map<string, StoredAlert[]>) => {
 const userAlerts: Map<string, StoredAlert[]> = loadAlerts();
 
 // Get user's alerts
-const getUserAlertsHandler = async (req: Request, res: Response) => {
+app.get('/api/v1/users/:address/alerts', async (req: Request, res: Response) => {
   try {
     const { address } = req.params;
     if (!address || address.trim().length === 0) {
@@ -917,7 +910,7 @@ const getUserAlertsHandler = async (req: Request, res: Response) => {
 };
 
 // Create new alert
-const createUserAlertHandler = async (req: Request, res: Response) => {
+app.post('/api/v1/users/:address/alerts', async (req: Request, res: Response) => {
   try {
     const { address } = req.params;
     if (!address || address.trim().length === 0) {
@@ -960,6 +953,29 @@ app.get('/api/v1/users/:address/alerts', getUserAlertsHandler);
 app.get('/api/users/:address/alerts', getUserAlertsHandler);
 app.post('/api/v1/users/:address/alerts', createUserAlertHandler);
 app.post('/api/users/:address/alerts', createUserAlertHandler);
+
+/**
+ * System Maintenance Task
+ */
+async function runMaintenanceTask() {
+  logger.info('Starting system maintenance task');
+  try {
+    // 1. Cleanup old analytics
+    clearOldData(30);
+    
+    // 2. Perform database backup
+    db.backup();
+    
+    logger.info('System maintenance task completed successfully');
+  } catch (error) {
+    logger.error('System maintenance task failed', { error });
+  }
+}
+
+// Scheduled maintenance (every 24 hours)
+setInterval(runMaintenanceTask, 24 * 3600000);
+// Run once on startup
+runMaintenanceTask();
 
 /**
  * System Maintenance Task
@@ -1083,10 +1099,9 @@ app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
 });
 
 // Start server
-const server = app.listen(PORT, '0.0.0.0', () => {
-  logger.info(`🚀 StackPulse Server is running on port ${PORT}`);
-  logger.info(`🌍 Environment: ${process.env.NODE_ENV || 'development'}`);
-  logger.info(`📡 Chainhook endpoints available at: http://localhost:${PORT}/api/v1/chainhooks/*`);
+const server = app.listen(PORT, () => {
+  logger.info(`🚀 StackPulse Server running on port ${PORT}`);
+  logger.info(`📡 Ready to receive chainhook events`);
   logger.info(`🔗 Health check: http://localhost:${PORT}/health`);
 });
 
@@ -1094,27 +1109,29 @@ const server = app.listen(PORT, '0.0.0.0', () => {
 const gracefulShutdown = (signal: string) => {
   logger.info(`${signal} received, starting graceful shutdown...`);
   
-  // Force shutdown after 10 seconds (reduced from 30 for responsiveness)
-  const forceShutdown = setTimeout(() => {
-    logger.error('Forced shutdown after timeout - some resources may not have closed cleanly');
-    process.exit(1);
-  }, 10000);
-
   // Stop accepting new connections
   server.close((err) => {
-    clearTimeout(forceShutdown);
-    
     if (err) {
       logger.error('Error during server shutdown', { error: err });
       process.exit(1);
     }
     
-    logger.info('HTTP server closed, all connections terminated');
+    logger.info('HTTP server closed');
     
-    // Save any pending data or close other resources here
+    // Save any pending data
+    logger.info('Saving pending data...');
+    
+    // Close database connections, etc.
     logger.info('Graceful shutdown complete');
+    
     process.exit(0);
   });
+  
+  // Force shutdown after 30 seconds
+  setTimeout(() => {
+    logger.error('Forced shutdown after timeout');
+    process.exit(1);
+  }, 30000);
 };
 
 // Register signal handlers

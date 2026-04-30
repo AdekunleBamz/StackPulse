@@ -124,8 +124,6 @@ When rate limited, responses include:
 Retry-After: 30
 ```
 
-Requests without an `Authorization` header may still be accepted for Hiro compatibility depending on deployment settings.
-
 ---
 
 ## Health Endpoints
@@ -175,8 +173,34 @@ Get global event statistics since server start.
     "feesCollected": 567,
     "badgesEarned": 890
   },
-  "uptime": 3600,
+  "uptime": 3600.5,
   "timestamp": "2025-01-24T12:00:00.000Z"
+}
+```
+
+### GET /api/v1/chainhooks/status
+
+Get the status of registered chainhook endpoints.
+
+**Response:**
+```json
+{
+  "registered": 12,
+  "active": 12,
+  "chainhooks": [
+    "whale-transfer-alert",
+    "new-contract-deployed",
+    "nft-mint-tracker",
+    "token-launch-detector",
+    "large-swap-alert",
+    "user-subscription-created",
+    "alert-triggered",
+    "fee-collected",
+    "badge-earned",
+    "new-subscription",
+    "subscription-upgrade",
+    "alert-created"
+  ]
 }
 ```
 
@@ -275,7 +299,15 @@ Get user profile and notification preferences.
 }
 ```
 
-#### PATCH /api/users/:address
+**Response (404 Not Found):**
+```json
+{
+  "success": false,
+  "error": "User not found"
+}
+```
+
+### PUT /api/users/:address
 
 Update user notification preferences.
 
@@ -448,43 +480,15 @@ Delete an alert.
 
 These endpoints receive blockchain events from Hiro Chainhooks. All chainhook routes require authentication.
 
-### POST /api/v1/chainhooks/whale-transfer
+### Authentication Header
+```http
+Authorization: Bearer <CHAINHOOK_AUTH_TOKEN>
+```
 
 ### Common Payload Structure
 
-### POST /api/v1/chainhooks/contract-deployed
+All chainhook endpoints receive events in this format:
 
-Receive new contract deployment events.
-
-### POST /api/v1/chainhooks/nft-mint
-
-Receive NFT mint events.
-
-### POST /api/v1/chainhooks/token-launch
-
-Receive new SIP-010 token deployment events.
-
-### POST /api/v1/chainhooks/large-swap
-
-Receive large DEX swap events.
-
-### POST /api/v1/chainhooks/subscription-created
-
-Receive StackPulse subscription events.
-
-### POST /api/v1/chainhooks/alert-triggered
-
-Receive alert trigger events.
-
-### POST /api/v1/chainhooks/fee-collected
-
-Receive fee collection events.
-
-### POST /api/v1/chainhooks/badge-earned
-
-Receive badge minting events.
-
-**Common Chainhook Payload Structure:**
 ```json
 {
   "apply": [
@@ -610,24 +614,12 @@ Receives fee collection events.
 
 #### POST /api/v1/chainhooks/badge-earned
 
-Receives badge minting events from the StackPulse reputation contract.
+Receives badge minting events.
 
 **Processing:**
-- Extracts recipient, badge name, token ID, and badge type from print events
-- Validates data against the `badge-minted` event schema
-- Broadcasts personalized notification to the recipient address
-- Increments platform-wide badge earning statistics
-
-**Example Data:**
-```json
-{
-  "event": "badge-minted",
-  "recipient": "SP3FK...",
-  "badge-name": "Early Adopter",
-  "token-id": 1,
-  "badge-type": "reputation"
-}
-```
+- Extracts recipient, badge name, and type from print events
+- Broadcasts personalized notification to badge earner
+- Increments badge statistics
 
 ### Async Processing
 
@@ -759,8 +751,72 @@ ws.onmessage = (event) => {
 };
 ```
 
-### Reliability Note
+### Event Payloads
 
-Clients should apply exponential backoff with jitter when reconnecting WebSocket sessions to avoid synchronized reconnect storms during outages.
+**Notification Event:**
+```json
+{
+  "type": "notification",
+  "data": {
+    "id": "abc123",
+    "title": "🐋 Whale Transfer Detected",
+    "message": "10,000 STX transferred",
+    "txHash": "0x...",
+    "blockHeight": 123456,
+    "timestamp": "2025-01-24T12:00:00.000Z"
+  }
+}
+```
 
-- API reliability tip: include correlation id values in support tickets for faster triage.
+**Stats Update Event:**
+```json
+{
+  "type": "stats",
+  "data": {
+    "whaleTransfers": 1235,
+    "contractDeployments": 568,
+    "timestamp": "2025-01-24T12:00:01.000Z"
+  }
+}
+```
+
+---
+
+## SDK & Client Libraries
+
+### JavaScript/TypeScript
+
+```bash
+npm install stackpulse-sdk
+```
+
+```typescript
+import { StackPulseClient } from 'stackpulse-sdk';
+
+const client = new StackPulseClient({
+  baseUrl: 'https://stackpulse-b8fw.onrender.com',
+  chainhookToken: 'your-token'
+});
+
+// Get stats
+const stats = await client.getStats();
+
+// Create alert
+const alert = await client.createAlert({
+  address: 'SP...',
+  type: 1,
+  name: 'My Alert',
+  threshold: 10000000000
+});
+```
+
+## Support & Feedback
+
+- **Documentation**: [docs.stackpulse.io](https://docs.stackpulse.io)
+- **GitHub Issues**: [Report bugs](https://github.com/AdekunleBamz/StackPulse/issues)
+- **Discord**: [Community support](https://discord.gg/stackpulse)
+- **Email**: support@stackpulse.io
+
+---
+
+*Last updated: January 2025*

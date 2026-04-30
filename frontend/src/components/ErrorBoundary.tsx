@@ -7,8 +7,6 @@ import logger from '@/lib/logger';
 interface Props {
   children: ReactNode;
   fallback?: ReactNode;
-  /** Optional callback invoked when an error is caught, in addition to logging. */
-  onError?: (error: Error, info: React.ErrorInfo) => void;
 }
 
 interface State {
@@ -31,8 +29,7 @@ export default class ErrorBoundary extends Component<Props, State> {
   }
 
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo): void {
-    logger.error('ErrorBoundary caught an error:', error, { componentStack: errorInfo.componentStack });
-    this.props.onError?.(error, errorInfo);
+    logger.error('ErrorBoundary caught an error:', error, errorInfo);
   }
 
   handleRetry = (): void => {
@@ -75,7 +72,7 @@ export default class ErrorBoundary extends Component<Props, State> {
               </p>
 
               {this.state.error && (
-                <div className="bg-gray-950/80 rounded-2xl p-4 mb-8 text-left border border-red-500/10 shadow-inner" role="alert" aria-label="Error details">
+                <div className="bg-gray-950/80 rounded-2xl p-4 mb-8 text-left border border-red-500/10 shadow-inner">
                   <p className="text-red-400 font-mono text-xs leading-relaxed break-all">
                     <span className="text-red-500/50 mr-2">#</span>
                     {this.state.error.message}
@@ -85,7 +82,6 @@ export default class ErrorBoundary extends Component<Props, State> {
               
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <button
-                  type="button"
                   onClick={this.handleRetry}
                   className="px-8 py-3 bg-purple-600 hover:bg-purple-500 text-white rounded-2xl font-bold transition-all duration-300 hover:scale-105 active:scale-95 shadow-lg shadow-purple-500/25 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 focus:ring-offset-gray-900"
                   aria-label="Reload the application"

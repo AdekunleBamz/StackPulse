@@ -1,12 +1,9 @@
 'use client';
 
-import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { apiUrl } from '@/lib/env';
 import logger from '@/lib/logger';
 
-/**
- * Represents a user-configured blockchain event alert.
- */
 interface Alert {
   id: string;
   name: string;
@@ -20,9 +17,6 @@ interface Alert {
   triggerCount: number;
 }
 
-/**
- * Input data for creating a new alert.
- */
 interface CreateAlertInput {
   name: string;
   alertType: number;
@@ -31,50 +25,23 @@ interface CreateAlertInput {
   webhookUrl?: string;
 }
 
-/**
- * Return type for the useAlerts hook.
- */
 interface UseAlertsReturn {
   alerts: Alert[];
   loading: boolean;
   error: string | null;
-  /** Total number of alerts. */
-  alertCount: number;
-  /** True when the user has at least one alert. */
-  hasAlerts: boolean;
-  /** Alerts that are currently enabled. */
-  activeAlerts: Alert[];
-  /** Alerts that are currently disabled. */
-  disabledAlerts: Alert[];
-  /** Number of enabled alerts. */
-  enabledCount: number;
-  /** Most recently triggered alert, if any. */
-  latestTriggeredAlert: Alert | null;
   fetchAlerts: () => Promise<void>;
   createAlert: (input: CreateAlertInput) => Promise<boolean>;
   updateAlert: (id: string, updates: Partial<Alert>) => Promise<boolean>;
   deleteAlert: (id: string) => Promise<boolean>;
   toggleAlert: (id: string) => Promise<boolean>;
-  /** Clears the current error state. */
-  clearError: () => void;
   refetch: () => Promise<void>;
 }
 
-/**
- * API response record with string dates (before normalization).
- */
 type AlertApiRecord = Omit<Alert, 'createdAt' | 'lastTriggered'> & {
   createdAt: string;
   lastTriggered?: string;
 };
 
-/**
- * Custom hook for managing a user's blockchain alerts.
- * Provides methods for fetching, creating, updating, and deleting alerts.
- *
- * @param address - The Stacks wallet address of the user.
- * @returns Hook state and alert management functions.
- */
 export function useAlerts(address: string | null): UseAlertsReturn {
   const [alerts, setAlerts] = useState<Alert[]>([]);
   const [loading, setLoading] = useState(false);
@@ -90,7 +57,7 @@ export function useAlerts(address: string | null): UseAlertsReturn {
     setError(null);
 
     try {
-      const response = await fetch(apiUrl(`/api/v1/users/${address}/alerts`));
+      const response = await fetch(apiUrl(`/api/alerts?address=${address}`));
       const data = await response.json();
 
       if (data.success) {
@@ -120,7 +87,7 @@ export function useAlerts(address: string | null): UseAlertsReturn {
     setError(null);
 
     try {
-      const response = await fetch(apiUrl(`/api/v1/users/${address}/alerts`), {
+      const response = await fetch(apiUrl(`/api/alerts?address=${address}`), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(input),
@@ -158,8 +125,8 @@ export function useAlerts(address: string | null): UseAlertsReturn {
     setError(null);
 
     try {
-      const response = await fetch(apiUrl(`/api/v1/users/${address}/alerts/${id}`), {
-        method: 'PUT',
+      const response = await fetch(apiUrl(`/api/alerts/${id}?address=${address}`), {
+        method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(updates),
       });
@@ -201,7 +168,7 @@ export function useAlerts(address: string | null): UseAlertsReturn {
     setError(null);
 
     try {
-      const response = await fetch(apiUrl(`/api/v1/users/${address}/alerts/${id}`), {
+      const response = await fetch(apiUrl(`/api/alerts/${id}?address=${address}`), {
         method: 'DELETE',
       });
 
@@ -226,17 +193,12 @@ export function useAlerts(address: string | null): UseAlertsReturn {
   const toggleAlert = useCallback(async (id: string): Promise<boolean> => {
     if (!address) return false;
 
-    const current = alerts.find(a => a.id === id);
-    const nextEnabled = current ? !current.enabled : true;
-
     setLoading(true);
     setError(null);
 
     try {
-      const response = await fetch(apiUrl(`/api/v1/users/${address}/alerts/${id}`), {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ enabled: nextEnabled }),
+      const response = await fetch(apiUrl(`/api/alerts/${id}/toggle?address=${address}`), {
+        method: 'POST',
       });
 
       const data = await response.json();
@@ -276,31 +238,15 @@ export function useAlerts(address: string | null): UseAlertsReturn {
     }
   }, [address, fetchAlerts]);
 
-  const activeAlerts = useMemo(() => alerts.filter(a => a.enabled), [alerts]);
-  const disabledAlerts = useMemo(() => alerts.filter(a => !a.enabled), [alerts]);
-  const enabledCount = activeAlerts.length;
-  const latestTriggeredAlert = useMemo(() => {
-    const triggered = alerts.filter((a) => a.lastTriggered);
-    if (triggered.length === 0) return null;
-    return triggered.sort((a, b) => (b.lastTriggered?.getTime() ?? 0) - (a.lastTriggered?.getTime() ?? 0))[0] ?? null;
-  }, [alerts]);
-
   return {
     alerts,
     loading,
     error,
-    alertCount: alerts.length,
-    hasAlerts: alerts.length > 0,
-    activeAlerts,
-    disabledAlerts,
-    enabledCount,
-    latestTriggeredAlert,
     fetchAlerts,
     createAlert,
     updateAlert,
     deleteAlert,
     toggleAlert,
-    clearError: () => setError(null),
     refetch: fetchAlerts,
   };
 }

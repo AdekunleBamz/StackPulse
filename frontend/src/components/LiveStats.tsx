@@ -1,7 +1,7 @@
 'use client';
 
 import { Activity, ExternalLink } from 'lucide-react';
-import { useEffect, useRef, useState, memo } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { StatsCardSkeleton } from './LoadingSkeleton';
 import { apiUrl } from '@/lib/env';
 import logger from '@/lib/logger';
@@ -159,7 +159,7 @@ const LiveStats = memo(() => {
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
           {statItems.map((item) => (
             <div
-              key={item.label}
+              key={index}
               className="group relative bg-white/[0.03] border border-white/5 rounded-2xl p-6 text-center hover:bg-white/[0.06] hover:border-white/10 transition-all duration-500 hover:-translate-y-1.5 hover:shadow-[0_20px_40px_-15px_rgba(0,0,0,0.5)] overflow-hidden"
             >
               <div className={`text-3xl font-black tracking-tighter ${item.color} mb-1 group-hover:scale-110 transition-transform duration-500 relative z-10`}>

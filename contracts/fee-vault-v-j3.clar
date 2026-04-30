@@ -13,30 +13,18 @@
 ;; - Referral bonus tracking
 
 ;; ============================================
-;; ERROR CODES
+;; CONSTANTS
 ;; ============================================
-;; @desc Error returned when a caller lacks required permissions (owner-only)
-(define-constant ERR-NOT-AUTHORIZED (err u100))
-;; @desc Error returned when an input amount is invalid or out of expected range
-(define-constant ERR-INVALID-AMOUNT (err u101))
-;; @desc Error returned when the contract account lacks sufficient STX to perform a withdrawal
-(define-constant ERR-INSUFFICIENT-BALANCE (err u102))
-;; @desc Error returned when an unsupported or invalid subscription tier is specified
-(define-constant ERR-INVALID-TIER (err u103))
-;; @desc Error returned when an operation involves a zero-value STX amount
-(define-constant ERR-ZERO-AMOUNT (err u104))
-;; @desc Error returned when a user attempts to refer themselves (fraud prevention)
-(define-constant ERR-SELF-REFERRAL (err u105))
-;; @desc Error returned when a withdrawal is requested by a user with no accumulated earnings
-(define-constant ERR-NO-EARNINGS (err u106))
-;; @desc Error returned when an operation involves an invalid principal (e.g. principal-0)
-(define-constant ERR-INVALID-PRINCIPAL (err u107))
-
-;; @desc Error returned when the contract is currently paused for maintenance
-(define-constant ERR-CONTRACT-PAUSED (err u120))
 
 (define-constant CONTRACT-OWNER tx-sender)
 (define-constant TREASURY-ADDRESS tx-sender)
+(define-constant ERR-NOT-AUTHORIZED (err u100))
+(define-constant ERR-INVALID-AMOUNT (err u101))
+(define-constant ERR-INSUFFICIENT-BALANCE (err u102))
+(define-constant ERR-INVALID-TIER (err u103))
+(define-constant ERR-ZERO-AMOUNT (err u104))
+(define-constant ERR-SELF-REFERRAL (err u105))
+(define-constant ERR-NO-EARNINGS (err u106))
 
 ;; Subscription prices in microSTX
 (define-constant PRICE-FREE u0)
@@ -225,10 +213,6 @@
 )
 
 ;; Collect platform fee (called on alert triggers, etc.)
-;; @desc Collects a platform fee based on an activity amount.
-;; @param amount (uint) The base amount of the activity.
-;; @param fee-type (string-ascii 32) A label for the fee type (e.g., "alert").
-;; @returns (ok uint) The calculated and collected fee amount.
 (define-public (collect-platform-fee (amount uint) (fee-type (string-ascii 32)))
   (let
     (
@@ -260,8 +244,6 @@
 )
 
 ;; Withdraw referral earnings
-;; @desc Allows a referrer to withdraw their accumulated referral earnings.
-;; @returns (ok uint) The total amount withdrawn in microSTX.
 (define-public (withdraw-referral-earnings)
   (let
     (
@@ -297,9 +279,6 @@
 ;; ============================================
 
 ;; Admin: Withdraw to treasury
-;; @desc Transfers a specified amount from the vault to the multi-sig treasury.
-;; @param amount (uint) MicroSTX to withdraw.
-;; @returns (ok uint) The amount successfully transferred.
 (define-public (withdraw-to-treasury (amount uint))
   (begin
     (asserts! (is-eq tx-sender CONTRACT-OWNER) ERR-NOT-AUTHORIZED)

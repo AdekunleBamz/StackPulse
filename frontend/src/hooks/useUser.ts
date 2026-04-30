@@ -1,12 +1,9 @@
 'use client';
 
-import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { apiUrl } from '@/lib/env';
 import logger from '@/lib/logger';
 
-/**
- * Represents a registered StackPulse user with subscription and activity data.
- */
 interface User {
   address: string;
   tier: number;
@@ -21,35 +18,17 @@ interface User {
   badges: number[];
 }
 
-/**
- * Configuration options for the useUser hook.
- */
 interface UseUserOptions {
   autoFetch?: boolean;
 }
 
-/**
- * Return type for the useUser hook.
- */
 interface UseUserReturn {
   user: User | null;
   loading: boolean;
   error: string | null;
-  /** True when the user is registered (non-null user record). */
-  isAuthenticated: boolean;
-  /** True when the user has a referrer address. */
-  hasReferrer: boolean;
-  /** True when the user has a non-zero referral count or badges. */
-  hasActivity: boolean;
-  /** True when the user is on the free tier. */
-  isFreeTier: boolean;
-  /** True when the user's subscription has not expired. */
-  isSubscriptionActive: boolean;
   fetchUser: () => Promise<void>;
   register: (referrer?: string) => Promise<boolean>;
   upgrade: (tier: number, txId: string) => Promise<boolean>;
-  /** Clears the current error state. */
-  clearError: () => void;
   refetch: () => Promise<void>;
 }
 
@@ -70,7 +49,7 @@ export function useUser(address: string | null, options: UseUserOptions = {}): U
     setError(null);
 
     try {
-      const response = await fetch(apiUrl(`/api/v1/users/${address}`));
+      const response = await fetch(apiUrl(`/api/users/${address}`));
       const data = await response.json();
 
       if (data.success) {
@@ -97,7 +76,7 @@ export function useUser(address: string | null, options: UseUserOptions = {}): U
     setError(null);
 
     try {
-      const response = await fetch(apiUrl('/api/v1/users/register'), {
+      const response = await fetch(apiUrl('/api/users/register'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ address, referrer }),
@@ -131,7 +110,7 @@ export function useUser(address: string | null, options: UseUserOptions = {}): U
     setError(null);
 
     try {
-      const response = await fetch(apiUrl(`/api/v1/users/${address}/upgrade`), {
+      const response = await fetch(apiUrl(`/api/users/${address}/upgrade`), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ tier, txId }),
@@ -166,29 +145,13 @@ export function useUser(address: string | null, options: UseUserOptions = {}): U
     }
   }, [address, autoFetch, fetchUser]);
 
-  const isAuthenticated = user !== null;
-  const hasReferrer = useMemo(() => !!user?.referrer, [user]);
-  const hasActivity = useMemo(() => !!user && (user.referralCount > 0 || user.badges.length > 0 || user.totalAlertsTriggers > 0), [user]);
-  const isFreeTier = useMemo(() => (user?.tier ?? 0) === 0, [user]);
-  const isSubscriptionActive = useMemo(() => {
-    if (!user) return false;
-    if (!user.expiresAt) return true;
-    return user.expiresAt > new Date();
-  }, [user]);
-
   return {
     user,
     loading,
     error,
-    isAuthenticated,
-    hasReferrer,
-    hasActivity,
-    isFreeTier,
-    isSubscriptionActive,
     fetchUser,
     register,
     upgrade,
-    clearError: () => setError(null),
     refetch: fetchUser,
   };
 }

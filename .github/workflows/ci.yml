@@ -6,10 +6,6 @@ on:
   pull_request:
     branches: [main, develop]
 
-concurrency:
-  group: ci-${{ github.ref }}
-  cancel-in-progress: true
-
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -25,9 +21,8 @@ jobs:
           
       - name: Install dependencies
         run: |
-          npm ci
-          cd server && npm ci
-          cd ../frontend && npm ci
+          cd server && npm install
+          cd ../frontend && npm install
           
       - name: Run linter
         run: |
@@ -36,16 +31,14 @@ jobs:
           
       - name: Run type check
         run: |
-          cd frontend && npx tsc --noEmit
+          cd server && npx tsc --noEmit
+          cd ../frontend && npx tsc --noEmit
           
       - name: Run tests
         run: |
           npm test
           cd server && npm test
-          
-      - name: Frontend build smoke test
-        run: |
-          cd frontend && npm run build
+          cd ../frontend && npm test
 
   deploy:
     needs: test

@@ -35,7 +35,7 @@ const DEFAULT_BALANCE_DECIMALS = 6;
  * formatStxAmount("2000000000000") // "2.00M STX"
  */
 export function formatStxAmount(microStx: number | string): string {
-  const amount = typeof microStx === 'string' ? parseFloat(microStx.trim()) : microStx;
+  const amount = typeof microStx === 'string' ? parseFloat(microStx) : microStx;
   const safeAmount = Number.isFinite(amount) ? amount : 0;
   const stx = safeAmount / MICROSTX_PER_STX;
   
@@ -54,7 +54,7 @@ export function formatStxAmount(microStx: number | string): string {
  * @returns A formatted string (e.g., "1,234.56").
  */
 export function formatNumber(num: number | string): string {
-  const n = typeof num === 'string' ? parseFloat(num.trim().replace(/,/g, '')) : num;
+  const n = typeof num === 'string' ? parseFloat(num.replace(/,/g, '')) : num;
   if (!Number.isFinite(n)) {
     return '0';
   }
@@ -83,9 +83,6 @@ export function formatPercent(value: number, decimals: number = DEFAULT_PERCENT_
 export function formatRelativeTime(timestamp: number | Date): string {
   const now = new Date().getTime();
   const time = typeof timestamp === 'number' ? timestamp : timestamp.getTime();
-  if (!Number.isFinite(time)) {
-    return 'just now';
-  }
   const diff = now - time;
   const isFuture = diff < 0;
   const absDiff = Math.abs(diff);
@@ -147,14 +144,13 @@ export function formatDateTime(timestamp: number | Date): string {
  * @returns A truncated address string (e.g., "SP123...4567").
  */
 export function truncateAddress(address: string, startChars: number = 6, endChars: number = 4): string {
-  const normalizedAddress = typeof address === 'string' ? address.trim() : '';
   const safeStart = Number.isFinite(startChars) ? Math.max(0, Math.floor(startChars)) : 6;
   const safeEnd = Number.isFinite(endChars) ? Math.max(0, Math.floor(endChars)) : 4;
-  if (!normalizedAddress || safeStart + safeEnd <= 0 || normalizedAddress.length <= safeStart + safeEnd) {
-    return normalizedAddress;
+  if (!address || safeStart + safeEnd <= 0 || address.length <= safeStart + safeEnd) {
+    return address;
   }
-  const tail = safeEnd > 0 ? normalizedAddress.slice(-safeEnd) : '';
-  return `${normalizedAddress.slice(0, safeStart)}...${tail}`;
+  const tail = safeEnd > 0 ? address.slice(-safeEnd) : '';
+  return `${address.slice(0, safeStart)}...${tail}`;
 }
 
 /**
@@ -210,12 +206,9 @@ export function formatDuration(ms: number): string {
  * @returns The amount in micro-STX as a number.
  */
 export function parseStxAmount(amount: string): number {
-  const normalized = amount
-    .trim()
-    .replace(/,/g, '')
-    .replace(/\s*stx\s*$/i, '');
-  if (!/^[+-]?\d*\.?\d+$/.test(normalized)) return 0;
-  const stx = parseFloat(normalized);
+  const cleaned = amount.trim().replace(/[^\d.]/g, '');
+  if (!cleaned) return 0;
+  const stx = parseFloat(cleaned);
   if (Number.isNaN(stx)) return 0;
   return Math.max(0, Math.floor(stx * MICROSTX_PER_STX));
 }
@@ -227,7 +220,7 @@ export function parseStxAmount(amount: string): number {
  * @returns A formatted balance string.
  */
 export function formatBalance(balance: number | string, decimals: number = DEFAULT_BALANCE_DECIMALS): string {
-  const bal = typeof balance === 'string' ? parseFloat(balance.trim().replace(/,/g, '')) : balance;
+  const bal = typeof balance === 'string' ? parseFloat(balance.replace(/,/g, '')) : balance;
   const safeDecimals = Number.isFinite(decimals)
     ? Math.max(0, Math.min(12, Math.floor(decimals)))
     : DEFAULT_BALANCE_DECIMALS;
@@ -240,126 +233,8 @@ export function formatBalance(balance: number | string, decimals: number = DEFAU
 /**
  * Formats a transaction ID for display using truncation.
  * @param txId - The full transaction ID string.
- * @returns A truncated transaction ID string (prefix...suffix).
+ * @returns A truncated transaction ID string.
  */
 export function formatTxId(txId: string): string {
-  const normalizedTxId = typeof txId === 'string' ? txId.trim() : '';
-  return truncateAddress(normalizedTxId, TX_ID_PREFIX_LENGTH, TX_ID_SUFFIX_LENGTH);
+  return truncateAddress(txId, TX_ID_PREFIX_LENGTH, TX_ID_SUFFIX_LENGTH);
 }
-
-/**
- * Formats a number with its ordinal suffix (e.g., 1st, 2nd, 3rd).
- * @param n - The number to format.
- * @returns A string with the number and its ordinal suffix.
- */
-export function formatOrdinal(n: number): string {
-  const safeN = Number.isFinite(n) ? Math.floor(n) : 0;
-  const s = ["th", "st", "nd", "rd"];
-  const v = safeN % 100;
-  return safeN + (s[(v - 20) % 10] || s[v] || s[0]);
-}
-
-/**
- * Formats a timestamp as a time-only string (e.g., "14:30" or "2:30 PM").
- * @param timestamp - The timestamp as a number or Date object.
- * @param use24h - When true, uses 24-hour format (default: false).
- * @returns A locale-specific time string.
- */
-export function formatTime(timestamp: number | Date, use24h = false): string {
-  const date = typeof timestamp === 'number' ? new Date(timestamp) : timestamp;
-  if (Number.isNaN(date.getTime())) return 'Invalid date';
-  return date.toLocaleTimeString('en-US', {
-    hour: '2-digit',
-    minute: '2-digit',
-    hour12: !use24h,
-  });
-}
-
-/**
- * Formats a large number in compact notation (e.g., 1200 → "1.2K", 1500000 → "1.5M").
- * @param value - The number to format.
- * @returns A compact string representation.
- */
-export function formatCompactNumber(value: number): string {
-  const safe = Number.isFinite(value) ? value : 0;
-  if (Math.abs(safe) >= 1_000_000_000) return `${(safe / 1_000_000_000).toFixed(1)}B`;
-  if (Math.abs(safe) >= 1_000_000) return `${(safe / 1_000_000).toFixed(1)}M`;
-  if (Math.abs(safe) >= 1_000) return `${(safe / 1_000).toFixed(1)}K`;
-  return String(Object.is(safe, -0) ? 0 : safe);
-}
-
-/**
- * Formats a number with an explicit sign for positive values.
- * Useful for showing metric deltas (e.g. "+12", "-3").
- * @param value - The number to format.
- */
-export function formatSignedNumber(value: number): string {
-  const safe = Number.isFinite(value) ? value : 0;
-  return safe > 0 ? `+${safe}` : `${safe}`;
-}
-
-export function formatBlockHeight(block: number): string {
-  const safe = Number.isFinite(block) ? Math.max(0, Math.floor(block)) : 0;
-  return `Block #${safe.toLocaleString('en-US')}`;
-}
-
-export function formatAlertCount(n: number): string {
-  const safe = Number.isFinite(n) ? Math.max(0, Math.floor(n)) : 0;
-  return safe === 1 ? '1 alert' : `${safe} alerts`;
-}
-
-export function formatSubscriptionTier(tier: number): string {
-  const names: Record<number, string> = { 0: 'Free', 1: 'Basic', 2: 'Pro', 3: 'Premium' };
-  return names[tier] ?? 'Unknown';
-}
-
-export function formatBlocksToTime(blocks: number, secondsPerBlock = 10): string {
-  const safe = Number.isFinite(blocks) ? Math.max(0, Math.floor(blocks)) : 0;
-  const totalSeconds = safe * secondsPerBlock;
-  const minutes = Math.floor(totalSeconds / 60);
-  const hours = Math.floor(minutes / 60);
-  if (hours > 0) return `~${hours}h ${minutes % 60}m`;
-  if (minutes > 0) return `~${minutes}m`;
-  return `~${totalSeconds}s`;
-}
-
-export function formatConfirmationCount(n: number): string {
-  const safe = Number.isFinite(n) ? Math.max(0, Math.floor(n)) : 0;
-  return `${safe} confirmation${safe === 1 ? '' : 's'}`;
-}
-
-export function formatPulseScore(score: number): string {
-  const safe = Number.isFinite(score) ? Math.max(0, score) : 0;
-  return `${Math.round(safe)} pts`;
-}
-
-export function formatNetworkLabel(network: string): string {
-  if (!network || typeof network !== 'string') return 'Unknown';
-  return network.charAt(0).toUpperCase() + network.slice(1).toLowerCase();
-}
-
-export function formatMicroStxRaw(ustx: number): string {
-  const safe = Number.isFinite(ustx) ? Math.max(0, Math.floor(ustx)) : 0;
-  return `${safe.toLocaleString()} uSTX`;
-}
-
-// Default export for convenience
-export default {
-  formatStxAmount,
-  formatNumber,
-  formatPercent,
-  formatRelativeTime,
-  formatDate,
-  formatDateTime,
-  formatTime,
-  formatCompactNumber,
-  formatSignedNumber,
-  truncateAddress,
-  truncateString,
-  formatFileSize,
-  formatDuration,
-  formatOrdinal,
-  parseStxAmount,
-  formatBalance,
-  formatTxId,
-};

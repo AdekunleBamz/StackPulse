@@ -27,8 +27,6 @@ export interface SystemHealth {
 }
 
 class HealthService {
-  private readonly startedAt = Date.now();
-
   /**
    * Get system health metrics
    */
@@ -43,7 +41,7 @@ class HealthService {
       memory: {
         free: freeMemory,
         total: totalMemory,
-        usagePercent: Math.round(usagePercent * 100) / 100,
+        usagePercent
       },
       cpu: {
         loadAvg: os.loadavg()
@@ -62,42 +60,6 @@ class HealthService {
     }
 
     return health;
-  }
-
-  /**
-   * Returns the number of milliseconds since the service was instantiated.
-   */
-  getUptimeMs(): number {
-    return Date.now() - this.startedAt;
-  }
-
-  /**
-   * Returns uptime as a human-readable string (e.g. "2h 15m 30s").
-   */
-  getUptimeFormatted(): string {
-    const totalSeconds = Math.floor(this.getUptimeMs() / 1000);
-    const hours = Math.floor(totalSeconds / 3600);
-    const minutes = Math.floor((totalSeconds % 3600) / 60);
-    const seconds = totalSeconds % 60;
-    const parts: string[] = [];
-    if (hours > 0) parts.push(`${hours}h`);
-    if (minutes > 0) parts.push(`${minutes}m`);
-    parts.push(`${seconds}s`);
-    return parts.join(' ');
-  }
-
-  /**
-   * Returns true when the system health status is 'ok'.
-   */
-  isHealthy(): boolean {
-    return this.getHealth().status === 'ok';
-  }
-
-  /**
-   * Returns true when the health status is 'degraded' (not fully healthy but not critical).
-   */
-  isDegraded(): boolean {
-    return this.getHealth().status === 'degraded';
   }
 }
 

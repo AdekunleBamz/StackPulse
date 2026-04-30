@@ -1,17 +1,14 @@
 'use client';
 
+import React from 'react';
+
 interface ProgressBarProps {
-  /** Current progress value, from 0 to 100 */
-  progress: number;
+  progress: number; // 0 to 100
   size?: 'sm' | 'md' | 'lg';
   color?: 'purple' | 'blue' | 'emerald' | 'rose' | 'amber';
   showLabel?: boolean;
   className?: string;
   animate?: boolean;
-  /** Accessible label for the progress bar */
-  label?: string;
-  /** Optional custom label text for the "Processing..." string when showLabel is true */
-  processingLabel?: string;
 }
 
 export default function ProgressBar({
@@ -20,9 +17,7 @@ export default function ProgressBar({
   color = 'purple',
   showLabel = false,
   className = '',
-  animate = true,
-  label,
-  processingLabel = 'Processing...',
+  animate = true
 }: ProgressBarProps) {
   const clampedProgress = Math.min(100, Math.max(0, progress));
   
@@ -44,7 +39,7 @@ export default function ProgressBar({
     <div className={`w-full ${className}`}>
       {showLabel && (
         <div className="flex justify-between text-xs font-medium text-gray-400 mb-1.5 px-0.5">
-          <span>{processingLabel}</span>
+          <span>Processing...</span>
           <span>{clampedProgress}%</span>
         </div>
       )}
@@ -58,7 +53,6 @@ export default function ProgressBar({
           aria-valuenow={clampedProgress}
           aria-valuemin={0}
           aria-valuemax={100}
-          aria-label={label ?? `${clampedProgress}% complete`}
         >
           {/* Shimmer effect inside progress bar */}
           <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent animate-shimmer" style={{ backgroundSize: '200% 100%' }} />

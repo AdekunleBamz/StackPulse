@@ -14,33 +14,20 @@
 ;; 5. User can upgrade tier with (upgrade-subscription)
 
 ;; ============================================
-;; ERROR CODES
+;; CONSTANTS
 ;; ============================================
-;; @desc Error returned when a user is already registered in the system
-(define-constant ERR-ALREADY-REGISTERED (err u101))
-;; @desc Error returned when a user attempt to operate on a non-existent profile
-(define-constant ERR-NOT-REGISTERED (err u102))
-;; @desc Error returned when an invalid subscription tier is specified
-(define-constant ERR-INVALID-TIER (err u103))
-;; @desc Error returned when a microSTX transfer operation fails
-(define-constant ERR-TRANSFER-FAILED (err u104))
-;; @desc Error returned when a caller lacks the required administrative or user permissions
-(define-constant ERR-NOT-AUTHORIZED (err u105))
-;; @desc Error returned when a username does not meet length requirements
-(define-constant ERR-INVALID-USERNAME (err u106))
-;; @desc Error returned when an invalid alert configuration bitmask is provided
-(define-constant ERR-INVALID-ALERTS (err u107))
-;; @desc Error returned when a subscription-required action is performed after expiration
-(define-constant ERR-SUBSCRIPTION-EXPIRED (err u108))
-;; @desc Error returned when an upgrade is attempted to the same tier
-(define-constant ERR-SAME-TIER (err u109))
-;; @desc Error returned when an invalid chainhook type is specified
-(define-constant ERR-INVALID-HOOK-TYPE (err u110))
-;; @desc Error returned when an invalid principal is provided (e.g. principal-0)
-(define-constant ERR-INVALID-PRINCIPAL (err u111))
 
-;; @desc Error returned when the contract is currently paused by admin
-(define-constant ERR-CONTRACT-PAUSED (err u120))
+(define-constant CONTRACT-OWNER tx-sender)
+(define-constant ERR-ALREADY-REGISTERED (err u101))
+(define-constant ERR-NOT-REGISTERED (err u102))
+(define-constant ERR-INVALID-TIER (err u103))
+(define-constant ERR-TRANSFER-FAILED (err u104))
+(define-constant ERR-NOT-AUTHORIZED (err u105))
+(define-constant ERR-INVALID-USERNAME (err u106))
+(define-constant ERR-INVALID-ALERTS (err u107))
+(define-constant ERR-SUBSCRIPTION-EXPIRED (err u108))
+(define-constant ERR-SAME-TIER (err u109))
+(define-constant ERR-INVALID-HOOK-TYPE (err u110))
 
 ;; Subscription duration: ~30 days in blocks (assuming 10 min blocks)
 (define-constant BLOCKS-PER-MONTH u4320)
@@ -92,14 +79,10 @@
   (map-get? users who)
 )
 
-;; @desc Retrieves the registration status of a principal.
-;; @param who (principal) The address to check.
 (define-read-only (is-registered (who principal))
   (is-some (map-get? users who))
 )
 
-;; @desc Returns a comprehensive subscription status for a user.
-;; @param who (principal) The user address.
 (define-read-only (get-subscription-status (who principal))
   (match (map-get? users who)
     user-data 
@@ -115,8 +98,6 @@
   )
 )
 
-;; @desc Returns the microSTX price for a given subscription tier.
-;; @param tier (uint) The tier level (0-3).
 (define-read-only (get-tier-price (tier uint))
   (if (is-eq tier u0) PRICE-FREE
     (if (is-eq tier u1) PRICE-BASIC
@@ -125,7 +106,6 @@
           u0))))
 )
 
-;; @desc Returns global stats including total user count and revenue.
 (define-read-only (get-stats)
   {
     total-users: (var-get total-users),
@@ -167,12 +147,6 @@
 ;; Register and subscribe in one transaction
 ;; tier: 0=Free, 1=Basic, 2=Pro, 3=Premium
 ;; alerts: bitmask (1=whale, 2=nft, 4=token, 8=swap, 16=contract) or just pass 31 for all
-;; @desc Registers a new user and sets their initial subscription tier.
-;; @param username (string-ascii 32) A unique identifier for the user.
-;; @param email (string-ascii 64) Optional contact email.
-;; @param tier (uint) Selected subscription level (0-3).
-;; @param alerts (uint) Alert selection bitmask.
-;; @returns (ok uint) The assigned internal user ID.
 (define-public (register-and-subscribe 
     (username (string-ascii 32))
     (email (string-ascii 64))
@@ -238,11 +212,6 @@
 )
 
 ;; Update profile (username, email, alerts) - no payment
-;; @desc Updates the metadata for a registered user's profile.
-;; @param username (string-ascii 32) New desired username.
-;; @param email (string-ascii 64) New desired contact email.
-;; @param alerts (uint) New alert preference bitmask.
-;; @returns (ok bool) True on successful update.
 (define-public (update-profile 
     (username (string-ascii 32))
     (email (string-ascii 64))
@@ -277,9 +246,6 @@
 )
 
 ;; Upgrade or renew subscription
-;; @desc Modifies the existing subscription tier and extends duration.
-;; @param new-tier (uint) Target subscription level.
-;; @returns (ok uint) The new subscription end block height.
 (define-public (upgrade-subscription (new-tier uint))
   (let
     (
@@ -321,107 +287,6 @@
     })
     
     (ok new-ends)
-  )
-)
-
-;; V4: Renew existing subscription (same tier)
-;; Allows users to extend their subscription without changing tier
-(define-public (renew-subscription)
-  (let
-    (
-      (caller tx-sender)
-      (user-data (unwrap! (map-get? users caller) ERR-NOT-REGISTERED))
-      (current-tier (get tier user-data))
-      (current-ends (get subscription-ends user-data))
-      (price (get-tier-price current-tier))
-      (new-ends (if (> current-ends block-height)
-                    (+ current-ends BLOCKS-PER-MONTH)
-                    (+ block-height BLOCKS-PER-MONTH)))
-    )
-    ;; Cannot renew free tier
-    (asserts! (> current-tier u0) ERR-INVALID-TIER)
-    
-    ;; Transfer payment
-    (try! (stx-transfer? price caller CONTRACT-OWNER))
-    
-    ;; Extend subscription
-    (map-set users caller (merge user-data {
-      subscription-ends: new-ends,
-      updated-at: block-height
-    }))
-    
-    ;; Update revenue
-    (var-set total-revenue (+ (var-get total-revenue) price))
-    
-    (print {
-      event: "subscription-renewed",
-      version: "v3.1",
-      user: caller,
-      tier: current-tier,
-      price: price,
-      old-ends-at: current-ends,
-      new-ends-at: new-ends,
-      block: block-height
-    })
-    
-    (ok new-ends)
-  )
-)
-
-;; V4: Cancel subscription (revert to free tier)
-;; User can downgrade to free tier at any time
-(define-public (cancel-subscription)
-  (let
-    (
-      (caller tx-sender)
-      (user-data (unwrap! (map-get? users caller) ERR-NOT-REGISTERED))
-      (current-tier (get tier user-data))
-    )
-    ;; Cannot cancel if already on free tier
-    (asserts! (> current-tier u0) ERR-SAME-TIER)
-    
-    ;; Downgrade to free tier
-    (map-set users caller (merge user-data {
-      tier: u0,
-      subscription-ends: u0,
-      updated-at: block-height
-    }))
-    
-    (print {
-      event: "subscription-cancelled",
-      version: "v3.1",
-      user: caller,
-      old-tier: current-tier,
-      new-tier: u0,
-      block: block-height
-    })
-    
-    (ok true)
-  )
-)
-
-;; V4: Get subscription details
-(define-read-only (get-subscription-details (who principal))
-  (match (map-get? users who)
-    user-data
-      {
-        user-id: (get user-id user-data),
-        username: (get username user-data),
-        tier: (get tier user-data),
-        tier-name: (if (is-eq (get tier user-data) u0) "Free"
-                     (if (is-eq (get tier user-data) u1) "Basic"
-                       (if (is-eq (get tier user-data) u2) "Pro" "Premium"))),
-        subscription-ends: (get subscription-ends user-data),
-        alerts-enabled: (get alerts-enabled user-data),
-        created-at: (get created-at user-data),
-        updated-at: (get updated-at user-data),
-        total-triggers: (get total-triggers user-data),
-        days-remaining: (if (or (is-eq (get tier user-data) u0)
-                                 (<= (get subscription-ends user-data) block-height))
-                            u0
-                            (/ (- (get subscription-ends user-data) block-height) u144))
-      }
-    none
   )
 )
 
@@ -475,10 +340,6 @@
 )
 
 ;; Record a chainhook trigger (called by authorized services or contracts)
-;; @desc Records an off-chain activity trigger from an authorized source.
-;; @param user (principal) The user involved in the trigger.
-;; @param hook-type (uint) Type of event that occurred (1-9).
-;; @returns (ok uint) The updated trigger count for this user/type.
 (define-public (record-chainhook-trigger (user principal) (hook-type uint))
   (let
     (

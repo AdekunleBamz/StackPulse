@@ -34,10 +34,10 @@ const MAX_HOURLY_BREAKDOWN_HOURS = 24 * 30;
 const DEFAULT_DAILY_BREAKDOWN_DAYS = 30;
 const MAX_DAILY_BREAKDOWN_DAYS = 365;
 const MAX_EVENTS_PER_USER = new Map<number, number>([
-  [0, 1000],   // FREE
-  [1, 10000],  // BASIC
-  [2, 100000], // PRO
-  [3, 1000000] // PREMIUM
+  [0, 1000],  // FREE
+  [1, 10000], // PRO
+  [2, 100000], // WHALE
+  [3, 1000000] // EXCHANGE
 ]);
 
 // In-memory storage for analytics data

@@ -18,17 +18,16 @@
 ;; ============================================
 
 (define-constant CONTRACT-OWNER tx-sender)
-(define-constant ERR-ALREADY-REGISTERED (err u101)) ;; User is already in the registry
-(define-constant ERR-NOT-REGISTERED (err u102))     ;; User must register first
-(define-constant ERR-INVALID-TIER (err u103))       ;; Tier must be between 0 and MAX-TIER
-(define-constant ERR-TRANSFER-FAILED (err u104))    ;; STX payment transfer failed
-(define-constant ERR-NOT-AUTHORIZED (err u105))     ;; Sender is not allowed to perform this action
-(define-constant ERR-INVALID-USERNAME (err u106))   ;; Username length or format is invalid
-(define-constant ERR-INVALID-ALERTS (err u107))     ;; Alerts bitmask exceeds MAX-ALERTS-BITMASK
-(define-constant ERR-SUBSCRIPTION-EXPIRED (err u108)) ;; User's paid subscription has ended
-(define-constant ERR-SAME-TIER (err u109))          ;; User is already on this subscription tier
-(define-constant ERR-INVALID-HOOK-TYPE (err u110))  ;; Requested chainhook type is out of range
-(define-constant ERR-CONTRACT-PAUSED (err u120))    ;; Contract is currently paused
+(define-constant ERR-ALREADY-REGISTERED (err u101))
+(define-constant ERR-NOT-REGISTERED (err u102))
+(define-constant ERR-INVALID-TIER (err u103))
+(define-constant ERR-TRANSFER-FAILED (err u104))
+(define-constant ERR-NOT-AUTHORIZED (err u105))
+(define-constant ERR-INVALID-USERNAME (err u106))
+(define-constant ERR-INVALID-ALERTS (err u107))
+(define-constant ERR-SUBSCRIPTION-EXPIRED (err u108))
+(define-constant ERR-SAME-TIER (err u109))
+(define-constant ERR-INVALID-HOOK-TYPE (err u110))
 
 ;; Subscription duration: ~30 days in blocks (assuming 10 min blocks)
 (define-constant BLOCKS-PER-MONTH u4320)
@@ -49,13 +48,9 @@
 ;; DATA STORAGE
 ;; ============================================
 
-;; Total number of users registered since contract deployment
 (define-data-var total-users uint u0)
-;; Total STX revenue collected from subscription upgrades
 (define-data-var total-revenue uint u0)
-;; Semantic version of the contract for tracking migrations
 (define-data-var contract-version (string-ascii 8) "v3.0.0")
-(define-data-var is-paused bool false)
 
 ;; Main user profile map
 (define-map users principal
@@ -103,9 +98,6 @@
   )
 )
 
-;; @desc Returns the microSTX cost for a specific tier.
-;; @param tier (uint) The tier number to query.
-;; @returns (uint) The price in microSTX.
 (define-read-only (get-tier-price (tier uint))
   (if (is-eq tier u0) PRICE-FREE
     (if (is-eq tier u1) PRICE-BASIC
@@ -114,15 +106,6 @@
           u0))))
 )
 
-;; @desc Retrieves the current tier level of a user.
-;; @param who (principal) The user to query.
-;; @returns (uint) The tier number.
-(define-read-only (get-user-tier (who principal))
-  (default-to u0 (get tier (map-get? users who)))
-)
-
-;; @desc Returns high-level statistics for the StackPulse registry.
-;; @returns (response {total-users: uint, total-revenue: uint, version: (string-ascii 8)} uint)
 (define-read-only (get-stats)
   {
     total-users: (var-get total-users),
@@ -132,9 +115,6 @@
 )
 
 ;; V3: Check if subscription is active
-;; @desc Checks if a user's subscription is currently active or on free tier.
-;; @param who (principal) The user to check.
-;; @returns (bool) True if active or free tier.
 (define-read-only (is-subscription-active (who principal))
   (match (map-get? users who)
     user-data
@@ -144,19 +124,9 @@
   )
 )
 
-;; @desc Checks if the contract is currently in a paused state.
-(define-read-only (is-contract-paused)
-  (var-get is-paused)
-)
-
 ;; ============================================
 ;; PRIVATE HELPER FUNCTIONS
 ;; ============================================
-
-;; Check if contract is active
-(define-private (check-not-paused)
-  (ok (asserts! (not (var-get is-paused)) ERR-CONTRACT-PAUSED))
-)
 
 ;; V3: Validate username (non-empty, proper length)
 (define-private (is-valid-username (username (string-ascii 32)))
@@ -174,23 +144,9 @@
 ;; PUBLIC FUNCTIONS
 ;; ============================================
 
-;; Register a new user and activate their initial subscription tier.
-;; @param username: Desired username (3-32 chars)
-;; @param email: Optional contact email (max 64 chars)
-;; @param tier: 0=Free, 1=Basic, 2=Pro, 3=Premium
-;; @param alerts: A bitmask representing enabled alert types (e.g., u31 enables all)
-;; @desc Records a generic activity ping and returns the current block height
-;; @returns (ok uint) The block height at time of ping
-(define-public (ping)
-  (ok block-height)
-)
-
-;; @desc Full registration and subscription for new users.
-;; @param username (string-ascii 32) Unique user identifier.
-;; @param email (string-ascii 64) User contact address.
-;; @param tier (uint) Selected subscription level (0-3).
-;; @param alerts (uint) Alert bitmask configuration.
-;; @returns (ok uint) The newly assigned user ID.
+;; Register and subscribe in one transaction
+;; tier: 0=Free, 1=Basic, 2=Pro, 3=Premium
+;; alerts: bitmask (1=whale, 2=nft, 4=token, 8=swap, 16=contract) or just pass 31 for all
 (define-public (register-and-subscribe 
     (username (string-ascii 32))
     (email (string-ascii 64))
@@ -205,9 +161,6 @@
                     u0 
                     (+ block-height BLOCKS-PER-MONTH)))
     )
-    ;; Check contract is active
-    (try! (check-not-paused))
-    
     ;; V3: Enhanced validation
     (asserts! (is-valid-username username) ERR-INVALID-USERNAME)
     (asserts! (is-none (map-get? users caller)) ERR-ALREADY-REGISTERED)
@@ -259,11 +212,6 @@
 )
 
 ;; Update profile (username, email, alerts) - no payment
-;; @desc Updates the public profile of a registered user.
-;; @param username (string-ascii 32) New desired username.
-;; @param email (string-ascii 64) New desired email.
-;; @param alerts (uint) New alert selection bitmask.
-;; @returns (ok bool) True if update was successful.
 (define-public (update-profile 
     (username (string-ascii 32))
     (email (string-ascii 64))
@@ -273,9 +221,6 @@
       (caller tx-sender)
       (user-data (unwrap! (map-get? users caller) ERR-NOT-REGISTERED))
     )
-    ;; Check contract is active
-    (try! (check-not-paused))
-    
     ;; V3: Validate inputs
     (asserts! (is-valid-username username) ERR-INVALID-USERNAME)
     (asserts! (<= alerts MAX-ALERTS-BITMASK) ERR-INVALID-ALERTS)
@@ -291,7 +236,6 @@
       event: "profile-updated",
       version: "v3",
       user: caller,
-      user-id: (get user-id user-data),
       username: username,
       alerts: alerts,
       block: block-height
@@ -302,9 +246,6 @@
 )
 
 ;; Upgrade or renew subscription
-;; @desc Modifies the existing subscription tier and extends duration.
-;; @param new-tier (uint) The target tier to upgrade to.
-;; @returns (ok uint) The new expiration block height.
 (define-public (upgrade-subscription (new-tier uint))
   (let
     (
@@ -317,9 +258,6 @@
                     (+ current-ends BLOCKS-PER-MONTH)
                     (+ block-height BLOCKS-PER-MONTH)))
     )
-    ;; Check contract is active
-    (try! (check-not-paused))
-    
     ;; V3: Enhanced validation
     (asserts! (> new-tier u0) ERR-INVALID-TIER)
     (asserts! (is-valid-tier new-tier) ERR-INVALID-TIER)
@@ -341,7 +279,7 @@
       event: "subscription-upgraded",
       version: "v3",
       user: caller,
-      previous-tier: current-tier,
+      old-tier: current-tier,
       new-tier: new-tier,
       price: price,
       ends-at: new-ends,
@@ -359,9 +297,6 @@
       (caller tx-sender)
       (user-data (unwrap! (map-get? users caller) ERR-NOT-REGISTERED))
     )
-    ;; Check contract is active
-    (try! (check-not-paused))
-    
     ;; V3: Validate alerts bitmask
     (asserts! (<= alerts MAX-ALERTS-BITMASK) ERR-INVALID-ALERTS)
     
@@ -484,7 +419,7 @@
 (define-public (admin-grant-subscription (user principal) (tier uint) (duration-blocks uint))
   (let
     (
-      (user-data (unwrap! (map-get? users caller) ERR-NOT-REGISTERED))
+      (user-data (unwrap! (map-get? users user) ERR-NOT-REGISTERED))
     )
     (asserts! (is-eq tx-sender CONTRACT-OWNER) ERR-NOT-AUTHORIZED)
     (asserts! (is-valid-tier tier) ERR-INVALID-TIER)
@@ -504,26 +439,6 @@
       block: block-height
     })
     
-    (ok true)
-  )
-)
-
-;; Admin: Pause contract
-(define-public (pause)
-  (begin
-    (asserts! (is-eq tx-sender CONTRACT-OWNER) ERR-NOT-AUTHORIZED)
-    (var-set is-paused true)
-    (print { event: "pause", by: tx-sender, block: block-height })
-    (ok true)
-  )
-)
-
-;; Admin: Unpause contract
-(define-public (unpause)
-  (begin
-    (asserts! (is-eq tx-sender CONTRACT-OWNER) ERR-NOT-AUTHORIZED)
-    (var-set is-paused false)
-    (print { event: "unpause", by: tx-sender, block: block-height })
     (ok true)
   )
 )

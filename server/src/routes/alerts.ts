@@ -41,7 +41,6 @@ interface CreateAlertRequest {
 const alerts: Map<string, Alert> = new Map();
 
 // Alert type names
-// TODO: consolidate with shared/constants ALERT_TYPES to avoid duplication
 const alertTypeNames: Record<number, string> = {
   1: 'Whale Transfer',
   2: 'Contract Deploy',
@@ -51,10 +50,6 @@ const alertTypeNames: Record<number, string> = {
   6: 'Address Watch',
 };
 
-const ALERTS_DEFAULT_PAGE = 1;
-const ALERTS_DEFAULT_LIMIT = 10;
-const ALERTS_MAX_LIMIT = 100;
-const ALERTS_CACHE_TTL_MS = 60_000;
 const VALID_ALERT_SORT_FIELDS = new Set(['createdAt', 'name', 'alertType', 'enabled', 'triggerCount']);
 const VALID_SORT_ORDERS = new Set(['asc', 'desc']);
 
@@ -94,22 +89,21 @@ router.get(
     if (cached) {
       return res.json({
         success: true,
-        data: { alerts: cached },
+        alerts: cached,
         fromCache: true,
-        message: 'Alerts retrieved from cache'
       });
     }
 
     // Filter alerts by user
-    let userAlerts = Array.from(alerts.values())
-      .filter(alert => alert.userId === address)
-      .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+    let userAlerts = Array.from(alerts.values()).filter((alert) => alert.userId === address);
 
     // Pagination
-    const page = parseInt(req.query.page as string) || 1;
-    const limit = parseInt(req.query.limit as string) || 10;
-    const sortBy = req.query.sortBy as string || 'createdAt';
-    const sortOrder = req.query.sortOrder as string || 'desc';
+    const page = parsePositiveInt(req.query.page as string | undefined, 1);
+    const limit = parsePositiveInt(req.query.limit as string | undefined, 10, 100);
+    const sortByInput = typeof req.query.sortBy === 'string' ? req.query.sortBy : 'createdAt';
+    const sortOrderInput = typeof req.query.sortOrder === 'string' ? req.query.sortOrder : 'desc';
+    const sortBy = VALID_ALERT_SORT_FIELDS.has(sortByInput) ? sortByInput : 'createdAt';
+    const sortOrder = VALID_SORT_ORDERS.has(sortOrderInput) ? sortOrderInput : 'desc';
 
     // Apply sorting
     userAlerts.sort((a, b) => {
@@ -156,18 +150,15 @@ router.get(
 
     res.json({
       success: true,
-      data: {
-        alerts: paginatedAlerts,
-        pagination: {
-          page,
-          limit,
-          total,
-          totalPages,
-          hasNext: page < totalPages,
-          hasPrev: page > 1
-        }
-      },
-      message: 'Alerts retrieved successfully'
+      alerts: paginatedAlerts,
+      pagination: {
+        page,
+        limit,
+        total,
+        totalPages,
+        hasNext: page < totalPages,
+        hasPrev: page > 1
+      }
     });
   })
 );
@@ -192,8 +183,7 @@ router.get(
 
     res.json({
       success: true,
-      data: { alert },
-      message: 'Alert retrieved successfully'
+      alert,
     });
   })
 );
@@ -259,7 +249,7 @@ router.post(
 
     res.status(201).json({
       success: true,
-      data: { alert },
+      alert,
       message: `${alertTypeNames[body.alertType]} alert created successfully`,
     });
   })

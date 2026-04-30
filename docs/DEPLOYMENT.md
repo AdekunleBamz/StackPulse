@@ -2,7 +2,7 @@
 
 ## Current repo note
 
-Some examples below describe older `v2`/`v3` naming. The active deployment artifacts in this repository today are the files under `deployments/`, especially the `v-j3` plans:
+Some examples below describe older `v3` naming. The active deployment artifacts in this repository today are the files under `deployments/`, especially the `v-j4` plans:
 
 - `deployments/v-j4-mainnet-plan.yaml`
 - `deployments/v-j4-fix-plan.yaml`
@@ -55,18 +55,18 @@ This guide covers deploying StackPulse to production environments.
 clarinet check
 
 # Run tests
-npm run test
+npm test
 
 # Deploy contracts (requires wallet)
-clarinet deployments apply -p deployments/v-j3-mainnet-plan.yaml --no-dashboard
+clarinet deployments apply -p deployments/v-j4-mainnet-plan.yaml --no-dashboard
 ```
 
-### Deployment Plan (v-j3-mainnet-plan.yaml)
+### Deployment Plan (v-j4-mainnet-plan.yaml)
 
 ```yaml
 ---
 id: 0
-name: StackPulse V-j3 Mainnet Deployment
+name: StackPulse V-J4 Mainnet Deployment
 network: mainnet
 stacks-node: "https://api.mainnet.hiro.so"
 
@@ -83,24 +83,24 @@ plan:
     - id: 1
       transactions:
         - contract-publish:
-            contract-name: alert-manager-v-j3
-            path: contracts/alert-manager-v-j3.clar
+            contract-name: alert-manager-v-j4
+            path: contracts/alert-manager-v-j4.clar
             anchor-block-only: true
             cost: 500000
             
     - id: 2
       transactions:
         - contract-publish:
-            contract-name: fee-vault-v-j3
-            path: contracts/fee-vault-v-j3.clar
+            contract-name: fee-vault-v-j4
+            path: contracts/fee-vault-v-j4.clar
             anchor-block-only: true
             cost: 500000
             
     - id: 3
       transactions:
         - contract-publish:
-            contract-name: reputation-badges-v-j3
-            path: contracts/reputation-badges-v-j3.clar
+            contract-name: reputation-badges-v-j4
+            path: contracts/reputation-badges-v-j4.clar
             anchor-block-only: true
             cost: 500000
 ```
@@ -163,7 +163,7 @@ docker compose logs -f
 2. Connect your GitHub repository
 3. Configure:
    - **Root Directory**: `server`
-   - **Build Command**: `npm ci && npm run build`
+   - **Build Command**: `npm install && npm run build`
    - **Start Command**: `npm start`
    - **Environment**: Node
 
@@ -179,11 +179,11 @@ LOG_LEVEL=info
 CHAINHOOK_AUTH_TOKEN=your-secure-token
 
 # Contract Addresses
-DEPLOYER_ADDRESS=SP5K2RHMSBH4PAP4PGX77MCVNK1ZEED07CWX9TJT
-REGISTRY_CONTRACT=stackpulse-v-j3
-ALERT_CONTRACT=alert-manager-v-j3
-VAULT_CONTRACT=fee-vault-v-j3
-BADGE_CONTRACT=reputation-badges-v-j3
+DEPLOYER_ADDRESS=<YOUR_DEPLOYER_ADDRESS>
+REGISTRY_CONTRACT=stackpulse-v-j4
+ALERT_CONTRACT=alert-manager-v-j4
+VAULT_CONTRACT=fee-vault-v-j4
+BADGE_CONTRACT=reputation-badges-v-j4
 
 # Optional: Redis for caching
 REDIS_URL=redis://...
@@ -244,7 +244,7 @@ Get your Hiro Platform API key from [platform.hiro.so](https://platform.hiro.so)
 export HIRO_API_KEY=your-api-key
 
 # Run registration script
-npx ts-node scripts/register-stackpulse-chainhooks-v-j3.ts
+npx tsx scripts/register-stackpulse-chainhooks-v-j4.ts
 ```
 
 ### Verify Registration
@@ -328,7 +328,7 @@ npx tsx scripts/check-chainhook-status.ts
 
 ### Contract Upgrades
 
-1. Create new contract version (e.g., `stackpulse-v-j4.clar`)
+1. Create new contract version (e.g., `stackpulse-v4.clar`)
 2. Deploy to testnet first
 3. Run comprehensive tests
 4. Deploy to mainnet
@@ -356,31 +356,25 @@ git push origin main
 
 ### Contract Deployment Fails
 
-- **Insufficient Funds**: Check wallet has sufficient STX (>1 STX recommended for complete plan deployment).
-- **Network Mismatch**: Verify Clarinet is using correct network settings (mainnet vs testnet).
-- **Syntax Errors**: Check contract syntax with `clarinet check` and ensure all imported traits are available.
+- Check wallet has sufficient STX (>1 STX recommended)
+- Verify Clarinet is using correct network settings
+- Check contract syntax with `clarinet check`
 
 ### Chainhooks Not Triggering
 
-- **Webhook Unreachable**: Verify webhook URL is correct, use `https`, and ensure it's reachable from the public internet.
-- **Auth Token Mismatch**: Double-check that `CHAIN_HOOK_AUTH_TOKEN` on the server matches the token sent by Hiro Platform.
-- **Predicate Scope**: Ensure `start_block` is not in the future and the predicate (e.g., contract-id) is correctly formatted.
-- **Platform Status**: Check [Hiro Platform status](https://status.hiro.so/) for known issues with Chainhooks.
+- Verify webhook URL is correct and reachable
+- Check authentication token matches
+- Ensure start_block is set correctly
+- Check Hiro Platform status page
 
 ### Server 500 Errors
 
-- **Missing Env Vars**: Ensure all required variables in the [Environment Variables](#environment-variables) section are defined.
-- **Rate Limiting**: Review logs to see if your own services are being rate-limited by the Stacks API.
-- **DB Connection**: Verify `DATABASE_URL` is correct and the database is accepting connections.
+- Check environment variables are set
+- Review logs for stack traces
+- Verify Redis connection if configured
 
-### Frontend Issues
+### Frontend Build Fails
 
 - Check environment variables are set in Vercel
 - Verify Next.js version compatibility
 - Check for TypeScript errors
-
-### Rollout Window Note
-
-Prefer deploying contracts and API updates inside the same announced window to reduce temporary mismatches between server assumptions and on-chain state.
-
-- Deployment tip: capture chainhook registration output in release artifacts.

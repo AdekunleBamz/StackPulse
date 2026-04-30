@@ -12,7 +12,6 @@ export default function ConnectWallet() {
   const [showDropdown, setShowDropdown] = useState(false);
   const wrapperRef = useRef<HTMLDivElement>(null);
   const safeAddress = address || '';
-  const shortAddress = safeAddress ? truncateAddress(safeAddress) : 'connected wallet';
   const closeDropdown = useCallback(() => setShowDropdown(false), []);
 
   useEffect(() => {
@@ -43,19 +42,15 @@ export default function ConnectWallet() {
 
   if (!isConnected) {
     return (
-      <button
-        type="button"
+      <Button
         onClick={connect}
-        className="px-6 py-2.5 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white rounded-xl font-bold shadow-[0_10px_20px_-5px_rgba(168,85,247,0.3)] hover:shadow-[0_15px_25px_-5px_rgba(168,85,247,0.4)] transition-all hover:scale-105 active:scale-95 flex items-center gap-2 group/btn touch-manipulation"
+        variant="primary"
+        size="lg"
+        leftIcon={<Wallet className="w-5 h-5" />}
         aria-label="Connect your Stacks wallet"
-        title="Connect your Stacks wallet"
       >
-        <div className="relative w-4 h-4 mr-1">
-          <div className="absolute inset-0 bg-white/20 rounded-full animate-ping group-hover/btn:animate-none opacity-0 group-hover/btn:opacity-100 transition-opacity" />
-          <Wallet className="w-4 h-4 text-white relative z-10" strokeWidth={2.5} />
-        </div>
         Connect Wallet
-      </button>
+      </Button>
     );
   }
 
@@ -72,12 +67,11 @@ export default function ConnectWallet() {
         size="md"
         aria-haspopup="menu"
         aria-expanded={showDropdown}
-        aria-label={`Wallet menu for ${shortAddress}`}
-        title={`Wallet menu for ${shortAddress}`}
+        aria-label={`Wallet menu for address ${truncateAddress(safeAddress)}`}
         className="focus:ring-2 focus:ring-purple-500/50"
       >
         <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" aria-hidden="true" />
-        <span className="font-mono text-sm">{shortAddress}</span>
+        <span className="font-mono text-sm">{truncateAddress(safeAddress)}</span>
         <ChevronDown className="w-4 h-4" aria-hidden="true" />
       </Button>
 
@@ -100,10 +94,9 @@ export default function ConnectWallet() {
               rel="noopener noreferrer"
               className="mt-2 inline-flex text-xs text-purple-300 hover:text-purple-200 transition-colors focus:outline-none focus:underline"
               role="menuitem"
-              aria-label={`View address ${safeAddress} on Hiro Explorer (opens in new tab)`}
-              title="View on Hiro Explorer"
+              aria-label={`View address ${address} on Stacks Explorer (opens in new tab)`}
             >
-              View on Hiro Explorer
+              View on explorer
               <span className="sr-only">(opens in new tab)</span>
             </a>
           </div>
@@ -154,7 +147,6 @@ export default function ConnectWallet() {
             }}
             className="w-full flex items-center gap-2 px-4 py-4 text-red-400 hover:bg-red-500/10 hover:text-red-300 transition-all duration-200 rounded-b-2xl font-semibold border-t border-white/5"
             role="menuitem"
-            title="Disconnect wallet"
           >
             <LogOut className="w-4 h-4" />
             Disconnect

@@ -5,9 +5,6 @@
   "description": "Real-time Stacks blockchain monitoring and alert system",
   "author": "AdekunleBamz",
   "license": "MIT",
-  "engines": {
-    "node": ">=18.0.0"
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/AdekunleBamz/StackPulse.git"
@@ -23,14 +20,6 @@
     "test:ci": "vitest run --coverage --reporter=junit --outputFile=./junit.xml",
     "clarinet:check": "clarinet check",
     "clarinet:test": "clarinet test",
-    "check:fast": "npm run clarinet:check && npm run test:format",
-    "dev:all": "npm run dev --prefix frontend & npm run dev --prefix server",
-    "server:install": "npm run ci --prefix server",
-    "server:dev": "npm run dev --prefix server",
-    "server:test": "npm run test --prefix server",
-    "shared:install": "npm run ci --prefix shared",
-    "frontend:install": "npm run ci --prefix frontend",
-    "frontend:dev": "npm run dev --prefix frontend",
     "lint:all": "npm run lint --prefix frontend && npm run lint --prefix server",
     "build:all": "npm run build --prefix shared && npm run build --prefix server && npm run build --prefix frontend"
   },
@@ -54,8 +43,5 @@
   "dependencies": {
     "@hirosystems/chainhooks-client": "^1.0.0",
     "undici": "^7.16.0"
-  },
-  "engines": {
-    "node": ">=18.0.0"
   }
 }

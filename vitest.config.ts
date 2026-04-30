@@ -13,6 +13,7 @@ export default defineConfig({
         'dist/',
         '**/*.d.ts',
         '**/*.config.*',
+        'tests/',
       ],
     },
   },

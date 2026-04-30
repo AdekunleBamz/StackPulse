@@ -9,30 +9,28 @@
 
 StackPulse is a comprehensive monitoring workspace that combines Clarity smart contracts, Hiro Chainhook manifests, an Express ingestion server, a shared TypeScript package, and a Next.js frontend to deliver real-time blockchain event notifications.
 
-## 🚀 Project Status
+## ✨ Features
 
-StackPulse is currently in **Beta**. We are actively monitoring the Stacks mainnet and refining our alert algorithms.
-
-## ✨ Core Features
-
-- 🐋 **Whale Transfers** - Track large STX movements in real-time.
-- 📜 **Smart Contracts** - Instant notifications for new contract deployments.
-- 🎨 **NFT Monitoring** - Track minting events across top collections.
-- 🪙 **Token Launches** - Automated detection of new SIP-010 tokens.
-- 💱 **DEX Swaps** - Monitoring for significant swap volume.
-- 🏆 **Reputation** - Earn on-chain badges for platform participation.
+- 🐋 **Whale Transfer Alerts** - Track large STX transfers in real-time
+- 📜 **Contract Deployment Notifications** - Get notified when new contracts are deployed
+- 🎨 **NFT Mint Tracking** - Monitor NFT minting events across collections
+- 🪙 **Token Launch Detection** - Discover new SIP-010 token deployments
+- 💱 **Large Swap Alerts** - Track significant DEX swap events
+- 🏆 **Badge System** - Earn achievement badges for platform activity
+- 🔔 **Custom Alerts** - Create personalized alert thresholds
+- 📊 **Real-time Dashboard** - Live statistics and analytics
 
 ## 🏗️ Architecture
 
 ```
-┌──────────────────┐    ┌──────────────────┐    ┌────────────────────┐
-│ Stacks Blockchain │──▶│ Hiro Chainhooks  │──▶│ StackPulse Server  │
-└──────────────────┘    └──────────────────┘    └────────────────────┘
+┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
+│  Stacks Blockchain  │──▶│  Hiro Chainhooks   │──▶│  StackPulse Server │
+└─────────────────┘    └──────────────────┘    └─────────────────┘
                                                           │
                                                           ▼
-┌──────────────────┐    ┌──────────────────┐    ┌────────────────────┐
-│ Clarity Contracts│◀──│Shared Types/Utils │◀──│ Next.js Frontend   │
-└──────────────────┘    └──────────────────┘    └────────────────────┘
+┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
+│  Clarity Contracts  │◀──│  Shared Types/Utils  │◀──│  Next.js Frontend  │
+└─────────────────┘    └──────────────────┘    └─────────────────┘
 ```
 
 ## 📁 Project Structure
@@ -60,52 +58,137 @@ More detail lives in [docs/WORKSPACES.md](docs/WORKSPACES.md).
 ### Installation
 
 ```bash
-npm ci
-npm run server:install
-npm run shared:install
-npm run frontend:install
+# Clone the repository
+git clone https://github.com/AdekunleBamz/StackPulse.git
+cd StackPulse
+
+# Install all dependencies
+npm install
+npm --prefix server install
+npm --prefix shared install
+npm --prefix frontend install
 ```
 
 ### Environment Setup
 
 ```bash
-# Contract checks and tests
-npm run clarinet:check
-npm run clarinet:test
+# Copy environment example
+cp .env.example .env
 
 # Configure your environment variables
 # Required: CHAINHOOK_AUTH_TOKEN, DATABASE_URL, etc.
 ```
 
-## Local workflow
+## 📟 Common Commands
 
-Run backend and frontend in separate terminals for end-to-end local development:
+### Development
 
 ```bash
-# Terminal 1
-npm run server:dev
-npm --prefix server run build
-npm run server:test
+# Start frontend development server
+npm --prefix frontend run dev
 
-# Terminal 2
-npm run frontend:dev
+# Start backend development server
+npm --prefix server run dev
+
+# Start both with Docker Compose
+docker compose up -d
 ```
 
-## Key docs
+### Building
 
-- [docs/API.md](docs/API.md)
-- [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)
-- [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md)
-- [docs/CONTRACTS.md](docs/CONTRACTS.md)
-- [docs/WORKSPACES.md](docs/WORKSPACES.md)
-- [CONTRIBUTING.md](CONTRIBUTING.md)
+```bash
+# Build all packages
+npm run build:all
 
-## Features & Highlights
+# Build individual packages
+npm --prefix shared run build
+npm --prefix server run build
+npm --prefix frontend run build
+```
 
-Join our community to get help, stay updated, and contribute:
-- **Discord**: [Join our server](https://discord.gg/stackpulse)
-- **Telegram**: [Follow us](https://t.me/stackpulse)
-- **Twitter**: [Follow @StackPulse](https://twitter.com/StackPulse)
-- When asking for incident help, include affected network and one transaction ID for faster triage.
+### Testing & Quality
 
-- Operational tip: run a quick end-to-end alert drill after dependency upgrades.
+```bash
+# Run Clarinet contract checks
+npm run clarinet:check
+
+# Run Clarinet contract tests
+npm run clarinet:test
+
+# Run all tests
+npm test
+
+# Run tests in watch mode
+npm run test:watch
+
+# Lint all packages
+npm run lint:all
+```
+
+## 📚 Documentation
+
+| Doc | Description |
+|-----|-------------|
+| [API Reference](docs/API.md) | Complete API endpoint documentation |
+| [Deployment Guide](docs/DEPLOYMENT.md) | Production deployment instructions |
+| [Contract Docs](docs/CONTRACTS.md) | Clarity contract specifications |
+| [Architecture](docs/WORKSPACES.md) | System architecture overview |
+| [Contributing](CONTRIBUTING.md) | Contribution guidelines |
+
+## 🔧 Configuration
+
+### Environment Variables
+
+| Variable | Description | Required |
+|----------|-------------|----------|
+| `PORT` | Server port | No (default: 3000) |
+| `CHAINHOOK_AUTH_TOKEN` | Authentication token for chainhook endpoints | Yes |
+| `DATABASE_URL` | Database connection string | Yes |
+| `REDIS_URL` | Redis connection URL | No |
+| `LOG_LEVEL` | Logging level (debug, info, warn, error) | No |
+| `NODE_ENV` | Environment (development, production) | No |
+
+### Rate Limiting
+
+StackPulse implements tiered rate limiting:
+
+| Tier | Requests/minute |
+|------|-----------------|
+| Free | 100 |
+| Basic | 1,000 |
+| Pro | 5,000 |
+| Enterprise | 20,000 |
+
+## 🤝 Contributing
+
+We welcome contributions! Please follow these steps:
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feat/amazing-feature`)
+3. Commit your changes with signed commits (`git commit -S -m 'feat: add amazing feature'`)
+4. Push to the branch (`git push origin feat/amazing-feature`)
+5. Open a Pull Request
+
+Please read [CONTRIBUTING.md](CONTRIBUTING.md) for detailed guidelines.
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 🙏 Acknowledgments
+
+- [Hiro Systems](https://www.hiro.so/) for Chainhooks and Stacks tooling
+- [Stacks Foundation](https://stacks.org/) for the Stacks blockchain
+- [Clarity Language](https://clarity-lang.org/) for secure smart contracts
+
+## 🔗 Links
+
+- **Website**: [stackpulse.io](https://stackpulse.io)
+- **Documentation**: [docs.stackpulse.io](https://docs.stackpulse.io)
+- **GitHub**: [AdekunleBamz/StackPulse](https://github.com/AdekunleBamz/StackPulse)
+- **Discord**: [Join our community](https://discord.gg/stackpulse)
+- **Twitter**: [@StackPulse](https://twitter.com/StackPulse)
+
+---
+
+Built with ❤️ by [AdekunleBamz](https://github.com/AdekunleBamz) and contributors

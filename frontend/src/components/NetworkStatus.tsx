@@ -17,24 +17,16 @@ interface NetworkStats {
 
 interface NetworkStatusProps {
   refreshInterval?: number;
-  /** When true, hides the manual refresh button. */
-  hideRefreshButton?: boolean;
 }
 
 const STACKS_INFO_API_URL = 'https://api.mainnet.hiro.so/extended/v1/info';
 const STACKS_CORE_INFO_API_URL = 'https://api.mainnet.hiro.so/v2/info';
-const DEFAULT_REFRESH_INTERVAL_MS = 30_000;
-const MIN_REFRESH_INTERVAL_MS = 5_000;
+const DEFAULT_REFRESH_INTERVAL_MS = 30000;
+const MIN_REFRESH_INTERVAL_MS = 5000;
 const JSON_ACCEPT_HEADERS = { Accept: 'application/json' } as const;
 const LAST_UPDATED_TIME_OPTIONS: Intl.DateTimeFormatOptions = { hour: '2-digit', minute: '2-digit' };
-/** Approximate average block time in seconds for Stacks mainnet. */
-const APPROX_AVG_BLOCK_TIME_SECONDS = 10;
-/** Approximate stacking participation rate (as a fraction). */
-const APPROX_STACKING_PARTICIPATION = 0.45;
-/** Approximate total STX locked in stacking. */
-const APPROX_TOTAL_STX_LOCKED = 400_000_000;
 
-export default function NetworkStatus({ refreshInterval = DEFAULT_REFRESH_INTERVAL_MS, hideRefreshButton = false }: NetworkStatusProps) {
+export default function NetworkStatus({ refreshInterval = DEFAULT_REFRESH_INTERVAL_MS }: NetworkStatusProps) {
   const [stats, setStats] = useState<NetworkStats | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -74,11 +66,11 @@ export default function NetworkStatus({ refreshInterval = DEFAULT_REFRESH_INTERV
       setStats({
         blockHeight: core.stacks_tip_height || 0,
         txCount24h: info.tx_count_per_24h || 0,
-        avgBlockTime: core.stacks_tip_consensus_hash ? APPROX_AVG_BLOCK_TIME_SECONDS : 0,
+        avgBlockTime: core.stacks_tip_consensus_hash ? 10 : 0, // Approximate
         hashRate: 'N/A',
         difficulty: 'N/A',
-        stackingParticipation: APPROX_STACKING_PARTICIPATION,
-        totalSTXLocked: APPROX_TOTAL_STX_LOCKED,
+        stackingParticipation: 0.45, // Approximate
+        totalSTXLocked: 400000000, // Approximate
         activeContracts: info.smart_contract_count || 0,
       });
       hasStatsRef.current = true;
@@ -155,7 +147,6 @@ export default function NetworkStatus({ refreshInterval = DEFAULT_REFRESH_INTERV
               Updated {lastUpdated.toLocaleTimeString([], LAST_UPDATED_TIME_OPTIONS)}
             </span>
           )}
-          {!hideRefreshButton && (
           <button
             type="button"
             onClick={fetchNetworkStats}
@@ -164,7 +155,6 @@ export default function NetworkStatus({ refreshInterval = DEFAULT_REFRESH_INTERV
           >
             {refreshing ? 'Refreshing…' : 'Refresh'}
           </button>
-          )}
           <div className="flex items-center gap-2" aria-live="polite">
             <span 
               className={`w-2 h-2 rounded-full ${healthColor} animate-pulse`}
@@ -223,19 +213,15 @@ export default function NetworkStatus({ refreshInterval = DEFAULT_REFRESH_INTERV
           target="_blank"
           rel="noopener noreferrer"
           className="text-purple-400 hover:text-purple-300 flex items-center gap-1"
-          aria-label="Open Hiro Explorer in a new tab"
-          title="Open Hiro Explorer"
         >
           <TrendingUp className="w-3 h-3" />
-          Hiro Explorer
+          Explorer
         </a>
         <a
           href="https://stx.is/"
           target="_blank"
           rel="noopener noreferrer"
           className="text-purple-400 hover:text-purple-300 flex items-center gap-1"
-          aria-label="Open Stacking information in a new tab"
-          title="Open Stacking information"
         >
           <Users className="w-3 h-3" />
           Stacking

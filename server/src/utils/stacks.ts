@@ -10,9 +10,6 @@ const API_URLS = {
   STACKS_API_TESTNET: 'https://stacks-node-api.testnet.stacks.co',
 } as const;
 
-const STACKS_MICRO_DIVISOR = 1_000_000;
-const ACCOUNT_TRANSACTIONS_DEFAULT_LIMIT = 20;
-
 interface Transaction {
   tx_id: string;
   tx_status: string;
@@ -104,11 +101,11 @@ export async function getAccountBalance(address: string, network: StacksNetwork 
 export async function getAccountTransactions(
   address: string, 
   network: StacksNetwork = 'mainnet',
-  limit: number = ACCOUNT_TRANSACTIONS_DEFAULT_LIMIT,
+  limit: number = 20,
   offset: number = 0
 ): Promise<Transaction[]> {
   const baseUrl = getStacksApiUrl(network);
-  const safeLimit = Number.isFinite(limit) ? Math.max(1, Math.floor(limit)) : ACCOUNT_TRANSACTIONS_DEFAULT_LIMIT;
+  const safeLimit = Number.isFinite(limit) ? Math.max(1, Math.floor(limit)) : 20;
   const safeOffset = Number.isFinite(offset) ? Math.max(0, Math.floor(offset)) : 0;
   
   try {
@@ -209,16 +206,6 @@ export async function getCoreApiInfo(network: StacksNetwork = 'mainnet'): Promis
 }
 
 /**
- * Get current block height from the Stacks node.
- * @param network - Target network (mainnet or testnet).
- * @returns The current tip height, or null on failure.
- */
-export async function getBlockHeight(network: StacksNetwork = 'mainnet'): Promise<number | null> {
-  const info = await getCoreApiInfo(network);
-  return info ? info.stx_tip_height : null;
-}
-
-/**
  * Get transactions for a block
  */
 export async function getBlockTransactions(
@@ -243,13 +230,6 @@ export async function getBlockTransactions(
 
 /**
  * Compatibility helpers for event parsing.
- * These functions extract and format blockchain data from raw JSON event objects.
- */
-
-/**
- * Parses a raw STX transfer event into a readable format.
- * @param event The raw event object from chainhook payload
- * @returns Formatted transfer data or null if event is not an STX transfer
  */
 export function parseWhaleTransfer(event: GenericJsonObject): { amountSTX: string; amountFormatted: string; sender: string; recipient: string } | null {
   if ((event.type as string | undefined) !== 'STXTransferEvent') {
@@ -265,7 +245,7 @@ export function parseWhaleTransfer(event: GenericJsonObject): { amountSTX: strin
     return null;
   }
 
-  const amountSTX = (amount / STACKS_MICRO_DIVISOR).toFixed(6);
+  const amountSTX = (amount / 1_000_000).toFixed(6);
   return {
     amountSTX,
     amountFormatted: `${amountSTX} STX`,
@@ -336,57 +316,7 @@ export function formatSTX(amountMicroStx: number | string): string {
   if (!Number.isFinite(amount)) {
     return '0';
   }
-  return (amount / STACKS_MICRO_DIVISOR).toFixed(6);
-}
-
-/**
- * Converts a STX amount (in whole STX) to its microSTX representation.
- *
- * @param stx - Amount in STX.
- * @returns The equivalent amount in microSTX as an integer.
- */
-export function stxToMicro(stx: number): number {
-  if (!Number.isFinite(stx)) return 0;
-  return Math.round(stx * STACKS_MICRO_DIVISOR);
-}
-
-/**
- * Converts a microSTX amount to whole STX.
- *
- * @param micro - Amount in microSTX.
- * @returns The equivalent amount in STX.
- */
-export function microToStx(micro: number | string): number {
-  const amount = typeof micro === 'string' ? Number(micro) : micro;
-  if (!Number.isFinite(amount)) return 0;
-  return amount / STACKS_MICRO_DIVISOR;
-}
-
-/**
- * Returns true if the given transaction status indicates the tx is still pending.
- *
- * @param status - The `tx_status` string from the Stacks API.
- */
-export function isTransactionPending(status: string): boolean {
-  return status === 'pending' || status === 'submitted';
-}
-
-/**
- * Returns true if the given transaction status indicates a successful anchor.
- *
- * @param status - The `tx_status` string from the Stacks API.
- */
-export function isTransactionSuccess(status: string): boolean {
-  return status === 'success';
-}
-
-/**
- * Returns true if the given transaction status indicates a failure or abort.
- *
- * @param status - The `tx_status` string from the Stacks API.
- */
-export function isTransactionFailed(status: string): boolean {
-  return status === 'abort_by_response' || status === 'abort_by_post_condition' || status === 'dropped';
+  return (amount / 1_000_000).toFixed(6);
 }
 
 export function decodeClarityValue<T = unknown>(value: T): T {

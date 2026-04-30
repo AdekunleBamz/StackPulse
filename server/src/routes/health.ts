@@ -27,8 +27,7 @@ interface HealthCheckResult {
 router.get('/', (req: Request, res: Response) => {
   res.json({
     status: 'ok',
-    timestamp: new Date().toISOString(),
-    version: process.env.npm_package_version ?? 'unknown',
+    timestamp: new Date().toISOString()
   });
 });
 
@@ -66,8 +65,7 @@ router.get('/live', (req: Request, res: Response) => {
   res.json({
     status: 'alive',
     timestamp: new Date().toISOString(),
-    uptime: process.uptime(),
-    pid: process.pid,
+    uptime: process.uptime()
   });
 });
 

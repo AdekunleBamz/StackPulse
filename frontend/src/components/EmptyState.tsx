@@ -1,30 +1,20 @@
 import { ComponentType } from 'react';
 import { Bell, Users, History, Search, AlertTriangle, PlusCircle, BellOff } from 'lucide-react';
 
-/**
- * Props for the EmptyState component.
- */
 interface EmptyStateProps {
   icon: ComponentType<{ className?: string; strokeWidth?: number }>;
   title: string;
-  /** Description text explaining the empty state */
   description: string;
-  /** Optional additional CSS classes */
   className?: string;
-  /** Optional secondary description shown below the main one. */
-  hint?: string;
-  /** Optional action button configuration */
   action?: {
-    /** Button label text */
     label: string;
-    /** Click handler for the button */
     onClick: () => void;
   };
 }
 
-export default function EmptyState({ icon: Icon, title, description, hint, action, className = "" }: EmptyStateProps) {
+export default function EmptyState({ icon: Icon, title, description, action, className = "" }: EmptyStateProps) {
   return (
-    <section 
+    <div 
       className={`flex flex-col items-center justify-center py-16 px-4 text-center animate-zoom-in duration-500 group ${className}`}
       role="status"
       aria-labelledby="empty-state-title"
@@ -39,13 +29,10 @@ export default function EmptyState({ icon: Icon, title, description, hint, actio
       </div>
       
       <h3 id="empty-state-title" className="text-xl font-bold text-white mb-2 tracking-tight">{title}</h3>
-      <p id="empty-state-description" className="text-gray-400 max-w-md mb-2 leading-relaxed">{description}</p>
-      {hint && <p className="text-gray-500 text-sm max-w-md mb-6 leading-relaxed">{hint}</p>}
-      {!hint && <div className="mb-6" />}
+      <p id="empty-state-description" className="text-gray-400 max-w-md mb-8 leading-relaxed">{description}</p>
       
       {action && (
         <button
-          type="button"
           onClick={action.onClick}
           className="flex items-center gap-2 px-6 py-2.5 bg-purple-600 hover:bg-purple-500 text-white rounded-xl font-semibold transition-all hover:scale-105 active:scale-95 shadow-lg hover:shadow-purple-500/25 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 focus:ring-offset-gray-950"
         >
@@ -53,7 +40,7 @@ export default function EmptyState({ icon: Icon, title, description, hint, actio
           {action.label}
         </button>
       )}
-    </section>
+    </div>
   );
 }
 

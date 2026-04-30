@@ -126,13 +126,6 @@ Upgrade to a higher subscription tier.
   ...)
 ```
 
-#### get-user-tier
-
-```clarity
-(define-read-only (get-user-tier (who principal))
-  (default-to u0 (get tier (map-get? users who))))
-```
-
 #### get-stats
 
 ```clarity
@@ -433,9 +426,3 @@ const response = await fetch(
   }
 );
 ```
-
-### Integration Note
-
-Track tx IDs for write calls in your app telemetry so users can jump directly to explorer traces when support follow-up is needed.
-
-- Contracts tip: run clarinet checks after any change to event payload fields.

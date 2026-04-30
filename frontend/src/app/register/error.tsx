@@ -23,7 +23,6 @@ export default function RegisterError({
           className="bg-gray-900 border border-red-500/20 shadow-2xl p-10 rounded-[2.5rem]"
         />
         <button
-          type="button"
           onClick={() => router.push('/')}
           className="w-full mt-6 py-4 text-gray-500 hover:text-white transition-all font-bold text-sm uppercase tracking-widest"
         >

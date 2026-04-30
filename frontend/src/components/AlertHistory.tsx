@@ -36,33 +36,28 @@ const alertTypeInfo: Record<number, { name: string; icon: string; color: string 
 
 interface AlertHistoryProps {
   userAddress?: string;
-  /** Initial page to display (default: 1). */
-  initialPage?: number;
 }
 
-export default function AlertHistory({ userAddress, initialPage = 1 }: AlertHistoryProps) {
+export default function AlertHistory({ userAddress }: AlertHistoryProps) {
   const [history, setHistory] = useState<AlertHistoryEntry[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [page, setPage] = useState(initialPage);
+  const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [totalItems, setTotalItems] = useState(0);
   const [filter, setFilter] = useState<number | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [showFilters, setShowFilters] = useState(false);
+  const debouncedSearchQuery = useDebounce(searchQuery, 300);
 
-  const ALERT_HISTORY_PAGE_SIZE = 10;
-  const ALERT_HISTORY_MOCK_COUNT = 50;
-  const ALERT_HISTORY_SEARCH_DEBOUNCE_MS = 300;
-  const pageSize = ALERT_HISTORY_PAGE_SIZE;
-  const debouncedSearchQuery = useDebounce(searchQuery, ALERT_HISTORY_SEARCH_DEBOUNCE_MS);
+  const pageSize = 10;
 
   const fetchHistory = useCallback(async () => {
     setLoading(true);
     setError(null);
     try {
       // Simulated data - replace with actual API call
-      const mockHistory: AlertHistoryEntry[] = Array.from({ length: ALERT_HISTORY_MOCK_COUNT }, (_, i) => ({
+      const mockHistory: AlertHistoryEntry[] = Array.from({ length: 50 }, (_, i) => ({
         id: `hist-${userAddress || 'global'}-${i}`,
         alertId: Math.floor(Math.random() * 10) + 1,
         alertName: `Alert #${Math.floor(Math.random() * 10) + 1}`,
@@ -106,7 +101,7 @@ export default function AlertHistory({ userAddress, initialPage = 1 }: AlertHist
     } finally {
       setLoading(false);
     }
-  }, [debouncedSearchQuery, filter, page]);
+  }, [debouncedSearchQuery, filter, page, userAddress]);
 
   useEffect(() => {
     fetchHistory();
@@ -199,7 +194,6 @@ export default function AlertHistory({ userAddress, initialPage = 1 }: AlertHist
         {showFilters && (
           <div className="mt-4 flex flex-wrap gap-2">
             <button
-              type="button"
               onClick={() => setFilter(null)}
               className={`px-3 py-1.5 rounded-lg text-sm transition-all focus:outline-none focus:ring-2 focus:ring-purple-500/50 ${
                 filter === null
@@ -215,7 +209,6 @@ export default function AlertHistory({ userAddress, initialPage = 1 }: AlertHist
               return (
                 <button
                   key={type}
-                  type="button"
                   onClick={() => setFilter(typeValue)}
                   className={`px-3 py-1.5 rounded-lg text-sm flex items-center gap-1.5 transition-all focus:outline-none focus:ring-2 focus:ring-purple-500/50 ${
                     filter === typeValue
@@ -285,19 +278,17 @@ export default function AlertHistory({ userAddress, initialPage = 1 }: AlertHist
             ) : history.length === 0 ? (
               <tr>
                 <td colSpan={5} className="px-6 py-12">
-                  <div role="status" aria-live="polite">
-                    {filter !== null || debouncedSearchQuery ? (
-                      <NoResultsState
-                        onClearFilter={() => {
-                          setFilter(null);
-                          setSearchQuery('');
-                          setShowFilters(false);
-                        }}
-                      />
-                    ) : (
-                      <NoTransactionsState />
-                    )}
-                  </div>
+                  {filter !== null || debouncedSearchQuery ? (
+                    <NoResultsState
+                      onClearFilter={() => {
+                        setFilter(null);
+                        setSearchQuery('');
+                        setShowFilters(false);
+                      }}
+                    />
+                  ) : (
+                    <NoTransactionsState />
+                  )}
                 </td>
               </tr>
             ) : (
@@ -329,8 +320,8 @@ export default function AlertHistory({ userAddress, initialPage = 1 }: AlertHist
                       target="_blank"
                       rel="noopener noreferrer"
                       className="inline-flex items-center gap-1 text-purple-400 hover:text-purple-300 text-sm font-mono"
-                      aria-label={`View transaction ${entry.txHash} on Hiro Explorer`}
-                      title="View on Hiro Explorer"
+                      aria-label={`View transaction ${entry.txHash} on explorer`}
+                      title="View on explorer"
                     >
                       {entry.txHash.slice(0, 8)}...{entry.txHash.slice(-6)}
                       <ExternalLink className="w-3 h-3" aria-hidden="true" />
@@ -345,56 +336,36 @@ export default function AlertHistory({ userAddress, initialPage = 1 }: AlertHist
       </div>
 
       {/* Pagination */}
-      <div className="flex items-center justify-between px-6 py-4 border-t border-gray-800 bg-gray-900/30">
-        <div className="flex items-center gap-4">
-          <p className="text-gray-400 text-xs font-medium">
-            {loading ? (
-              <span className="animate-pulse">Loading history...</span>
-            ) : (
-              <>
-                Showing <span className="text-white font-bold">{Math.min((page - 1) * pageSize + 1, totalItems)}</span>–
-                <span className="text-white font-bold">{Math.min(page * pageSize, totalItems)}</span> of <span className="text-white font-bold">{totalItems}</span>
-              </>
-            )}
+      {totalPages > 1 && (
+        <div className="flex items-center justify-between px-6 py-4 border-t border-gray-800">
+          <p className="text-gray-400 text-sm">
+            Showing {Math.min((page - 1) * pageSize + 1, totalItems)}–
+            {Math.min(page * pageSize, totalItems)} of {totalItems}
           </p>
-          {!loading && totalPages > 1 && (
-            <div className="hidden sm:flex items-center gap-1 ml-2">
-              <span className="text-[10px] text-gray-500 uppercase font-black tracking-widest">Page</span>
-              <span className="text-[10px] text-purple-400 font-black">{page}</span>
-              <span className="text-[10px] text-gray-500 uppercase font-black tracking-widest">of</span>
-              <span className="text-[10px] text-gray-300 font-black">{totalPages}</span>
-            </div>
-          )}
-        </div>
-        
-        <div className="flex items-center gap-2">
-          <button
-            type="button"
-            onClick={() => setPage(p => Math.max(1, p - 1))}
-            disabled={page === 1 || loading}
-            className="p-2 bg-gray-800 text-gray-400 rounded-lg disabled:opacity-30 disabled:cursor-not-allowed hover:text-white transition-all focus:outline-none focus:ring-2 focus:ring-purple-500/50 active:scale-90"
-            aria-label="Go to previous page"
-            title="Previous page"
-          >
-            <ChevronLeft className="w-5 h-5" aria-hidden="true" />
-          </button>
-          
-          <div className="flex sm:hidden text-xs font-bold text-gray-500">
-            {page} / {totalPages}
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={() => setPage(p => Math.max(1, p - 1))}
+              disabled={page === 1}
+              className="p-2 bg-gray-800 text-gray-400 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:text-white transition-all focus:outline-none focus:ring-2 focus:ring-purple-500/50"
+              aria-label="Go to previous page"
+              title="Previous page"
+            >
+              <ChevronLeft className="w-5 h-5" aria-hidden="true" />
+            </button>
+            <button
+              type="button"
+              onClick={() => setPage(p => Math.min(totalPages, p + 1))}
+              disabled={page === totalPages}
+              className="p-2 bg-gray-800 text-gray-400 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:text-white transition-all focus:outline-none focus:ring-2 focus:ring-purple-500/50"
+              aria-label="Go to next page"
+              title="Next page"
+            >
+              <ChevronRight className="w-5 h-5" aria-hidden="true" />
+            </button>
           </div>
-
-          <button
-            type="button"
-            onClick={() => setPage(p => Math.min(totalPages, p + 1))}
-            disabled={page === totalPages || loading}
-            className="p-2 bg-gray-800 text-gray-400 rounded-lg disabled:opacity-30 disabled:cursor-not-allowed hover:text-white transition-all focus:outline-none focus:ring-2 focus:ring-purple-500/50 active:scale-90"
-            aria-label="Go to next page"
-            title="Next page"
-          >
-            <ChevronRight className="w-5 h-5" aria-hidden="true" />
-          </button>
         </div>
-      </div>
+      )}
     </div>
   );
 }

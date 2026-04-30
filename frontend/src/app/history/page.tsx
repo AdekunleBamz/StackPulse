@@ -65,7 +65,6 @@ export default function HistoryPage() {
             <div className="flex items-center gap-4">
               <Link
                 href="/dashboard"
-                prefetch={true}
                 className="p-2 text-gray-400 hover:text-white hover:bg-gray-800 rounded-lg transition-all"
               >
                 <ArrowLeft className="w-5 h-5" />
@@ -166,8 +165,8 @@ export default function HistoryPage() {
                       target="_blank"
                       rel="noopener noreferrer"
                       className="flex items-center gap-1 text-purple-400 hover:text-purple-300 text-sm rounded-md focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400/90"
-                      aria-label={`View transaction ${trigger.txHash} on Hiro Explorer`}
-                      title="View on Hiro Explorer"
+                      aria-label={`View transaction ${trigger.txHash} on explorer`}
+                      title="View on explorer"
                     >
                       View TX
                       <ExternalLink className="w-3 h-3" />

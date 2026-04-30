@@ -3,24 +3,14 @@
 import { useEffect, useId, useRef, useState } from 'react';
 
 interface ConfirmDialogProps {
-  /** Whether the dialog is currently visible */
   isOpen: boolean;
-  /** The title text displayed at the top of the dialog */
   title: string;
-  /** The main content message explaining the action to be confirmed */
   message: string;
-  /** Optional custom label for the confirmation button (defaults to "Confirm") */
   confirmLabel?: string;
-  /** Optional custom label for the cancellation button (defaults to "Cancel") */
   cancelLabel?: string;
-  /** Callback function executed when the user confirms. Can return a Promise for async actions. */
   onConfirm: () => void | Promise<void>;
-  /** Callback function executed when the user cancels or closes the dialog */
   onCancel: () => void;
-  /** Visual style variant of the dialog (defaults to "danger") */
   variant?: 'danger' | 'warning' | 'info';
-  /** When true, the confirm button is disabled regardless of loading state. */
-  confirmDisabled?: boolean;
 }
 
 export default function ConfirmDialog({
@@ -31,8 +21,7 @@ export default function ConfirmDialog({
   cancelLabel = 'Cancel',
   onConfirm,
   onCancel,
-  variant = 'danger',
-  confirmDisabled = false,
+  variant = 'danger'
 }: ConfirmDialogProps) {
   const [isLoading, setIsLoading] = useState(false);
   const titleId = useId();
@@ -107,7 +96,7 @@ export default function ConfirmDialog({
       
       {/* Dialog */}
       <div
-        className="relative bg-gray-900 border border-gray-700 rounded-2xl p-6 max-w-md w-full shadow-2xl animate-zoom-in max-h-[90vh] overflow-y-auto custom-scrollbar"
+        className="relative bg-gray-900 border border-gray-700 rounded-2xl p-6 max-w-md w-full shadow-2xl animate-zoom-in"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-start gap-4">
@@ -140,7 +129,6 @@ export default function ConfirmDialog({
         
         <div className="flex gap-3 mt-6">
           <button
-            type="button"
             onClick={onCancel}
             disabled={isLoading}
             ref={cancelButtonRef}
@@ -149,9 +137,8 @@ export default function ConfirmDialog({
             {cancelLabel}
           </button>
           <button
-            type="button"
             onClick={handleConfirm}
-            disabled={isLoading || confirmDisabled}
+            disabled={isLoading}
             aria-busy={isLoading}
             className={`flex-1 px-4 py-2 ${styles.button} text-white rounded-lg font-semibold disabled:opacity-50 flex items-center justify-center gap-2 shadow-sm hover:-translate-y-0.5 hover:shadow-lg active:scale-95 transition-all duration-300`}
           >

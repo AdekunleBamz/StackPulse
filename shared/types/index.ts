@@ -22,9 +22,9 @@ export interface Alert {
   userAddress: string;
   /** Alert type identifier (1=whale, 2=contract, 3=nft, 4=token, 5=swap, 6=custom) */
   alertType: number;
-  /** Minimum value required to trigger (e.g. STX amount for whale transfers, or number of events) */
+  /** Optional threshold value for triggering the alert */
   threshold?: number;
-  /** Optional specific address to monitor (e.g. for address watch alerts) */
+  /** Optional specific address to monitor */
   targetAddress?: string;
   /** Optional webhook URL for external notifications */
   webhookUrl?: string;
@@ -38,29 +38,15 @@ export interface Alert {
   triggerCount: number;
 }
 
-/** 
- * Alert type identifiers matching the Clarity contract definitions.
- * These IDs are used to route alerts correctly to the notification dispatchers.
- */
+/** Alert type identifiers matching the contract definitions */
 export enum AlertTypeId {
-  /** Triggered when a large amount of STX is transferred */
   WhaleTransfer = 1,
-  /** Triggered when a new smart contract is deployed to the blockchain */
   ContractDeployed = 2,
-  /** Triggered when an NFT is minted in a tracked collection */
   NFTMint = 3,
-  /** Triggered when a new SIP-010 token contract is detected */
   TokenLaunch = 4,
-  /** Triggered when a swap exceeding a certain value is detected */
   LargeSwap = 5,
-  /** Triggered when any activity is detected on a specific address */
   AddressWatch = 6,
 }
-
-/** The minimum valid AlertTypeId value */
-export const MIN_ALERT_TYPE_ID = AlertTypeId.WhaleTransfer;
-/** The maximum valid AlertTypeId value */
-export const MAX_ALERT_TYPE_ID = AlertTypeId.AddressWatch;
 
 /** Request body for creating a new alert */
 export interface CreateAlertRequest {
@@ -98,14 +84,31 @@ export interface User {
   badgeCount: number;
 }
 
-export type UserTier = 'Free' | 'Basic' | 'Pro' | 'Premium';
-
-export interface TierLimits {
-  maxAlerts: number;
-  features: string[];
-  webhookSupport: boolean;
+/** User notification preferences */
+export interface UserPreferences {
+  /** User's Stacks wallet address */
+  address: string;
+  /** Optional username */
+  username?: string;
+  /** Optional email for notifications */
+  email?: string;
+  /** Optional Discord tag */
+  discord?: string;
+  /** Optional Telegram username */
+  telegram?: string;
+  /** Array of enabled alert types */
+  enabledAlerts: string[];
 }
 
+/** Subscription tier levels */
+export enum SubscriptionTier {
+  Free = 0,
+  Basic = 1,
+  Pro = 2,
+  Premium = 3,
+}
+
+// ============================================================================
 // Notification Types
 // ============================================================================
 

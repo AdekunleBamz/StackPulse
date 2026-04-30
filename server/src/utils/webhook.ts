@@ -23,10 +23,6 @@ const MAX_WEBHOOKS_PER_USER = new Map<number, number>([
   [2, 100],  // WHALE
   [3, 1000]  // EXCHANGE
 ]);
-/** Acceptable time window for webhook replay protection (5 minutes in ms). */
-const WEBHOOK_REPLAY_WINDOW_MS = 5 * 60 * 1_000;
-/** Default rate limit (requests per window) for outbound webhook delivery. */
-const WEBHOOK_DEFAULT_RATE_LIMIT = 100;
 
 /**
  * Generate HMAC signature for webhook payload
@@ -67,10 +63,13 @@ export function verifySignature(
 /**
  * Validate webhook payload structure
  */
-export function validateWebhookPayload(data: any): { payload: WebhookPayload | null; error?: string } {
-  if (!data) return { payload: null, error: 'Empty payload' };
-  
-  const { event, data: payloadData, timestamp } = data;
+export function validateWebhookPayload(data: unknown): { payload: WebhookPayload | null; error?: string } {
+  if (!data || typeof data !== 'object') return { payload: null, error: 'Empty payload' };
+
+  const payloadRecord = data as Record<string, unknown>;
+  const event = payloadRecord.event;
+  const payloadData = payloadRecord.data;
+  const timestamp = payloadRecord.timestamp;
   
   if (!event || typeof event !== 'string') {
     return { payload: null, error: 'Missing or invalid event type' };
@@ -130,7 +129,7 @@ export function processWebhook(
 export async function sendWebhook(
   url: string,
   payload: WebhookPayload,
-  rateLimit: number = WEBHOOK_DEFAULT_RATE_LIMIT
+  rateLimit: number = 100 // Default rate limit
 ): Promise<boolean> {
   // Simulating rate limit check
   // In a real app, we'd use a Redis-based rate limiter
@@ -170,31 +169,6 @@ export async function sendWebhook(
       error, 
       duration: `${duration}ms` 
     });
-    return false;
-  }
-}
-
-/**
- * Returns the maximum number of webhooks allowed for a given user tier.
- * Returns 0 for unrecognised tiers.
- *
- * @param tier - Numeric tier identifier (0 = FREE, 1 = PRO, 2 = WHALE, 3 = EXCHANGE).
- */
-export function getMaxWebhooksForTier(tier: number): number {
-  return MAX_WEBHOOKS_PER_USER.get(tier) ?? 0;
-}
-
-/**
- * Returns true if a given URL is a valid absolute HTTP(S) URL suitable for webhook delivery.
- *
- * @param url - The URL string to validate.
- */
-export function isValidWebhookUrl(url: string): boolean {
-  if (typeof url !== 'string') return false;
-  try {
-    const parsed = new URL(url);
-    return parsed.protocol === 'http:' || parsed.protocol === 'https:';
-  } catch {
     return false;
   }
 }
