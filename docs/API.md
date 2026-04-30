@@ -754,3 +754,4 @@ ws.onmessage = (event) => {
 ### Reliability Note
 
 Clients should apply exponential backoff with jitter when reconnecting WebSocket sessions to avoid synchronized reconnect storms during outages.
+Prefer recording WebSocket event timestamps in UTC ISO-8601 format so incident timelines stay comparable across regions.
