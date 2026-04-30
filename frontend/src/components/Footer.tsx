@@ -138,7 +138,7 @@ export default function Footer() {
               © {new Date().getFullYear()} StackPulse Labs. <span className="text-gray-600 font-medium ml-1">All Rights Reserved.</span>
             </p>
             <p className="text-gray-500/80 text-[10px] font-medium tracking-wide">
-              Crafted with <span className="text-purple-500/60 transition-colors hover:text-purple-500 cursor-default">♥</span> for the Stacks Network.
+              Crafted with <span className="text-purple-500/60 transition-colors hover:text-purple-500 cursor-default" title="Built with care">♥</span> for the Stacks Network.
             </p>
           </div>
           <div className="flex items-center gap-4">
