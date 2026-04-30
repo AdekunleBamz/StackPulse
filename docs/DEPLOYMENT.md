@@ -378,6 +378,7 @@ git push origin main
 - Check environment variables are set in Vercel
 - Verify Next.js version compatibility
 - Check for TypeScript errors
+- Confirm `origin/main` and `origin-main` point to the same release head before opening the deployment window
 
 ### Rollout Window Note
 
