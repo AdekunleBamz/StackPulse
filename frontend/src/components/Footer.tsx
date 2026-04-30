@@ -134,7 +134,7 @@ export default function Footer() {
 
         <div className="pt-10 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-8 shadow-[inset_0_1px_0_rgba(255,255,255,0.02)]">
           <div className="flex flex-col items-center md:items-start gap-2 text-center md:text-left">
-            <p className="text-gray-400 text-[11px] font-bold tracking-tight">
+            <p className="text-gray-400 text-[11px] font-bold tracking-tight" title="StackPulse copyright notice">
               © {new Date().getFullYear()} StackPulse Labs. <span className="text-gray-600 font-medium ml-1">All Rights Reserved.</span>
             </p>
             <p className="text-gray-500/80 text-[10px] font-medium tracking-wide">
