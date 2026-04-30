@@ -35,7 +35,7 @@ const ActivityItem = memo(({ item, index }: ActivityItemProps) => {
           href={`https://explorer.hiro.so/txid/${item.txId}?chain=mainnet`}
           target="_blank"
           rel="noopener noreferrer"
-          className="text-[10px] font-bold text-purple-400 hover:text-purple-300 opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1"
+          className="text-[10px] font-bold text-purple-400 hover:text-purple-300 opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1 rounded-sm focus-visible:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-500/60"
           onClick={(e) => e.stopPropagation()}
         >
           View Transaction
