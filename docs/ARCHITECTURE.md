@@ -36,3 +36,4 @@ This document describes the high-level architecture of the StackPulse ecosystem,
 6. **Live Update**: WebSocket gateway broadcasts the event to active dashboard users.
 
 7. **Postmortem Loop**: Operations review alert misses and noisy triggers to tune matching rules and provider retry thresholds.
+8. **Replay Safety**: Event consumers should stay idempotent so controlled replay windows can be run without duplicating user-facing alerts.
