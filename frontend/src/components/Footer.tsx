@@ -118,7 +118,7 @@ export default function Footer() {
             </ul>
           </nav>
  
-          <nav aria-label="Legal Links">
+          <nav aria-label="Legal Links" title="Legal links">
             <h3 className="text-white/40 font-black text-[11px] uppercase tracking-[0.25em] mb-7">Legal</h3>
             <ul className="space-y-4">
               {footerLinks.legal.map((link) => (
