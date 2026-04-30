@@ -105,6 +105,7 @@ const LiveStats = memo(() => {
                 setLoading(true);
                 setRefreshKey((k) => k + 1);
               }}
+              title="Retry loading live stats"
               className="mt-6 inline-flex items-center justify-center px-6 py-2 bg-gray-800 border border-gray-700 hover:bg-gray-700 text-white rounded-xl font-semibold transition-all hover:scale-105 active:scale-95 shadow-lg"
             >
               Retry
