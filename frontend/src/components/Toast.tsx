@@ -59,6 +59,8 @@ const toastStyles = {
   },
 };
 
+const TOAST_LEAVE_ANIMATION_DURATION_MS = 300;
+
 function Toast({ id, type, title, message, duration = 5000, onClose }: ToastProps) {
   const [isLeaving, setIsLeaving] = useState(false);
   const [progress, setProgress] = useState(100);
@@ -109,7 +111,7 @@ function Toast({ id, type, title, message, duration = 5000, onClose }: ToastProp
   const handleClose = () => {
     clearTimers();
     setIsLeaving(true);
-    leavingTimerRef.current = window.setTimeout(() => onClose(id), 300);
+    leavingTimerRef.current = window.setTimeout(() => onClose(id), TOAST_LEAVE_ANIMATION_DURATION_MS);
   };
 
   const pause = () => {

@@ -50,8 +50,9 @@ export default function ConnectWallet() {
         aria-label="Connect your Stacks wallet"
         title="Connect your Stacks wallet"
       >
+        <Wallet className="w-4 h-4" aria-hidden="true" />
         Connect Wallet
-      </Button>
+      </button>
     );
   }
 
