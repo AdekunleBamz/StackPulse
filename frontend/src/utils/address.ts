@@ -32,3 +32,12 @@ export function isValidStacksAddress(address: string): boolean {
   if (typeof address !== 'string') return false;
   return (address.startsWith('SP') || address.startsWith('ST')) && address.length >= 30;
 }
+
+/**
+ * Returns a shorter truncated address (4 start + 4 end chars).
+ * @param address - The full Stacks address
+ * @returns Shortened address, e.g. "SP12...5678"
+ */
+export function formatAddressShort(address: string): string {
+  return truncateAddress(address, 4, 4);
+}
