@@ -3,6 +3,7 @@
 import { useState, useCallback, useMemo } from 'react';
 
 interface MetricPoint {
+  /** Unix millisecond timestamp of the data point */
   timestamp: number;
   value: number;
   [key: string]: any;
