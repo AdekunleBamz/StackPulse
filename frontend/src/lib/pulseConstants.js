@@ -61,4 +61,7 @@ export const PULSE_BLOCKS_PER_HOUR = 6
 /** Number of Stacks blocks produced per day (~10-min block time) */
 export const PULSE_BLOCKS_PER_DAY = 144
 
+/** Minimum cooldown between desktop notification dispatches (ms) */
+export const PULSE_MIN_NOTIFICATION_COOLDOWN_MS = 5000
+
 export const PULSE_BLOCKS_PER_DAY = 144
