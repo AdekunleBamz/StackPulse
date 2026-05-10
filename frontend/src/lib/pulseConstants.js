@@ -70,4 +70,7 @@ export const PULSE_DEFAULT_THEME = 'dark'
 /** Maximum character length for an alert name */
 export const PULSE_MAX_ALERT_NAME_LENGTH = 64
 
+/** Minimum microSTX amount that qualifies as a whale transfer */
+export const PULSE_MIN_WHALE_THRESHOLD_MICROSTX = 100_000_000_000
+
 export const PULSE_BLOCKS_PER_DAY = 144
