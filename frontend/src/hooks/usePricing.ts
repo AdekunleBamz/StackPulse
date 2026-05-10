@@ -4,6 +4,7 @@ import { toast } from '@/components/Toast';
 
 const DEPLOYER_ADDRESS = process.env.NEXT_PUBLIC_DEPLOYER_ADDRESS || '';
 
+/** Subscription tier prices in microSTX (1 STX = 1,000,000 microSTX) */
 export const TIER_PRICES_MICROSTACKS: Record<number, number> = {
   0: 0,         // Free
   1: 1000000,   // 1 STX for Basic
