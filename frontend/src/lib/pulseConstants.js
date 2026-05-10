@@ -67,4 +67,7 @@ export const PULSE_MIN_NOTIFICATION_COOLDOWN_MS = 5000
 /** Default UI theme for new users */
 export const PULSE_DEFAULT_THEME = 'dark'
 
+/** Maximum character length for an alert name */
+export const PULSE_MAX_ALERT_NAME_LENGTH = 64
+
 export const PULSE_BLOCKS_PER_DAY = 144
