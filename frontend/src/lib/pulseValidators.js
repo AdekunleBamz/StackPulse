@@ -77,3 +77,10 @@ export const isValidWebhookUrl = (url) =>
   typeof url === 'string' &&
   url.startsWith('https://') &&
   url.length <= 512;
+
+/**
+ * Validates an alert threshold — must be a finite non-negative number.
+ * @param {*} t - Value to validate
+ * @returns {boolean}
+ */
+export const isValidAlertThreshold = (t) => typeof t === 'number' && isFinite(t) && t >= 0;
