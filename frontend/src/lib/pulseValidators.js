@@ -15,6 +15,11 @@ export const isValidPulsePrice = (v) => !isNaN(parseFloat(v)) && parseFloat(v) >
  */
 export const isValidBlockHeight = (b) => Number.isInteger(b) && b >= 0;
 
+/**
+ * Validates that a transaction ID is a 64-character hex string.
+ * @param {*} id - Value to validate
+ * @returns {boolean}
+ */
 export const isValidPulseTxId = (id) => typeof id === "string" && id.length === 64;
 
 export const isValidPulseAddress = (a) => typeof a === "string" && a.startsWith("SP") && a.length > 10;
