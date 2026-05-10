@@ -76,4 +76,7 @@ export const PULSE_MIN_WHALE_THRESHOLD_MICROSTX = 100_000_000_000
 /** Feed polling interval when live WebSocket is unavailable (ms) */
 export const PULSE_FEED_REFRESH_MS = 10_000
 
+/** Maximum character length for a webhook URL */
+export const PULSE_MAX_WEBHOOK_URL_LENGTH = 512
+
 export const PULSE_BLOCKS_PER_DAY = 144
