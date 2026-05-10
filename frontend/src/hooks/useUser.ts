@@ -6,6 +6,8 @@ import logger from '@/lib/logger';
 
 /**
  * Represents a registered StackPulse user with subscription and activity data.
+ * @property tier - Numeric subscription tier (0 = free, higher = premium)
+ * @property badges - Array of earned badge IDs
  */
 interface User {
   address: string;
