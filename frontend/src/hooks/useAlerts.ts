@@ -6,6 +6,9 @@ import logger from '@/lib/logger';
 
 /**
  * Represents a user-configured blockchain event alert.
+ * @property id - Unique alert identifier
+ * @property alertType - Numeric type identifier (whale, contract deploy, etc.)
+ * @property enabled - Whether the alert is currently active
  */
 interface Alert {
   id: string;
