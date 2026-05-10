@@ -79,4 +79,7 @@ export const PULSE_FEED_REFRESH_MS = 10_000
 /** Maximum character length for a webhook URL */
 export const PULSE_MAX_WEBHOOK_URL_LENGTH = 512
 
+/** Session inactivity timeout before requiring re-authentication (ms) */
+export const PULSE_SESSION_TIMEOUT_MS = 1_800_000
+
 export const PULSE_BLOCKS_PER_DAY = 144
