@@ -4,6 +4,11 @@ import { toast } from '@/components/Toast';
 
 const DEPLOYER_ADDRESS = process.env.NEXT_PUBLIC_DEPLOYER_ADDRESS || '';
 
+/**
+ * On-chain account data for a registered StackPulse user.
+ * @property tier - Subscription tier (0 = free)
+ * @property subscriptionEnds - Block height at which subscription expires
+ */
 export interface UserAccountData {
   username: string;
   tier: number;
