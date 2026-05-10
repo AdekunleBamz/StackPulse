@@ -1,5 +1,10 @@
 import { useState, useEffect, useCallback } from 'react';
 
+/**
+ * Live price data snapshot for STX and BTC.
+ * @property stx.change24h - 24-hour percentage change for STX
+ * @property btc.change24h - 24-hour percentage change for BTC
+ */
 export interface PriceData {
   stx: {
     usd: number;
