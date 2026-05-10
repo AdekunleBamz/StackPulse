@@ -1,5 +1,9 @@
 import { useState, useEffect, useCallback } from 'react';
 
+/**
+ * Hook for fetching and auto-refreshing StackPulse event statistics.
+ * @module useStats
+ */
 export interface EventStats {
   whaleTransfers: number;
   contractDeployments: number;
