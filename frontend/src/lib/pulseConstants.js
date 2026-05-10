@@ -64,4 +64,7 @@ export const PULSE_BLOCKS_PER_DAY = 144
 /** Minimum cooldown between desktop notification dispatches (ms) */
 export const PULSE_MIN_NOTIFICATION_COOLDOWN_MS = 5000
 
+/** Default UI theme for new users */
+export const PULSE_DEFAULT_THEME = 'dark'
+
 export const PULSE_BLOCKS_PER_DAY = 144
