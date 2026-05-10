@@ -58,4 +58,7 @@ export const PULSE_STORAGE_KEYS = {
 
 export const PULSE_BLOCKS_PER_HOUR = 6
 
+/** Number of Stacks blocks produced per day (~10-min block time) */
+export const PULSE_BLOCKS_PER_DAY = 144
+
 export const PULSE_BLOCKS_PER_DAY = 144
