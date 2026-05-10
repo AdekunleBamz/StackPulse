@@ -73,4 +73,7 @@ export const PULSE_MAX_ALERT_NAME_LENGTH = 64
 /** Minimum microSTX amount that qualifies as a whale transfer */
 export const PULSE_MIN_WHALE_THRESHOLD_MICROSTX = 100_000_000_000
 
+/** Feed polling interval when live WebSocket is unavailable (ms) */
+export const PULSE_FEED_REFRESH_MS = 10_000
+
 export const PULSE_BLOCKS_PER_DAY = 144
