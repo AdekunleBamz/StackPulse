@@ -49,3 +49,11 @@ export const TRANSITIONS = {
   base: 'all 0.2s ease',
   slow: 'all 0.3s ease',
 };
+
+/** Responsive breakpoints in pixels */
+export const BREAKPOINTS = {
+  sm: 640,
+  md: 768,
+  lg: 1024,
+  xl: 1280,
+};
