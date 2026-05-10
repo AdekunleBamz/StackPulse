@@ -52,6 +52,11 @@ export const formatPulseAddress = (a) => {
   return a.slice(0, 6) + '...' + a.slice(-4);
 };
 
+/**
+ * Formats a microSTX volume as a readable STX million string.
+ * @param {number} v - Volume in microSTX
+ * @returns {string} e.g. "1.23M STX"
+ */
 export const formatPulseVolume = (v) => (v / PULSE_MICROSTX_PER_STX).toFixed(2) + "M STX";
 
 export const formatPulseMarketCap = (m) => "$" + (m / 1e9).toFixed(2) + "B";
