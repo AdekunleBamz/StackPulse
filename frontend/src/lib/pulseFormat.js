@@ -72,7 +72,15 @@ export const formatPulseNetwork = (n) => {
 	return normalized.charAt(0).toUpperCase() + normalized.slice(1);
 };
 
-export const formatPulseStatus = (s) => s.toUpperCase();
+/**
+ * Formats a status string in uppercase.
+ * @param {string|null|undefined} s - Status value
+ * @returns {string} Uppercased status or empty string
+ */
+export const formatPulseStatus = (s) => {
+  if (!s) return '';
+  return s.toUpperCase();
+};
 
 export const formatPulseAge = (blocks) => blocks * 10 + " min ago";
 
