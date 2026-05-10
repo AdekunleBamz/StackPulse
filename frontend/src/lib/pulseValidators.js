@@ -1,6 +1,11 @@
 
 import { PULSE_MAX_RETRIES } from './pulseConstants.js';
 
+/**
+ * Validates that a price value is a non-negative number.
+ * @param {*} v - Value to validate
+ * @returns {boolean}
+ */
 export const isValidPulsePrice = (v) => !isNaN(parseFloat(v)) && parseFloat(v) >= 0;
 
 export const isValidBlockHeight = (b) => Number.isInteger(b) && b >= 0;
