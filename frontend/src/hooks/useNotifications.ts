@@ -1,5 +1,9 @@
 import { useCallback, useState, useEffect } from 'react';
 
+/**
+ * Hook for managing browser Notification API permission and dispatching alerts.
+ * @returns {{ permission, requestPermission, sendNotification }} Notification controls
+ */
 export function useNotifications() {
   const [permission, setPermission] = useState<NotificationPermission>('default');
 
