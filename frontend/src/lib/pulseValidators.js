@@ -48,6 +48,11 @@ export const isValidReconnectDelay = (ms) => Number.isInteger(ms) && ms >= 0;
 
 export const isValidStaleThreshold = (ms) => Number.isInteger(ms) && ms > 0;
 
+/**
+ * Validates that a value is a finite number and can represent a price delta.
+ * @param {*} d - Value to validate
+ * @returns {boolean}
+ */
 export const isValidPulseDelta = (d) => typeof d === "number" && isFinite(d);
 
 export const isValidPulseVolume = (v) => typeof v === "number" && v >= 0;
