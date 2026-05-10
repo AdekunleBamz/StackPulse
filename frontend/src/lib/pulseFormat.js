@@ -22,7 +22,15 @@ export const formatPulseDelta = (d) => (d >= 0 ? "+" : "") + d.toFixed(2) + "%";
  */
 export const formatPulseBlock = (b) => "#" + b;
 
-export const formatPulseTxId = (id) => id.slice(0, 8) + "...";
+/**
+ * Truncates a transaction ID for display.
+ * @param {string|null|undefined} id - Full transaction ID
+ * @returns {string} Shortened tx id, e.g. "abcd1234..."
+ */
+export const formatPulseTxId = (id) => {
+  if (!id) return '';
+  return id.slice(0, 8) + '...';
+};
 
 export const formatPulseTimestamp = (ts) => new Date(ts).toLocaleTimeString();
 
