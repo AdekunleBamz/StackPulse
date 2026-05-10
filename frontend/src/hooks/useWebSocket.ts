@@ -6,6 +6,8 @@ import logger from '@/lib/logger';
 
 /**
  * Configuration options for the useWebSocket hook.
+ * @property reconnect - Automatically reconnect on disconnect (default: true)
+ * @property maxReconnectAttempts - Maximum number of reconnection attempts
  */
 interface UseWebSocketOptions {
   url?: string;
