@@ -42,3 +42,10 @@ export const SHADOWS = {
   brand: '0 20px 50px rgba(0,0,0,0.5)',
   glow: '0 0 20px rgba(139, 92, 246, 0.2)',
 };
+
+/** Common CSS transition values for consistent UI animation */
+export const TRANSITIONS = {
+  fast: 'all 0.1s ease',
+  base: 'all 0.2s ease',
+  slow: 'all 0.3s ease',
+};
