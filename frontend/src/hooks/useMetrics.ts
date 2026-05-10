@@ -9,6 +9,7 @@ interface MetricPoint {
 }
 
 interface UseMetricsOptions {
+  /** Maximum number of data points to retain in the window (default: 50) */
   windowSize?: number;
   initialData?: MetricPoint[];
 }
