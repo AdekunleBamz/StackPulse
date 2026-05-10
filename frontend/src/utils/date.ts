@@ -40,3 +40,12 @@ export function formatFullDate(timestamp: number | string | Date): string {
 }
 
 export default { formatRelativeTime, formatFullDate };
+
+/**
+ * Format a timestamp as a date-only locale string.
+ * @param timestamp - Unix ms timestamp, ISO string, or Date object
+ * @returns Date string, e.g. "Jun 1, 2025"
+ */
+export function formatDateOnly(timestamp: number | string | Date): string {
+  return new Date(timestamp).toLocaleDateString(undefined, { dateStyle: 'medium' });
+}
