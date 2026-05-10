@@ -1,4 +1,10 @@
 /**
+ * @module logger
+ * Lightweight structured logger for the StackPulse frontend.
+ * In production, only warnings and errors are emitted.
+ */
+
+/**
  * Available log levels for the frontend logger.
  */
 type LogLevel = 'debug' | 'info' | 'warn' | 'error';
