@@ -61,4 +61,9 @@ export const isValidPriceDecimals = (d) => Number.isInteger(d) && d >= 0 && d <=
 
 export const isValidPulseContractAddress = (a) => typeof a === "string" && a.includes(".");
 
-export const isValidPulseUsername = (u) => typeof u === "string" && u.length >= 1 && u.length <= 32;
+/**
+ * Validates an alert name against length constraints.
+ * @param {*} n - Value to validate
+ * @returns {boolean}
+ */
+export const isValidPulseAlertName = (n) => typeof n === 'string' && n.trim().length >= 1 && n.trim().length <= 64;
