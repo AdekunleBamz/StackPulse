@@ -67,3 +67,13 @@ export const isValidPulseContractAddress = (a) => typeof a === "string" && a.inc
  * @returns {boolean}
  */
 export const isValidPulseAlertName = (n) => typeof n === 'string' && n.trim().length >= 1 && n.trim().length <= 64;
+
+/**
+ * Validates a webhook URL — must be a non-empty https:// URL within max length.
+ * @param {*} url - Value to validate
+ * @returns {boolean}
+ */
+export const isValidWebhookUrl = (url) =>
+  typeof url === 'string' &&
+  url.startsWith('https://') &&
+  url.length <= 512;
