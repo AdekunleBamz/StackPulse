@@ -1,5 +1,10 @@
 import { useCallback, useEffect, useState } from 'react';
 
+/**
+ * Hook for managing UI sound effects using the Web Audio API.
+ * Respects user preference persisted in localStorage.
+ * @module useSound
+ */
 const SOUND_ENABLED_KEY = 'stackpulse:sound-enabled';
 
 type SoundKind = 'success' | 'notification';
