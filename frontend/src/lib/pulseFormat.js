@@ -61,6 +61,11 @@ export const formatPulseVolume = (v) => (v / PULSE_MICROSTX_PER_STX).toFixed(2) 
 
 export const formatPulseMarketCap = (m) => "$" + (m / 1e9).toFixed(2) + "B";
 
+/**
+ * Formats a network name with title-case normalization.
+ * @param {string|null|undefined} n - Network identifier
+ * @returns {string} Normalized network name, e.g. "Mainnet"
+ */
 export const formatPulseNetwork = (n) => {
 	const normalized = typeof n === 'string' ? n.trim().toLowerCase() : '';
 	if (!normalized) return 'Unknown';
