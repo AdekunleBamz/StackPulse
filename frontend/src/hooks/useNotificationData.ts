@@ -1,5 +1,10 @@
 import { useState, useEffect, useCallback } from 'react';
 
+/**
+ * A single in-app notification record.
+ * @property read - Whether the user has seen this notification
+ * @property txHash - Optional on-chain transaction hash associated with the event
+ */
 export interface Notification {
   id: string;
   type: 'whale' | 'contract' | 'nft' | 'token' | 'swap' | 'alert' | 'badge';
