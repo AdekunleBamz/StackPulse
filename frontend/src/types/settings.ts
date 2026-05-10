@@ -11,3 +11,6 @@ export interface UserSettings {
 }
 
 export type ChannelAction = 'email' | 'discord' | 'telegram';
+
+/** WebSocket connection status for real-time feed tracking */
+export type WebSocketStatus = 'connecting' | 'open' | 'closing' | 'closed' | 'error';
