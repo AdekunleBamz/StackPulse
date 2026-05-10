@@ -32,7 +32,15 @@ export const formatPulseTxId = (id) => {
   return id.slice(0, 8) + '...';
 };
 
-export const formatPulseTimestamp = (ts) => new Date(ts).toLocaleTimeString();
+/**
+ * Formats a Unix timestamp as a locale time string.
+ * @param {number|null|undefined} ts - Unix timestamp (ms)
+ * @returns {string} Formatted time or empty string if invalid
+ */
+export const formatPulseTimestamp = (ts) => {
+  if (ts == null) return '';
+  return new Date(ts).toLocaleTimeString();
+};
 
 export const formatPulseAddress = (a) => a.slice(0, 6) + "..." + a.slice(-4);
 
