@@ -92,6 +92,11 @@ export const formatPulseLabel = (s) => s.replace(/_/g, " ").toLowerCase();
 
 export const formatPulseDecimal = (v, d) => parseFloat(v).toFixed(d || 6);
 
+/**
+ * Formats a microSTX balance as a full STX decimal string.
+ * @param {number} v - Amount in microSTX
+ * @returns {string} e.g. "1.000000 STX"
+ */
 export const formatPulseMicroStx = (v) => (v / PULSE_MICROSTX_PER_STX).toFixed(6) + " STX";
 
 export const formatPulseFeedItem = (item) => item.type + " @ " + item.block;
