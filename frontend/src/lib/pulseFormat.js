@@ -42,7 +42,15 @@ export const formatPulseTimestamp = (ts) => {
   return new Date(ts).toLocaleTimeString();
 };
 
-export const formatPulseAddress = (a) => a.slice(0, 6) + "..." + a.slice(-4);
+/**
+ * Truncates a Stacks address for display.
+ * @param {string|null|undefined} a - Full Stacks address
+ * @returns {string} Truncated address, e.g. "SP1AB...1234"
+ */
+export const formatPulseAddress = (a) => {
+  if (!a) return '';
+  return a.slice(0, 6) + '...' + a.slice(-4);
+};
 
 export const formatPulseVolume = (v) => (v / PULSE_MICROSTX_PER_STX).toFixed(2) + "M STX";
 
