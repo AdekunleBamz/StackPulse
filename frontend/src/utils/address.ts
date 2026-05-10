@@ -22,3 +22,13 @@ export function truncateAddress(address: string, startChars = 6, endChars = 4): 
   const tail = safeEnd > 0 ? address.slice(-safeEnd) : '';
   return `${address.slice(0, safeStart)}...${tail}`;
 }
+
+/**
+ * Returns true if the string looks like a valid Stacks mainnet or testnet address.
+ * @param address - Value to check
+ * @returns `true` when address starts with SP or ST and is at least 30 chars
+ */
+export function isValidStacksAddress(address: string): boolean {
+  if (typeof address !== 'string') return false;
+  return (address.startsWith('SP') || address.startsWith('ST')) && address.length >= 30;
+}
