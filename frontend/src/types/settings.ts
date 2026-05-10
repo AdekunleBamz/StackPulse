@@ -14,3 +14,6 @@ export type ChannelAction = 'email' | 'discord' | 'telegram';
 
 /** WebSocket connection status for real-time feed tracking */
 export type WebSocketStatus = 'connecting' | 'open' | 'closing' | 'closed' | 'error';
+
+/** Tier classification for alert severity display */
+export type AlertTier = 'low' | 'medium' | 'high' | 'critical';
