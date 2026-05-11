@@ -1,6 +1,7 @@
 /**
  * StackPulse Frontend Components
- * Export all components for easy importing
+ * Export all components for easy importing across the app.
+ * Import from this barrel file to avoid deep relative paths.
  */
 
 // Layout Components
