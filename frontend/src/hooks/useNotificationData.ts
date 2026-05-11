@@ -15,6 +15,10 @@ export interface Notification {
   read: boolean;
 }
 
+/**
+ * Hook for fetching and managing in-app notifications with 30-second polling.
+ * @param limit - Maximum number of notifications to fetch (default: 50)
+ */
 export function useNotificationData(limit: number = 50) {
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [isLoading, setIsLoading] = useState(true);
