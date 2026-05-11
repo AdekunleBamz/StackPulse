@@ -2,6 +2,7 @@ const DEFAULT_SERVER_URL = 'https://stackpulse-b8fw.onrender.com';
 const trimTrailingSlashes = (value: string): string => value.replace(/\/+$/, '');
 const normalizeEnvValue = (value?: string): string => (typeof value === 'string' ? value.trim() : '');
 
+/** Converts an http(s) URL to its ws(s) WebSocket equivalent. */
 function toWebSocketProtocol(url: string): string {
   return url.replace(/^https?:\/\//, (match) => (match === 'https://' ? 'wss://' : 'ws://'));
 }
