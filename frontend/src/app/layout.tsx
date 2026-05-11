@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "StackPulse - Real-time Stacks Blockchain Alerts",
+  title: "StackPulse — Real-time Stacks Blockchain Alerts",
   description: "Monitor whale transfers, token launches, NFT mints, and more with Hiro Chainhooks",
   keywords: ["Stacks", "blockchain", "alerts", "monitoring", "STX", "NFT", "DeFi"],
   icons: {
