@@ -6,7 +6,7 @@ const DEPLOYER_ADDRESS = process.env.NEXT_PUBLIC_DEPLOYER_ADDRESS || '';
 
 /**
  * On-chain account data for a registered StackPulse user.
- * @property tier - Subscription tier (0 = free)
+ * @property tier - Subscription tier (0 = free, 2 = pro, 3 = premium)
  * @property subscriptionEnds - Block height at which subscription expires
  */
 export interface UserAccountData {
