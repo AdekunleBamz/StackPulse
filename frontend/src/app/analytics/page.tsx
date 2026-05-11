@@ -23,6 +23,9 @@ import { NoResultsState } from '@/components/EmptyState';
 import { apiUrl } from '@/lib/env';
 import logger from '@/lib/logger';
 
+/**
+ * Aggregated analytics data fetched from the StackPulse server.
+ */
 interface AnalyticsData {
   totalUsers: number;
   totalAlerts: number;

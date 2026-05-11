@@ -50,6 +50,7 @@ interface UserSettings {
   };
 }
 
+/** Accessible toggle switch styled as a pill that emits boolean change events. */
 const ToggleSwitch = ({
   enabled,
   onChange,
