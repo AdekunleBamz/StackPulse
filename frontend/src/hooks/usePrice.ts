@@ -16,6 +16,10 @@ export interface PriceData {
   };
 }
 
+/**
+ * Hook for fetching live STX and BTC price data from CoinGecko.
+ * @param refreshInterval - Polling interval in milliseconds (default: 60000)
+ */
 export function usePrice(refreshInterval: number = 60000) {
   const [prices, setPrices] = useState<PriceData | null>(null);
   const [loading, setLoading] = useState(true);
