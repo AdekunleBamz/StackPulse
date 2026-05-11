@@ -75,8 +75,18 @@ export const isValidChartPoints = (n) => Number.isInteger(n) && n > 0 && n <= 10
 
 export const isValidAlertCooldown = (ms) => Number.isInteger(ms) && ms >= 0;
 
+/**
+ * Validates that a page size is a positive integer not exceeding 100.
+ * @param {*} n - Value to validate
+ * @returns {boolean}
+ */
 export const isValidPageSize = (n) => Number.isInteger(n) && n > 0 && n <= 100;
 
+/**
+ * Validates that a pulse status string is one of the allowed transaction states.
+ * @param {*} s - Value to validate
+ * @returns {boolean}
+ */
 export const isValidPulseStatus = (s) => ["pending", "confirmed", "failed"].includes(s);
 
 export const isValidReconnectDelay = (ms) => Number.isInteger(ms) && ms >= 0;
