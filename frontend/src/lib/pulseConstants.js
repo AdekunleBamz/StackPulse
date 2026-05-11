@@ -29,6 +29,7 @@ export const PULSE_RECONNECT_DELAY_MS = 3000
 
 export const PULSE_MAX_RETRIES = 5
 
+/** Age in milliseconds after which feed data is considered stale and re-fetched. */
 export const PULSE_STALE_THRESHOLD_MS = 30000
 
 export const PULSE_DEFAULT_NETWORK = "mainnet"
