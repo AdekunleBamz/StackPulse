@@ -35,6 +35,7 @@ export const PULSE_PRICE_DECIMALS = 6
 
 export const PULSE_STX_DECIMALS = 6
 
+/** Number of micro-STX per 1 STX (10^6). */
 export const PULSE_MICROSTX_PER_STX = 1000000
 
 export const PULSE_MIN_TICK_VALUE = 0.001
@@ -56,6 +57,7 @@ export const PULSE_STORAGE_KEYS = {
     SETTINGS: "pulse_settings"
 }
 
+/** Average Stacks blocks produced per hour on mainnet. */
 export const PULSE_BLOCKS_PER_HOUR = 6
 
 /** Number of Stacks blocks produced per day (~10-min block time) */
