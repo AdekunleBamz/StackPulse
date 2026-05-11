@@ -35,7 +35,9 @@ const notificationIcons: Record<Notification['type'], string> = {
   badge: '🏆',
 };
 
+/** Polling interval for new notification checks (30 seconds). */
 const NOTIFICATION_POLL_INTERVAL_MS = 30000;
+/** Default maximum number of notifications to fetch and display. */
 const NOTIFICATION_DEFAULT_MAX = 50;
 
 interface NotificationCenterProps {
