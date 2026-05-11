@@ -5,6 +5,9 @@ import { cn } from '@/lib/cn';
 import { Check, Copy } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
+/** Auto-reset duration in milliseconds after a successful copy. */
+const COPY_RESET_MS = 1500;
+
 export default function CopyButton({
   value,
   className,
@@ -21,7 +24,7 @@ export default function CopyButton({
 
   useEffect(() => {
     if (!copied) return;
-    const t = window.setTimeout(() => setCopied(false), 1500);
+    const t = window.setTimeout(() => setCopied(false), COPY_RESET_MS);
     return () => window.clearTimeout(t);
   }, [copied]);
 
