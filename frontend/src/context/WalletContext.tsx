@@ -40,7 +40,9 @@ interface WalletContextType {
 
 const WalletContext = createContext<WalletContextType | null>(null);
 
+/** Application name sent to wallets during authentication. */
 const WALLET_APP_NAME = 'StackPulse';
+/** Application icon URL sent to wallets during authentication. */
 const WALLET_APP_ICON = '/logo.svg';
 const WALLET_APP_PERMISSIONS = ['store_write', 'publish_data'] as const;
 
@@ -95,11 +97,11 @@ export function WalletProvider({ children }: { children: ReactNode }) {
     if (!isClient) return;
     
     try {
-      const { authenticate, AppConfig, UserSession } = await import('@stacks/connect');
+      const { showConnect, AppConfig, UserSession } = await import('@stacks/connect');
       const appConfig = new AppConfig([...WALLET_APP_PERMISSIONS]);
       const session = new UserSession({ appConfig });
       
-      await authenticate({
+      showConnect({
         appDetails: {
           name: WALLET_APP_NAME,
           icon: WALLET_APP_ICON,
@@ -113,6 +115,9 @@ export function WalletProvider({ children }: { children: ReactNode }) {
               ? userData.profile?.stxAddress?.mainnet 
               : userData.profile?.stxAddress?.testnet
           );
+        },
+        onCancel: () => {
+          logger.info('Wallet connection cancelled');
         },
         userSession: session,
       });
