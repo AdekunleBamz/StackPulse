@@ -13,6 +13,7 @@ export default function ConnectWallet() {
   const wrapperRef = useRef<HTMLDivElement>(null);
   const safeAddress = address || '';
   const shortAddress = safeAddress ? truncateAddress(safeAddress) : 'connected wallet';
+  const dropdownId = `wallet-dropdown-${safeAddress.slice(-6)}`;
   const closeDropdown = useCallback(() => setShowDropdown(false), []);
 
   useEffect(() => {
