@@ -15,7 +15,9 @@ interface PriceData {
   };
 }
 
+/** Price polling interval in milliseconds (60 seconds). */
 const PRICE_REFRESH_INTERVAL_MS = 60000;
+/** Minimum absolute % change to show positive/negative trend; below this shows neutral. */
 const PRICE_CHANGE_NEUTRAL_THRESHOLD = 0.1;
 const COINGECKO_SIMPLE_PRICE_URL =
   'https://api.coingecko.com/api/v3/simple/price?ids=blockstack,bitcoin&vs_currencies=usd&include_24hr_change=true';
