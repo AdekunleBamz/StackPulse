@@ -43,8 +43,18 @@ export const isValidPulseNetwork = (n) => ["mainnet", "testnet"].includes(n);
  */
 export const isValidPulseVersion = (v) => typeof v === "string" && /^\d+\.\d+\.\d+$/.test(v);
 
+/**
+ * Validates that a tick interval is a positive integer in milliseconds.
+ * @param {*} t - Value to validate
+ * @returns {boolean}
+ */
 export const isValidTickInterval = (t) => Number.isInteger(t) && t > 0;
 
+/**
+ * Validates that a feed size is a positive integer not exceeding 1000.
+ * @param {*} n - Value to validate
+ * @returns {boolean}
+ */
 export const isValidFeedSize = (n) => Number.isInteger(n) && n > 0 && n <= 1000;
 
 export const isValidRetryCount = (n) => Number.isInteger(n) && n >= 0 && n <= PULSE_MAX_RETRIES;
