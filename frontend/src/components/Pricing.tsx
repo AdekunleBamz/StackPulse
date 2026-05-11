@@ -40,7 +40,7 @@ const tiers = [
       'API Access',
       'Priority Support',
     ],
-    popular: true,
+    popular: true, // Most popular plan
   },
   {
     name: 'Premium',
@@ -56,7 +56,7 @@ const tiers = [
     ],
     popular: false,
   },
-];
+] as const;
 
 const PRICING_USERNAME_MIN_LENGTH = 3;
 const PRICING_USERNAME_MAX_LENGTH = 20;
