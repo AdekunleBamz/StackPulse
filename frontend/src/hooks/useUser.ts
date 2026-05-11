@@ -25,6 +25,7 @@ interface User {
 
 /**
  * Configuration options for the useUser hook.
+ * @property autoFetch - Automatically fetch user data on mount when address is available (default: true)
  */
 interface UseUserOptions {
   autoFetch?: boolean;
