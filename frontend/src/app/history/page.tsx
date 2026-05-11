@@ -6,6 +6,7 @@ import { ArrowLeft, History, Download, ExternalLink } from 'lucide-react';
 import AlertHistory from '@/components/AlertHistory';
 import { Breadcrumbs } from '@/components';
 
+/** Display metadata for each alert type (matches contract event type IDs). */
 const alertTypeInfo = [
   { id: 1, name: 'Whale Transfer', icon: '🐋', color: 'blue' },
   { id: 2, name: 'Contract Deploy', icon: '📜', color: 'purple' },
