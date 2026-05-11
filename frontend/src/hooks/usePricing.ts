@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useWallet } from '@/context/WalletContext';
 import { toast } from '@/components/Toast';
 
+/** Deployer address for the StackPulse smart contracts. */
 const DEPLOYER_ADDRESS = process.env.NEXT_PUBLIC_DEPLOYER_ADDRESS || '';
 
 /** Subscription tier prices in microSTX (1 STX = 1,000,000 microSTX) */
