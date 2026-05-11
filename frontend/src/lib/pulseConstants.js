@@ -24,6 +24,7 @@ export const PULSE_API_BASE = "https://api.stackpulse.io"
 
 export const PULSE_WS_URL = "wss://ws.stackpulse.io"
 
+/** Delay in milliseconds before attempting a WebSocket reconnection after a drop. */
 export const PULSE_RECONNECT_DELAY_MS = 3000
 
 export const PULSE_MAX_RETRIES = 5
