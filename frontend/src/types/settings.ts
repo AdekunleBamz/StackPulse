@@ -12,6 +12,7 @@ export interface UserSettings {
   marketing: boolean;
 }
 
+/** Union of supported notification delivery channel identifiers. */
 export type ChannelAction = 'email' | 'discord' | 'telegram';
 
 /** WebSocket connection status for real-time feed tracking */
