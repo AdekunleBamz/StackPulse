@@ -5,6 +5,7 @@ import { useCallback, useEffect, useState } from 'react';
  * Respects user preference persisted in localStorage.
  * @module useSound
  */
+/** localStorage key used to persist the user's sound preference. */
 const SOUND_ENABLED_KEY = 'stackpulse:sound-enabled';
 
 type SoundKind = 'success' | 'notification';
