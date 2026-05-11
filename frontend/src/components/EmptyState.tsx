@@ -30,6 +30,7 @@ export default function EmptyState({ icon: Icon, title, description, action, cla
       aria-labelledby="empty-state-title"
       aria-describedby="empty-state-description"
       aria-live="polite"
+      data-testid="empty-state"
     >
       <div 
         className="w-20 h-20 bg-gray-800/50 rounded-full flex items-center justify-center mb-6 shadow-inner border border-gray-700/50 group-hover:bg-gray-800 group-hover:scale-110 group-hover:shadow-purple-500/10 transition-all duration-500 ease-out"
