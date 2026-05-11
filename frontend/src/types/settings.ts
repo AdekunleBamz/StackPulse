@@ -1,3 +1,4 @@
+/** Notification delivery channel preferences for a user account. */
 export interface NotificationPreference {
   email: string;
   discord: string;
