@@ -33,7 +33,7 @@ const socialLinks = [
   { icon: Twitter, href: '#', label: 'Twitter' },
   { icon: Github, href: 'https://github.com/AdekunleBamz/StackPulse', label: 'GitHub' },
   { icon: Linkedin, href: '#', label: 'LinkedIn' },
-  { icon: Mail, href: 'mailto:support@stackpulse.io', label: 'Email' },
+  { icon: Mail, href: 'mailto:support@stackpulse.io', label: 'Email support' },
 ];
 
 export default function Footer() {
