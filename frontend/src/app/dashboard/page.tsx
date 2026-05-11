@@ -35,7 +35,7 @@ import { logger } from '@/lib/logger';
 
 const DEPLOYER_ADDRESS = process.env.NEXT_PUBLIC_DEPLOYER_ADDRESS || '';
 
-// Alert types matching the contracts and chainhooks
+/** Alert type definitions matching contract event types and chainhook configurations. */
 const alertTypes = [
   { id: 1, name: 'Whale Transfers', icon: Wallet, description: 'Large STX transfers (>10,000 STX)', iconBgClass: 'bg-blue-500/20', iconClass: 'text-blue-400' },
   { id: 2, name: 'Contract Deployments', icon: FileCode, description: 'New smart contract deployments', iconBgClass: 'bg-purple-500/20', iconClass: 'text-purple-400' },
