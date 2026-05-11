@@ -25,6 +25,7 @@ interface Alert {
 
 /**
  * Input data for creating a new alert.
+ * All threshold/address fields are optional depending on the alert type.
  */
 interface CreateAlertInput {
   name: string;
