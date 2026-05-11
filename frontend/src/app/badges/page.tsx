@@ -8,7 +8,7 @@ import { toast } from '@/components/Toast';
 import { Breadcrumbs } from '@/components';
 import { useWallet } from '@/context/WalletContext';
 
-// Badge type definitions
+/** Detailed badge definitions with requirements, benefits, and rarity metadata. */
 const badgeDetails = [
   {
     id: 1,
