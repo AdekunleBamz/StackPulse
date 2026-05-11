@@ -22,10 +22,25 @@ export const isValidBlockHeight = (b) => Number.isInteger(b) && b >= 0;
  */
 export const isValidPulseTxId = (id) => typeof id === "string" && id.length === 64;
 
+/**
+ * Validates that a Stacks address starts with SP and has sufficient length.
+ * @param {*} a - Value to validate
+ * @returns {boolean}
+ */
 export const isValidPulseAddress = (a) => typeof a === "string" && a.startsWith("SP") && a.length > 10;
 
+/**
+ * Validates that a network string is a recognized Stacks network name.
+ * @param {*} n - Value to validate
+ * @returns {boolean}
+ */
 export const isValidPulseNetwork = (n) => ["mainnet", "testnet"].includes(n);
 
+/**
+ * Validates a semantic version string (e.g. "1.0.0").
+ * @param {*} v - Value to validate
+ * @returns {boolean}
+ */
 export const isValidPulseVersion = (v) => typeof v === "string" && /^\d+\.\d+\.\d+$/.test(v);
 
 export const isValidTickInterval = (t) => Number.isInteger(t) && t > 0;
