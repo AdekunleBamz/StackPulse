@@ -14,7 +14,9 @@ type LogLevel = 'debug' | 'info' | 'warn' | 'error';
  */
 type Logger = Record<LogLevel, (...args: unknown[]) => void>;
 
+/** True when running in a production build. Disables debug/info logs. */
 const isProduction = process.env.NODE_ENV === 'production';
+/** Enable verbose logs in production when NEXT_PUBLIC_DEBUG_LOGS=true. */
 const debugLogsEnabled = !isProduction || process.env.NEXT_PUBLIC_DEBUG_LOGS === 'true';
 
 function shouldLog(level: LogLevel): boolean {
