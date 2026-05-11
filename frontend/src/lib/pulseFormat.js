@@ -25,7 +25,7 @@ export const formatPulseBlock = (b) => "#" + b;
 /**
  * Truncates a transaction ID for display.
  * @param {string|null|undefined} id - Full transaction ID
- * @returns {string} Shortened tx id, e.g. "abcd1234..."
+ * @returns {string} Shortened tx id showing first 8 chars, e.g. "abcd1234..."
  */
 export const formatPulseTxId = (id) => {
   if (!id) return '';
