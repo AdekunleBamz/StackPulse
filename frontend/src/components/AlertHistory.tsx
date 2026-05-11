@@ -32,7 +32,7 @@ const alertTypeInfo: Record<number, { name: string; icon: string; color: string 
   4: { name: 'Token Launch', icon: '🪙', color: 'yellow' },
   5: { name: 'Large Swap', icon: '💱', color: 'green' },
   6: { name: 'Address Watch', icon: '👁️', color: 'orange' },
-};
+} as const;
 
 interface AlertHistoryProps {
   userAddress?: string;
