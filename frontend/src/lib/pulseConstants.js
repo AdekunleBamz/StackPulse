@@ -18,6 +18,7 @@ export const PULSE_TIERS = {
 /** Polling interval in milliseconds between on-chain feed ticks. */
 export const PULSE_TICK_INTERVAL_MS = 5000
 
+/** Maximum number of items retained in the live activity feed at any time. */
 export const PULSE_MAX_FEED_SIZE = 100
 
 export const PULSE_API_BASE = "https://api.stackpulse.io"
