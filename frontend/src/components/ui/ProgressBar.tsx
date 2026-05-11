@@ -1,7 +1,8 @@
 'use client';
 
 interface ProgressBarProps {
-  progress: number; // 0 to 100
+  /** Progress value from 0 to 100; clamped automatically. */
+  progress: number;
   size?: 'sm' | 'md' | 'lg';
   color?: 'purple' | 'blue' | 'emerald' | 'rose' | 'amber';
   showLabel?: boolean;
