@@ -19,7 +19,9 @@ interface NetworkStatusProps {
   refreshInterval?: number;
 }
 
+/** Stacks extended API endpoint for network info. */
 const STACKS_INFO_API_URL = 'https://api.mainnet.hiro.so/extended/v1/info';
+/** Stacks core API endpoint for block and chain info. */
 const STACKS_CORE_INFO_API_URL = 'https://api.mainnet.hiro.so/v2/info';
 const DEFAULT_REFRESH_INTERVAL_MS = 30000;
 const MIN_REFRESH_INTERVAL_MS = 5000;
