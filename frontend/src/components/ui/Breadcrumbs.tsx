@@ -9,6 +9,10 @@ interface BreadcrumbsProps {
   className?: string;
 }
 
+/**
+ * Auto-generated breadcrumb navigation derived from the current URL pathname.
+ * Returns null on the home page ('/').
+ */
 export default function Breadcrumbs({ className }: BreadcrumbsProps) {
   const pathname = usePathname();
   
