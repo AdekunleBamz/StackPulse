@@ -30,7 +30,9 @@ export function formatRelativeTime(timestamp: number | string | Date): string {
 }
 
 /**
- * Format a timestamp into a full localized string
+ * Format a timestamp into a full localized date and time string.
+ * @param timestamp - Unix ms timestamp, ISO string, or Date object
+ * @returns Localized date-time string, e.g. "Jun 1, 2025, 3:45 PM"
  */
 export function formatFullDate(timestamp: number | string | Date): string {
   return new Date(timestamp).toLocaleString(undefined, {
