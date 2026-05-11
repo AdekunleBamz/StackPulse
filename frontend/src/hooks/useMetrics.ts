@@ -5,8 +5,9 @@ import { useState, useCallback, useMemo } from 'react';
 interface MetricPoint {
   /** Unix millisecond timestamp of the data point */
   timestamp: number;
+  /** Numeric metric value at this point in time */
   value: number;
-  [key: string]: any;
+  [key: string]: unknown;
 }
 
 interface UseMetricsOptions {
