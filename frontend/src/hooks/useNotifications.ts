@@ -2,6 +2,7 @@ import { useCallback, useState, useEffect } from 'react';
 
 /**
  * Hook for managing browser Notification API permission and dispatching alerts.
+ * Gracefully handles environments where the Notification API is unavailable (e.g., SSR).
  * @returns {{ permission, requestPermission, sendNotification }} Notification controls
  */
 export function useNotifications() {
