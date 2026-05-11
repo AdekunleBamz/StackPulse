@@ -5,6 +5,7 @@ export interface NotificationPreference {
   telegram: string;
 }
 
+/** Full user preferences including notification channels, theme, and marketing consent. */
 export interface UserSettings {
   notifications: NotificationPreference;
   theme: 'dark' | 'light';
