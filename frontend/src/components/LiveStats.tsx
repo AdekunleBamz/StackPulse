@@ -18,6 +18,7 @@ interface EventStats {
   badgesEarned: number;
 }
 
+/** Refresh interval for live stats polling (30 seconds). */
 const LIVE_STATS_REFRESH_INTERVAL_MS = 30000;
 
 const LiveStats = memo(() => {
