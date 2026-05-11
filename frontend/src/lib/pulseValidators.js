@@ -57,8 +57,18 @@ export const isValidTickInterval = (t) => Number.isInteger(t) && t > 0;
  */
 export const isValidFeedSize = (n) => Number.isInteger(n) && n > 0 && n <= 1000;
 
+/**
+ * Validates that a retry count is a non-negative integer within the configured maximum.
+ * @param {*} n - Value to validate
+ * @returns {boolean}
+ */
 export const isValidRetryCount = (n) => Number.isInteger(n) && n >= 0 && n <= PULSE_MAX_RETRIES;
 
+/**
+ * Validates that a cache TTL is a positive integer in milliseconds.
+ * @param {*} t - Value to validate
+ * @returns {boolean}
+ */
 export const isValidCacheTTL = (t) => Number.isInteger(t) && t > 0;
 
 export const isValidChartPoints = (n) => Number.isInteger(n) && n > 0 && n <= 10000;
