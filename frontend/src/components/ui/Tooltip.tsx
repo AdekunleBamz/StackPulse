@@ -10,7 +10,9 @@ export function cn(...classes: (string | undefined | null | false)[]) {
 type TooltipProps = {
   content: React.ReactNode;
   children: React.ReactElement;
+  /** Preferred tooltip placement relative to the trigger element. */
   position?: 'top' | 'bottom' | 'left' | 'right';
+  /** Hover delay in milliseconds before the tooltip appears. */
   delay?: number;
 }
 
