@@ -1,6 +1,7 @@
 /**
- * Loading Skeleton Component
- * Displays placeholder content while data is loading
+ * Loading Skeleton Component.
+ * Displays animated placeholder content while data is loading.
+ * Supports text, circular, and rectangular variants with pulse or wave animations.
  */
 
 interface SkeletonProps {
