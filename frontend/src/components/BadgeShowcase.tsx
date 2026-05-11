@@ -108,14 +108,14 @@ const badges: Badge[] = [
   },
 ];
 
-const rarityColors = {
+const rarityColors: Record<Badge['rarity'], string> = {
   common: 'from-slate-500 to-slate-600',
   rare: 'from-blue-500 to-indigo-600',
   epic: 'from-purple-500 to-pink-600',
   legendary: 'from-amber-400 to-orange-500',
 };
 
-const rarityBorders = {
+const rarityBorders: Record<Badge['rarity'], string> = {
   common: 'border-gray-600',
   rare: 'border-blue-500/50',
   epic: 'border-purple-500/50',
