@@ -36,7 +36,9 @@ export const GRADIENTS = {
   primary: 'from-purple-500 via-purple-600 to-blue-700',
   brand: 'from-purple-500 to-blue-500',
   surface: 'from-gray-900/40 via-gray-900/20 to-transparent',
-};
+  /** Gradient for text highlights and headings. */
+  text: 'from-white via-purple-200 to-blue-200',
+} as const;
 
 export const SHADOWS = {
   brand: '0 20px 50px rgba(0,0,0,0.5)',
