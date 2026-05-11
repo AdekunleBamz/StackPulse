@@ -15,6 +15,7 @@ export const PULSE_TIERS = {
     PREMIUM: { id: 3, name: "Premium", price: 200000 }
 }
 
+/** Polling interval in milliseconds between on-chain feed ticks. */
 export const PULSE_TICK_INTERVAL_MS = 5000
 
 export const PULSE_MAX_FEED_SIZE = 100
