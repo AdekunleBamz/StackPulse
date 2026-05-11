@@ -12,6 +12,7 @@ export default function Header() {
   const pathname = usePathname();
   const mobileNavId = useId();
   const mobileNavRef = useRef<HTMLDivElement>(null);
+  const hamburgerRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20);
