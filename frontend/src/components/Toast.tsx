@@ -59,6 +59,7 @@ const toastStyles = {
   },
 };
 
+/** Duration of the leave-slide animation before the toast is removed from the DOM. */
 const TOAST_LEAVE_ANIMATION_DURATION_MS = 300;
 
 function Toast({ id, type, title, message, duration = 5000, onClose }: ToastProps) {
