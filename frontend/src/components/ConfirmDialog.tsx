@@ -10,6 +10,7 @@ interface ConfirmDialogProps {
   cancelLabel?: string;
   onConfirm: () => void | Promise<void>;
   onCancel: () => void;
+  /** Visual variant affecting icon and button colour. @default 'danger' */
   variant?: 'danger' | 'warning' | 'info';
 }
 
