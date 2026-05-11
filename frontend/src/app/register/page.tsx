@@ -34,7 +34,7 @@ export default function RegisterPage() {
       return;
     }
 
-    // Only allow alphanumeric and underscores
+    // Only allow alphanumeric characters and underscores
     if (!/^[a-zA-Z0-9_]+$/.test(username)) {
       setUsernameError('Use only letters, numbers, and underscores.');
       return;
