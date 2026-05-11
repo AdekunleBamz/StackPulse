@@ -15,8 +15,9 @@ interface State {
 }
 
 /**
- * Error Boundary Component
- * Catches JavaScript errors in child components and displays fallback UI
+ * Error Boundary Component.
+ * Catches JavaScript errors in child components and displays fallback UI.
+ * Logs caught errors via the shared logger utility.
  */
 export default class ErrorBoundary extends Component<Props, State> {
   constructor(props: Props) {
