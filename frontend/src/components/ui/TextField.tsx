@@ -8,6 +8,10 @@ export interface TextFieldProps extends React.InputHTMLAttributes<HTMLInputEleme
   error?: string;
 }
 
+/**
+ * Accessible labelled text input with optional hint and error states.
+ * Automatically derives an id from the label if none is provided.
+ */
 export default function TextField({ label, hint, error, className, id, ...props }: TextFieldProps) {
   const inputId = id || props.name || label.toLowerCase().replace(/\s+/g, '-');
   const errorId = `${inputId}-error`;
