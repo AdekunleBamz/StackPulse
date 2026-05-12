@@ -5,6 +5,7 @@ import HealthService from '../services/health';
 
 const router = Router();
 
+// Health probes should never be cached by load balancers or uptime monitors.
 router.use((req: Request, res: Response, next) => {
   res.setHeader('Cache-Control', 'no-store');
   next();
