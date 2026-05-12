@@ -5,7 +5,7 @@
 /**
  * Format a timestamp as a relative time string (e.g., "5m ago")
  * @param timestamp - Unix ms timestamp, ISO string, or Date object
- * @returns Human-readable relative time string
+ * @returns Human-readable relative time string, falling back to locale date for older values
  */
 export function formatRelativeTime(timestamp: number | string | Date): string {
   const date = new Date(timestamp);
