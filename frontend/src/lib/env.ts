@@ -28,6 +28,12 @@ const configuredWsUrl = normalizeEnvValue(process.env.NEXT_PUBLIC_WS_URL);
 export const WS_URL =
   trimTrailingSlashes(configuredWsUrl || `${toWebSocketProtocol(SERVER_URL)}/ws`);
 
+/**
+ * Builds an absolute API URL from a relative route path.
+ *
+ * @param path - API route path with or without a leading slash.
+ * @returns Fully qualified server URL.
+ */
 export function apiUrl(path: string): string {
   const normalizedPath = path.startsWith('/') ? path : `/${path}`;
   return `${SERVER_URL}${normalizedPath}`;
