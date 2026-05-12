@@ -3,6 +3,7 @@
  */
 
 const MICROSTX_PER_STX = 1000000;
+/** Default date shape used by dashboard tables and activity lists. */
 const DEFAULT_DATE_FORMAT_OPTIONS: Intl.DateTimeFormatOptions = {
   year: 'numeric',
   month: 'short',
