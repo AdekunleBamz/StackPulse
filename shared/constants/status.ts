@@ -2,6 +2,7 @@
  * Shared Status and Type Constants
  */
 
+/** Alert lifecycle states shared between server, frontend, and contracts. */
 export const ALERT_STATUS = {
   ACTIVE: 'active',
   PAUSED: 'paused',
