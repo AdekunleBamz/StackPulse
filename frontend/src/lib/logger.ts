@@ -19,6 +19,7 @@ const isProduction = process.env.NODE_ENV === 'production';
 /** Enable verbose logs in production when NEXT_PUBLIC_DEBUG_LOGS=true. */
 const debugLogsEnabled = !isProduction || process.env.NEXT_PUBLIC_DEBUG_LOGS === 'true';
 
+/** Returns whether the requested log level should be emitted in this environment. */
 function shouldLog(level: LogLevel): boolean {
   if (level === 'warn' || level === 'error') {
     return true;
