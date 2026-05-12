@@ -22,6 +22,9 @@ interface EmptyStateProps {
   };
 }
 
+/**
+ * Reusable empty-state panel with optional recovery action.
+ */
 export default function EmptyState({ icon: Icon, title, description, action, className = "" }: EmptyStateProps) {
   return (
     <div 
