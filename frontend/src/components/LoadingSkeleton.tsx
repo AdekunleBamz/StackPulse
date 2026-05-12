@@ -12,6 +12,9 @@ interface SkeletonProps {
   animation?: 'pulse' | 'wave' | 'none';
 }
 
+/**
+ * Base placeholder block used by the predefined skeleton layouts.
+ */
 export default function LoadingSkeleton({
   className = '',
   variant = 'rectangular',
