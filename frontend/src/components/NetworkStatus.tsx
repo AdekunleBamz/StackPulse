@@ -28,6 +28,9 @@ const MIN_REFRESH_INTERVAL_MS = 5000;
 const JSON_ACCEPT_HEADERS = { Accept: 'application/json' } as const;
 const LAST_UPDATED_TIME_OPTIONS: Intl.DateTimeFormatOptions = { hour: '2-digit', minute: '2-digit' };
 
+/**
+ * Displays live Stacks network health, block, and activity metrics.
+ */
 export default function NetworkStatus({ refreshInterval = DEFAULT_REFRESH_INTERVAL_MS }: NetworkStatusProps) {
   const [stats, setStats] = useState<NetworkStats | null>(null);
   const [loading, setLoading] = useState(true);
