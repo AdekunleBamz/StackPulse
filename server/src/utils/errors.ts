@@ -2,6 +2,9 @@
  * Custom Error Classes for StackPulse Server
  */
 
+/**
+ * Base application error with an HTTP status and operational-safety flag.
+ */
 export class AppError extends Error {
   public readonly statusCode: number;
   public readonly isOperational: boolean;
