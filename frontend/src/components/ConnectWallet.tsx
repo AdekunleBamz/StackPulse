@@ -70,6 +70,7 @@ export default function ConnectWallet() {
         size="md"
         aria-haspopup="menu"
         aria-expanded={showDropdown}
+        aria-controls={showDropdown ? dropdownId : undefined}
         aria-label={`Wallet menu for ${shortAddress}`}
         className="focus:ring-2 focus:ring-purple-500/50"
       >
@@ -80,6 +81,7 @@ export default function ConnectWallet() {
 
       {showDropdown && (
         <div
+          id={dropdownId}
           role="menu"
           className="absolute right-0 mt-3 w-64 bg-gray-900/95 backdrop-blur-xl border border-white/10 rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.5)] z-50 animate-in fade-in zoom-in-95 duration-200 origin-top-right"
         >
