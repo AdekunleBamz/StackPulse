@@ -816,7 +816,7 @@ const PricingCard = memo(({
     name: string;
     price: number;
     tier: number;
-    features: string[];
+    features: readonly string[];
     popular: boolean;
   };
   isRegistered: boolean;
