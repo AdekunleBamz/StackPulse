@@ -42,6 +42,7 @@ interface NotificationCenterProps {
 }
 
 export default function NotificationCenter({ maxNotifications = 50 }: NotificationCenterProps) {
+  const explorerChain = (process.env.NEXT_PUBLIC_STACKS_NETWORK || 'mainnet').toLowerCase();
   const [isOpen, setIsOpen] = useState(false);
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const safeMaxNotifications = Number.isFinite(maxNotifications)
@@ -204,7 +205,7 @@ export default function NotificationCenter({ maxNotifications = 50 }: Notificati
                             </span>
                             {notification.txHash && (
                               <a
-                                href={`https://explorer.hiro.so/txid/${notification.txHash}?chain=mainnet`}
+                                href={`https://explorer.hiro.so/txid/${notification.txHash}?chain=${explorerChain}`}
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="text-purple-400 hover:text-purple-300 text-xs flex items-center gap-1"
