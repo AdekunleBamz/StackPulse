@@ -50,7 +50,7 @@ export default function RegisterPage() {
       const { stringAsciiCV, uintCV } = await import('@stacks/transactions');
  
       setLoadingStep('Signature required...');
-      // V3 contract: register-and-subscribe in one step (tier 0 = free)
+      // V-J3 contract: register-and-subscribe in one step (tier 0 = free)
       await openContractCall({
         contractAddress: DEPLOYER_ADDRESS,
         contractName: 'stackpulse-v-j4',
