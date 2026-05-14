@@ -59,12 +59,6 @@ export const useIsMobile = () => useMediaQuery('(max-width: 640px)');
 export const useIsTablet = () => useMediaQuery('(min-width: 641px) and (max-width: 1024px)');
 
 /**
- * Hook to check if the viewport is desktop-sized (>1024px).
- * @returns True if the viewport width is greater than 1024px.
- */
-export const useIsDesktop = () => useMediaQuery('(min-width: 1025px)');
-
-/**
  * Hook to check if the viewport is desktop-sized (≥1025px).
  * @returns True if the viewport width is 1025px or more.
  */
