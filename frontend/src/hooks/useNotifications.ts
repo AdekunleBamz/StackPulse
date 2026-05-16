@@ -1,4 +1,4 @@
-import { useCallback, useState, useEffect } from 'react';
+import { useCallback, useState } from 'react';
 
 /**
  * Hook for managing browser Notification API permission and dispatching alerts.
@@ -6,13 +6,9 @@ import { useCallback, useState, useEffect } from 'react';
  * @returns {{ permission, requestPermission, sendNotification }} Notification controls
  */
 export function useNotifications() {
-  const [permission, setPermission] = useState<NotificationPermission>('default');
-
-  useEffect(() => {
-    if (typeof window !== 'undefined' && 'Notification' in window) {
-      setPermission(Notification.permission);
-    }
-  }, []);
+  const [permission, setPermission] = useState<NotificationPermission>(() =>
+    typeof window !== 'undefined' && 'Notification' in window ? Notification.permission : 'default',
+  );
 
   const requestPermission = useCallback(async () => {
     if (typeof window !== 'undefined' && 'Notification' in window) {
