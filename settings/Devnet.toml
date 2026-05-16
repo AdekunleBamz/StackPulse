@@ -1,27 +1,27 @@
-[devnet]
+[network]
 name = "devnet"
 deployment_fee_rate = 10
 
-[devnet.accounts.deployer]
-mnemonic = "change me"
+[accounts.deployer]
+mnemonic = "zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo wrong"
 balance = 100000
 
-[devnet.accounts.wallet_1]
-mnemonic = "change me"
+[accounts.wallet_1]
+mnemonic = "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon cactus"
 balance = 100000
 
-[devnet.accounts.wallet_2]
-mnemonic = "change me"
+[accounts.wallet_2]
+mnemonic = "legal winner thank year wave sausage worth useful legal winner thank yellow"
 balance = 100000
 
-[devnet.accounts.wallet_3]
-mnemonic = "change me"
+[accounts.wallet_3]
+mnemonic = "letter advice cage absurd amount doctor acoustic avoid letter advice cage above"
 balance = 100000
 
-[devnet.accounts.wallet_4]
-mnemonic = "change me"
+[accounts.wallet_4]
+mnemonic = "zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo wrong"
 balance = 100000
 
 [devnet.stacks]
-miner_mnemonic = "change me"
+miner_mnemonic = "zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo wrong"
 miner_btc_address = "bc1q"
