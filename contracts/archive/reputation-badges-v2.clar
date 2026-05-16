@@ -94,7 +94,7 @@
 )
 
 (define-read-only (get-token-uri (token-id uint))
-  (ok (some (concat BASE-URI (int-to-ascii token-id))))
+  (ok (some (concat BASE-URI (uint-to-string token-id))))
 )
 
 (define-read-only (get-owner (token-id uint))
@@ -221,16 +221,16 @@
 ;; ============================================
 
 ;; Helper to convert uint to ascii string
-(define-read-only (int-to-ascii (value uint))
+(define-read-only (uint-to-string (value uint))
   (if (<= value u9)
     (unwrap-panic (element-at "0123456789" value))
-    (get r (fold int-to-ascii-inner
+    (get r (fold uint-to-string-inner
       (list u0 u1 u2 u3 u4 u5 u6 u7 u8 u9)
       { n: value, r: "" }))
   )
 )
 
-(define-private (int-to-ascii-inner (idx uint) (state { n: uint, r: (string-ascii 10) }))
+(define-private (uint-to-string-inner (idx uint) (state { n: uint, r: (string-ascii 10) }))
   (if (> (get n state) u0)
     {
       n: (/ (get n state) u10),

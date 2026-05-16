@@ -51,7 +51,7 @@
 
 (define-read-only (is-subscribed (user principal))
   (match (map-get? users user)
-    user-data (> (get subscription-expires user-data) stacks-block-height)
+    user-data (> (get subscription-expires user-data) block-height)
     false
   )
 )
@@ -72,7 +72,7 @@
       subscription-expires: u0,
       total-alerts: u0,
       referrer: referrer,
-      registered-at: stacks-block-height
+      registered-at: block-height
     })
     
     (var-set next-user-id (+ user-id u1))
@@ -83,7 +83,7 @@
       user: caller,
       username: username,
       referrer: referrer,
-      block: stacks-block-height
+      block: block-height
     })
     
     (ok user-id)
@@ -94,12 +94,12 @@
   (let
     (
       (caller tx-sender)
-      (price (try! (get-tier-price tier)))
+      (price (default-to u0 (map-get? tier-prices tier)))
       (user-data (unwrap! (map-get? users caller) ERR-NOT-REGISTERED))
       (current-expires (get subscription-expires user-data))
-      (new-expires (if (> current-expires stacks-block-height)
+      (new-expires (if (> current-expires block-height)
                       (+ current-expires SUBSCRIPTION-DURATION)
-                      (+ stacks-block-height SUBSCRIPTION-DURATION)))
+                      (+ block-height SUBSCRIPTION-DURATION)))
     )
     (asserts! (> tier u0) ERR-INVALID-TIER)
     (asserts! (<= tier u3) ERR-INVALID-TIER)
@@ -119,7 +119,7 @@
       tier: tier,
       price: price,
       expires-at: new-expires,
-      block: stacks-block-height
+      block: block-height
     })
     
     (ok new-expires)

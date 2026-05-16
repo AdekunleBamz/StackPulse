@@ -67,7 +67,7 @@
       target-contract: target-contract,
       is-active: true,
       triggered-count: u0,
-      created-at: stacks-block-height
+      created-at: block-height
     })
     
     (map-set user-alert-count caller (+ current-count u1))
@@ -80,7 +80,7 @@
       alert-type: alert-type,
       name: name,
       threshold: threshold,
-      block: stacks-block-height
+      block: block-height
     })
     
     (ok alert-id)
@@ -102,7 +102,7 @@
       owner: (get owner alert-data),
       alert-type: (get alert-type alert-data),
       triggered-count: (+ (get triggered-count alert-data) u1),
-      block: stacks-block-height
+      block: block-height
     })
     
     (ok true)

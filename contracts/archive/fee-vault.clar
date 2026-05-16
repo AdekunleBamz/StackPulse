@@ -61,7 +61,7 @@
       amount: amount,
       treasury-share: treasury-amount,
       staker-share: staker-amount,
-      block: stacks-block-height
+      block: block-height
     })
     
     (ok amount)
@@ -81,7 +81,7 @@
       amount: (+ (get amount current-stake) amount),
       rewards-claimed: (get rewards-claimed current-stake),
       staked-at: (if (is-eq (get amount current-stake) u0) 
-                    stacks-block-height 
+                    block-height 
                     (get staked-at current-stake))
     })
     
@@ -92,7 +92,7 @@
       staker: caller,
       amount: amount,
       total-staked: (var-get total-staked),
-      block: stacks-block-height
+      block: block-height
     })
     
     (ok amount)
@@ -122,7 +122,7 @@
       event: "unstaked",
       staker: caller,
       amount: amount,
-      block: stacks-block-height
+      block: block-height
     })
     
     (ok amount)

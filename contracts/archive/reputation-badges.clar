@@ -104,7 +104,7 @@
     (map-set user-badges { user: recipient, badge-type: badge-type } token-id)
     (map-set token-metadata token-id {
       badge-type: badge-type,
-      minted-at: stacks-block-height,
+      minted-at: block-height,
       achievement: achievement
     })
     
@@ -118,7 +118,7 @@
       badge-name: (get name badge-def),
       rarity: (get rarity badge-def),
       achievement: achievement,
-      block: stacks-block-height
+      block: block-height
     })
     
     (ok token-id)
