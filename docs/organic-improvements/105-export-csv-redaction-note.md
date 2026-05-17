@@ -5,5 +5,5 @@ CSV exports used for support should redact sensitive delivery endpoints and webh
 
 ## Checks
 - Review export fields before sharing externally.
-- Keep tx ids only when they are needed for debugging.
+- Keep transaction ids only when they are needed for debugging.
 - Confirm empty exports still include safe headers.
