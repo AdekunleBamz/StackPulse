@@ -1,4 +1,4 @@
-# Notification Channel Opt Out
+# Notification Channel Opt-Out Note
 
 ## Summary
 Notification settings should explain what happens when a channel is disabled.
