@@ -5,5 +5,5 @@ Alert thresholds should show units so users do not confuse STX, micro-STX, count
 
 ## Checks
 - Review create and edit forms for unit labels.
-- Confirm saved rules display the same units.
+- Confirm saved rules display matching units.
 - Test copy with long token names and narrow screens.
