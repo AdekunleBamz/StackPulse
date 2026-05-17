@@ -5,5 +5,5 @@ Badge claim flows should keep explorer links visible after a transaction is broa
 
 ## Checks
 - Test immediate explorer navigation after claim.
-- Confirm unindexed transactions still show the raw tx id.
+- Confirm unindexed transactions still show the raw transaction id.
 - Recheck network-specific explorer links before release.
