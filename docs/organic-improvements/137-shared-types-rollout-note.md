@@ -6,4 +6,4 @@ Shared package type changes should include rollout notes for frontend and server
 ## Checks
 - Mark removed exports as breaking changes.
 - Build `shared` before dependent packages.
-- Note consumer update order in release handoff notes.
+- Note the consumer update order in release handoff notes.
