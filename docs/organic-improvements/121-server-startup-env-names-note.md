@@ -1,4 +1,4 @@
-# Server Startup Env Names
+# Server Startup Env Names Note
 
 ## Summary
 Server startup diagnostics should name missing variables without printing their values.
