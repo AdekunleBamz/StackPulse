@@ -1,7 +1,7 @@
 # Alert Delivery Correlation
 
 ## Summary
-Alert delivery logs should preserve a shared correlation identifier from ingestion to notification.
+Alert delivery logs should preserve a shared correlation identifier from ingestion through notification.
 
 ## Checks
 - Carry request or event IDs through chainhook handlers.
