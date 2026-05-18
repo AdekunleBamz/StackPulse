@@ -35,13 +35,18 @@ const notificationIcons: Record<Notification['type'], string> = {
   badge: '🏆',
 };
 
+const NOTIFICATION_DEFAULT_MAX = 50;
 const NOTIFICATION_POLL_INTERVAL_MS = 30000;
 
 interface NotificationCenterProps {
   maxNotifications?: number;
+  pollInterval?: number;
 }
 
-export default function NotificationCenter({ maxNotifications = 50 }: NotificationCenterProps) {
+export default function NotificationCenter({
+  maxNotifications = NOTIFICATION_DEFAULT_MAX,
+  pollInterval = NOTIFICATION_POLL_INTERVAL_MS,
+}: NotificationCenterProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const safeMaxNotifications = Number.isFinite(maxNotifications)
@@ -77,8 +82,8 @@ export default function NotificationCenter({ maxNotifications = 50 }: Notificati
       }
     };
 
-    fetchNotifications(true);
-    const interval = setInterval(() => fetchNotifications(false), safePollInterval);
+    fetchNotifications();
+    const interval = setInterval(fetchNotifications, safePollInterval);
     return () => clearInterval(interval);
   }, [safeMaxNotifications, safePollInterval]);
 
