@@ -74,9 +74,9 @@ function Toast({ id, type, title, message, duration = 5000, onClose }: ToastProp
   const progressIntervalRef = useRef<number | null>(null);
 
   const clearTimers = useCallback(() => {
-    if (timerRef.current != null) window.clearTimeout(timerRef.current);
-    if (leavingTimerRef.current != null) window.clearTimeout(leavingTimerRef.current);
-    if (progressIntervalRef.current != null) window.clearInterval(progressIntervalRef.current);
+    if (timerRef.current != null) clearTimeout(timerRef.current);
+    if (leavingTimerRef.current != null) clearTimeout(leavingTimerRef.current);
+    if (progressIntervalRef.current != null) clearInterval(progressIntervalRef.current);
     timerRef.current = null;
     leavingTimerRef.current = null;
     progressIntervalRef.current = null;
@@ -88,12 +88,12 @@ function Toast({ id, type, title, message, duration = 5000, onClose }: ToastProp
     clearTimers();
 
     startTimeRef.current = Date.now();
-    timerRef.current = window.setTimeout(() => {
+    timerRef.current = setTimeout(() => {
       setIsLeaving(true);
-      leavingTimerRef.current = window.setTimeout(() => onClose(id), TOAST_LEAVE_ANIMATION_DURATION_MS);
+      leavingTimerRef.current = setTimeout(() => onClose(id), TOAST_LEAVE_ANIMATION_DURATION_MS);
     }, remainingMsRef.current);
 
-    progressIntervalRef.current = window.setInterval(() => {
+    progressIntervalRef.current = setInterval(() => {
       if (startTimeRef.current) {
         const elapsed = Date.now() - startTimeRef.current;
         const newProgress = Math.max(0, ((remainingMsRef.current - elapsed) / duration) * 100);
@@ -111,14 +111,14 @@ function Toast({ id, type, title, message, duration = 5000, onClose }: ToastProp
   const handleClose = () => {
     clearTimers();
     setIsLeaving(true);
-    leavingTimerRef.current = window.setTimeout(() => onClose(id), TOAST_LEAVE_ANIMATION_DURATION_MS);
+    leavingTimerRef.current = setTimeout(() => onClose(id), TOAST_LEAVE_ANIMATION_DURATION_MS);
   };
 
   const pause = () => {
     if (timerRef.current == null) return;
-    window.clearTimeout(timerRef.current);
+    clearTimeout(timerRef.current);
     if (progressIntervalRef.current != null) {
-      window.clearInterval(progressIntervalRef.current);
+      clearInterval(progressIntervalRef.current);
     }
     timerRef.current = null;
     progressIntervalRef.current = null;
