@@ -55,7 +55,7 @@ export function useLocalStorage<T>(key: string, initialValue: T): [T, (value: T 
       return;
     }
     try {
-      const timeoutId = window.setTimeout(() => {
+      const timeoutId = setTimeout(() => {
         const item = window.localStorage.getItem(key);
         if (!item) {
           setStoredValue(initialValue);
@@ -64,11 +64,11 @@ export function useLocalStorage<T>(key: string, initialValue: T): [T, (value: T 
         const parsed = JSON.parse(item) as T | undefined;
         setStoredValue(parsed === undefined ? initialValue : parsed);
       }, 0);
-      return () => window.clearTimeout(timeoutId);
+      return () => clearTimeout(timeoutId);
     } catch (error) {
       logger.error('Error hydrating localStorage key:', error);
-      const timeoutId = window.setTimeout(() => setStoredValue(initialValue), 0);
-      return () => window.clearTimeout(timeoutId);
+      const timeoutId = setTimeout(() => setStoredValue(initialValue), 0);
+      return () => clearTimeout(timeoutId);
     }
   }, [initialValue, key]);
 
