@@ -14,6 +14,7 @@ export default function ConnectWallet() {
   const safeAddress = address || '';
   const shortAddress = safeAddress ? truncateAddress(safeAddress) : 'connected wallet';
   const closeDropdown = useCallback(() => setShowDropdown(false), []);
+  const toggleDropdown = useCallback(() => setShowDropdown((prev) => !prev), []);
 
   useEffect(() => {
     if (!showDropdown) return;
@@ -63,7 +64,7 @@ export default function ConnectWallet() {
   return (
     <div ref={wrapperRef} className="relative">
       <Button
-        onClick={() => setShowDropdown((prev) => !prev)}
+        onClick={toggleDropdown}
         variant="secondary"
         size="md"
         aria-haspopup="menu"
