@@ -1,6 +1,6 @@
 # Monitoring Tag Taxonomy
 
-- Use a fixed taxonomy for alert tags across modules.
+- Use a fixed taxonomy for alert tags across all modules.
 - Keep tag definitions documented in one shared location.
 - This improves dashboard filtering consistency.
 
