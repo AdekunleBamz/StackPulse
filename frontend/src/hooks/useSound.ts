@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useState } from 'react';
 
 const SOUND_ENABLED_KEY = 'stackpulse:sound-enabled';
 
@@ -30,15 +30,14 @@ function playBeep(frequency: number, durationMs: number) {
 }
 
 export function useSound() {
-  const [enabled, setEnabled] = useState(true);
-
-  useEffect(() => {
-    if (typeof window === 'undefined') return;
+  const [enabled, setEnabled] = useState(() => {
+    if (typeof window === 'undefined') return true;
     const stored = window.localStorage.getItem(SOUND_ENABLED_KEY);
     if (stored === 'true' || stored === 'false') {
-      setEnabled(stored === 'true');
+      return stored === 'true';
     }
-  }, []);
+    return true;
+  });
 
   const toggle = useCallback(() => {
     setEnabled((prev) => {
