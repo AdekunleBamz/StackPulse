@@ -17,7 +17,7 @@ export function useNotificationData(limit: number = 50) {
 
   const fetchNotifications = useCallback(async () => {
     try {
-      const serverUrl = process.env.NEXT_PUBLIC_SERVER_URL || 'https://stackpulse-b8fw.onrender.com';
+      const serverUrl = process.env.NEXT_PUBLIC_SERVER_URL ?? 'https://stackpulse-b8fw.onrender.com';
       const response = await fetch(`${serverUrl}/api/notifications?limit=${limit}`);
       if (response.ok) {
         const data = await response.json();

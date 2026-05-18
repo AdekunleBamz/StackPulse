@@ -66,7 +66,7 @@ export function usePricing() {
           
           // Save notification preferences to server
           try {
-            const serverUrl = process.env.NEXT_PUBLIC_SERVER_URL || 'https://stackpulse-b8fw.onrender.com';
+            const serverUrl = process.env.NEXT_PUBLIC_SERVER_URL ?? 'https://stackpulse-b8fw.onrender.com';
             await fetch(`${serverUrl}/api/users`, {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },

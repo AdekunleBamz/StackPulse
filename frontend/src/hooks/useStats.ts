@@ -12,7 +12,7 @@ export interface EventStats {
   badgesEarned: number;
 }
 
-const SERVER_URL = process.env.NEXT_PUBLIC_SERVER_URL || 'https://stackpulse-b8fw.onrender.com';
+const SERVER_URL = process.env.NEXT_PUBLIC_SERVER_URL ?? 'https://stackpulse-b8fw.onrender.com';
 
 export function useStats(refreshInterval: number = 30000) {
   const [stats, setStats] = useState<EventStats | null>(null);
