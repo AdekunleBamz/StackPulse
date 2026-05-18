@@ -938,7 +938,7 @@ const createUserAlertHandler = async (req: Request, res: Response) => {
       type,
       name,
       threshold: threshold || 10000,
-      targetAddress: targetAddress || null,
+      targetAddress: targetAddress ?? null,
       enabled: true,
       triggerCount: 0,
       txId,

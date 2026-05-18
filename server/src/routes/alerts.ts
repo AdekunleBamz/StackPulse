@@ -448,7 +448,7 @@ router.get(
     // Count by type
     for (const alert of userAlerts) {
       const typeName = alertTypeNames[alert.alertType] || 'Unknown';
-      stats.byType[typeName] = (stats.byType[typeName] || 0) + 1;
+      stats.byType[typeName] = (stats.byType[typeName] ?? 0) + 1;
     }
 
     res.json({
