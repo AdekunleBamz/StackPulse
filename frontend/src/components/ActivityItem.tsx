@@ -11,6 +11,10 @@ interface ActivityItemProps {
   index: number;
 }
 
+function stopPropagation(e: React.MouseEvent) {
+  e.stopPropagation();
+}
+
 const ActivityItem = memo(({ item, index }: ActivityItemProps) => {
   const isLatest = index === 0;
   
@@ -36,7 +40,7 @@ const ActivityItem = memo(({ item, index }: ActivityItemProps) => {
           target="_blank"
           rel="noopener noreferrer"
           className="text-[10px] font-bold text-purple-400 hover:text-purple-300 opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1"
-          onClick={(e) => e.stopPropagation()}
+          onClick={stopPropagation}
           title="Open transaction in Hiro Explorer"
           aria-label={`View transaction ${item.txId} in Hiro Explorer`}
         >
