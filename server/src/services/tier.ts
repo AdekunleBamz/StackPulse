@@ -55,7 +55,7 @@ export function getTierLimits(tier: number): TierLimits {
 }
 
 export function getUserTier(address: string): UserTier {
-  return tierCache.get(address) || UserTier.FREE;
+  return tierCache.get(address) ?? UserTier.FREE;
 }
 
 export function setUserTier(address: string, tier: UserTier): void {
