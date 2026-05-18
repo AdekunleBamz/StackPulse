@@ -3,7 +3,7 @@
 import { toast } from '@/components/Toast';
 import { cn } from '@/lib/cn';
 import { Check, Copy } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 export default function CopyButton({
   value,
@@ -21,11 +21,11 @@ export default function CopyButton({
 
   useEffect(() => {
     if (!copied) return;
-    const t = window.setTimeout(() => setCopied(false), 1500);
-    return () => window.clearTimeout(t);
+    const t = setTimeout(() => setCopied(false), 1500);
+    return () => clearTimeout(t);
   }, [copied]);
 
-  const onCopy = async () => {
+  const onCopy = useCallback(async () => {
     if (!navigator.clipboard?.writeText) {
       toast.error('Copy unavailable', 'Your browser does not support clipboard copy here.');
       return;
@@ -38,7 +38,7 @@ export default function CopyButton({
     } catch {
       toast.error('Copy failed', 'Please copy manually.');
     }
-  };
+  }, [value, copiedLabel]);
 
   return (
     <button
