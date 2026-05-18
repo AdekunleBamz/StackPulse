@@ -212,7 +212,7 @@ const processAsync = (handler: (payload: ChainhookPayload) => Promise<void>) => 
 app.post(CHAINHOOK_ENDPOINTS.whaleTransfer, tieredApiLimiter, authenticateWebhook, processAsync(async (payload) => {
   for (const block of payload.apply) {
     for (const tx of block.transactions) {
-      const events = tx.metadata.receipt.events || [];
+      const events = tx.metadata.receipt.events ?? [];
       
       for (const event of events) {
         const transferData = parseWhaleTransfer(event);
@@ -291,7 +291,7 @@ app.post(CHAINHOOK_ENDPOINTS.contractDeployed, authenticateWebhook, processAsync
 app.post(CHAINHOOK_ENDPOINTS.nftMint, tieredApiLimiter, authenticateWebhook, processAsync(async (payload) => {
   for (const block of payload.apply) {
     for (const tx of block.transactions) {
-      const events = tx.metadata.receipt.events || [];
+      const events = tx.metadata.receipt.events ?? [];
       
       for (const event of events) {
         const nftData = parseNFTMint(event);
@@ -364,7 +364,7 @@ app.post(CHAINHOOK_ENDPOINTS.tokenLaunch, authenticateWebhook, processAsync(asyn
 app.post(CHAINHOOK_ENDPOINTS.largeSwapAlert, tieredApiLimiter, authenticateWebhook, processAsync(async (payload) => {
   for (const block of payload.apply) {
     for (const tx of block.transactions) {
-      const events = tx.metadata.receipt.events || [];
+      const events = tx.metadata.receipt.events ?? [];
       const ftEvents = events.filter((e) => e.type === 'FTTransferEvent');
       
       if (ftEvents.length >= 2) {
@@ -397,7 +397,7 @@ app.post(CHAINHOOK_ENDPOINTS.largeSwapAlert, tieredApiLimiter, authenticateWebho
 app.post(CHAINHOOK_ENDPOINTS.subscriptionCreated, authenticateWebhook, processAsync(async (payload) => {
   for (const block of payload.apply) {
     for (const tx of block.transactions) {
-      const events = tx.metadata.receipt.events || [];
+      const events = tx.metadata.receipt.events ?? [];
       
       for (const event of events) {
         const printData = getPrintEventData(event);
@@ -445,7 +445,7 @@ app.post(CHAINHOOK_ENDPOINTS.subscriptionCreated, authenticateWebhook, processAs
 app.post(CHAINHOOK_ENDPOINTS.alertTriggered, authenticateWebhook, processAsync(async (payload) => {
   for (const block of payload.apply) {
     for (const tx of block.transactions) {
-      const events = tx.metadata.receipt.events || [];
+      const events = tx.metadata.receipt.events ?? [];
       
       for (const event of events) {
         const printData = getPrintEventData(event);
@@ -498,7 +498,7 @@ app.post(CHAINHOOK_ENDPOINTS.alertTriggered, authenticateWebhook, processAsync(a
 app.post(CHAINHOOK_ENDPOINTS.feeCollected, authenticateWebhook, processAsync(async (payload) => {
   for (const block of payload.apply) {
     for (const tx of block.transactions) {
-      const events = tx.metadata.receipt.events || [];
+      const events = tx.metadata.receipt.events ?? [];
       
       for (const event of events) {
         const printData = getPrintEventData(event);
@@ -544,7 +544,7 @@ app.post(CHAINHOOK_ENDPOINTS.feeCollected, authenticateWebhook, processAsync(asy
 app.post(CHAINHOOK_ENDPOINTS.badgeEarned, authenticateWebhook, processAsync(async (payload) => {
   for (const block of payload.apply) {
     for (const tx of block.transactions) {
-      const events = tx.metadata.receipt.events || [];
+      const events = tx.metadata.receipt.events ?? [];
       
       for (const event of events) {
         const printData = getPrintEventData(event);
@@ -909,7 +909,7 @@ const getUserAlertsHandler = async (req: Request, res: Response) => {
     if (!address || address.trim().length === 0) {
       return res.status(400).json({ error: 'Address is required' });
     }
-    const alerts = userAlerts.get(address) || [];
+    const alerts = userAlerts.get(address) ?? [];
     res.json({ success: true, alerts, count: alerts.length });
   } catch (error) {
     logger.error('Error getting alerts', { error });
@@ -932,7 +932,7 @@ const createUserAlertHandler = async (req: Request, res: Response) => {
       return res.status(400).json({ error: 'Alert name is required' });
     }
     
-    const alerts = userAlerts.get(address) || [];
+    const alerts = userAlerts.get(address) ?? [];
     const newAlert = {
       id: Date.now(),
       type,
@@ -998,7 +998,7 @@ const updateUserAlertHandler = async (req: Request, res: Response) => {
       return res.status(400).json({ error: 'Invalid alert id' });
     }
     
-    const alerts = userAlerts.get(address) || [];
+    const alerts = userAlerts.get(address) ?? [];
     const alertIndex = alerts.findIndex(a => a.id === parsedAlertId);
     
     if (alertIndex === -1) {
@@ -1029,7 +1029,7 @@ const deleteUserAlertHandler = async (req: Request, res: Response) => {
       return res.status(400).json({ error: 'Invalid alert id' });
     }
     
-    const alerts = userAlerts.get(address) || [];
+    const alerts = userAlerts.get(address) ?? [];
     const filteredAlerts = alerts.filter(a => a.id !== parsedAlertId);
     
     if (filteredAlerts.length === alerts.length) {
