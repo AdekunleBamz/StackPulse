@@ -30,12 +30,12 @@ export function usePrice(refreshInterval: number = 60000) {
       
       setPrices({
         stx: {
-          usd: data.blockstack?.usd || 0,
-          change24h: data.blockstack?.usd_24h_change || 0,
+          usd: data.blockstack?.usd ?? 0,
+          change24h: data.blockstack?.usd_24h_change ?? 0,
         },
         btc: {
-          usd: data.bitcoin?.usd || 0,
-          change24h: data.bitcoin?.usd_24h_change || 0,
+          usd: data.bitcoin?.usd ?? 0,
+          change24h: data.bitcoin?.usd_24h_change ?? 0,
         },
       });
       setLastUpdate(new Date());
