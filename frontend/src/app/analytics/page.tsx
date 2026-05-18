@@ -78,6 +78,22 @@ const StatCard = ({
   </div>
 );
 
+const EVENT_TYPE_ACCENT: Record<string, string> = {
+  blue: 'border-blue-500/20 hover:border-blue-500/30',
+  purple: 'border-purple-500/20 hover:border-purple-500/30',
+  pink: 'border-pink-500/20 hover:border-pink-500/30',
+  yellow: 'border-yellow-500/20 hover:border-yellow-500/30',
+  green: 'border-green-500/20 hover:border-green-500/30',
+};
+
+const EVENT_ICON: Record<string, string> = {
+  whale: '🐋',
+  contract: '📜',
+  nft: '🎨',
+  token: '🪙',
+  swap: '💱',
+};
+
 const EventTypeCard = ({
   type,
   count,
@@ -90,13 +106,7 @@ const EventTypeCard = ({
   color: string;
 }) => {
   const accent =
-    {
-      blue: 'border-blue-500/20 hover:border-blue-500/30',
-      purple: 'border-purple-500/20 hover:border-purple-500/30',
-      pink: 'border-pink-500/20 hover:border-pink-500/30',
-      yellow: 'border-yellow-500/20 hover:border-yellow-500/30',
-      green: 'border-green-500/20 hover:border-green-500/30',
-    }[color] || 'border-gray-700 hover:border-gray-600';
+    EVENT_TYPE_ACCENT[color] ?? 'border-gray-700 hover:border-gray-600';
 
   return (
     <div
@@ -453,13 +463,7 @@ export default function AnalyticsPage() {
               <NoResultsState />
             ) : (
               analytics.recentEvents.map((event) => {
-                const eventIcon = {
-                  whale: '🐋',
-                  contract: '📜',
-                  nft: '🎨',
-                  token: '🪙',
-                  swap: '💱'
-                }[event.type] || '⚡';
+                const eventIcon = EVENT_ICON[event.type] ?? '⚡';
 
                 return (
                   <a
