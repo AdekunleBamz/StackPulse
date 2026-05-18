@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useId, useRef, useState } from 'react';
+import { useCallback, useEffect, useId, useRef, useState } from 'react';
 
 interface ConfirmDialogProps {
   isOpen: boolean;
@@ -12,6 +12,24 @@ interface ConfirmDialogProps {
   onCancel: () => void;
   variant?: 'danger' | 'warning' | 'info';
 }
+
+const variantStyles = {
+  danger: {
+    icon: 'text-red-500',
+    bg: 'bg-red-500/10',
+    button: 'bg-red-600 hover:bg-red-500',
+  },
+  warning: {
+    icon: 'text-yellow-500',
+    bg: 'bg-yellow-500/10',
+    button: 'bg-yellow-600 hover:bg-yellow-500',
+  },
+  info: {
+    icon: 'text-blue-500',
+    bg: 'bg-blue-500/10',
+    button: 'bg-blue-600 hover:bg-blue-500',
+  },
+};
 
 export default function ConfirmDialog({
   isOpen,
@@ -45,32 +63,14 @@ export default function ConfirmDialog({
     };
   }, [isOpen]);
 
-  const handleConfirm = async () => {
+  const handleConfirm = useCallback(async () => {
     setIsLoading(true);
     try {
       await onConfirm();
     } finally {
       setIsLoading(false);
     }
-  };
-
-  const variantStyles = {
-    danger: {
-      icon: 'text-red-500',
-      bg: 'bg-red-500/10',
-      button: 'bg-red-600 hover:bg-red-500'
-    },
-    warning: {
-      icon: 'text-yellow-500',
-      bg: 'bg-yellow-500/10',
-      button: 'bg-yellow-600 hover:bg-yellow-500'
-    },
-    info: {
-      icon: 'text-blue-500',
-      bg: 'bg-blue-500/10',
-      button: 'bg-blue-600 hover:bg-blue-500'
-    }
-  };
+  }, [onConfirm]);
 
   const styles = variantStyles[variant];
 
