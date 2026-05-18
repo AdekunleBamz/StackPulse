@@ -1,4 +1,4 @@
-# Frontend env redaction note
+# Frontend Env Redaction Note
 
 Deployment evidence should show `NEXT_PUBLIC_*` variable names without copying private project values.
 
