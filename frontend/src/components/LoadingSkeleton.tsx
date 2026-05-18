@@ -11,6 +11,20 @@ interface SkeletonProps {
   animation?: 'pulse' | 'wave' | 'none';
 }
 
+const baseClasses = 'bg-gray-800/40 backdrop-blur-md shadow-inner border border-white/5';
+
+const variantClasses = {
+  text: 'rounded-md',
+  circular: 'rounded-full',
+  rectangular: 'rounded-xl'
+};
+
+const animationClasses = {
+  pulse: 'animate-pulse duration-1000',
+  wave: 'shimmer before:absolute before:inset-0 before:-translate-x-full before:animate-shimmer before:bg-gradient-to-r before:from-transparent before:via-white/10 before:to-transparent relative overflow-hidden',
+  none: ''
+};
+
 export default function LoadingSkeleton({
   className = '',
   variant = 'rectangular',
@@ -18,20 +32,6 @@ export default function LoadingSkeleton({
   height,
   animation = 'wave'
 }: SkeletonProps) {
-  const baseClasses = 'bg-gray-800/40 backdrop-blur-md shadow-inner border border-white/5';
-  
-  const variantClasses = {
-    text: 'rounded-md',
-    circular: 'rounded-full',
-    rectangular: 'rounded-xl'
-  };
-  
-  const animationClasses = {
-    pulse: 'animate-pulse duration-1000',
-    wave: 'shimmer before:absolute before:inset-0 before:-translate-x-full before:animate-shimmer before:bg-gradient-to-r before:from-transparent before:via-white/10 before:to-transparent relative overflow-hidden',
-    none: ''
-  };
-  
   const style: React.CSSProperties = {
     width: width || '100%',
     height: height || '1rem'
