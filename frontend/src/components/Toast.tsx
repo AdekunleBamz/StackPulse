@@ -69,9 +69,9 @@ function Toast({ id, type, title, message, duration = 5000, onClose }: ToastProp
   
   const remainingMsRef = useRef(duration);
   const startTimeRef = useRef<number | null>(null);
-  const timerRef = useRef<number | null>(null);
-  const leavingTimerRef = useRef<number | null>(null);
-  const progressIntervalRef = useRef<number | null>(null);
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const leavingTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const progressIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const clearTimers = useCallback(() => {
     if (timerRef.current != null) clearTimeout(timerRef.current);
