@@ -5,5 +5,5 @@ Retries should include enough jitter to avoid synchronized webhook bursts after 
 
 ## Checks
 - Confirm retry logs show attempt count and wait window.
-- Compare webhook retry timing in staging before release.
+- Compare webhook retry timing in staging before each release.
 - Note any provider outage context in incident handoff.
