@@ -237,10 +237,10 @@ export function parseWhaleTransfer(event: GenericJsonObject): { amountSTX: strin
     return null;
   }
 
-  const data = (event.data as GenericJsonObject | undefined) || {};
-  const amount = Number(data.amount || 0);
-  const sender = String(data.sender || '');
-  const recipient = String(data.recipient || '');
+  const data = (event.data as GenericJsonObject | undefined) ?? {};
+  const amount = Number(data.amount ?? 0);
+  const sender = String(data.sender ?? '');
+  const recipient = String(data.recipient ?? '');
 
   if (!amount || !sender || !recipient) {
     return null;
