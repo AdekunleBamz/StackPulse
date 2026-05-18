@@ -9,6 +9,20 @@ interface ProgressBarProps {
   animate?: boolean;
 }
 
+const sizeClasses = {
+  sm: 'h-1',
+  md: 'h-2',
+  lg: 'h-4',
+};
+
+const colorClasses = {
+  purple: 'bg-purple-600',
+  blue: 'bg-blue-600',
+  emerald: 'bg-emerald-600',
+  rose: 'bg-rose-600',
+  amber: 'bg-amber-600',
+};
+
 export default function ProgressBar({
   progress,
   size = 'md',
@@ -19,20 +33,6 @@ export default function ProgressBar({
 }: ProgressBarProps) {
   const clampedProgress = Math.min(100, Math.max(0, progress));
   
-  const sizeClasses = {
-    sm: 'h-1',
-    md: 'h-2',
-    lg: 'h-4'
-  };
-  
-  const colorClasses = {
-    purple: 'bg-purple-600',
-    blue: 'bg-blue-600',
-    emerald: 'bg-emerald-600',
-    rose: 'bg-rose-600',
-    amber: 'bg-amber-600'
-  };
-
   return (
     <div className={`w-full ${className}`}>
       {showLabel && (
