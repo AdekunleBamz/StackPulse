@@ -33,7 +33,7 @@ import { Breadcrumbs } from '@/components';
 import { apiUrl } from '@/lib/env';
 import { logger } from '@/lib/logger';
 
-const DEPLOYER_ADDRESS = process.env.NEXT_PUBLIC_DEPLOYER_ADDRESS || '';
+const DEPLOYER_ADDRESS = process.env.NEXT_PUBLIC_DEPLOYER_ADDRESS ?? '';
 
 // Alert types matching the contracts and chainhooks
 const alertTypes = [
@@ -96,7 +96,7 @@ export default function DashboardPage() {
     const loadAlerts = async () => {
       if (!address) return;
       try {
-        const serverUrl = process.env.NEXT_PUBLIC_SERVER_URL || 'https://stackpulse-b8fw.onrender.com';
+        const serverUrl = process.env.NEXT_PUBLIC_SERVER_URL ?? 'https://stackpulse-b8fw.onrender.com';
         const alertsResponse = await fetch(`${serverUrl}/api/users/${address}/alerts`);
         if (alertsResponse.ok) {
           const alertsData = await alertsResponse.json();
