@@ -57,11 +57,11 @@ export default function Header() {
 
   useEffect(() => {
     if (!isOpen) return;
-    const t = window.setTimeout(() => {
+    const t = setTimeout(() => {
       const firstFocusable = mobileNavRef.current?.querySelector<HTMLElement>('a, button, [tabindex]:not([tabindex="-1"])');
       firstFocusable?.focus?.();
     }, 0);
-    return () => window.clearTimeout(t);
+    return () => clearTimeout(t);
   }, [isOpen]);
 
   return (
