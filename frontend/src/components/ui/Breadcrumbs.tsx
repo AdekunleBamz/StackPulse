@@ -9,6 +9,10 @@ interface BreadcrumbsProps {
   className?: string;
 }
 
+function formatBreadcrumbLabel(segment: string) {
+  return segment.replace(/-/g, ' ').replace(/^\w/, (c) => c.toUpperCase());
+}
+
 export default function Breadcrumbs({ className }: BreadcrumbsProps) {
   const pathname = usePathname();
   
@@ -36,9 +40,7 @@ export default function Breadcrumbs({ className }: BreadcrumbsProps) {
           {paths.map((path, index) => {
             const href = `/${paths.slice(0, index + 1).join('/')}`;
             const isLast = index === paths.length - 1;
-            const label = path
-              .replace(/-/g, ' ')
-              .replace(/^\w/, (c) => c.toUpperCase());
+            const label = formatBreadcrumbLabel(path);
   
             return (
               <li key={href} className="flex items-center">
