@@ -71,7 +71,7 @@ export function trackEvent(
   }
 
   if (userAddress) {
-    const currentCount = analytics.userEventCounts.get(userAddress) || 0;
+    const currentCount = analytics.userEventCounts.get(userAddress) ?? 0;
     const normalizedTier = Number.isInteger(tier) ? tier : 0;
     const limit = MAX_EVENTS_PER_USER.get(normalizedTier) ?? MAX_EVENTS_PER_USER.get(0)!;
     
@@ -108,7 +108,7 @@ export function trackEvent(
     analytics.hourly.set(hour, new Map());
   }
   const hourMap = analytics.hourly.get(hour)!;
-  hourMap.set(eventType, (hourMap.get(eventType) || 0) + 1);
+  hourMap.set(eventType, (hourMap.get(eventType) ?? 0) + 1);
   trimOldestEntries(analytics.hourly, MAX_HOURLY_ENTRIES);
   
   // Update daily aggregation
@@ -116,7 +116,7 @@ export function trackEvent(
     analytics.daily.set(day, new Map());
   }
   const dayMap = analytics.daily.get(day)!;
-  dayMap.set(eventType, (dayMap.get(eventType) || 0) + 1);
+  dayMap.set(eventType, (dayMap.get(eventType) ?? 0) + 1);
   trimOldestEntries(analytics.daily, MAX_DAILY_ENTRIES);
   
   logger.debug('Event tracked', { eventType, metadata });
@@ -159,7 +159,7 @@ export function getEventsInWindow(window: TimeWindow): Record<string, number> {
   analytics.hourly.forEach((eventCounts, hour) => {
     if (hour >= cutoffHour) {
       eventCounts.forEach((count, eventType) => {
-        result[eventType] = (result[eventType] || 0) + count;
+        result[eventType] = (result[eventType] ?? 0) + count;
       });
     }
   });
@@ -182,7 +182,7 @@ export function getHourlyBreakdown(
   for (let i = startHour; i < startHour + safeHours; i++) {
     const hourMap = analytics.hourly.get(i);
     if (hourMap) {
-      const count = hourMap.get(eventType) || 0;
+      const count = hourMap.get(eventType) ?? 0;
       const date = new Date(i * MILLISECONDS_PER_HOUR);
       const key = date.toISOString().slice(0, 13); // YYYY-MM-DDTHH
       result[key] = count;
@@ -207,7 +207,7 @@ export function getDailyBreakdown(
   for (let i = startDay; i < startDay + safeDays; i++) {
     const dayMap = analytics.daily.get(i);
     if (dayMap) {
-      const count = dayMap.get(eventType) || 0;
+      const count = dayMap.get(eventType) ?? 0;
       const date = new Date(i * MILLISECONDS_PER_DAY);
       const key = date.toISOString().slice(0, 10); // YYYY-MM-DD
       result[key] = count;
