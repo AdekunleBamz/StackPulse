@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useWallet } from '@/context/WalletContext';
 import { toast } from '@/components/Toast';
 
-const DEPLOYER_ADDRESS = process.env.NEXT_PUBLIC_DEPLOYER_ADDRESS || '';
+const DEPLOYER_ADDRESS = process.env.NEXT_PUBLIC_DEPLOYER_ADDRESS ?? '';
 
 export const TIER_PRICES_MICROSTACKS: Record<number, number> = {
   0: 0,         // Free
@@ -33,7 +33,7 @@ export function usePricing() {
       return;
     }
 
-    const price = TIER_PRICES_MICROSTACKS[selectedTier] || 0;
+    const price = TIER_PRICES_MICROSTACKS[selectedTier] ?? 0;
     setIsSubmitting(true);
     setSubscribingTier(selectedTier);
 
@@ -126,7 +126,7 @@ export function usePricing() {
       return;
     }
 
-    const price = TIER_PRICES_MICROSTACKS[tier] || 0;
+    const price = TIER_PRICES_MICROSTACKS[tier] ?? 0;
     setIsSubmitting(true);
     setSubscribingTier(tier);
 
