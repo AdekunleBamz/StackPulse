@@ -265,8 +265,8 @@ export function parseContractDeployment(tx: GenericJsonObject): { contractId: st
   }
 
   const kindData = (kind.data as GenericJsonObject | undefined) || {};
-  const contractId = String(kindData.contract_identifier || '');
-  const deployer = String(metadata.sender || '');
+  const contractId = String(kindData.contract_identifier ?? '');
+  const deployer = String(metadata.sender ?? '');
 
   if (!contractId || !deployer) {
     return null;
@@ -284,9 +284,9 @@ export function parseNFTMint(event: GenericJsonObject): { assetIdentifier: strin
   }
 
   const data = (event.data as GenericJsonObject | undefined) || {};
-  const assetIdentifier = String(data.asset_identifier || '');
-  const tokenId = String(data.value || '');
-  const recipient = String(data.recipient || '');
+  const assetIdentifier = String(data.asset_identifier ?? '');
+  const tokenId = String(data.value ?? '');
+  const recipient = String(data.recipient ?? '');
 
   if (!assetIdentifier || !tokenId || !recipient) {
     return null;
@@ -299,7 +299,7 @@ export function parseNFTMint(event: GenericJsonObject): { assetIdentifier: strin
     assetName: assetName || assetIdentifier,
     tokenId,
     recipient,
-    contractAddress: contractAddress || '',
+    contractAddress: contractAddress ?? '',
   };
 }
 
