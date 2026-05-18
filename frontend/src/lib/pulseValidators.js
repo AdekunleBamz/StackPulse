@@ -1,7 +1,7 @@
 
 import { PULSE_MAX_RETRIES } from './pulseConstants.js';
 
-export const isValidPulsePrice = (v) => !isNaN(parseFloat(v)) && parseFloat(v) >= 0;
+export const isValidPulsePrice = (v) => !Number.isNaN(Number.parseFloat(v)) && Number.parseFloat(v) >= 0;
 
 export const isValidBlockHeight = (b) => Number.isInteger(b) && b >= 0;
 
@@ -33,7 +33,7 @@ export const isValidReconnectDelay = (ms) => Number.isInteger(ms) && ms >= 0;
 
 export const isValidStaleThreshold = (ms) => Number.isInteger(ms) && ms > 0;
 
-export const isValidPulseDelta = (d) => typeof d === "number" && isFinite(d);
+export const isValidPulseDelta = (d) => typeof d === "number" && Number.isFinite(d);
 
 export const isValidPulseVolume = (v) => typeof v === "number" && v >= 0;
 
