@@ -1,7 +1,7 @@
 
 import { PULSE_MICROSTX_PER_STX } from './pulseConstants.js';
 
-export const formatPulsePrice = (v) => "$" + parseFloat(v).toFixed(2);
+export const formatPulsePrice = (v) => "$" + Number.parseFloat(v).toFixed(2);
 
 export const formatPulseDelta = (d) => (d >= 0 ? "+" : "") + d.toFixed(2) + "%";
 
@@ -33,7 +33,7 @@ export const formatPulseRatio = (a, b) => b > 0 ? (a / b * 100).toFixed(1) + "%"
 
 export const formatPulseLabel = (s) => s.replace(/_/g, " ").toLowerCase();
 
-export const formatPulseDecimal = (v, d) => parseFloat(v).toFixed(d || 6);
+export const formatPulseDecimal = (v, d) => Number.parseFloat(v).toFixed(d ?? 6);
 
 export const formatPulseMicroStx = (v) => (v / PULSE_MICROSTX_PER_STX).toFixed(6) + " STX";
 
