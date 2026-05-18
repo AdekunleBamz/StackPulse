@@ -69,7 +69,6 @@ export function useWebSocket(options: UseWebSocketOptions = {}): UseWebSocketRet
         setIsConnected(true);
         setIsConnecting(false);
         reconnectAttemptsRef.current = 0;
-        setReconnectCount(0);
         onOpen?.(event);
       };
 
