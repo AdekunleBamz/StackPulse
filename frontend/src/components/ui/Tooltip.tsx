@@ -63,7 +63,7 @@ export default function Tooltip({
     };
     window.addEventListener('keydown', onKeyDown);
     return () => window.removeEventListener('keydown', onKeyDown);
-  }, [isVisible]);
+  }, [isVisible, hideTooltip]);
 
   useEffect(() => {
     return () => {
