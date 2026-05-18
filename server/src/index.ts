@@ -218,7 +218,7 @@ app.post(CHAINHOOK_ENDPOINTS.whaleTransfer, tieredApiLimiter, authenticateWebhoo
         const transferData = parseWhaleTransfer(event);
         
         if (transferData) {
-          const isMicroWhale = parseFloat(transferData.amountSTX) < 100000;
+          const isMicroWhale = Number.parseFloat(transferData.amountSTX) < 100000;
           const emoji = isMicroWhale ? '🦐' : '🐋';
           const title = `${emoji} ${isMicroWhale ? 'Large' : 'Whale'} Transfer Detected`;
 
