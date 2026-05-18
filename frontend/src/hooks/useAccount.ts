@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { useWallet } from '@/context/WalletContext';
 import { toast } from '@/components/Toast';
 
-const DEPLOYER_ADDRESS = process.env.NEXT_PUBLIC_DEPLOYER_ADDRESS || '';
+const DEPLOYER_ADDRESS = process.env.NEXT_PUBLIC_DEPLOYER_ADDRESS ?? '';
 
 export interface UserAccountData {
   username: string;
@@ -52,15 +52,15 @@ export function useAccount() {
         const val = cvToValue(cv);
         if (val && val.value) {
           setUserData({
-            username: val.value.username?.value || '',
-            tier: Number(val.value.tier?.value || 0),
-            alertsEnabled: Number(val.value['alerts-enabled']?.value || 0),
-            subscriptionEnds: Number(val.value['subscription-ends']?.value || 0),
+            username: val.value.username?.value ?? '',
+            tier: Number(val.value.tier?.value ?? 0),
+            alertsEnabled: Number(val.value['alerts-enabled']?.value ?? 0),
+            subscriptionEnds: Number(val.value['subscription-ends']?.value ?? 0),
           });
           
           localStorage.setItem(`stackpulse_registered_${address}`, JSON.stringify({
-            tier: Number(val.value.tier?.value || 0),
-            username: val.value.username?.value || '',
+            tier: Number(val.value.tier?.value ?? 0),
+            username: val.value.username?.value ?? '',
             timestamp: Date.now()
           }));
         }
@@ -89,10 +89,10 @@ export function useAccount() {
         const parsed = JSON.parse(cached);
         setIsRegistered(true);
         setUserData(prev => ({
-          username: parsed.username || '',
-          tier: parsed.tier || 0,
-          alertsEnabled: prev?.alertsEnabled || 0,
-          subscriptionEnds: prev?.subscriptionEnds || 0
+          username: parsed.username ?? '',
+          tier: parsed.tier ?? 0,
+          alertsEnabled: prev?.alertsEnabled ?? 0,
+          subscriptionEnds: prev?.subscriptionEnds ?? 0
         }));
       }
     }
