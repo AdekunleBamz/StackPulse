@@ -310,7 +310,7 @@ export function parseStackPulseEvent(event: GenericJsonObject): GenericJsonObjec
 
   const data = (event.data as GenericJsonObject | undefined) ?? {};
   const value = data.value as GenericJsonObject | undefined;
-  return value || null;
+  return value ?? null;
 }
 
 export function formatSTX(amountMicroStx: number | string): string {
