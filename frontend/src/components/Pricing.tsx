@@ -60,6 +60,7 @@ const tiers = [
 
 const PRICING_USERNAME_MIN_LENGTH = 3;
 const PRICING_USERNAME_MAX_LENGTH = 20;
+const TIER_NAMES = ['Free', 'Basic', 'Pro', 'Premium'];
 const TIER_PRICES_MICRO_STX: Record<number, number> = {
   0: 0,
   1: 1_000_000,
@@ -104,8 +105,6 @@ export default function Pricing() {
   const [showPreview, setShowPreview] = useState(false);
   const editChannelTitleId = useId();
   const [isDataLoading, setIsDataLoading] = useState(false);
-
-  const tierNames = ['Free', 'Basic', 'Pro', 'Premium'];
 
   // Sync state with userData from hook
   useEffect(() => {
@@ -448,7 +447,7 @@ export default function Pricing() {
                     currentTier === 2 ? 'bg-purple-500/20 text-purple-400 border border-purple-500/30' :
                     'bg-amber-500/20 text-amber-400 border border-amber-500/30'
                   }`}>
-                    {tierNames[currentTier] || 'Free'}
+                    {TIER_NAMES[currentTier] || 'Free'}
                   </span>
                   {currentTier === 0 && (
                     <Link href="#pricing-tiers" className="text-xs text-purple-400 hover:text-purple-300 font-bold ml-1 transition-colors">
