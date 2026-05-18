@@ -44,7 +44,7 @@ class NotificationsService {
   private notifications: Map<string, Notification[]> = new Map();
 
   private getUserNotificationList(userAddress: string): Notification[] {
-    return this.notifications.get(userAddress) || [];
+    return this.notifications.get(userAddress) ?? [];
   }
 
   private getAlertName(alertData: unknown): string {

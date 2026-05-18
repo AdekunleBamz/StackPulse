@@ -116,7 +116,7 @@ export async function getAccountTransactions(
     );
     if (!response.ok) return [];
     const data = (await response.json()) as PaginatedTransactionsResponse;
-    return data.results || [];
+    return data.results ?? [];
   } catch (error) {
     logger.error('Error fetching account transactions', { address, network, error });
     return [];
@@ -183,7 +183,7 @@ export async function getMempoolTransactions(
     );
     if (!response.ok) return [];
     const data = (await response.json()) as PaginatedTransactionsResponse;
-    return data.results || [];
+    return data.results ?? [];
   } catch (error) {
     logger.error('Error fetching mempool transactions', { address, network, error });
     return [];
@@ -222,7 +222,7 @@ export async function getBlockTransactions(
     );
     if (!response.ok) return [];
     const data = (await response.json()) as PaginatedTransactionsResponse;
-    return data.results || [];
+    return data.results ?? [];
   } catch (error) {
     logger.error('Error fetching block transactions', { blockHeight, network, error });
     return [];
