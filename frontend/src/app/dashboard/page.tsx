@@ -156,7 +156,7 @@ export default function DashboardPage() {
           uintCV(newAlertType),
           stringAsciiCV(newAlertName || alertTypes[newAlertType - 1].name),
           noneCV(), // target address (optional)
-          uintCV(parseInt(newAlertThreshold) || 10000)
+          uintCV(Number.parseInt(newAlertThreshold) || 10000)
         ],
         onFinish: async (data: { txId: string }) => {
           logger.info('Alert created:', data.txId);
@@ -170,7 +170,7 @@ export default function DashboardPage() {
               body: JSON.stringify({
                 type: newAlertType,
                 name: newAlertName || alertTypes[newAlertType - 1].name,
-                threshold: parseInt(newAlertThreshold) || 10000,
+                threshold: Number.parseInt(newAlertThreshold) || 10000,
                 txId: data.txId
               })
             });
@@ -192,7 +192,7 @@ export default function DashboardPage() {
             type: newAlertType,
             name: newAlertName || alertTypes[newAlertType - 1].name,
             enabled: true,
-            threshold: parseInt(newAlertThreshold),
+            threshold: Number.parseInt(newAlertThreshold),
             triggerCount: 0
           }]);
           setIsCreating(false);
@@ -643,8 +643,8 @@ export default function DashboardPage() {
                     ref={createAlertSelectRef}
                     value={newAlertType}
                     onChange={(e) => {
-                      setNewAlertType(parseInt(e.target.value));
-                      setNewAlertName(alertTypes[parseInt(e.target.value) - 1].name);
+                      setNewAlertType(Number.parseInt(e.target.value));
+                      setNewAlertName(alertTypes[Number.parseInt(e.target.value) - 1].name);
                     }}
                     className="w-full bg-gray-700/50 border border-gray-600 rounded-lg px-4 py-3 text-white transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500/50 focus:shadow-[0_0_15px_-3px_rgba(168,85,247,0.4)]"
                   >
