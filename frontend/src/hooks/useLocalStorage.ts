@@ -55,16 +55,20 @@ export function useLocalStorage<T>(key: string, initialValue: T): [T, (value: T 
       return;
     }
     try {
-      const item = window.localStorage.getItem(key);
-      if (!item) {
-        setStoredValue(initialValue);
-        return;
-      }
-      const parsed = JSON.parse(item) as T | undefined;
-      setStoredValue(parsed === undefined ? initialValue : parsed);
+      const timeoutId = window.setTimeout(() => {
+        const item = window.localStorage.getItem(key);
+        if (!item) {
+          setStoredValue(initialValue);
+          return;
+        }
+        const parsed = JSON.parse(item) as T | undefined;
+        setStoredValue(parsed === undefined ? initialValue : parsed);
+      }, 0);
+      return () => window.clearTimeout(timeoutId);
     } catch (error) {
       logger.error('Error hydrating localStorage key:', error);
-      setStoredValue(initialValue);
+      const timeoutId = window.setTimeout(() => setStoredValue(initialValue), 0);
+      return () => window.clearTimeout(timeoutId);
     }
   }, [initialValue, key]);
 
