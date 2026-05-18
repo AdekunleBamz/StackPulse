@@ -119,7 +119,7 @@ export default function Pricing() {
       if (!isRegistered || !address) return;
       setIsDataLoading(true);
       try {
-        const serverUrl = process.env.NEXT_PUBLIC_SERVER_URL || 'https://stackpulse-b8fw.onrender.com';
+        const serverUrl = process.env.NEXT_PUBLIC_SERVER_URL ?? 'https://stackpulse-b8fw.onrender.com';
         const prefsResponse = await fetch(`${serverUrl}/api/users/${address}`);
         if (prefsResponse.ok) {
           const prefsData: ApiResponse<UserPreferences> = await prefsResponse.json();
