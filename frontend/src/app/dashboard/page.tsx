@@ -123,7 +123,7 @@ export default function DashboardPage() {
     document.body.style.overflow = 'hidden';
 
     const previouslyFocused = document.activeElement as HTMLElement | null;
-    const t = window.setTimeout(() => createAlertSelectRef.current?.focus(), 0);
+    const t = setTimeout(() => createAlertSelectRef.current?.focus(), 0);
 
     const onKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') setShowCreateAlert(false);
@@ -131,7 +131,7 @@ export default function DashboardPage() {
     window.addEventListener('keydown', onKeyDown);
 
     return () => {
-      window.clearTimeout(t);
+      clearTimeout(t);
       window.removeEventListener('keydown', onKeyDown);
       document.body.style.overflow = previousOverflow;
       previouslyFocused?.focus?.();
