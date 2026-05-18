@@ -256,15 +256,15 @@ export function parseWhaleTransfer(event: GenericJsonObject): { amountSTX: strin
 }
 
 export function parseContractDeployment(tx: GenericJsonObject): { contractId: string; contractName: string; deployer: string } | null {
-  const metadata = (tx.metadata as GenericJsonObject | undefined) || {};
-  const kind = (metadata.kind as GenericJsonObject | undefined) || {};
+  const metadata = (tx.metadata as GenericJsonObject | undefined) ?? {};
+  const kind = (metadata.kind as GenericJsonObject | undefined) ?? {};
   const kindType = kind.type as string | undefined;
 
   if (kindType !== 'ContractDeployment') {
     return null;
   }
 
-  const kindData = (kind.data as GenericJsonObject | undefined) || {};
+  const kindData = (kind.data as GenericJsonObject | undefined) ?? {};
   const contractId = String(kindData.contract_identifier ?? '');
   const deployer = String(metadata.sender ?? '');
 
@@ -283,7 +283,7 @@ export function parseNFTMint(event: GenericJsonObject): { assetIdentifier: strin
     return null;
   }
 
-  const data = (event.data as GenericJsonObject | undefined) || {};
+  const data = (event.data as GenericJsonObject | undefined) ?? {};
   const assetIdentifier = String(data.asset_identifier ?? '');
   const tokenId = String(data.value ?? '');
   const recipient = String(data.recipient ?? '');
@@ -308,7 +308,7 @@ export function parseStackPulseEvent(event: GenericJsonObject): GenericJsonObjec
     return null;
   }
 
-  const data = (event.data as GenericJsonObject | undefined) || {};
+  const data = (event.data as GenericJsonObject | undefined) ?? {};
   const value = data.value as GenericJsonObject | undefined;
   return value || null;
 }
