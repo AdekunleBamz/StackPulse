@@ -15,7 +15,7 @@ const metricsLimiter = rateLimiter({
   windowMs: 60000,
   maxRequests: 10, // Default
   maxRequestsGenerator: (req) => {
-    const userTier = (req as TierRequest).user?.tier || 0;
+    const userTier = (req as TierRequest).user?.tier ?? 0;
     const limits = [10, 100, 500, 2000];
     const safeTier = Number.isInteger(userTier) && userTier >= 0 ? userTier : 0;
     return limits[safeTier] || 10;
@@ -61,7 +61,7 @@ const requestsByEndpoint: Record<string, number> = {};
 router.use((req: Request, res: Response, next) => {
   totalRequests++;
   const endpoint = req.path;
-  requestsByEndpoint[endpoint] = (requestsByEndpoint[endpoint] || 0) + 1;
+  requestsByEndpoint[endpoint] = (requestsByEndpoint[endpoint] ?? 0) + 1;
   next();
 });
 
