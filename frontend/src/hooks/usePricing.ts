@@ -11,6 +11,13 @@ export const TIER_PRICES_MICROSTACKS: Record<number, number> = {
   3: 20000000,  // 20 STX for Premium
 };
 
+type StxPostCondition = {
+  type: 'stx-postcondition';
+  address: string;
+  condition: 'eq';
+  amount: number;
+};
+
 export function usePricing() {
   const { isConnected, connect, address } = useWallet();
   const [subscribingTier, setSubscribingTier] = useState<number | null>(null);
@@ -41,7 +48,7 @@ export function usePricing() {
       const { openContractCall } = await import('@stacks/connect');
       const { stringAsciiCV, uintCV } = await import('@stacks/transactions');
 
-      const postConditions: any[] = price > 0 && address ? [
+      const postConditions: StxPostCondition[] = price > 0 && address ? [
         {
           type: 'stx-postcondition',
           address: address,
