@@ -25,4 +25,8 @@ describe('shared/format formatPercent', () => {
   it('clamps negative decimal precision to integers', () => {
     expect(formatPercent(12.345, -1)).toBe('12%');
   });
+
+  it('returns zero percent for invalid values', () => {
+    expect(formatPercent(Number.NaN)).toBe('0.00%');
+  });
 });
