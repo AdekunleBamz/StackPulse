@@ -93,4 +93,8 @@ describe('shared/format formatDuration', () => {
   it('formats hour and minute durations', () => {
     expect(formatDuration(3_900_000)).toBe('1h 5m');
   });
+
+  it('normalizes negative durations to zero seconds', () => {
+    expect(formatDuration(-1)).toBe('0s');
+  });
 });
