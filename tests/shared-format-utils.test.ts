@@ -11,4 +11,8 @@ describe('shared/format formatNumber', () => {
   it('formats numeric strings with separators', () => {
     expect(formatNumber('1,234.5')).toBe('1,234.5');
   });
+
+  it('returns zero for invalid number values', () => {
+    expect(formatNumber('not-a-number')).toBe('0');
+  });
 });
