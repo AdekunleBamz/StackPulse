@@ -59,4 +59,8 @@ describe('shared/format truncateString', () => {
   it('keeps strings within the requested length unchanged', () => {
     expect(truncateString('alerts', 10)).toBe('alerts');
   });
+
+  it('normalizes negative string truncation lengths', () => {
+    expect(truncateString('alerts', -1)).toBe('...');
+  });
 });
