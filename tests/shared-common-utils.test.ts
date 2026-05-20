@@ -106,4 +106,8 @@ describe('shared/common isPositiveNumber', () => {
   it('accepts finite positive numbers', () => {
     expect(isPositiveNumber(1)).toBe(true);
   });
+
+  it('rejects zero as a positive number', () => {
+    expect(isPositiveNumber(0)).toBe(false);
+  });
 });
