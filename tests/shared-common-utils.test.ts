@@ -52,4 +52,8 @@ describe('shared/common groupBy', () => {
     const grouped = groupBy(['whale', 'swap', 'watch'], item => item[0]);
     expect(grouped.get('w')).toEqual(['whale', 'watch']);
   });
+
+  it('returns an empty map for empty inputs', () => {
+    expect(groupBy([], String).size).toBe(0);
+  });
 });
