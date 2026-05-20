@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { chunk, clamp, flatten, groupBy, isValidStacksAddress, omit, pick, unique } from '../shared/utils/common';
+import { chunk, clamp, flatten, groupBy, isValidStacksAddress, mapValues, omit, pick, unique } from '../shared/utils/common';
 
 describe('shared/common isValidStacksAddress', () => {
   it('accepts a valid mainnet address', () => {
@@ -73,5 +73,11 @@ describe('shared/common omit', () => {
       id: 'a1',
       type: 'whale',
     });
+  });
+});
+
+describe('shared/common mapValues', () => {
+  it('transforms object values while preserving keys', () => {
+    expect(mapValues({ a: 1, b: 2 }, value => Number(value) * 2)).toEqual({ a: 2, b: 4 });
   });
 });
