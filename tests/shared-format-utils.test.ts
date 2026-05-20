@@ -39,4 +39,8 @@ describe('shared/format truncateAddress', () => {
   it('returns original addresses when visible segments are disabled', () => {
     expect(truncateAddress('SP12345', 0, 0)).toBe('SP12345');
   });
+
+  it('keeps short addresses unchanged', () => {
+    expect(truncateAddress('SP123')).toBe('SP123');
+  });
 });
