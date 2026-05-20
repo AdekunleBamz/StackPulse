@@ -130,4 +130,8 @@ describe('shared/common isValidTxId', () => {
   it('accepts transaction ids with 0x prefixes', () => {
     expect(isValidTxId(`0x${'b'.repeat(64)}`)).toBe(true);
   });
+
+  it('rejects short transaction ids', () => {
+    expect(isValidTxId('0x1234')).toBe(false);
+  });
 });
