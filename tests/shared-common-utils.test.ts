@@ -29,4 +29,8 @@ describe('shared/common chunk', () => {
   it('splits arrays into requested chunk sizes', () => {
     expect(chunk([1, 2, 3, 4, 5], 2)).toEqual([[1, 2], [3, 4], [5]]);
   });
+
+  it('normalizes invalid chunk sizes to one', () => {
+    expect(chunk([1, 2], 0)).toEqual([[1], [2]]);
+  });
 });
