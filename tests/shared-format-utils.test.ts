@@ -104,4 +104,8 @@ describe('shared/format parseStxAmount', () => {
   it('parses STX display values into micro-STX', () => {
     expect(parseStxAmount('1.5 STX')).toBe(1_500_000);
   });
+
+  it('returns zero for invalid STX amount text', () => {
+    expect(parseStxAmount('free')).toBe(0);
+  });
 });
