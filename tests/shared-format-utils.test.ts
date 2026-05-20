@@ -4,6 +4,7 @@ import {
   formatPercent,
   formatFileSize,
   formatDuration,
+  formatBalance,
   parseStxAmount,
   formatStxAmount,
   truncateAddress,
@@ -111,5 +112,11 @@ describe('shared/format parseStxAmount', () => {
 
   it('parses comma-separated STX amount text', () => {
     expect(parseStxAmount('1,234 STX')).toBe(1_234_000_000);
+  });
+});
+
+describe('shared/format formatBalance', () => {
+  it('formats numeric balances with requested decimals', () => {
+    expect(formatBalance(1.23456, 2)).toBe('1.23');
   });
 });
