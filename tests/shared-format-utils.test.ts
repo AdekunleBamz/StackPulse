@@ -123,4 +123,8 @@ describe('shared/format formatBalance', () => {
   it('formats string balances with separators', () => {
     expect(formatBalance('1,234.5', 1)).toBe('1234.5');
   });
+
+  it('returns zero balance for invalid values', () => {
+    expect(formatBalance('invalid', 3)).toBe('0.000');
+  });
 });
