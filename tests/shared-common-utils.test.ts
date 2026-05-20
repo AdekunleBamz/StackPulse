@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { chunk, clamp, flatten, groupBy, hasKey, isNonEmptyString, isPositiveNumber, isValidStacksAddress, mapValues, omit, pick, unique } from '../shared/utils/common';
+import { chunk, clamp, flatten, groupBy, hasKey, isNonEmptyString, isPositiveNumber, isValidBlockHeight, isValidStacksAddress, mapValues, omit, pick, unique } from '../shared/utils/common';
 
 describe('shared/common isValidStacksAddress', () => {
   it('accepts a valid mainnet address', () => {
@@ -109,5 +109,11 @@ describe('shared/common isPositiveNumber', () => {
 
   it('rejects zero as a positive number', () => {
     expect(isPositiveNumber(0)).toBe(false);
+  });
+});
+
+describe('shared/common isValidBlockHeight', () => {
+  it('accepts non-negative integer block heights', () => {
+    expect(isValidBlockHeight(123)).toBe(true);
   });
 });
