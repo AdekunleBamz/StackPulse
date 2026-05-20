@@ -35,4 +35,8 @@ describe('shared/format truncateAddress', () => {
   it('truncates long Stacks addresses', () => {
     expect(truncateAddress('SP3K8BC0PPEVCV7NZ6QSRWPQ2JE9E5B6N3PA0KBR9')).toBe('SP3K8B...KBR9');
   });
+
+  it('returns original addresses when visible segments are disabled', () => {
+    expect(truncateAddress('SP12345', 0, 0)).toBe('SP12345');
+  });
 });
