@@ -20,6 +20,10 @@ describe('shared/format formatStxAmount', () => {
   it('formats single-STX micro amounts', () => {
     expect(formatStxAmount(1_000_000)).toBe('1.000000 STX');
   });
+
+  it('formats thousand-scale STX amounts', () => {
+    expect(formatStxAmount(1_500_000_000)).toBe('1.50K STX');
+  });
 });
 
 describe('shared/format formatNumber', () => {
