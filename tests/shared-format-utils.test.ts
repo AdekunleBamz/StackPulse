@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { formatNumber, formatPercent, formatStxAmount } from '../shared/utils/format';
+import { formatNumber, formatPercent, formatStxAmount, truncateAddress } from '../shared/utils/format';
 
 describe('shared/format formatStxAmount', () => {
   it('formats million-scale STX amounts', () => {
@@ -28,5 +28,11 @@ describe('shared/format formatPercent', () => {
 
   it('returns zero percent for invalid values', () => {
     expect(formatPercent(Number.NaN)).toBe('0.00%');
+  });
+});
+
+describe('shared/format truncateAddress', () => {
+  it('truncates long Stacks addresses', () => {
+    expect(truncateAddress('SP3K8BC0PPEVCV7NZ6QSRWPQ2JE9E5B6N3PA0KBR9')).toBe('SP3K8B...KBR9');
   });
 });
