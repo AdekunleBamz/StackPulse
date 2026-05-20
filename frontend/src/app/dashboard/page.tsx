@@ -63,7 +63,7 @@ export interface AlertHistoryItem {
   message: string;
   timestamp: string;
   txId?: string;
-  data?: any;
+  data?: unknown;
 }
 
 export default function DashboardPage() {
