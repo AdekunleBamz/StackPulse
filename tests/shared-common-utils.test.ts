@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { chunk, clamp, flatten, groupBy, isValidStacksAddress, unique } from '../shared/utils/common';
+import { chunk, clamp, flatten, groupBy, isValidStacksAddress, pick, unique } from '../shared/utils/common';
 
 describe('shared/common isValidStacksAddress', () => {
   it('accepts a valid mainnet address', () => {
@@ -55,5 +55,14 @@ describe('shared/common groupBy', () => {
 
   it('returns an empty map for empty inputs', () => {
     expect(groupBy([], String).size).toBe(0);
+  });
+});
+
+describe('shared/common pick', () => {
+  it('selects requested object keys', () => {
+    expect(pick({ id: 'a1', type: 'whale', ignored: true }, ['id', 'type'])).toEqual({
+      id: 'a1',
+      type: 'whale',
+    });
   });
 });
