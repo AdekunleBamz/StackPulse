@@ -140,4 +140,8 @@ describe('shared/common isValidEmail', () => {
   it('accepts basic email addresses', () => {
     expect(isValidEmail('alerts@example.com')).toBe(true);
   });
+
+  it('rejects malformed email addresses', () => {
+    expect(isValidEmail('alerts.example.com')).toBe(false);
+  });
 });
