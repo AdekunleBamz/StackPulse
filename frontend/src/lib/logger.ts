@@ -29,6 +29,7 @@ function writeLog(level: LogLevel, ...args: unknown[]): void {
       console.debug(...args);
       break;
     case 'info':
+      // eslint-disable-next-line no-console -- centralized info logging is gated by shouldLog().
       console.info(...args);
       break;
     case 'warn':
