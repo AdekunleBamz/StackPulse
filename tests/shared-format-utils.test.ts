@@ -1,5 +1,11 @@
 import { describe, expect, it } from 'vitest';
-import { formatNumber, formatPercent, formatStxAmount, truncateAddress } from '../shared/utils/format';
+import {
+  formatNumber,
+  formatPercent,
+  formatStxAmount,
+  truncateAddress,
+  truncateString,
+} from '../shared/utils/format';
 
 describe('shared/format formatStxAmount', () => {
   it('formats million-scale STX amounts', () => {
@@ -42,5 +48,11 @@ describe('shared/format truncateAddress', () => {
 
   it('keeps short addresses unchanged', () => {
     expect(truncateAddress('SP123')).toBe('SP123');
+  });
+});
+
+describe('shared/format truncateString', () => {
+  it('truncates strings above the requested length', () => {
+    expect(truncateString('StackPulse alerts', 10)).toBe('StackPulse...');
   });
 });
