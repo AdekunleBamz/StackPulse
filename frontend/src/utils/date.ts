@@ -37,4 +37,6 @@ export function formatFullDate(timestamp: number | string | Date): string {
   });
 }
 
-export default { formatRelativeTime, formatFullDate };
+const dateUtils = { formatRelativeTime, formatFullDate };
+
+export default dateUtils;
