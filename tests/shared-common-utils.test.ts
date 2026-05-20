@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { chunk, clamp, isValidStacksAddress } from '../shared/utils/common';
+import { chunk, clamp, isValidStacksAddress, unique } from '../shared/utils/common';
 
 describe('shared/common isValidStacksAddress', () => {
   it('accepts a valid mainnet address', () => {
@@ -32,5 +32,11 @@ describe('shared/common chunk', () => {
 
   it('normalizes invalid chunk sizes to one', () => {
     expect(chunk([1, 2], 0)).toEqual([[1], [2]]);
+  });
+});
+
+describe('shared/common unique', () => {
+  it('removes duplicate primitive values', () => {
+    expect(unique(['whale', 'swap', 'whale'])).toEqual(['whale', 'swap']);
   });
 });
