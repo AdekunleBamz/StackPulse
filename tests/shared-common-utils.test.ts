@@ -15,4 +15,8 @@ describe('shared/common clamp', () => {
   it('clamps values below the lower bound', () => {
     expect(clamp(-2, 0, 10)).toBe(0);
   });
+
+  it('supports reversed clamp bounds', () => {
+    expect(clamp(8, 10, 0)).toBe(8);
+  });
 });
