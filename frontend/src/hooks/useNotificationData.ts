@@ -10,6 +10,10 @@ export interface Notification {
   read: boolean;
 }
 
+interface NotificationPayload extends Omit<Notification, 'timestamp'> {
+  timestamp: string | number | Date;
+}
+
 export function useNotificationData(limit: number = 50) {
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -22,7 +26,7 @@ export function useNotificationData(limit: number = 50) {
       if (response.ok) {
         const data = await response.json();
         if (data.notifications) {
-          setNotifications(data.notifications.map((n: any) => ({
+          setNotifications(data.notifications.map((n: NotificationPayload) => ({
             ...n,
             timestamp: new Date(n.timestamp),
           })));
