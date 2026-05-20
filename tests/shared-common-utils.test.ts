@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { chunk, clamp, flatten, generateId, groupBy, hasKey, isNonEmptyString, isPositiveNumber, isValidBlockHeight, isValidEmail, isValidStacksAddress, isValidTxId, mapValues, omit, pick, unique } from '../shared/utils/common';
+import { chunk, clamp, flatten, generateId, groupBy, hasKey, isSameDate, isNonEmptyString, isPositiveNumber, isValidBlockHeight, isValidEmail, isValidStacksAddress, isValidTxId, mapValues, omit, pick, unique } from '../shared/utils/common';
 
 describe('shared/common isValidStacksAddress', () => {
   it('accepts a valid mainnet address', () => {
@@ -161,5 +161,11 @@ describe('shared/common generateId', () => {
 
   it('normalizes non-positive generated id lengths', () => {
     expect(generateId(0)).toHaveLength(1);
+  });
+});
+
+describe('shared/common isSameDate', () => {
+  it('matches dates on the same calendar day', () => {
+    expect(isSameDate(new Date('2026-05-20T01:00:00Z'), new Date('2026-05-20T20:00:00Z'))).toBe(true);
   });
 });
