@@ -119,4 +119,8 @@ describe('shared/format formatBalance', () => {
   it('formats numeric balances with requested decimals', () => {
     expect(formatBalance(1.23456, 2)).toBe('1.23');
   });
+
+  it('formats string balances with separators', () => {
+    expect(formatBalance('1,234.5', 1)).toBe('1234.5');
+  });
 });
