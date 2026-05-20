@@ -55,4 +55,8 @@ describe('shared/format truncateString', () => {
   it('truncates strings above the requested length', () => {
     expect(truncateString('StackPulse alerts', 10)).toBe('StackPulse...');
   });
+
+  it('keeps strings within the requested length unchanged', () => {
+    expect(truncateString('alerts', 10)).toBe('alerts');
+  });
 });
