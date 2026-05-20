@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { chunk, clamp, isValidStacksAddress, unique } from '../shared/utils/common';
+import { chunk, clamp, flatten, isValidStacksAddress, unique } from '../shared/utils/common';
 
 describe('shared/common isValidStacksAddress', () => {
   it('accepts a valid mainnet address', () => {
@@ -38,5 +38,11 @@ describe('shared/common chunk', () => {
 describe('shared/common unique', () => {
   it('removes duplicate primitive values', () => {
     expect(unique(['whale', 'swap', 'whale'])).toEqual(['whale', 'swap']);
+  });
+});
+
+describe('shared/common flatten', () => {
+  it('flattens nested arrays by one level', () => {
+    expect(flatten([[1, 2], [3]])).toEqual([1, 2, 3]);
   });
 });
