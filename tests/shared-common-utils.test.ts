@@ -116,4 +116,8 @@ describe('shared/common isValidBlockHeight', () => {
   it('accepts non-negative integer block heights', () => {
     expect(isValidBlockHeight(123)).toBe(true);
   });
+
+  it('rejects fractional block heights', () => {
+    expect(isValidBlockHeight(1.5)).toBe(false);
+  });
 });
