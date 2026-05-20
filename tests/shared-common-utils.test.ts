@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { chunk, clamp, flatten, groupBy, hasKey, isNonEmptyString, isPositiveNumber, isValidBlockHeight, isValidStacksAddress, mapValues, omit, pick, unique } from '../shared/utils/common';
+import { chunk, clamp, flatten, groupBy, hasKey, isNonEmptyString, isPositiveNumber, isValidBlockHeight, isValidStacksAddress, isValidTxId, mapValues, omit, pick, unique } from '../shared/utils/common';
 
 describe('shared/common isValidStacksAddress', () => {
   it('accepts a valid mainnet address', () => {
@@ -119,5 +119,11 @@ describe('shared/common isValidBlockHeight', () => {
 
   it('rejects fractional block heights', () => {
     expect(isValidBlockHeight(1.5)).toBe(false);
+  });
+});
+
+describe('shared/common isValidTxId', () => {
+  it('accepts 64-character hex transaction ids', () => {
+    expect(isValidTxId('a'.repeat(64))).toBe(true);
   });
 });
