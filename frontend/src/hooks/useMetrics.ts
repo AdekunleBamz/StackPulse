@@ -5,7 +5,7 @@ import { useState, useCallback, useMemo } from 'react';
 interface MetricPoint {
   timestamp: number;
   value: number;
-  [key: string]: any;
+  [key: string]: unknown;
 }
 
 interface UseMetricsOptions {
