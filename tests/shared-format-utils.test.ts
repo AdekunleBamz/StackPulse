@@ -4,6 +4,7 @@ import {
   formatPercent,
   formatFileSize,
   formatDuration,
+  parseStxAmount,
   formatStxAmount,
   truncateAddress,
   truncateString,
@@ -96,5 +97,11 @@ describe('shared/format formatDuration', () => {
 
   it('normalizes negative durations to zero seconds', () => {
     expect(formatDuration(-1)).toBe('0s');
+  });
+});
+
+describe('shared/format parseStxAmount', () => {
+  it('parses STX display values into micro-STX', () => {
+    expect(parseStxAmount('1.5 STX')).toBe(1_500_000);
   });
 });
