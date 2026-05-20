@@ -74,4 +74,8 @@ describe('shared/format formatFileSize', () => {
   it('formats kilobyte values', () => {
     expect(formatFileSize(1024)).toBe('1.00 KB');
   });
+
+  it('normalizes negative file sizes to zero', () => {
+    expect(formatFileSize(-5)).toBe('0.00 B');
+  });
 });
