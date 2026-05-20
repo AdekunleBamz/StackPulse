@@ -5,6 +5,7 @@ import {
   formatFileSize,
   formatDuration,
   formatBalance,
+  formatTxId,
   parseStxAmount,
   formatStxAmount,
   truncateAddress,
@@ -126,5 +127,12 @@ describe('shared/format formatBalance', () => {
 
   it('returns zero balance for invalid values', () => {
     expect(formatBalance('invalid', 3)).toBe('0.000');
+  });
+});
+
+describe('shared/format formatTxId', () => {
+  it('truncates long transaction IDs', () => {
+    const txId = '0x' + 'a'.repeat(64);
+    expect(formatTxId(txId)).toBe('0xaaaaaa...aaaaaaaa');
   });
 });
