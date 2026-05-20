@@ -25,6 +25,7 @@ function writeLog(level: LogLevel, ...args: unknown[]): void {
 
   switch (level) {
     case 'debug':
+      // eslint-disable-next-line no-console -- centralized debug logging is gated by shouldLog().
       console.debug(...args);
       break;
     case 'info':
