@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { chunk, clamp, flatten, groupBy, hasKey, isNonEmptyString, isValidStacksAddress, mapValues, omit, pick, unique } from '../shared/utils/common';
+import { chunk, clamp, flatten, groupBy, hasKey, isNonEmptyString, isPositiveNumber, isValidStacksAddress, mapValues, omit, pick, unique } from '../shared/utils/common';
 
 describe('shared/common isValidStacksAddress', () => {
   it('accepts a valid mainnet address', () => {
@@ -99,5 +99,11 @@ describe('shared/common isNonEmptyString', () => {
 
   it('rejects whitespace-only strings', () => {
     expect(isNonEmptyString('   ')).toBe(false);
+  });
+});
+
+describe('shared/common isPositiveNumber', () => {
+  it('accepts finite positive numbers', () => {
+    expect(isPositiveNumber(1)).toBe(true);
   });
 });
