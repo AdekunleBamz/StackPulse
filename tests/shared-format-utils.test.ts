@@ -70,4 +70,8 @@ describe('shared/format formatFileSize', () => {
   it('formats zero byte values', () => {
     expect(formatFileSize(0)).toBe('0.00 B');
   });
+
+  it('formats kilobyte values', () => {
+    expect(formatFileSize(1024)).toBe('1.00 KB');
+  });
 });
