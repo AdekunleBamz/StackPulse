@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { chunk, clamp, flatten, isValidStacksAddress, unique } from '../shared/utils/common';
+import { chunk, clamp, flatten, groupBy, isValidStacksAddress, unique } from '../shared/utils/common';
 
 describe('shared/common isValidStacksAddress', () => {
   it('accepts a valid mainnet address', () => {
@@ -44,5 +44,12 @@ describe('shared/common unique', () => {
 describe('shared/common flatten', () => {
   it('flattens nested arrays by one level', () => {
     expect(flatten([[1, 2], [3]])).toEqual([1, 2, 3]);
+  });
+});
+
+describe('shared/common groupBy', () => {
+  it('groups items by a derived key', () => {
+    const grouped = groupBy(['whale', 'swap', 'watch'], item => item[0]);
+    expect(grouped.get('w')).toEqual(['whale', 'watch']);
   });
 });
