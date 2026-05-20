@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { chunk, clamp, flatten, groupBy, hasKey, isNonEmptyString, isPositiveNumber, isValidBlockHeight, isValidStacksAddress, isValidTxId, mapValues, omit, pick, unique } from '../shared/utils/common';
+import { chunk, clamp, flatten, groupBy, hasKey, isNonEmptyString, isPositiveNumber, isValidBlockHeight, isValidEmail, isValidStacksAddress, isValidTxId, mapValues, omit, pick, unique } from '../shared/utils/common';
 
 describe('shared/common isValidStacksAddress', () => {
   it('accepts a valid mainnet address', () => {
@@ -133,5 +133,11 @@ describe('shared/common isValidTxId', () => {
 
   it('rejects short transaction ids', () => {
     expect(isValidTxId('0x1234')).toBe(false);
+  });
+});
+
+describe('shared/common isValidEmail', () => {
+  it('accepts basic email addresses', () => {
+    expect(isValidEmail('alerts@example.com')).toBe(true);
   });
 });
