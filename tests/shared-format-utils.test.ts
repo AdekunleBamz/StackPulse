@@ -3,6 +3,7 @@ import {
   formatNumber,
   formatPercent,
   formatFileSize,
+  formatDuration,
   formatStxAmount,
   truncateAddress,
   truncateString,
@@ -77,5 +78,11 @@ describe('shared/format formatFileSize', () => {
 
   it('normalizes negative file sizes to zero', () => {
     expect(formatFileSize(-5)).toBe('0.00 B');
+  });
+});
+
+describe('shared/format formatDuration', () => {
+  it('formats second durations', () => {
+    expect(formatDuration(10_000)).toBe('10s');
   });
 });
