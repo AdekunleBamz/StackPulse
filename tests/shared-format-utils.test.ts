@@ -89,4 +89,8 @@ describe('shared/format formatDuration', () => {
   it('formats minute and second durations', () => {
     expect(formatDuration(90_000)).toBe('1m 30s');
   });
+
+  it('formats hour and minute durations', () => {
+    expect(formatDuration(3_900_000)).toBe('1h 5m');
+  });
 });
