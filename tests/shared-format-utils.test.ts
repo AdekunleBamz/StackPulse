@@ -24,6 +24,10 @@ describe('shared/format formatStxAmount', () => {
   it('formats thousand-scale STX amounts', () => {
     expect(formatStxAmount(1_500_000_000)).toBe('1.50K STX');
   });
+
+  it('returns zero STX for invalid amount strings', () => {
+    expect(formatStxAmount('bad amount')).toBe('0.000000 STX');
+  });
 });
 
 describe('shared/format formatNumber', () => {
