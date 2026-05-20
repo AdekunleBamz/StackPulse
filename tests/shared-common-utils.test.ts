@@ -19,4 +19,8 @@ describe('shared/common clamp', () => {
   it('supports reversed clamp bounds', () => {
     expect(clamp(8, 10, 0)).toBe(8);
   });
+
+  it('returns the lower bound for non-finite values', () => {
+    expect(clamp(Number.NaN, 2, 5)).toBe(2);
+  });
 });
