@@ -86,4 +86,8 @@ describe('shared/common hasKey', () => {
   it('detects own object keys', () => {
     expect(hasKey({ txId: '0x1' }, 'txId')).toBe(true);
   });
+
+  it('rejects inherited object keys', () => {
+    expect(hasKey({}, 'toString')).toBe(false);
+  });
 });
