@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { chunk, clamp, flatten, groupBy, hasKey, isValidStacksAddress, mapValues, omit, pick, unique } from '../shared/utils/common';
+import { chunk, clamp, flatten, groupBy, hasKey, isNonEmptyString, isValidStacksAddress, mapValues, omit, pick, unique } from '../shared/utils/common';
 
 describe('shared/common isValidStacksAddress', () => {
   it('accepts a valid mainnet address', () => {
@@ -89,5 +89,11 @@ describe('shared/common hasKey', () => {
 
   it('rejects inherited object keys', () => {
     expect(hasKey({}, 'toString')).toBe(false);
+  });
+});
+
+describe('shared/common isNonEmptyString', () => {
+  it('accepts strings with non-whitespace content', () => {
+    expect(isNonEmptyString(' stackpulse ')).toBe(true);
   });
 });
