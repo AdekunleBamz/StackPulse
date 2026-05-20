@@ -126,4 +126,8 @@ describe('shared/common isValidTxId', () => {
   it('accepts 64-character hex transaction ids', () => {
     expect(isValidTxId('a'.repeat(64))).toBe(true);
   });
+
+  it('accepts transaction ids with 0x prefixes', () => {
+    expect(isValidTxId(`0x${'b'.repeat(64)}`)).toBe(true);
+  });
 });
