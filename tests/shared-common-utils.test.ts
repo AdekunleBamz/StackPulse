@@ -168,4 +168,8 @@ describe('shared/common isSameDate', () => {
   it('matches dates on the same calendar day', () => {
     expect(isSameDate(new Date('2026-05-20T01:00:00Z'), new Date('2026-05-20T20:00:00Z'))).toBe(true);
   });
+
+  it('rejects dates on different calendar days', () => {
+    expect(isSameDate(new Date('2026-05-20T01:00:00Z'), new Date('2026-05-21T01:00:00Z'))).toBe(false);
+  });
 });
