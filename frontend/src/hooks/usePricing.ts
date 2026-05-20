@@ -141,7 +141,7 @@ export function usePricing() {
       const { openContractCall } = await import('@stacks/connect');
       const { uintCV } = await import('@stacks/transactions');
 
-      const postConditions: any[] = price > 0 && address ? [
+      const postConditions: StxPostCondition[] = price > 0 && address ? [
         {
           type: 'stx-postcondition',
           address: address,
