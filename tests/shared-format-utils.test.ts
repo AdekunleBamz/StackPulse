@@ -108,4 +108,8 @@ describe('shared/format parseStxAmount', () => {
   it('returns zero for invalid STX amount text', () => {
     expect(parseStxAmount('free')).toBe(0);
   });
+
+  it('parses comma-separated STX amount text', () => {
+    expect(parseStxAmount('1,234 STX')).toBe(1_234_000_000);
+  });
 });
