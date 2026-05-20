@@ -11,4 +11,8 @@ describe('shared/common clamp', () => {
   it('clamps values above the upper bound', () => {
     expect(clamp(12, 0, 10)).toBe(10);
   });
+
+  it('clamps values below the lower bound', () => {
+    expect(clamp(-2, 0, 10)).toBe(0);
+  });
 });
