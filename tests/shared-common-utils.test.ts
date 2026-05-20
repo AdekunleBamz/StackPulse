@@ -158,4 +158,8 @@ describe('shared/common generateId', () => {
   it('generates IDs with the requested length', () => {
     expect(generateId(12)).toHaveLength(12);
   });
+
+  it('normalizes non-positive generated id lengths', () => {
+    expect(generateId(0)).toHaveLength(1);
+  });
 });
