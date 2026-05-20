@@ -69,8 +69,6 @@ export function usePricing() {
         ],
         postConditions,
         onFinish: async (data: { txId: string }) => {
-          console.log('Registration + Subscription submitted:', data.txId);
-          
           // Save notification preferences to server
           try {
             const serverUrl = process.env.NEXT_PUBLIC_SERVER_URL ?? 'https://stackpulse-b8fw.onrender.com';
