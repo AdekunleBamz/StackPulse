@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { clamp, isValidStacksAddress } from '../shared/utils/common';
+import { chunk, clamp, isValidStacksAddress } from '../shared/utils/common';
 
 describe('shared/common isValidStacksAddress', () => {
   it('accepts a valid mainnet address', () => {
@@ -22,5 +22,11 @@ describe('shared/common clamp', () => {
 
   it('returns the lower bound for non-finite values', () => {
     expect(clamp(Number.NaN, 2, 5)).toBe(2);
+  });
+});
+
+describe('shared/common chunk', () => {
+  it('splits arrays into requested chunk sizes', () => {
+    expect(chunk([1, 2, 3, 4, 5], 2)).toEqual([[1, 2], [3, 4], [5]]);
   });
 });
