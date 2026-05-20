@@ -21,4 +21,8 @@ describe('shared/format formatPercent', () => {
   it('formats percentages with default decimals', () => {
     expect(formatPercent(12.345)).toBe('12.35%');
   });
+
+  it('clamps negative decimal precision to integers', () => {
+    expect(formatPercent(12.345, -1)).toBe('12%');
+  });
 });
