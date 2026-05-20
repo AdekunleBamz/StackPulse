@@ -96,4 +96,8 @@ describe('shared/common isNonEmptyString', () => {
   it('accepts strings with non-whitespace content', () => {
     expect(isNonEmptyString(' stackpulse ')).toBe(true);
   });
+
+  it('rejects whitespace-only strings', () => {
+    expect(isNonEmptyString('   ')).toBe(false);
+  });
 });
