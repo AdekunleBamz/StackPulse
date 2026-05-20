@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import {
   formatNumber,
   formatPercent,
+  formatFileSize,
   formatStxAmount,
   truncateAddress,
   truncateString,
@@ -62,5 +63,11 @@ describe('shared/format truncateString', () => {
 
   it('normalizes negative string truncation lengths', () => {
     expect(truncateString('alerts', -1)).toBe('...');
+  });
+});
+
+describe('shared/format formatFileSize', () => {
+  it('formats zero byte values', () => {
+    expect(formatFileSize(0)).toBe('0.00 B');
   });
 });
