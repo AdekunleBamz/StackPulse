@@ -1,5 +1,5 @@
-# Notification permission reset
+# Notification Permission Reset
 
-Notification testing should include denied, granted, and reset browser permission states.
-
-Document browser settings steps without including private account data.
+- Explain how users can recover denied notification permissions.
+- Keep browser-specific guidance out of compact UI copy.
+- Confirm permission-denied status updates after retry.
