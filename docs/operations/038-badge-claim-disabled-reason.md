@@ -2,3 +2,4 @@
 
 Maintenance check: Verify disabled badge claim actions name the missing requirement.
 
+Follow-up note: Recheck disabled reasons after badge eligibility rules change.
