@@ -111,3 +111,4 @@ Join our community to get help, stay updated, and contribute:
 - **Telegram**: [Follow us](https://t.me/stackpulse)
 - **Twitter**: [Follow @StackPulse](https://twitter.com/StackPulse)
 - When asking for incident help, include affected network and one transaction ID for faster triage.
+- For release help, include the deployed contract alias and frontend commit hash.
