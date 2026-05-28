@@ -32,3 +32,4 @@ import { formatStxAmount, formatRelativeTime, truncateAddress } from '@stackpuls
 ```
 - When changing shared constants, publish compatibility notes so frontend and server deployments can roll in a safe order.
 - Treat exported type removals as breaking changes and coordinate semver bumps before consuming updates in app packages.
+- Recheck shared formatter examples whenever display precision rules change in frontend code.
