@@ -21,3 +21,4 @@ Reusable React components for the StackPulse frontend.
 - Keep animation timing consistent across notification and loading components to avoid jarring UX during high event volume.
 - When adding new icon-only controls, provide matching `title` text and screen-reader labels so hover hints and accessibility copy stay aligned.
 - Recheck empty, loading, and error states together when introducing dashboard components.
+- Keep component examples current when shared UI primitives change props.
