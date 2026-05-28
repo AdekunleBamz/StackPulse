@@ -106,6 +106,16 @@ npm --prefix server run build
 npm --prefix frontend run build
 ```
 
+### Verification
+
+```bash
+# Run lint checks across frontend and server
+npm run lint:all
+
+# Run the fast contract and shared utility check
+npm run check:fast
+```
+
 Join our community to get help, stay updated, and contribute:
 - **Discord**: [Join our server](https://discord.gg/stackpulse)
 - **Telegram**: [Follow us](https://t.me/stackpulse)
