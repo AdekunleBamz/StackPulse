@@ -384,3 +384,4 @@ git push origin main
 ### Rollout Window Note
 
 Prefer deploying contracts and API updates inside the same announced window to reduce temporary mismatches between server assumptions and on-chain state.
+Keep rollback notes paired with the exact deployment plan file used in the rollout.
