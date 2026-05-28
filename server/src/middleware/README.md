@@ -18,3 +18,4 @@ Express middleware used to protect, validate, and observe requests.
 - Keep business logic in routes or services rather than inside middleware.
 - Emit a timeout-specific metric label so slow upstream dependencies are distinguishable from application errors.
 - Place request ID and timing middleware early in the stack so downstream error paths still emit traceable logs.
+- Keep auth and rate-limit failures distinguishable in structured logs.
