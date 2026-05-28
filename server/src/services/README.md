@@ -21,3 +21,4 @@ Business logic and infrastructure helpers used by the StackPulse backend.
 - Document any tier-aware limits close to the code that enforces them.
 - For outbound providers, document retry budgets so alert delivery failures are visible before queues silently degrade.
 - Keep cache invalidation notes near services that memoize user-facing data.
+- Record provider timeout assumptions beside services that call external APIs.
