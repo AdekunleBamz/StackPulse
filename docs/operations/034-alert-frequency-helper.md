@@ -2,3 +2,4 @@
 
 Maintenance check: Confirm alert frequency helper text matches rate-limit behavior.
 
+Follow-up note: Include cooldown duration in helper copy when rate limits are user-visible.
