@@ -116,6 +116,8 @@ npm run lint:all
 npm run check:fast
 ```
 
+For documentation-only maintenance, verify the diff stays outside runtime source, chainhook manifests, API routes, environment files, and deployment plans.
+
 Join our community to get help, stay updated, and contribute:
 - **Discord**: [Join our server](https://discord.gg/stackpulse)
 - **Telegram**: [Follow us](https://t.me/stackpulse)
