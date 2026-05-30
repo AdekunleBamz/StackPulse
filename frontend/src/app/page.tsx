@@ -1,6 +1,5 @@
 import Header from '@/components/Header';
 import dynamic from 'next/dynamic';
-import Image from 'next/image';
 import { memo } from 'react';
 
 const Features = dynamic(() => import('@/components/Features'), {
@@ -21,16 +20,12 @@ const Footer = dynamic(() => import('@/components/Footer'), {
 
 const Hero = memo(() => (
   <section className="relative py-40 sm:py-48 px-4 sm:px-6 lg:px-8 overflow-hidden" aria-describedby="hero-subtitle">
-    {/* Background Image — decorative, loaded with priority for LCP */}
-    <div className="absolute inset-0 z-0">
-      <Image
-        src="/images/hero_bg.png"
-        alt=""
-        fill
-        priority
-        className="object-cover opacity-20 blur-[2px]"
-        aria-hidden="true"
-      />
+    {/* Decorative background kept out of the preload path so first paint is not blocked. */}
+    <div
+      className="absolute inset-0 z-0 bg-cover bg-center opacity-20 blur-[2px]"
+      style={{ backgroundImage: 'url(/images/hero_bg.png)' }}
+      aria-hidden="true"
+    >
       <div className="absolute inset-0 bg-gradient-to-b from-gray-950 via-gray-950/90 to-gray-950" />
     </div>
 
