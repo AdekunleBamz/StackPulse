@@ -105,3 +105,4 @@ feat(frontend): add wallet status banner
 - Call out versioned or legacy behavior explicitly when older docs remain in the tree.
 - Avoid leaving stale deployment plan names, route paths, or package commands in docs.
 - Small docs-only PRs should still explain operational context in the description (what changed and why now).
+- Include the exact docs files touched when the PR intentionally avoids runtime code.
