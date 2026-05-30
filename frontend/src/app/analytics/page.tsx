@@ -81,6 +81,22 @@ const StatCard = ({
   </div>
 );
 
+const EVENT_TYPE_ACCENT: Record<string, string> = {
+  blue: 'border-blue-500/20 hover:border-blue-500/30',
+  purple: 'border-purple-500/20 hover:border-purple-500/30',
+  pink: 'border-pink-500/20 hover:border-pink-500/30',
+  yellow: 'border-yellow-500/20 hover:border-yellow-500/30',
+  green: 'border-green-500/20 hover:border-green-500/30',
+};
+
+const EVENT_ICON: Record<string, string> = {
+  whale: '🐋',
+  contract: '📜',
+  nft: '🎨',
+  token: '🪙',
+  swap: '💱',
+};
+
 const EventTypeCard = ({
   type,
   count,
@@ -93,13 +109,7 @@ const EventTypeCard = ({
   color: string;
 }) => {
   const accent =
-    {
-      blue: 'border-blue-500/20 hover:border-blue-500/30',
-      purple: 'border-purple-500/20 hover:border-purple-500/30',
-      pink: 'border-pink-500/20 hover:border-pink-500/30',
-      yellow: 'border-yellow-500/20 hover:border-yellow-500/30',
-      green: 'border-green-500/20 hover:border-green-500/30',
-    }[color] || 'border-gray-700 hover:border-gray-600';
+    EVENT_TYPE_ACCENT[color] ?? 'border-gray-700 hover:border-gray-600';
 
   return (
     <div
@@ -135,18 +145,18 @@ export default function AnalyticsPage() {
         if (response.ok) {
           const data = await response.json();
           setAnalytics({
-            totalUsers: data.subscriptions || 0,
-            totalAlerts: data.alertsTriggered || 0,
-            totalTriggers: (data.whaleTransfers || 0) + (data.nftMints || 0) + (data.tokenLaunches || 0),
-            totalBadges: data.badgesEarned || 0,
-            totalRevenue: data.feesCollected || 0,
-            activeSubscriptions: data.subscriptions || 0,
+            totalUsers: data.subscriptions ?? 0,
+            totalAlerts: data.alertsTriggered ?? 0,
+            totalTriggers: (data.whaleTransfers ?? 0) + (data.nftMints ?? 0) + (data.tokenLaunches ?? 0),
+            totalBadges: data.badgesEarned ?? 0,
+            totalRevenue: data.feesCollected ?? 0,
+            activeSubscriptions: data.subscriptions ?? 0,
             eventStats: {
-              whaleTransfers: data.whaleTransfers || 0,
-              contractDeployments: data.contractDeployments || 0,
-              nftMints: data.nftMints || 0,
-              tokenLaunches: data.tokenLaunches || 0,
-              largeSwaps: data.largeSwaps || 0,
+              whaleTransfers: data.whaleTransfers ?? 0,
+              contractDeployments: data.contractDeployments ?? 0,
+              nftMints: data.nftMints ?? 0,
+              tokenLaunches: data.tokenLaunches ?? 0,
+              largeSwaps: data.largeSwaps ?? 0,
             },
             recentEvents: [
               { id: '1', type: 'whale', title: 'Whale Transfer: 50,000 STX', timestamp: '2 min ago', txHash: '0x123' },
@@ -331,42 +341,42 @@ export default function AnalyticsPage() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
           <StatCard
             title="Total Users"
-            value={analytics?.totalUsers || 0}
+            value={analytics?.totalUsers ?? 0}
             change={12}
             icon={Users}
             color="from-blue-500 to-blue-600"
           />
           <StatCard
             title="Active Alerts"
-            value={analytics?.totalAlerts || 0}
+            value={analytics?.totalAlerts ?? 0}
             change={8}
             icon={Bell}
             color="from-purple-500 to-purple-600"
           />
           <StatCard
             title="Events Tracked"
-            value={(analytics?.totalTriggers || 0).toLocaleString()}
+            value={(analytics?.totalTriggers ?? 0).toLocaleString()}
             change={23}
             icon={Activity}
             color="from-green-500 to-green-600"
           />
           <StatCard
             title="Badges Minted"
-            value={analytics?.totalBadges || 0}
+            value={analytics?.totalBadges ?? 0}
             change={5}
             icon={Award}
             color="from-yellow-500 to-yellow-600"
           />
           <StatCard
             title="Revenue (STX)"
-            value={((analytics?.totalRevenue || 0) / 1000000).toFixed(2)}
+            value={((analytics?.totalRevenue ?? 0) / 1000000).toFixed(2)}
             change={15}
             icon={DollarSign}
             color="from-emerald-500 to-emerald-600"
           />
           <StatCard
             title="Active Subscriptions"
-            value={analytics?.activeSubscriptions || 0}
+            value={analytics?.activeSubscriptions ?? 0}
             change={10}
             icon={TrendingUp}
             color="from-pink-500 to-pink-600"
@@ -383,31 +393,31 @@ export default function AnalyticsPage() {
           >
             <EventTypeCard
               type="Whale Transfers"
-              count={analytics?.eventStats.whaleTransfers || 0}
+              count={analytics?.eventStats.whaleTransfers ?? 0}
               icon="🐋"
               color="blue"
             />
             <EventTypeCard
               type="Contract Deploys"
-              count={analytics?.eventStats.contractDeployments || 0}
+              count={analytics?.eventStats.contractDeployments ?? 0}
               icon="📜"
               color="purple"
             />
             <EventTypeCard
               type="NFT Mints"
-              count={analytics?.eventStats.nftMints || 0}
+              count={analytics?.eventStats.nftMints ?? 0}
               icon="🎨"
               color="pink"
             />
             <EventTypeCard
               type="Token Launches"
-              count={analytics?.eventStats.tokenLaunches || 0}
+              count={analytics?.eventStats.tokenLaunches ?? 0}
               icon="🪙"
               color="yellow"
             />
             <EventTypeCard
               type="Large Swaps"
-              count={analytics?.eventStats.largeSwaps || 0}
+              count={analytics?.eventStats.largeSwaps ?? 0}
               icon="💱"
               color="green"
             />
@@ -456,13 +466,7 @@ export default function AnalyticsPage() {
               <NoResultsState />
             ) : (
               analytics.recentEvents.map((event) => {
-                const eventIcon = {
-                  whale: '🐋',
-                  contract: '📜',
-                  nft: '🎨',
-                  token: '🪙',
-                  swap: '💱'
-                }[event.type] || '⚡';
+                const eventIcon = EVENT_ICON[event.type] ?? '⚡';
 
                 return (
                   <a

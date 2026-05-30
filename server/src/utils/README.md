@@ -14,3 +14,4 @@ Low-level helpers shared across the backend.
 - Prefer pure functions unless a utility truly owns external I/O.
 - Update service docs if a utility becomes part of a public integration contract.
 - Redact sensitive headers and auth tokens in helper-level logs before they are forwarded to centralized logging sinks.
+- Add unit coverage notes when utility helpers normalize external payload shapes.

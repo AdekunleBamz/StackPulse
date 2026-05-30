@@ -18,6 +18,7 @@ This guide covers deploying StackPulse to production environments.
 - [Node.js](https://nodejs.org/) v18+
 - [Hiro Platform Account](https://platform.hiro.so/)
 - Stacks wallet with STX for deployment fees
+- Confirm the selected deployment plan, chainhook callback URLs, and frontend public network variables all target the same network.
 
 ## Architecture Overview
 
@@ -383,3 +384,4 @@ git push origin main
 ### Rollout Window Note
 
 Prefer deploying contracts and API updates inside the same announced window to reduce temporary mismatches between server assumptions and on-chain state.
+Keep rollback notes paired with the exact deployment plan file used in the rollout.

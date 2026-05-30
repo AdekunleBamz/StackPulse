@@ -1,3 +1,4 @@
+;; SPDX-License-Identifier: MIT
 ;; StackPulse Fee Vault V-J3
 ;; Upgrades from V2:
 ;; - Enhanced error handling

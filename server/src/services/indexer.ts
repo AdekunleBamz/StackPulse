@@ -66,8 +66,9 @@ export const startCatchupSync = async (fromBlock: number, toBlock: number) => {
     // Logic to fetch missed blocks from a Stacks Node/API
     // ...
     state.lastProcessedBlock = toBlock;
-  } catch (err: any) {
-    logSyncError(0, `Catch-up failed: ${err.message}`);
+  } catch (err) {
+    const message = err instanceof Error ? err.message : String(err);
+    logSyncError(0, `Catch-up failed: ${message}`);
   } finally {
     state.isSyncing = false;
   }

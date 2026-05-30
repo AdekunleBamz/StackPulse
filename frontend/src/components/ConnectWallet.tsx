@@ -1,7 +1,7 @@
 'use client';
 
 import { useWallet } from '@/context/WalletContext';
-import { Wallet, LogOut, ChevronDown } from 'lucide-react';
+import { LogOut, ChevronDown } from 'lucide-react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import Button from '@/components/ui/Button';
 import CopyButton from '@/components/ui/CopyButton';
@@ -15,6 +15,7 @@ export default function ConnectWallet() {
   const shortAddress = safeAddress ? truncateAddress(safeAddress) : 'connected wallet';
   const dropdownId = `wallet-dropdown-${safeAddress.slice(-6)}`;
   const closeDropdown = useCallback(() => setShowDropdown(false), []);
+  const toggleDropdown = useCallback(() => setShowDropdown((prev) => !prev), []);
 
   useEffect(() => {
     if (!showDropdown) return;
@@ -65,7 +66,7 @@ export default function ConnectWallet() {
   return (
     <div ref={wrapperRef} className="relative">
       <Button
-        onClick={() => setShowDropdown((prev) => !prev)}
+        onClick={toggleDropdown}
         variant="secondary"
         size="md"
         aria-haspopup="menu"

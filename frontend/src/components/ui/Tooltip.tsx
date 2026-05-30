@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useRef, useEffect, useId } from 'react';
+import React, { useState, useCallback, useRef, useEffect, useId } from 'react';
 
 // Assuming standard tailwind merge or clsx is not needed if we just use template literals
 export function cn(...classes: (string | undefined | null | false)[]) {
@@ -16,6 +16,20 @@ type TooltipProps = {
   delay?: number;
 }
 
+const positionClasses = {
+  top: 'bottom-full left-1/2 -translate-x-1/2 mb-2',
+  bottom: 'top-full left-1/2 -translate-x-1/2 mt-2',
+  left: 'right-full top-1/2 -translate-y-1/2 mr-2',
+  right: 'left-full top-1/2 -translate-y-1/2 ml-2',
+};
+
+const arrowClasses = {
+  top: 'top-full left-1/2 -translate-x-1/2 border-t-gray-900/95',
+  bottom: 'bottom-full left-1/2 -translate-x-1/2 border-b-gray-900/95',
+  left: 'left-full top-1/2 -translate-y-1/2 border-l-gray-900/95',
+  right: 'right-full top-1/2 -translate-y-1/2 border-r-gray-900/95',
+};
+
 export default function Tooltip({
   content,
   children,
@@ -26,21 +40,21 @@ export default function Tooltip({
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const id = useId();
 
-  const showTooltip = () => {
+  const showTooltip = useCallback(() => {
     if (timeoutRef.current) {
       clearTimeout(timeoutRef.current);
     }
     timeoutRef.current = setTimeout(() => {
       setIsVisible(true);
     }, delay);
-  };
+  }, [delay]);
 
-  const hideTooltip = () => {
+  const hideTooltip = useCallback(() => {
     if (timeoutRef.current) {
       clearTimeout(timeoutRef.current);
     }
     setIsVisible(false);
-  };
+  }, []);
 
   useEffect(() => {
     if (!isVisible) return undefined;
@@ -51,7 +65,7 @@ export default function Tooltip({
     };
     window.addEventListener('keydown', onKeyDown);
     return () => window.removeEventListener('keydown', onKeyDown);
-  }, [isVisible]);
+  }, [isVisible, hideTooltip]);
 
   useEffect(() => {
     return () => {
@@ -60,20 +74,6 @@ export default function Tooltip({
       }
     };
   }, []);
-
-  const positionClasses = {
-    top: 'bottom-full left-1/2 -translate-x-1/2 mb-2',
-    bottom: 'top-full left-1/2 -translate-x-1/2 mt-2',
-    left: 'right-full top-1/2 -translate-y-1/2 mr-2',
-    right: 'left-full top-1/2 -translate-y-1/2 ml-2'
-  };
-
-  const arrowClasses = {
-    top: 'top-full left-1/2 -translate-x-1/2 border-t-gray-900/95',
-    bottom: 'bottom-full left-1/2 -translate-x-1/2 border-b-gray-900/95',
-    left: 'left-full top-1/2 -translate-y-1/2 border-l-gray-900/95',
-    right: 'right-full top-1/2 -translate-y-1/2 border-r-gray-900/95'
-  };
 
   return (
     <div 

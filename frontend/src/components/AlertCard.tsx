@@ -1,4 +1,4 @@
-import { memo } from 'react';
+import { memo, useCallback } from 'react';
 import { 
   Loader2, 
   ToggleLeft, 
@@ -34,6 +34,8 @@ const AlertCard = memo(({
   onToggle, 
   onDelete 
 }: AlertCardProps) => {
+  const handleToggle = useCallback(() => onToggle(alert.id), [onToggle, alert.id]);
+  const handleDelete = useCallback(() => onDelete(alert.id), [onDelete, alert.id]);
   return (
     <div 
       className="bg-gray-800 rounded-xl p-4 border border-gray-700 flex items-center justify-between animate-slide-up hover:border-purple-500/50 transition-colors"
@@ -54,7 +56,7 @@ const AlertCard = memo(({
       <div className="flex items-center gap-3">
         <button
           type="button"
-          onClick={() => onToggle(alert.id)}
+          onClick={handleToggle}
           className="p-2 hover:bg-gray-700 rounded-lg transition-all cursor-pointer focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400/90"
           aria-pressed={alert.enabled}
           aria-label={alert.enabled ? 'Disable alert' : 'Enable alert'}
@@ -70,7 +72,7 @@ const AlertCard = memo(({
         </button>
         <button
           type="button"
-          onClick={() => onDelete(alert.id)}
+          onClick={handleDelete}
           className="p-2 hover:bg-red-500/20 rounded-lg transition-all cursor-pointer focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400/90"
           aria-label="Delete alert"
           title="Delete alert"

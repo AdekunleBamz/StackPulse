@@ -212,7 +212,7 @@ router.post(
 
     // Check alert limits based on user tier
     // In a real app, we'd fetch the user's tier from the database
-    const userTier = (req as TierRequest).user?.tier || UserTier.FREE;
+    const userTier = (req as TierRequest).user?.tier ?? UserTier.FREE;
     const limits = getTierLimits(userTier);
 
     if (existingCount >= limits.maxAlerts) {
@@ -448,7 +448,7 @@ router.get(
     // Count by type
     for (const alert of userAlerts) {
       const typeName = alertTypeNames[alert.alertType] || 'Unknown';
-      stats.byType[typeName] = (stats.byType[typeName] || 0) + 1;
+      stats.byType[typeName] = (stats.byType[typeName] ?? 0) + 1;
     }
 
     res.json({

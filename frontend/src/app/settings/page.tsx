@@ -148,7 +148,7 @@ export default function SettingsPage() {
     setIsLoading(true);
     setError(null);
     try {
-      const serverUrl = process.env.NEXT_PUBLIC_SERVER_URL || 'https://stackpulse-b8fw.onrender.com';
+      const serverUrl = process.env.NEXT_PUBLIC_SERVER_URL ?? 'https://stackpulse-b8fw.onrender.com';
       const response = await fetch(`${serverUrl}/api/users/${address}`);
       if (response.ok) {
         const data = await response.json();
@@ -184,7 +184,7 @@ export default function SettingsPage() {
     const toastId = toast.loading('Saving Settings', 'Updating your profile preferences...');
     setSaving(true);
     try {
-      const serverUrl = process.env.NEXT_PUBLIC_SERVER_URL || 'https://stackpulse-b8fw.onrender.com';
+      const serverUrl = process.env.NEXT_PUBLIC_SERVER_URL ?? 'https://stackpulse-b8fw.onrender.com';
       const res = await fetch(`${serverUrl}/api/users/${address}/preferences`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

@@ -1,7 +1,7 @@
 'use client';
 
 import { Activity, ExternalLink } from 'lucide-react';
-import { memo, useEffect, useRef, useState } from 'react';
+import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { StatsCardSkeleton } from './LoadingSkeleton';
 import { apiUrl } from '@/lib/env';
 import logger from '@/lib/logger';
@@ -69,14 +69,19 @@ const LiveStats = memo(() => {
     return () => clearInterval(interval);
   }, [refreshKey]);
 
-  const statItems = stats ? [
+  const statItems = useMemo(() => stats ? [
     { label: 'Whale Transfers', value: stats.whaleTransfers, color: 'text-blue-400', glow: 'from-blue-400/20' },
     { label: 'Contracts Deployed', value: stats.contractDeployments, color: 'text-purple-400', glow: 'from-purple-400/20' },
     { label: 'NFTs Minted', value: stats.nftMints, color: 'text-pink-400', glow: 'from-pink-400/20' },
     { label: 'Token Launches', value: stats.tokenLaunches, color: 'text-yellow-400', glow: 'from-yellow-400/20' },
     { label: 'Large Swaps', value: stats.largeSwaps, color: 'text-green-400', glow: 'from-green-400/20' },
     { label: 'Alerts Triggered', value: stats.alertsTriggered, color: 'text-red-400', glow: 'from-red-400/20' },
-  ] : [];
+  ] : [], [stats]);
+
+  const handleRetry = useCallback(() => {
+    setLoading(true);
+    setRefreshKey((k) => k + 1);
+  }, []);
 
   if (loading) {
     return (
@@ -102,10 +107,7 @@ const LiveStats = memo(() => {
             <p className="text-gray-500 text-sm mt-2 max-w-xs mx-auto">{error}</p>
             <button
               type="button"
-              onClick={() => {
-                setLoading(true);
-                setRefreshKey((k) => k + 1);
-              }}
+              onClick={handleRetry}
               className="mt-6 inline-flex items-center justify-center px-6 py-2 bg-gray-800 border border-gray-700 hover:bg-gray-700 text-white rounded-xl font-semibold transition-all hover:scale-105 active:scale-95 shadow-lg"
             >
               Retry

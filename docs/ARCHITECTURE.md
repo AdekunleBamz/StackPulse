@@ -37,3 +37,4 @@ This document describes the high-level architecture of the StackPulse ecosystem,
 
 7. **Postmortem Loop**: Operations review alert misses and noisy triggers to tune matching rules and provider retry thresholds.
 8. **Replay Safety**: Event consumers should stay idempotent so controlled replay windows can be run without duplicating user-facing alerts.
+9. **Evidence Capture**: Release owners should record replay window bounds and provider retry counts for later incident comparison.

@@ -130,7 +130,7 @@ export const tieredApiLimiter = rateLimiter({
   maxRequests: DEFAULT_RATE_LIMIT_MAX_REQUESTS, // Default
   maxRequestsGenerator: (req) => {
     // In a real app, fetch tier from user store
-    const userTier = (req as TierRequest).user?.tier || 0;
+    const userTier = (req as TierRequest).user?.tier ?? 0;
     const limits = [100, 1000, 5000, 20000]; // Defined earlier in tier.ts
     const safeTier = Number.isInteger(userTier) && userTier >= 0 ? userTier : 0;
     return limits[safeTier] || DEFAULT_RATE_LIMIT_MAX_REQUESTS;

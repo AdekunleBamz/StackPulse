@@ -49,7 +49,7 @@ export const requirePermission = (permission: string) => {
       [UserTier.WHALE]: ['read:alerts', 'read:stats', 'create:alerts', 'read:whale-history', 'api:access'],
     };
 
-    const userPermissions = tierPermissions[user?.tier ?? UserTier.FREE] || [];
+    const userPermissions = tierPermissions[user?.tier ?? UserTier.FREE] ?? [];
 
     if (!userPermissions.includes(permission)) {
       return res.status(403).json({

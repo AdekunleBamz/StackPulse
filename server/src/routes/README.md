@@ -17,3 +17,5 @@ These files break the backend into route-focused modules while `../index.ts` rem
 - Update `docs/API.md` when a mounted path changes.
 - When introducing route-version changes, keep deprecation windows explicit in both route docs and public API notes.
 - Keep `/api` and `/api/v1` behavior aligned during transition windows so clients do not receive different validation behavior per prefix.
+- Include request-id examples when adding support-oriented route docs.
+- Keep pagination parameter defaults documented with every list route.

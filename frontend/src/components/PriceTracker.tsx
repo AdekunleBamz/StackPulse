@@ -26,6 +26,30 @@ const toFiniteNumber = (value: unknown): number => {
   return typeof value === 'number' && Number.isFinite(value) ? value : 0;
 };
 
+function formatPrice(price: number) {
+  if (price >= 1000) {
+    return `$${price.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+  }
+  return `$${price.toFixed(4)}`;
+}
+
+function formatChange(change: number) {
+  const formatted = Math.abs(change).toFixed(2);
+  return `${change >= 0 ? '+' : '-'}${formatted}%`;
+}
+
+function getChangeIcon(change: number) {
+  if (change > PRICE_CHANGE_NEUTRAL_THRESHOLD) return <ArrowUp className="w-3 h-3" aria-hidden="true" />;
+  if (change < -PRICE_CHANGE_NEUTRAL_THRESHOLD) return <ArrowDown className="w-3 h-3" aria-hidden="true" />;
+  return <Minus className="w-3 h-3" aria-hidden="true" />;
+}
+
+function getChangeColor(change: number) {
+  if (change > PRICE_CHANGE_NEUTRAL_THRESHOLD) return 'text-green-400';
+  if (change < -PRICE_CHANGE_NEUTRAL_THRESHOLD) return 'text-red-400';
+  return 'text-gray-400';
+}
+
 export default function PriceTracker() {
   const [prices, setPrices] = useState<PriceData | null>(null);
   const [loading, setLoading] = useState(true);
@@ -89,30 +113,6 @@ export default function PriceTracker() {
     const interval = setInterval(fetchPrices, PRICE_REFRESH_INTERVAL_MS);
     return () => clearInterval(interval);
   }, [refreshKey]);
-
-  const formatPrice = (price: number) => {
-    if (price >= 1000) {
-      return `$${price.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-    }
-    return `$${price.toFixed(4)}`;
-  };
-
-  const formatChange = (change: number) => {
-    const formatted = Math.abs(change).toFixed(2);
-    return `${change >= 0 ? '+' : '-'}${formatted}%`;
-  };
-
-  const getChangeIcon = (change: number) => {
-    if (change > PRICE_CHANGE_NEUTRAL_THRESHOLD) return <ArrowUp className="w-3 h-3" aria-hidden="true" />;
-    if (change < -PRICE_CHANGE_NEUTRAL_THRESHOLD) return <ArrowDown className="w-3 h-3" aria-hidden="true" />;
-    return <Minus className="w-3 h-3" aria-hidden="true" />;
-  };
-
-  const getChangeColor = (change: number) => {
-    if (change > PRICE_CHANGE_NEUTRAL_THRESHOLD) return 'text-green-400';
-    if (change < -PRICE_CHANGE_NEUTRAL_THRESHOLD) return 'text-red-400';
-    return 'text-gray-400';
-  };
 
   if (loading) {
     return (

@@ -106,8 +106,19 @@ npm --prefix server run build
 npm --prefix frontend run build
 ```
 
+### Verification
+
+```bash
+# Run lint checks across frontend and server
+npm run lint:all
+
+# Run the fast contract and shared utility check
+npm run check:fast
+```
+
 Join our community to get help, stay updated, and contribute:
 - **Discord**: [Join our server](https://discord.gg/stackpulse)
 - **Telegram**: [Follow us](https://t.me/stackpulse)
 - **Twitter**: [Follow @StackPulse](https://twitter.com/StackPulse)
 - When asking for incident help, include affected network and one transaction ID for faster triage.
+- For release help, include the deployed contract alias and frontend commit hash.

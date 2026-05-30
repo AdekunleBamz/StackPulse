@@ -38,7 +38,7 @@ class MetricsService {
       labels
     };
 
-    const values = this.metrics.get(name) || [];
+    const values = this.metrics.get(name) ?? [];
     values.push(entry);
 
     // Keep last N entries per metric
@@ -54,7 +54,7 @@ class MetricsService {
    * Get metrics by name
    */
   getMetrics(name: string): MetricValue[] {
-    const values = this.metrics.get(name) || [];
+    const values = this.metrics.get(name) ?? [];
     return values.slice();
   }
 
@@ -62,7 +62,7 @@ class MetricsService {
    * Get average value for a metric
    */
   getAverage(name: string): number {
-    const values = this.metrics.get(name) || [];
+    const values = this.metrics.get(name) ?? [];
     if (values.length === 0) return 0;
     
     const sum = values.reduce((acc, curr) => acc + curr.value, 0);

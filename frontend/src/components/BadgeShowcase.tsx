@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { Award, Lock, Check, ExternalLink } from 'lucide-react';
 
 interface Badge {
@@ -206,19 +206,22 @@ export default function BadgeShowcase({ userBadges = [] }: BadgeShowcaseProps) {
   const [selectedBadge, setSelectedBadge] = useState<Badge | null>(null);
   const [filter, setFilter] = useState<'all' | 'earned' | 'locked'>('all');
 
-  // Mark user's badges as earned
-  const displayBadges = badges.map(badge => ({
-    ...badge,
-    earned: userBadges.includes(badge.id),
-  }));
+  // Use Set for O(1) lookup
+  const userBadgeSet = useMemo(() => new Set(userBadges), [userBadges]);
 
-  const filteredBadges = displayBadges.filter(badge => {
+  // Mark user's badges as earned
+  const displayBadges = useMemo(
+    () => badges.map(badge => ({ ...badge, earned: userBadgeSet.has(badge.id) })),
+    [userBadgeSet]
+  );
+
+  const filteredBadges = useMemo(() => displayBadges.filter(badge => {
     if (filter === 'earned') return badge.earned;
     if (filter === 'locked') return !badge.earned;
     return true;
-  });
+  }), [displayBadges, filter]);
 
-  const earnedCount = displayBadges.filter(b => b.earned).length;
+  const earnedCount = useMemo(() => displayBadges.filter(b => b.earned).length, [displayBadges]);
 
   return (
     <div 

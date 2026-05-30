@@ -7,7 +7,7 @@
  * Format STX amount from micro-STX
  */
 export function formatStxAmount(microStx: string | number): string {
-  const amount = typeof microStx === 'string' ? parseFloat(microStx) : microStx;
+  const amount = typeof microStx === 'string' ? Number.parseFloat(microStx) : microStx;
   const stx = (Number.isFinite(amount) ? amount : 0) / 1000000;
   return stx.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 6 });
 }

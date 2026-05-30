@@ -116,7 +116,7 @@ export async function getAccountTransactions(
     );
     if (!response.ok) return [];
     const data = (await response.json()) as PaginatedTransactionsResponse;
-    return data.results || [];
+    return data.results ?? [];
   } catch (error) {
     logger.error('Error fetching account transactions', { address, network, error });
     return [];
@@ -183,7 +183,7 @@ export async function getMempoolTransactions(
     );
     if (!response.ok) return [];
     const data = (await response.json()) as PaginatedTransactionsResponse;
-    return data.results || [];
+    return data.results ?? [];
   } catch (error) {
     logger.error('Error fetching mempool transactions', { address, network, error });
     return [];
@@ -222,7 +222,7 @@ export async function getBlockTransactions(
     );
     if (!response.ok) return [];
     const data = (await response.json()) as PaginatedTransactionsResponse;
-    return data.results || [];
+    return data.results ?? [];
   } catch (error) {
     logger.error('Error fetching block transactions', { blockHeight, network, error });
     return [];
@@ -237,10 +237,10 @@ export function parseWhaleTransfer(event: GenericJsonObject): { amountSTX: strin
     return null;
   }
 
-  const data = (event.data as GenericJsonObject | undefined) || {};
-  const amount = Number(data.amount || 0);
-  const sender = String(data.sender || '');
-  const recipient = String(data.recipient || '');
+  const data = (event.data as GenericJsonObject | undefined) ?? {};
+  const amount = Number(data.amount ?? 0);
+  const sender = String(data.sender ?? '');
+  const recipient = String(data.recipient ?? '');
 
   if (!amount || !sender || !recipient) {
     return null;
@@ -256,17 +256,17 @@ export function parseWhaleTransfer(event: GenericJsonObject): { amountSTX: strin
 }
 
 export function parseContractDeployment(tx: GenericJsonObject): { contractId: string; contractName: string; deployer: string } | null {
-  const metadata = (tx.metadata as GenericJsonObject | undefined) || {};
-  const kind = (metadata.kind as GenericJsonObject | undefined) || {};
+  const metadata = (tx.metadata as GenericJsonObject | undefined) ?? {};
+  const kind = (metadata.kind as GenericJsonObject | undefined) ?? {};
   const kindType = kind.type as string | undefined;
 
   if (kindType !== 'ContractDeployment') {
     return null;
   }
 
-  const kindData = (kind.data as GenericJsonObject | undefined) || {};
-  const contractId = String(kindData.contract_identifier || '');
-  const deployer = String(metadata.sender || '');
+  const kindData = (kind.data as GenericJsonObject | undefined) ?? {};
+  const contractId = String(kindData.contract_identifier ?? '');
+  const deployer = String(metadata.sender ?? '');
 
   if (!contractId || !deployer) {
     return null;
@@ -283,10 +283,10 @@ export function parseNFTMint(event: GenericJsonObject): { assetIdentifier: strin
     return null;
   }
 
-  const data = (event.data as GenericJsonObject | undefined) || {};
-  const assetIdentifier = String(data.asset_identifier || '');
-  const tokenId = String(data.value || '');
-  const recipient = String(data.recipient || '');
+  const data = (event.data as GenericJsonObject | undefined) ?? {};
+  const assetIdentifier = String(data.asset_identifier ?? '');
+  const tokenId = String(data.value ?? '');
+  const recipient = String(data.recipient ?? '');
 
   if (!assetIdentifier || !tokenId || !recipient) {
     return null;
@@ -299,7 +299,7 @@ export function parseNFTMint(event: GenericJsonObject): { assetIdentifier: strin
     assetName: assetName || assetIdentifier,
     tokenId,
     recipient,
-    contractAddress: contractAddress || '',
+    contractAddress: contractAddress ?? '',
   };
 }
 
@@ -308,9 +308,9 @@ export function parseStackPulseEvent(event: GenericJsonObject): GenericJsonObjec
     return null;
   }
 
-  const data = (event.data as GenericJsonObject | undefined) || {};
+  const data = (event.data as GenericJsonObject | undefined) ?? {};
   const value = data.value as GenericJsonObject | undefined;
-  return value || null;
+  return value ?? null;
 }
 
 export function formatSTX(amountMicroStx: number | string): string {

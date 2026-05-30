@@ -34,6 +34,17 @@ const alertTypeInfo: Record<number, { name: string; icon: string; color: string 
   6: { name: 'Address Watch', icon: '👁️', color: 'orange' },
 } as const;
 
+const DATE_FORMAT_OPTIONS: Intl.DateTimeFormatOptions = {
+  month: 'short',
+  day: 'numeric',
+  hour: '2-digit',
+  minute: '2-digit',
+};
+
+function formatDate(date: Date) {
+  return date.toLocaleDateString('en-US', DATE_FORMAT_OPTIONS);
+}
+
 interface AlertHistoryProps {
   userAddress?: string;
 }
@@ -110,15 +121,6 @@ export default function AlertHistory({ userAddress }: AlertHistoryProps) {
   useEffect(() => {
     setPage(1);
   }, [filter, debouncedSearchQuery]);
-
-  const formatDate = (date: Date) => {
-    return date.toLocaleDateString('en-US', {
-      month: 'short',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-    });
-  };
 
   const exportCSV = () => {
     const headers = ['Date', 'Alert Name', 'Type', 'Block', 'TX Hash'];

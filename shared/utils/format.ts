@@ -62,7 +62,7 @@ export function formatStxAmount(microStx: number | string): string {
  * @returns A formatted string (e.g., "1,234.56").
  */
 export function formatNumber(num: number | string): string {
-  const n = typeof num === 'string' ? parseFloat(num.replace(/,/g, '')) : num;
+  const n = typeof num === 'string' ? Number.parseFloat(num.replace(/,/g, '')) : num;
   if (!Number.isFinite(n)) {
     return '0';
   }
@@ -232,7 +232,7 @@ export function parseStxAmount(amount: string): number {
  * @returns A formatted balance string.
  */
 export function formatBalance(balance: number | string, decimals: number = DEFAULT_BALANCE_DECIMALS): string {
-  const bal = typeof balance === 'string' ? parseFloat(balance.replace(/,/g, '')) : balance;
+  const bal = typeof balance === 'string' ? Number.parseFloat(balance.replace(/,/g, '')) : balance;
   const safeDecimals = Number.isFinite(decimals)
     ? Math.max(0, Math.min(12, Math.floor(decimals)))
     : DEFAULT_BALANCE_DECIMALS;

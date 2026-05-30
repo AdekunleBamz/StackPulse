@@ -1,3 +1,4 @@
+;; SPDX-License-Identifier: MIT
 ;; StackPulse Reputation Badges V-J3 (SIP-009 NFT)
 ;; NFT badges for achievements and milestones
 ;;

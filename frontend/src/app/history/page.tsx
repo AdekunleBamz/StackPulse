@@ -44,18 +44,19 @@ const recentTriggers = [
   },
 ];
 
+const HISTORY_STATS = {
+  totalTriggers: 847,
+  todayTriggers: 23,
+  avgPerDay: 121,
+  topType: 'Whale Transfer',
+};
+
 export default function HistoryPage() {
   const [timeRange, setTimeRange] = useState('7d');
   const [renderNow] = useState(() => Date.now());
   const [currentHour] = useState(() => new Date().getHours());
 
-  // Stats
-  const stats = {
-    totalTriggers: 847,
-    todayTriggers: 23,
-    avgPerDay: 121,
-    topType: 'Whale Transfer',
-  };
+  const stats = HISTORY_STATS;
 
   return (
     <div className="min-h-screen bg-gray-950 text-white">

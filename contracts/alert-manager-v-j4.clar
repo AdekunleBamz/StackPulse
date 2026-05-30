@@ -1,3 +1,4 @@
+;; SPDX-License-Identifier: MIT
 ;; StackPulse Alert Manager V-J4
 ;; Upgrades from V2:
 ;; - Enhanced error handling with descriptive codes

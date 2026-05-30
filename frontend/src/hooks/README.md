@@ -36,3 +36,5 @@ import {
 - Return stable, well-typed shapes so components stay simple.
 - When reconnecting sockets, apply jittered delays to avoid synchronized reconnect spikes across many clients.
 - For long-lived callbacks in hooks, prefer refs or stable dependencies so reconnection handlers do not close over stale state.
+- Document stale-data thresholds whenever a hook exposes cached API results.
+- Reconfirm hook cleanup behavior whenever polling intervals are made configurable.

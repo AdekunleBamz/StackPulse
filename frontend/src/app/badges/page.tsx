@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 import Link from 'next/link';
 import { Award, ArrowLeft, Share2, Check, ExternalLink } from 'lucide-react';
 import BadgeShowcase from '@/components/BadgeShowcase';
@@ -124,12 +124,16 @@ export default function BadgesPage() {
     }
   }, [address, isConnected]);
 
-  const legendaryEarnedCount = badgeDetails.filter(
-    (badge) => badge.rarity === 'legendary' && userBadges.includes(badge.id)
-  ).length;
-  const finiteSupplyTotal = badgeDetails.reduce((sum, badge) => sum + (badge.maxSupply || 0), 0);
+  const legendaryEarnedCount = useMemo(
+    () => badgeDetails.filter((badge) => badge.rarity === 'legendary' && userBadges.includes(badge.id)).length,
+    [userBadges]
+  );
+  const finiteSupplyTotal = useMemo(
+    () => badgeDetails.reduce((sum, badge) => sum + (badge.maxSupply ?? 0), 0),
+    []
+  );
 
-  const shareCollection = async () => {
+  const shareCollection = useCallback(async () => {
     try {
       const url = window.location.href;
       if (navigator.share) {
@@ -145,7 +149,7 @@ export default function BadgesPage() {
     } catch {
       toast.error('Share failed', 'Please try again.');
     }
-  };
+  }, []);
 
   return (
     <div className="min-h-screen bg-gray-950 text-white">
