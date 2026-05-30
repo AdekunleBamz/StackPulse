@@ -28,3 +28,4 @@ You can also use GitHub"""s private advisory flow: https://github.com/AdekunleBa
 
 We will provide regular status updates until the issue is resolved.
 - For blockchain-related findings, include network (mainnet/testnet) and at least one transaction or block reference where behavior was observed.
+- Avoid attaching full `.env` files, private keys, wallet mnemonics, or unredacted webhook secrets.
