@@ -31,9 +31,8 @@ import {
 } from 'lucide-react';
 import { Breadcrumbs } from '@/components';
 import { apiUrl } from '@/lib/env';
+import { CONTRACT_NAMES, DEPLOYER_ADDRESS } from '@/lib/contracts';
 import { logger } from '@/lib/logger';
-
-const DEPLOYER_ADDRESS = process.env.NEXT_PUBLIC_DEPLOYER_ADDRESS ?? '';
 
 /** Alert type definitions matching contract event types and chainhook configurations. */
 const alertTypes = [
@@ -150,7 +149,7 @@ export default function DashboardPage() {
 
       await openContractCall({
         contractAddress: DEPLOYER_ADDRESS,
-        contractName: 'alert-manager-v-j4',
+        contractName: CONTRACT_NAMES.alertManager,
         functionName: 'create-alert',
         functionArgs: [
           uintCV(newAlertType),

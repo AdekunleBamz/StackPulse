@@ -1,9 +1,7 @@
 import { useState } from 'react';
 import { useWallet } from '@/context/WalletContext';
 import { toast } from '@/components/Toast';
-
-/** Deployer address for the StackPulse smart contracts. */
-const DEPLOYER_ADDRESS = process.env.NEXT_PUBLIC_DEPLOYER_ADDRESS || '';
+import { CONTRACT_NAMES, DEPLOYER_ADDRESS } from '@/lib/contracts';
 
 /** Subscription tier prices in microSTX (1 STX = 1,000,000 microSTX) */
 export const TIER_PRICES_MICROSTACKS: Record<number, number> = {
@@ -54,7 +52,7 @@ export function usePricing() {
 
       await openContractCall({
         contractAddress: DEPLOYER_ADDRESS,
-        contractName: 'stackpulse-v-j3',
+        contractName: CONTRACT_NAMES.stackpulse,
         functionName: 'register-and-subscribe',
         functionArgs: [
           stringAsciiCV(normalizedUsername),
@@ -147,7 +145,7 @@ export function usePricing() {
 
       await openContractCall({
         contractAddress: DEPLOYER_ADDRESS,
-        contractName: 'stackpulse-v-j3',
+        contractName: CONTRACT_NAMES.stackpulse,
         functionName: 'upgrade-subscription',
         functionArgs: [uintCV(tier)],
         postConditions,
