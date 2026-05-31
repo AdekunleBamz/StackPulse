@@ -117,6 +117,7 @@ npm run check:fast
 ```
 
 For documentation-only maintenance, verify the diff stays outside runtime source, chainhook manifests, API routes, environment files, and deployment plans.
+Before committing docs-only updates, stage documentation separately and confirm wallet, authentication, server behavior, and production configuration files are untouched.
 
 Join our community to get help, stay updated, and contribute:
 - **Discord**: [Join our server](https://discord.gg/stackpulse)
