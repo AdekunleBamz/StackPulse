@@ -15,6 +15,15 @@ type WalletConnectResult = {
   accounts?: StoredAddress[];
 };
 
+type WalletAddressSource =
+  | string
+  | StoredAddress
+  | WalletConnectResult
+  | WalletAddressSource[]
+  | Record<string, unknown>
+  | null
+  | undefined;
+
 /**
  * Context type for Stacks wallet management
  */
@@ -41,8 +50,43 @@ interface WalletContextType {
 
 const WalletContext = createContext<WalletContextType | null>(null);
 
+function getStacksAddressCandidate(value?: string): string | null {
+  if (!value) return null;
+  const trimmedValue = value.trim();
+  const caipAddress = trimmedValue.match(/(?:^|:)S[PT][A-Z0-9]+$/i)?.[0]?.replace(/^:/, '');
+  const plainAddress = trimmedValue.match(/^S[PT][A-Z0-9]+$/i)?.[0];
+  return caipAddress || plainAddress || null;
+}
+
+function collectAddresses(source: WalletAddressSource): StoredAddress[] {
+  if (!source) return [];
+
+  if (typeof source === 'string') {
+    const address = getStacksAddressCandidate(source);
+    return address ? [{ address }] : [];
+  }
+
+  if (Array.isArray(source)) {
+    return source.flatMap((entry) => collectAddresses(entry));
+  }
+
+  if (typeof source === 'object') {
+    const maybeAddress = 'address' in source ? getStacksAddressCandidate(String(source.address)) : null;
+    const currentAddress = maybeAddress
+      ? [{ address: maybeAddress, symbol: 'symbol' in source ? String(source.symbol) : undefined }]
+      : [];
+    const nestedAddresses = Object.entries(source)
+      .filter(([key]) => key !== 'address' && key !== 'symbol')
+      .flatMap(([, value]) => collectAddresses(value as WalletAddressSource));
+
+    return [...currentAddress, ...nestedAddresses];
+  }
+
+  return [];
+}
+
 function isStacksAddress(address?: string): boolean {
-  return Boolean(address && /^S[PT][A-Z0-9]+$/i.test(address));
+  return Boolean(getStacksAddressCandidate(address));
 }
 
 function selectAddress(addresses: StoredAddress[] = [], network: 'mainnet' | 'testnet'): string | null {
@@ -57,7 +101,7 @@ function selectAddress(addresses: StoredAddress[] = [], network: 'mainnet' | 'te
 }
 
 function getResultAddresses(result: WalletConnectResult): StoredAddress[] {
-  return [...(result.addresses || []), ...(result.accounts || [])];
+  return collectAddresses(result);
 }
 
 /**
@@ -97,17 +141,19 @@ export function WalletProvider({ children }: { children: ReactNode }) {
     if (!isClient) return;
     
     try {
-      const { connect, getLocalStorage } = await import('@stacks/connect');
-      const result = await connect({
-        network,
-      });
-      const storedAddresses = getLocalStorage()?.addresses?.stx || [];
+      const { getLocalStorage, request } = await import('@stacks/connect');
+      const result = await request({ forceWalletSelect: true }, 'getAddresses');
+      const storage = getLocalStorage();
+      const storedAddresses = storage?.addresses?.stx || [];
       const walletAddress = selectAddress(
-        [...getResultAddresses(result), ...storedAddresses],
+        [...getResultAddresses(result), ...collectAddresses(storage as WalletAddressSource), ...storedAddresses],
         network
       );
       setIsConnected(Boolean(walletAddress));
       setAddress(walletAddress);
+      if (!walletAddress) {
+        logger.warn('Wallet connected but no Stacks address was returned', { result, storage });
+      }
     } catch (error) {
       logger.error('Connection error:', error);
     }
