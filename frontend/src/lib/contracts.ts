@@ -1,5 +1,3 @@
-import { DEPLOYER_ADDRESS } from '@/lib/env';
-
 const V3_DEPLOYER_ADDRESS = 'SP5K2RHMSBH4PAP4PGX77MCVNK1ZEED07CWX9TJT';
 const V4_DEPLOYER_ADDRESS = 'SP1THTSTZ8RQGD8R3GKPGK3ABQ908BD8X85P3J6X9';
 
@@ -15,18 +13,26 @@ function getConfiguredVersion(): ContractVersion {
     return explicitVersion;
   }
 
-  const deployerAddress = DEPLOYER_ADDRESS.toUpperCase();
-  if (deployerAddress === V4_DEPLOYER_ADDRESS) {
-    return 'v-j4';
-  }
-  if (deployerAddress === V3_DEPLOYER_ADDRESS) {
-    return 'v-j3';
+  return 'v-j4';
+}
+
+function getConfiguredDeployerAddress(version: ContractVersion): string {
+  const deployerAddress = normalizeEnvValue(process.env.NEXT_PUBLIC_DEPLOYER_ADDRESS).toUpperCase();
+
+  if (version === 'v-j3') {
+    return deployerAddress || V3_DEPLOYER_ADDRESS;
   }
 
-  return 'v-j3';
+  if (!deployerAddress || deployerAddress === V3_DEPLOYER_ADDRESS) {
+    return V4_DEPLOYER_ADDRESS;
+  }
+
+  return deployerAddress;
 }
 
 const contractVersion = getConfiguredVersion();
+
+export const DEPLOYER_ADDRESS = getConfiguredDeployerAddress(contractVersion);
 
 export const CONTRACT_NAMES = {
   stackpulse:
@@ -42,5 +48,3 @@ export const CONTRACT_NAMES = {
     normalizeEnvValue(process.env.NEXT_PUBLIC_REPUTATION_BADGES_CONTRACT_NAME) ||
     `reputation-badges-${contractVersion}`,
 } as const;
-
-export { DEPLOYER_ADDRESS };
