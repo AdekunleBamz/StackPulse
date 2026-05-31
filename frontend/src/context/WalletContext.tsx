@@ -5,11 +5,9 @@ import { STACKS_MAINNET, STACKS_TESTNET } from '@stacks/network';
 import logger from '@/lib/logger';
 import { truncateAddress } from '@/utils';
 
-// Types for @stacks/connect - we'll dynamically import the actual module
-type UserSession = {
-  isUserSignedIn: () => boolean;
-  loadUserData: () => { profile: { stxAddress: { mainnet: string; testnet: string } } };
-  signUserOut: () => void;
+type StoredAddress = {
+  address: string;
+  symbol?: string;
 };
 
 /**
@@ -28,8 +26,6 @@ interface WalletContextType {
   isTestnet: boolean;
   /** The active Stacks network (mainnet or testnet) */
   network: 'mainnet' | 'testnet';
-  /** The @stacks/connect UserSession instance */
-  userSession: UserSession | null;
   /** Initiates the Stacks wallet connection flow */
   connect: () => Promise<void>;
   /** Disconnects the current wallet session */
@@ -40,11 +36,12 @@ interface WalletContextType {
 
 const WalletContext = createContext<WalletContextType | null>(null);
 
-/** Application name sent to wallets during authentication. */
-const WALLET_APP_NAME = 'StackPulse';
-/** Application icon URL sent to wallets during authentication. */
-const WALLET_APP_ICON = '/logo.svg';
-const WALLET_APP_PERMISSIONS = ['store_write', 'publish_data'] as const;
+function selectAddress(addresses: StoredAddress[] = [], network: 'mainnet' | 'testnet'): string | null {
+  const networkPrefix = network === 'mainnet' ? 'SP' : 'ST';
+  const matchingAddress = addresses.find((entry) => entry.address?.startsWith(networkPrefix));
+  const fallbackAddress = addresses.find((entry) => entry.symbol === 'STX') || addresses[0];
+  return matchingAddress?.address || fallbackAddress?.address || null;
+}
 
 /**
  * Provider component for Stacks wallet state and actions
@@ -53,74 +50,42 @@ export function WalletProvider({ children }: { children: ReactNode }) {
   const [isConnected, setIsConnected] = useState(false);
   const [address, setAddress] = useState<string | null>(null);
   const [network, setNetwork] = useState<'mainnet' | 'testnet'>('mainnet');
-  const [userSession, setUserSession] = useState<UserSession | null>(null);
   const [isClient, setIsClient] = useState(false);
 
   // Initialize on client only
   useEffect(() => {
     setIsClient(true);
-    
-    const initWallet = async () => {
-      try {
-        const { AppConfig, UserSession } = await import('@stacks/connect');
-        const appConfig = new AppConfig(['store_write', 'publish_data']);
-        const session = new UserSession({ appConfig });
-        setUserSession(session as unknown as UserSession);
-        
-        if (session.isUserSignedIn()) {
-          const userData = session.loadUserData();
-          setIsConnected(true);
-          // Initial hydrate defaults to mainnet; network-specific switching is handled in a separate effect.
-          setAddress(userData.profile?.stxAddress?.mainnet);
-        }
-      } catch (error) {
-        logger.error('Failed to initialize wallet:', error);
-      }
-    };
-    
-    initWallet();
   }, []);
 
-  // Update address when network changes
+  // Update address when network changes.
   useEffect(() => {
-    if (userSession?.isUserSignedIn()) {
-      const userData = userSession.loadUserData();
-      setAddress(
-        network === 'mainnet' 
-          ? userData.profile?.stxAddress?.mainnet 
-          : userData.profile?.stxAddress?.testnet
-      );
+    const updateStoredAddress = async () => {
+      try {
+        const { getLocalStorage, isConnected: hasWalletConnection } = await import('@stacks/connect');
+        const walletAddress = selectAddress(getLocalStorage()?.addresses?.stx, network);
+        setIsConnected(hasWalletConnection() && Boolean(walletAddress));
+        setAddress(walletAddress);
+      } catch (error) {
+        logger.error('Failed to sync wallet address:', error);
+      }
+    };
+
+    if (isClient) {
+      updateStoredAddress();
     }
-  }, [network, userSession]);
+  }, [isClient, network]);
 
   const handleConnect = useCallback(async () => {
     if (!isClient) return;
     
     try {
-      const { showConnect, AppConfig, UserSession } = await import('@stacks/connect');
-      const appConfig = new AppConfig([...WALLET_APP_PERMISSIONS]);
-      const session = new UserSession({ appConfig });
-      
-      showConnect({
-        appDetails: {
-          name: WALLET_APP_NAME,
-          icon: WALLET_APP_ICON,
-        },
-        onFinish: () => {
-          const userData = session.loadUserData();
-          setUserSession(session as unknown as UserSession);
-          setIsConnected(true);
-          setAddress(
-            network === 'mainnet' 
-              ? userData.profile?.stxAddress?.mainnet 
-              : userData.profile?.stxAddress?.testnet
-          );
-        },
-        onCancel: () => {
-          logger.info('Wallet connection cancelled');
-        },
-        userSession: session,
+      const { connect } = await import('@stacks/connect');
+      const result = await connect({
+        network,
       });
+      const walletAddress = selectAddress(result.addresses, network);
+      setIsConnected(Boolean(walletAddress));
+      setAddress(walletAddress);
     } catch (error) {
       logger.error('Connection error:', error);
     }
@@ -132,13 +97,12 @@ export function WalletProvider({ children }: { children: ReactNode }) {
     try {
       const { disconnect } = await import('@stacks/connect');
       disconnect();
-      userSession?.signUserOut();
       setIsConnected(false);
       setAddress(null);
     } catch (error) {
       logger.error('Disconnect error:', error);
     }
-  }, [isClient, userSession]);
+  }, [isClient]);
 
   const switchNetwork = useCallback((newNetwork: 'mainnet' | 'testnet') => {
     setNetwork((current) => (current === newNetwork ? current : newNetwork));
@@ -153,7 +117,6 @@ export function WalletProvider({ children }: { children: ReactNode }) {
         isMainnet: network === 'mainnet',
         isTestnet: network === 'testnet',
         network,
-        userSession,
         connect: handleConnect,
         disconnect: handleDisconnect,
         switchNetwork,
