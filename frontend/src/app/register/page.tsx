@@ -55,6 +55,7 @@ export default function RegisterPage() {
         contractAddress: DEPLOYER_ADDRESS,
         contractName: CONTRACT_NAMES.stackpulse,
         functionName: 'register-and-subscribe',
+        network: 'mainnet',
         functionArgs: [
           stringAsciiCV(username),
           stringAsciiCV(''), // email (optional)

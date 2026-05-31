@@ -54,6 +54,7 @@ export function usePricing() {
         contractAddress: DEPLOYER_ADDRESS,
         contractName: CONTRACT_NAMES.stackpulse,
         functionName: 'register-and-subscribe',
+        network: 'mainnet',
         functionArgs: [
           stringAsciiCV(normalizedUsername),
           stringAsciiCV(email || ''),
@@ -147,6 +148,7 @@ export function usePricing() {
         contractAddress: DEPLOYER_ADDRESS,
         contractName: CONTRACT_NAMES.stackpulse,
         functionName: 'upgrade-subscription',
+        network: 'mainnet',
         functionArgs: [uintCV(tier)],
         postConditions,
         onFinish: (data: { txId: string }) => {

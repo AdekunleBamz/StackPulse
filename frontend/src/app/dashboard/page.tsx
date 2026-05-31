@@ -151,6 +151,7 @@ export default function DashboardPage() {
         contractAddress: DEPLOYER_ADDRESS,
         contractName: CONTRACT_NAMES.alertManager,
         functionName: 'create-alert',
+        network: 'mainnet',
         functionArgs: [
           uintCV(newAlertType),
           stringAsciiCV(newAlertName || alertTypes[newAlertType - 1].name),

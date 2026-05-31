@@ -23,11 +23,7 @@ function getConfiguredDeployerAddress(version: ContractVersion): string {
     return deployerAddress || V3_DEPLOYER_ADDRESS;
   }
 
-  if (!deployerAddress || deployerAddress === V3_DEPLOYER_ADDRESS) {
-    return V4_DEPLOYER_ADDRESS;
-  }
-
-  return deployerAddress;
+  return V4_DEPLOYER_ADDRESS;
 }
 
 const contractVersion = getConfiguredVersion();
