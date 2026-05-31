@@ -10,6 +10,11 @@ type StoredAddress = {
   symbol?: string;
 };
 
+type WalletConnectResult = {
+  addresses?: StoredAddress[];
+  accounts?: StoredAddress[];
+};
+
 /**
  * Context type for Stacks wallet management
  */
@@ -36,11 +41,23 @@ interface WalletContextType {
 
 const WalletContext = createContext<WalletContextType | null>(null);
 
+function isStacksAddress(address?: string): boolean {
+  return Boolean(address && /^S[PT][A-Z0-9]+$/i.test(address));
+}
+
 function selectAddress(addresses: StoredAddress[] = [], network: 'mainnet' | 'testnet'): string | null {
   const networkPrefix = network === 'mainnet' ? 'SP' : 'ST';
-  const matchingAddress = addresses.find((entry) => entry.address?.startsWith(networkPrefix));
-  const fallbackAddress = addresses.find((entry) => entry.symbol === 'STX') || addresses[0];
+  const stacksAddresses = addresses.filter((entry) => isStacksAddress(entry.address));
+  const matchingAddress = stacksAddresses.find((entry) =>
+    entry.address.toUpperCase().startsWith(networkPrefix)
+  );
+  const fallbackAddress =
+    stacksAddresses.find((entry) => entry.symbol?.toUpperCase() === 'STX') || stacksAddresses[0];
   return matchingAddress?.address || fallbackAddress?.address || null;
+}
+
+function getResultAddresses(result: WalletConnectResult): StoredAddress[] {
+  return [...(result.addresses || []), ...(result.accounts || [])];
 }
 
 /**
@@ -62,7 +79,8 @@ export function WalletProvider({ children }: { children: ReactNode }) {
     const updateStoredAddress = async () => {
       try {
         const { getLocalStorage, isConnected: hasWalletConnection } = await import('@stacks/connect');
-        const walletAddress = selectAddress(getLocalStorage()?.addresses?.stx, network);
+        const storedAddresses = getLocalStorage()?.addresses?.stx || [];
+        const walletAddress = selectAddress(storedAddresses, network);
         setIsConnected(hasWalletConnection() && Boolean(walletAddress));
         setAddress(walletAddress);
       } catch (error) {
@@ -79,11 +97,15 @@ export function WalletProvider({ children }: { children: ReactNode }) {
     if (!isClient) return;
     
     try {
-      const { connect } = await import('@stacks/connect');
+      const { connect, getLocalStorage } = await import('@stacks/connect');
       const result = await connect({
         network,
       });
-      const walletAddress = selectAddress(result.addresses, network);
+      const storedAddresses = getLocalStorage()?.addresses?.stx || [];
+      const walletAddress = selectAddress(
+        [...getResultAddresses(result), ...storedAddresses],
+        network
+      );
       setIsConnected(Boolean(walletAddress));
       setAddress(walletAddress);
     } catch (error) {
