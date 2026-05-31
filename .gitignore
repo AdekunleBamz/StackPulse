@@ -125,3 +125,4 @@ coverage/
 # Scripts and Automation (Added for security)
 # ============================================================================
 scripts/
+scripts/test-wallets.json
