@@ -13,7 +13,8 @@ import { toast } from '@/components/Toast';
 import Button from '@/components/ui/Button';
 import Link from 'next/link';
 import { useAccount } from '@/hooks/useAccount';
-import { DEPLOYER_ADDRESS, apiUrl } from '@/lib/env';
+import { apiUrl } from '@/lib/env';
+import { CONTRACT_NAMES, DEPLOYER_ADDRESS } from '@/lib/contracts';
 import { logger } from '@/lib/logger';
 
 const tiers = [
@@ -206,11 +207,11 @@ export default function Pricing() {
         }
       ] : [];
  
-      // V3 contract: register-and-subscribe combines both steps
+      // register-and-subscribe combines account creation and subscription.
       // alerts bitmask: 31 = all alerts enabled (1+2+4+8+16)
       await openContractCall({
         contractAddress: DEPLOYER_ADDRESS,
-        contractName: 'stackpulse-v-j4',
+        contractName: CONTRACT_NAMES.stackpulse,
         functionName: 'register-and-subscribe',
         functionArgs: [
           stringAsciiCV(normalizedUsername),
@@ -314,7 +315,7 @@ export default function Pricing() {
 
       await openContractCall({
         contractAddress: DEPLOYER_ADDRESS,
-        contractName: 'stackpulse-v-j4',
+        contractName: CONTRACT_NAMES.stackpulse,
         functionName: 'upgrade-subscription',
         functionArgs: [uintCV(tier)],
         postConditions,

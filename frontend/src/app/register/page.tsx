@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation';
 import { toast } from '@/components/Toast';
 import TextField from '@/components/ui/TextField';
 import { Breadcrumbs } from '@/components';
-import { DEPLOYER_ADDRESS } from '@/lib/env';
+import { CONTRACT_NAMES, DEPLOYER_ADDRESS } from '@/lib/contracts';
 import logger from '@/lib/logger';
 
 export default function RegisterPage() {
@@ -50,10 +50,10 @@ export default function RegisterPage() {
       const { stringAsciiCV, uintCV } = await import('@stacks/transactions');
  
       setLoadingStep('Signature required...');
-      // V3 contract: register-and-subscribe in one step (tier 0 = free)
+      // register-and-subscribe combines account creation with the free tier.
       await openContractCall({
         contractAddress: DEPLOYER_ADDRESS,
-        contractName: 'stackpulse-v-j4',
+        contractName: CONTRACT_NAMES.stackpulse,
         functionName: 'register-and-subscribe',
         functionArgs: [
           stringAsciiCV(username),

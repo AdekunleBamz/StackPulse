@@ -1,8 +1,9 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useWallet } from '@/context/WalletContext';
 import { toast } from '@/components/Toast';
+import { CONTRACT_NAMES, DEPLOYER_ADDRESS } from '@/lib/contracts';
 
-const DEPLOYER_ADDRESS = process.env.NEXT_PUBLIC_DEPLOYER_ADDRESS ?? '';
+const STACKS_API_URL = 'https://api.mainnet.hiro.so';
 
 /**
  * On-chain account data for a registered StackPulse user.
@@ -37,7 +38,7 @@ export function useAccount() {
       const { principalCV, cvToHex, hexToCV, cvToValue } = await import('@stacks/transactions');
       
       const response = await fetch(
-        `https://api.mainnet.hiro.so/v2/contracts/call-read/${DEPLOYER_ADDRESS}/stackpulse-v-j3/get-user`,
+        `${STACKS_API_URL}/v2/contracts/call-read/${DEPLOYER_ADDRESS}/${CONTRACT_NAMES.stackpulse}/get-user`,
         {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
