@@ -15,6 +15,7 @@ interface Notification {
   priority: 'low' | 'normal' | 'high' | 'urgent';
   timestamp: number;
   read: boolean;
+  metadata?: Record<string, any>;
 }
 
 export interface NotificationPayload {
