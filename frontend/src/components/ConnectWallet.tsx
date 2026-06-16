@@ -84,6 +84,7 @@ export default function ConnectWallet() {
         <div
           id={dropdownId}
           role="menu"
+          aria-label="Wallet account menu"
           className="absolute right-0 mt-3 w-64 bg-gray-900/95 backdrop-blur-xl border border-white/10 rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.5)] z-50 animate-in fade-in zoom-in-95 duration-200 origin-top-right"
         >
           <div className="p-3 border-b border-gray-700">
