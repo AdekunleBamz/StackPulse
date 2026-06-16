@@ -52,6 +52,7 @@ const HISTORY_STATS = {
 };
 
 export default function HistoryPage() {
+  const explorerChain = (process.env.NEXT_PUBLIC_STACKS_NETWORK || 'mainnet').toLowerCase();
   const [timeRange, setTimeRange] = useState('7d');
   const [renderNow] = useState(() => Date.now());
   const [currentHour] = useState(() => new Date().getHours());
@@ -163,7 +164,7 @@ export default function HistoryPage() {
                         </p>
                       </div>
                     <a
-                      href={`https://explorer.hiro.so/txid/${trigger.txHash}?chain=mainnet`}
+                      href={`https://explorer.hiro.so/txid/${trigger.txHash}?chain=${explorerChain}`}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="flex items-center gap-1 text-purple-400 hover:text-purple-300 text-sm rounded-md focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400/90"
