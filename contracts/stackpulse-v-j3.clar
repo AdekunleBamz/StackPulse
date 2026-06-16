@@ -29,6 +29,7 @@
 (define-constant ERR-SUBSCRIPTION-EXPIRED (err u108))
 (define-constant ERR-SAME-TIER (err u109))
 (define-constant ERR-INVALID-HOOK-TYPE (err u110))
+(define-constant ERR-CONTRACT-PAUSED (err u111))
 
 ;; Subscription duration: ~30 days in blocks (assuming 10 min blocks)
 (define-constant BLOCKS-PER-MONTH u4320)
@@ -44,6 +45,10 @@
 
 ;; Maximum alerts bitmask (all 5 alert types)
 (define-constant MAX-ALERTS-BITMASK u31)
+
+;; V4: Emergency pause state
+(define-data-var contract-paused bool false)
+(define-data-var pause-reason (string-ascii 256) "")
 
 ;; ============================================
 ;; DATA STORAGE
@@ -442,4 +447,49 @@
     
     (ok true)
   )
+)
+
+;; V4: Emergency pause - stop all user write operations
+(define-public (pause-contract (reason (string-ascii 256)))
+  (begin
+    (asserts! (is-eq tx-sender CONTRACT-OWNER) ERR-NOT-AUTHORIZED)
+    (var-set contract-paused true)
+    (var-set pause-reason reason)
+    
+    (print {
+      event: "contract-paused",
+      version: "v3.1",
+      reason: reason,
+      block: block-height
+    })
+    
+    (ok true)
+  )
+)
+
+;; V4: Resume contract operations
+(define-public (unpause-contract)
+  (begin
+    (asserts! (is-eq tx-sender CONTRACT-OWNER) ERR-NOT-AUTHORIZED)
+    (var-set contract-paused false)
+    (var-set pause-reason "")
+    
+    (print {
+      event: "contract-unpaused",
+      version: "v3.1",
+      block: block-height
+    })
+    
+    (ok true)
+  )
+)
+
+;; V4: Check if contract is paused
+(define-read-only (is-paused)
+  (var-get contract-paused)
+)
+
+;; V4: Get pause reason
+(define-read-only (get-pause-reason)
+  (var-get pause-reason)
 )
