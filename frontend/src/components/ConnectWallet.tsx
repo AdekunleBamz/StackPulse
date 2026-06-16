@@ -118,6 +118,7 @@ export default function ConnectWallet() {
                 role="menuitemradio"
                 aria-checked={network === 'mainnet'}
                 aria-label="Switch to Mainnet"
+                title="Switch network to Mainnet"
                 className={`flex-1 px-3 py-2 rounded-xl text-xs font-bold transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-purple-500/50 ${
                   network === 'mainnet'
                     ? 'bg-purple-600 text-white shadow-lg shadow-purple-500/25'
