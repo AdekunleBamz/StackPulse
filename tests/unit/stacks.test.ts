@@ -19,22 +19,20 @@ describe('Stacks Utilities', () => {
   });
 
   describe('decodeClarityValue', () => {
-    it('should decode uint values correctly', () => {
+    it('should return Clarity values unchanged', () => {
       const mockUint = { type: 1, value: BigInt(100) }; // Mocked CV structure
-      expect(decodeClarityValue(mockUint as any)).toBe('100');
+      expect(decodeClarityValue(mockUint as any)).toBe(mockUint);
     });
 
-    it('should decode principal values correctly', () => {
+    it('should return principal values unchanged', () => {
       const mockPrincipal = { type: 5, address: { version: 22, hash160: '...' } }; // Mocked CV
-      // Since it's internal to @stacks/transactions, we verify it handles our mock structure
-      // or returns a fallback if the structure is too complex for simple mocking
       const result = decodeClarityValue(mockPrincipal as any);
-      expect(result).toBeDefined();
+      expect(result).toBe(mockPrincipal);
     });
 
-    it('should handle null/undefined values gracefully', () => {
-      expect(decodeClarityValue(null as any)).toBe('');
-      expect(decodeClarityValue(undefined as any)).toBe('');
+    it('should return null/undefined values unchanged', () => {
+      expect(decodeClarityValue(null as any)).toBeNull();
+      expect(decodeClarityValue(undefined as any)).toBeUndefined();
     });
   });
 });

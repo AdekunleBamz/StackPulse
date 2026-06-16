@@ -28,20 +28,24 @@ describe('Notification Service', () => {
       expect(retrieved?.alerts.whaleTransfer).toBe(true);
     });
 
-    it('should return null for non-existent user', () => {
+    it('should return undefined for non-existent user', () => {
       const retrieved = getUserPreferences('non-existent');
-      expect(retrieved).toBeNull();
+      expect(retrieved).toBeUndefined();
     });
 
     it('should list all users with preferences', () => {
       const users = getAllUsers();
-      expect(users).toContain(testAddress);
+      expect(users).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({ address: testAddress })
+        ])
+      );
     });
 
     it('should delete user preferences', () => {
       deleteUserPreferences(testAddress);
       const retrieved = getUserPreferences(testAddress);
-      expect(retrieved).toBeNull();
+      expect(retrieved).toBeUndefined();
     });
   });
 

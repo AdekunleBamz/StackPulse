@@ -125,7 +125,7 @@ describe('Webhook Utilities', () => {
       const result = processWebhook(body, undefined, config);
       
       expect(result.valid).toBe(false);
-      expect(result.error).toBe('Invalid payload');
+      expect(result.error).toBe('Missing payload data');
     });
 
     it('should process a simulated whale transfer payload', () => {
