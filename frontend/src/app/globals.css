@@ -94,6 +94,11 @@ body {
   accent-color: #a855f7;
 }
 
+a {
+  text-underline-offset: 0.18em;
+  text-decoration-thickness: from-font;
+}
+
 :where(a, button, input, textarea, select, summary):focus-visible {
   outline: 2px solid rgba(96, 165, 250, 0.9);
   outline-offset: 2px;
