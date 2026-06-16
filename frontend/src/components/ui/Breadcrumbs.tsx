@@ -30,7 +30,7 @@ export default function Breadcrumbs({ className }: BreadcrumbsProps) {
         <li>
             <Link
               href="/"
-              className="flex items-center text-gray-400 hover:text-white transition-all duration-300 hover:scale-110 active:scale-90"
+              className="flex items-center text-gray-400 hover:text-white transition-all duration-300 hover:scale-110 active:scale-90 rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-500/60"
             >
               <Home className="w-3.5 h-3.5 stroke-[2.5]" />
               <span className="sr-only">Home</span>
