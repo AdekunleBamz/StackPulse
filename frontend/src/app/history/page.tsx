@@ -67,6 +67,7 @@ export default function HistoryPage() {
             <div className="flex items-center gap-4">
               <Link
                 href="/dashboard"
+                prefetch={true}
                 className="p-2 text-gray-400 hover:text-white hover:bg-gray-800 rounded-lg transition-all"
               >
                 <ArrowLeft className="w-5 h-5" />
