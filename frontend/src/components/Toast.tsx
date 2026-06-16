@@ -142,18 +142,18 @@ function Toast({ id, type, title, message, duration = 5000, onClose }: ToastProp
       role={type === 'error' || type === 'warning' ? 'alert' : 'status'}
       aria-live={type === 'error' || type === 'warning' || type === 'loading' ? 'assertive' : 'polite'}
       aria-atomic="true"
-      className={`relative flex items-start gap-3.5 p-4.5 rounded-2xl border backdrop-blur-xl shadow-[0_20px_40px_rgba(0,0,0,0.4)] transition-all duration-500 overflow-hidden ${
+      className={`relative flex items-start gap-3.5 p-4.5 rounded-2xl border backdrop-blur-xl shadow-[0_20px_40px_rgba(0,0,0,0.4)] transition-all duration-400 overflow-hidden ${
         styles.bg
       } ${styles.border} ${
         isLeaving 
-          ? 'opacity-0 translate-x-12 scale-90 blur-md pointer-events-none' 
+          ? 'opacity-0 translate-x-16 scale-95 blur-lg pointer-events-none' 
           : 'opacity-100 translate-x-0 scale-100 animate-in fade-in slide-in-from-right-12 duration-700 ease-[cubic-bezier(0.16,1,0.3,1)]'
       }`}
       onMouseEnter={pause}
       onMouseLeave={resume}
       style={{
         transitionProperty: 'all',
-        transitionTimingFunction: 'cubic-bezier(0.4, 0, 0.2, 1)'
+        transitionTimingFunction: 'cubic-bezier(0.23, 1, 0.32, 1)'
       }}
     >
       <Icon className={`w-5 h-5 mt-0.5 ${styles.iconColor}`} strokeWidth={2.5} />
