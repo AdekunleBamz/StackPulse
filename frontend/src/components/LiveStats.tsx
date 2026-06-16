@@ -123,6 +123,7 @@ const LiveStats = memo(() => {
       className="py-20 sm:py-24 px-4 border-y border-white/[0.02] bg-gray-950/40 relative overflow-hidden"
       role="region"
       aria-label="Blockchain Event Statistics"
+      title="Blockchain event statistics"
     >
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(16,185,129,0.03),transparent_70%)] pointer-events-none" />
       <div className="max-w-7xl mx-auto relative z-10">
