@@ -294,9 +294,17 @@ export default function BadgeShowcase({ userBadges = [] }: BadgeShowcaseProps) {
       </div>
 
       {filteredBadges.length === 0 && (
-        <div className="text-center py-12 text-gray-500">
-          <Lock className="w-12 h-12 mx-auto mb-2 opacity-50" />
-          <p>No badges in this category yet</p>
+        <div className="flex flex-col items-center justify-center py-16 px-4 bg-gray-800/10 border border-dashed border-gray-700/50 rounded-2xl animate-in fade-in zoom-in-95 duration-500">
+          <div className="relative mb-4">
+            <Lock className="w-12 h-12 text-gray-700 opacity-50" />
+            <div className="absolute inset-0 bg-purple-500/5 blur-xl rounded-full" />
+          </div>
+          <h3 className="text-white font-bold text-sm mb-1">No {filter} badges</h3>
+          <p className="text-gray-500 text-xs text-center max-w-[200px] leading-relaxed">
+            {filter === 'earned' 
+              ? "Start participating in the ecosystem to unlock your first badge!" 
+              : "You've earned all available badges in this category. Impressive!"}
+          </p>
         </div>
       )}
 
