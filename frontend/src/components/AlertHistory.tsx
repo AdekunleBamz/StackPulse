@@ -340,36 +340,56 @@ export default function AlertHistory({ userAddress }: AlertHistoryProps) {
       </div>
 
       {/* Pagination */}
-      {totalPages > 1 && (
-        <div className="flex items-center justify-between px-6 py-4 border-t border-gray-800">
-          <p className="text-gray-400 text-sm">
-            Showing {Math.min((page - 1) * pageSize + 1, totalItems)}–
-            {Math.min(page * pageSize, totalItems)} of {totalItems}
+      <div className="flex items-center justify-between px-6 py-4 border-t border-gray-800 bg-gray-900/30">
+        <div className="flex items-center gap-4">
+          <p className="text-gray-400 text-xs font-medium">
+            {loading ? (
+              <span className="animate-pulse">Loading history...</span>
+            ) : (
+              <>
+                Showing <span className="text-white font-bold">{Math.min((page - 1) * pageSize + 1, totalItems)}</span>–
+                <span className="text-white font-bold">{Math.min(page * pageSize, totalItems)}</span> of <span className="text-white font-bold">{totalItems}</span>
+              </>
+            )}
           </p>
-          <div className="flex items-center gap-2">
-            <button
-              type="button"
-              onClick={() => setPage(p => Math.max(1, p - 1))}
-              disabled={page === 1}
-              className="p-2 bg-gray-800 text-gray-400 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:text-white transition-all focus:outline-none focus:ring-2 focus:ring-purple-500/50"
-              aria-label="Go to previous page"
-              title="Previous page"
-            >
-              <ChevronLeft className="w-5 h-5" aria-hidden="true" />
-            </button>
-            <button
-              type="button"
-              onClick={() => setPage(p => Math.min(totalPages, p + 1))}
-              disabled={page === totalPages}
-              className="p-2 bg-gray-800 text-gray-400 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:text-white transition-all focus:outline-none focus:ring-2 focus:ring-purple-500/50"
-              aria-label="Go to next page"
-              title="Next page"
-            >
-              <ChevronRight className="w-5 h-5" aria-hidden="true" />
-            </button>
-          </div>
+          {!loading && totalPages > 1 && (
+            <div className="hidden sm:flex items-center gap-1 ml-2">
+              <span className="text-[10px] text-gray-500 uppercase font-black tracking-widest">Page</span>
+              <span className="text-[10px] text-purple-400 font-black">{page}</span>
+              <span className="text-[10px] text-gray-500 uppercase font-black tracking-widest">of</span>
+              <span className="text-[10px] text-gray-300 font-black">{totalPages}</span>
+            </div>
+          )}
         </div>
-      )}
+        
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={() => setPage(p => Math.max(1, p - 1))}
+            disabled={page === 1 || loading}
+            className="p-2 bg-gray-800 text-gray-400 rounded-lg disabled:opacity-30 disabled:cursor-not-allowed hover:text-white transition-all focus:outline-none focus:ring-2 focus:ring-purple-500/50 active:scale-90"
+            aria-label="Go to previous page"
+            title="Previous page"
+          >
+            <ChevronLeft className="w-5 h-5" aria-hidden="true" />
+          </button>
+          
+          <div className="flex sm:hidden text-xs font-bold text-gray-500">
+            {page} / {totalPages}
+          </div>
+
+          <button
+            type="button"
+            onClick={() => setPage(p => Math.min(totalPages, p + 1))}
+            disabled={page === totalPages || loading}
+            className="p-2 bg-gray-800 text-gray-400 rounded-lg disabled:opacity-30 disabled:cursor-not-allowed hover:text-white transition-all focus:outline-none focus:ring-2 focus:ring-purple-500/50 active:scale-90"
+            aria-label="Go to next page"
+            title="Next page"
+          >
+            <ChevronRight className="w-5 h-5" aria-hidden="true" />
+          </button>
+        </div>
+      </div>
     </div>
   );
 }
