@@ -14,7 +14,7 @@ const footerLinks = {
     { label: 'Documentation', href: 'https://docs.hiro.so/stacks/chainhook' },
     { label: 'Stacks Network', href: 'https://stacks.co' },
     { label: 'Hiro Explorer', href: 'https://explorer.hiro.so' },
-    { label: 'API Reference', href: '#' },
+    { label: 'API Reference', href: 'https://github.com/AdekunleBamz/StackPulse/blob/main/docs/API.md' },
   ],
   company: [
     { label: 'About', href: '#' },
