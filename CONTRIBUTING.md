@@ -68,7 +68,7 @@ git commit -S -m "docs: refresh workspace notes"
 ```bash
 # Contracts
 npm run clarinet:check
-npm test
+npm run clarinet:test
 
 # Server
 npm --prefix server run build
