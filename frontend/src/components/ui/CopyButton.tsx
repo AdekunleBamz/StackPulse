@@ -48,7 +48,7 @@ export default function CopyButton({
       type="button"
       onClick={onCopy}
       className={cn(
-        'relative inline-flex items-center justify-center rounded-lg border border-white/5 bg-white/5 text-gray-400 hover:text-white hover:bg-white/10 active:scale-90 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-purple-500/50',
+        'relative inline-flex items-center justify-center rounded-lg border border-white/5 bg-white/5 text-gray-400 hover:text-white hover:bg-white/10 active:scale-90 transition-all duration-300',
         'h-9 w-9 shadow-sm touch-manipulation',
         'focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-purple-500',
         copied ? 'scale-110 border-green-500/50 bg-green-500/5' : 'active:scale-95',
