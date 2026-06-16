@@ -77,7 +77,7 @@ export default function Footer() {
           </div>
 
           {/* Links Columns */}
-          <nav aria-label="Product Links">
+          <nav aria-label="Product Links" title="Product links">
             <h3 className="text-white/40 font-black text-[11px] uppercase tracking-[0.25em] mb-7">Product</h3>
             <ul className="space-y-4">
               {footerLinks.product.map((link) => (
