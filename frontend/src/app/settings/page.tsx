@@ -95,7 +95,7 @@ const SettingsSection = ({
         <Icon className="w-5 h-5 text-purple-400" />
       </div>
       <div>
-        <h3 className="text-lg font-semibold text-white">{title}</h3>
+        <h2 className="text-lg font-semibold text-white">{title}</h2>
         <p className="text-gray-400 text-sm">{description}</p>
       </div>
     </div>
