@@ -5,7 +5,7 @@ TypeScript + Express backend for chainhook ingestion, alert persistence, metrics
 ## Commands
 
 ```bash
-npm install
+npm ci
 npm run dev
 npm run build
 npm run lint
