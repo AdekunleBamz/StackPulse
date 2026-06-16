@@ -260,6 +260,7 @@ export default function Header() {
                   className="mt-2 flex items-center justify-center h-14 rounded-2xl bg-white/5 border border-white/5 text-base font-bold text-gray-400 hover:bg-white/10 hover:text-white transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-purple-500/50 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-950 active:scale-[0.98] animate-slide-down animate-stagger-5 fill-mode-backwards"
                   onClick={() => setIsOpen(false)}
                   aria-label="Open Chainhook documentation in a new tab"
+                  title="Open Chainhook documentation"
                 >
                   View Documentation
                   <span className="sr-only">(opens in new tab)</span>
