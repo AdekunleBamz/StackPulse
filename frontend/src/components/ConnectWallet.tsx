@@ -98,7 +98,7 @@ export default function ConnectWallet() {
               href={explorerUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="mt-2 inline-flex text-xs text-purple-300 hover:text-purple-200 transition-colors focus:outline-none focus:underline"
+              className="mt-2 inline-flex text-xs text-purple-300 hover:text-purple-200 transition-colors focus-visible:outline-none focus-visible:underline rounded"
               role="menuitem"
               aria-label={`View address ${address} on Hiro Explorer (opens in new tab)`}
             >
