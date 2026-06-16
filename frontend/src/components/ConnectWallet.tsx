@@ -151,7 +151,7 @@ export default function ConnectWallet() {
               disconnect();
               closeDropdown();
             }}
-            className="w-full flex items-center gap-2 px-4 py-4 text-red-400 hover:bg-red-500/10 hover:text-red-300 transition-all duration-200 rounded-b-2xl font-semibold border-t border-white/5"
+            className="w-full flex items-center gap-2 px-4 py-4 text-red-400 hover:bg-red-500/10 hover:text-red-300 transition-all duration-200 rounded-b-2xl font-semibold border-t border-white/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500/60"
             role="menuitem"
             title="Disconnect wallet"
           >
