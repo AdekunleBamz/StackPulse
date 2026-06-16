@@ -17,7 +17,7 @@ Shared constants, types, and formatting helpers used by the frontend and server.
 ## Common commands
 
 ```bash
-npm install
+npm ci
 npm run build
 npm test
 npm run test:watch
