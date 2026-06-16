@@ -128,7 +128,7 @@ export default function Home() {
       <Hero />
       
       {/* Features Section */}
-      <section id="features" className="scroll-mt-32 py-32">
+      <section id="features" className="scroll-mt-32 py-32" aria-label="Features section">
         <Features />
       </section>
       
