@@ -170,7 +170,7 @@ function Toast({ id, type, title, message, duration = 5000, onClose }: ToastProp
         aria-label="Dismiss notification"
         title="Dismiss notification"
       >
-        <X className="w-4 h-4" />
+        <X className="w-4 h-4" aria-hidden="true" />
       </button>
 
       {/* Progress bar */}
