@@ -34,7 +34,7 @@ npm --prefix frontend run lint
 npm install
 npm --prefix server install
 npm --prefix frontend install
-npm --prefix shared install
+npm --prefix shared ci
 ```
 
 ## Day-to-day workflow
