@@ -123,27 +123,27 @@ Hero.displayName = 'Hero';
 
 export default function Home() {
   return (
-    <main id="main" className="min-h-screen" tabIndex={-1} aria-labelledby="hero-title">
+    <div className="min-h-screen">
       <Header />
-      <Hero />
-      
-      {/* Features Section */}
-      <section id="features" className="scroll-mt-32 py-32">
-        <Features />
-      </section>
-      
-      {/* Live Stats Section */}
-      <section id="stats" className="scroll-mt-32 py-32">
-        <LiveStats />
-      </section>
-      
-      {/* Pricing Section */}
-      <section id="pricing" className="scroll-mt-32 py-32">
-        <Pricing />
-      </section>
-      
-      {/* Footer */}
+      <main id="main" tabIndex={-1} aria-labelledby="hero-title">
+        <Hero />
+        
+        {/* Features Section */}
+        <section id="features" className="scroll-mt-32 py-32">
+          <Features />
+        </section>
+        
+        {/* Live Stats Section */}
+        <section id="stats" className="scroll-mt-32 py-32">
+          <LiveStats />
+        </section>
+        
+        {/* Pricing Section */}
+        <section id="pricing" className="scroll-mt-32 py-32">
+          <Pricing />
+        </section>
+      </main>
       <Footer />
-    </main>
+    </div>
   );
 }
