@@ -104,6 +104,7 @@ export default function Footer() {
                     className="text-gray-500 hover:text-purple-400 transition-all duration-200 text-sm font-medium hover:translate-x-1 flex items-center gap-1 group/flink rounded-md outline-none focus-visible:ring-2 focus-visible:ring-purple-500/50 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-950"
                     target={link.href.startsWith('http') ? '_blank' : undefined}
                     rel={link.href.startsWith('http') ? 'noopener noreferrer' : undefined}
+                    title={link.label}
                   >
                     {link.label}
                     {link.href.startsWith('http') && (
