@@ -72,7 +72,7 @@ npm test
 
 # Server
 npm --prefix server run build
-npm --prefix server test
+npm --prefix server run test
 
 # Frontend
 npm --prefix frontend run lint
