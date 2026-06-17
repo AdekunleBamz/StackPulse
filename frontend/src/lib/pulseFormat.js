@@ -106,3 +106,14 @@ export const formatPulseError = (e) => e && e.message ? e.message : "Unknown err
 export const formatPulseVersion = (v) => "v" + v;
 
 export const formatPulseCategory = (c) => c.split("-").map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(" ");
+
+export const formatPulseTimeAgo = (ts) => {
+	const diff = Date.now() - new Date(ts).getTime();
+	const seconds = Math.floor(diff / 1000);
+	if (seconds < 60) return `${seconds}s ago`;
+	const minutes = Math.floor(seconds / 60);
+	if (minutes < 60) return `${minutes}m ago`;
+	const hours = Math.floor(minutes / 60);
+	if (hours < 24) return `${hours}h ago`;
+	return new Date(ts).toLocaleDateString();
+};
