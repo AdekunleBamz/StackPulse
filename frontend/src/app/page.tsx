@@ -97,7 +97,7 @@ const Hero = memo(() => (
       </div>
       
       {/* Stats Preview */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6 max-w-4xl mx-auto" role="list" aria-label="Monitoring highlights">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6 max-w-4xl mx-auto" role="list" aria-label="Monitoring highlights" title="Key monitoring highlights">
         {[
           { label: 'Whale Transfers', value: '1,234+' },
           { label: 'NFT Mints', value: '5,678+' },
