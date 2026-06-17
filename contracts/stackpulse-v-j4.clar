@@ -115,6 +115,17 @@
   }
 )
 
+;; Get owner of the contract
+(define-read-only (get-owner)
+  CONTRACT-OWNER
+)
+
+;; Get the tier of a specific user
+(define-read-only (get-user-tier (who principal))
+  (default-to u0 (get tier (map-get? users who)))
+)
+
+
 ;; V3: Check if subscription is active
 (define-read-only (is-subscription-active (who principal))
   (match (map-get? users who)
