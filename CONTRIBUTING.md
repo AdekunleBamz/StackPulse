@@ -31,7 +31,7 @@ Before submitting a pull request, ensure that all tests pass:
 # Frontend tests
 npm --prefix frontend run lint
 
-npm install
+npm ci
 npm --prefix server install
 npm --prefix frontend install
 npm --prefix shared install
