@@ -291,6 +291,107 @@
   )
 )
 
+;; V4: Renew existing subscription (same tier)
+;; Allows users to extend their subscription without changing tier
+(define-public (renew-subscription)
+  (let
+    (
+      (caller tx-sender)
+      (user-data (unwrap! (map-get? users caller) ERR-NOT-REGISTERED))
+      (current-tier (get tier user-data))
+      (current-ends (get subscription-ends user-data))
+      (price (get-tier-price current-tier))
+      (new-ends (if (> current-ends block-height)
+                    (+ current-ends BLOCKS-PER-MONTH)
+                    (+ block-height BLOCKS-PER-MONTH)))
+    )
+    ;; Cannot renew free tier
+    (asserts! (> current-tier u0) ERR-INVALID-TIER)
+    
+    ;; Transfer payment
+    (try! (stx-transfer? price caller CONTRACT-OWNER))
+    
+    ;; Extend subscription
+    (map-set users caller (merge user-data {
+      subscription-ends: new-ends,
+      updated-at: block-height
+    }))
+    
+    ;; Update revenue
+    (var-set total-revenue (+ (var-get total-revenue) price))
+    
+    (print {
+      event: "subscription-renewed",
+      version: "v3.1",
+      user: caller,
+      tier: current-tier,
+      price: price,
+      old-ends-at: current-ends,
+      new-ends-at: new-ends,
+      block: block-height
+    })
+    
+    (ok new-ends)
+  )
+)
+
+;; V4: Cancel subscription (revert to free tier)
+;; User can downgrade to free tier at any time
+(define-public (cancel-subscription)
+  (let
+    (
+      (caller tx-sender)
+      (user-data (unwrap! (map-get? users caller) ERR-NOT-REGISTERED))
+      (current-tier (get tier user-data))
+    )
+    ;; Cannot cancel if already on free tier
+    (asserts! (> current-tier u0) ERR-SAME-TIER)
+    
+    ;; Downgrade to free tier
+    (map-set users caller (merge user-data {
+      tier: u0,
+      subscription-ends: u0,
+      updated-at: block-height
+    }))
+    
+    (print {
+      event: "subscription-cancelled",
+      version: "v3.1",
+      user: caller,
+      old-tier: current-tier,
+      new-tier: u0,
+      block: block-height
+    })
+    
+    (ok true)
+  )
+)
+
+;; V4: Get subscription details
+(define-read-only (get-subscription-details (who principal))
+  (match (map-get? users who)
+    user-data
+      {
+        user-id: (get user-id user-data),
+        username: (get username user-data),
+        tier: (get tier user-data),
+        tier-name: (if (is-eq (get tier user-data) u0) "Free"
+                     (if (is-eq (get tier user-data) u1) "Basic"
+                       (if (is-eq (get tier user-data) u2) "Pro" "Premium"))),
+        subscription-ends: (get subscription-ends user-data),
+        alerts-enabled: (get alerts-enabled user-data),
+        created-at: (get created-at user-data),
+        updated-at: (get updated-at user-data),
+        total-triggers: (get total-triggers user-data),
+        days-remaining: (if (or (is-eq (get tier user-data) u0)
+                                 (<= (get subscription-ends user-data) block-height))
+                            u0
+                            (/ (- (get subscription-ends user-data) block-height) u144))
+      }
+    none
+  )
+)
+
 ;; Set alert preferences only
 (define-public (set-alerts (alerts uint))
   (let
