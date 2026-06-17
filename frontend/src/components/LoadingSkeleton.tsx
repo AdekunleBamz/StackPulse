@@ -52,22 +52,27 @@ export default function LoadingSkeleton({
 // Predefined skeleton layouts for common use cases
 export function AlertCardSkeleton() {
   return (
-    <div className="bg-gray-950/40 backdrop-blur-md rounded-2xl p-5 border border-white/5 shadow-xl shadow-black/20">
-      <div className="flex items-center justify-between mb-4">
-        <LoadingSkeleton width={140} height={24} />
-        <LoadingSkeleton width={64} height={24} variant="circular" />
+    <div className="bg-gray-800 rounded-xl p-4 border border-gray-700 flex items-center justify-between mb-3">
+      <div className="flex items-center gap-4 flex-1">
+        <LoadingSkeleton width={40} height={40} variant="rectangular" className="rounded-lg" />
+        <div className="space-y-2 flex-1">
+          <LoadingSkeleton width="40%" height={18} />
+          <LoadingSkeleton width="60%" height={14} />
+        </div>
       </div>
-      <LoadingSkeleton height={18} className="mb-3" />
-      <LoadingSkeleton width="70%" height={16} />
+      <div className="flex items-center gap-3">
+        <LoadingSkeleton width={40} height={24} variant="text" />
+        <LoadingSkeleton width={24} height={24} variant="circular" />
+      </div>
     </div>
   );
 }
 
 export function StatsCardSkeleton() {
   return (
-    <div className="bg-gray-950/40 backdrop-blur-md border border-white/5 rounded-2xl p-6 shadow-xl shadow-black/20">
-      <LoadingSkeleton width={110} height={14} className="mb-3 opacity-60" />
-      <LoadingSkeleton width={90} height={40} />
+    <div className="bg-gray-900/50 border border-gray-800 rounded-xl p-4">
+      <LoadingSkeleton width={60} height={28} className="mb-1" />
+      <LoadingSkeleton width={100} height={16} className="opacity-60" />
     </div>
   );
 }
