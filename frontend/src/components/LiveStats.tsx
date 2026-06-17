@@ -143,7 +143,7 @@ const LiveStats = memo(() => {
         </div>
         <div className="mb-10 flex items-center justify-center gap-2">
           {lastUpdated && (
-            <span className="hidden sm:inline text-[10px] text-gray-500 font-medium" aria-live="polite">
+            <span className="hidden sm:inline text-[10px] text-gray-500 font-medium" aria-live="polite" title="Latest refresh time">
               • UPDATED {lastUpdated.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
             </span>
           )}
