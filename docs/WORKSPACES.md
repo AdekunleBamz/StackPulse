@@ -23,7 +23,7 @@ StackPulse is organized as a small monorepo. Each top-level package owns a diffe
 npm ci
 npm --prefix server install
 npm --prefix frontend install
-npm --prefix shared install
+npm --prefix shared ci
 
 # Contract checks
 npm run clarinet:check
