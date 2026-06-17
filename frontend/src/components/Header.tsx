@@ -214,7 +214,7 @@ export default function Header() {
               aria-modal="true"
               aria-label="Mobile navigation menu"
             >
-              <nav className="px-4 py-6 space-y-2" aria-label="Mobile Navigation">
+              <nav className="px-4 py-6 space-y-2" aria-label="Mobile Navigation" title="Mobile navigation">
                 <Link
                   href="/#features"
                   className="block rounded-2xl px-5 py-3.5 text-base font-bold text-gray-400 hover:bg-white/10 hover:text-white transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-purple-500/50 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-950 active:scale-[0.98] aria-[current=page]:bg-white/10 aria-[current=page]:text-white animate-slide-down animate-stagger-1 fill-mode-backwards"
