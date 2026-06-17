@@ -70,7 +70,8 @@ export default function CopyButton({
           className={cn(
             "absolute inset-0 h-4 w-4 transition-all duration-300 transform",
             copied ? "opacity-0 scale-50 rotate-45" : "opacity-100 scale-100 rotate-0"
-          )} 
+          )}
+          aria-hidden="true"
         />
       </div>
       <span className="sr-only" aria-live="polite" aria-atomic="true">
