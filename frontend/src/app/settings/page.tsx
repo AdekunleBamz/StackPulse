@@ -329,8 +329,9 @@ export default function SettingsPage() {
               </div>
             </div>
             <div>
-              <label className="block text-sm text-gray-400 mb-1">Username</label>
+              <label htmlFor="settings-username" className="block text-sm text-gray-400 mb-1">Username</label>
               <input
+                id="settings-username"
                 type="text"
                 value={settings.profile.username}
                 onChange={(e) => updateProfile('username', e.target.value)}
@@ -339,8 +340,9 @@ export default function SettingsPage() {
               />
             </div>
             <div>
-              <label className="block text-sm text-gray-400 mb-1">Email</label>
+              <label htmlFor="settings-email" className="block text-sm text-gray-400 mb-1">Email</label>
               <input
+                id="settings-email"
                 type="email"
                 value={settings.profile.email}
                 onChange={(e) => updateProfile('email', e.target.value)}
