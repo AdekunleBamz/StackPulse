@@ -198,17 +198,17 @@ export default function Header() {
         {isOpen && (
           <>
             <div
-              className={`md:hidden fixed inset-0 z-40 bg-black/60 backdrop-blur-sm animate-fade-in duration-500 ease-out transition-all ${
-                scrolled ? 'top-[72px]' : 'top-[88px]'
-              }`}
+              className={`md:hidden fixed inset-0 z-40 bg-black/40 backdrop-blur-md transition-all duration-500 ease-out ${
+                isOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
+              } ${scrolled ? 'top-[72px]' : 'top-[88px]'}`}
               onClick={() => setIsOpen(false)}
               aria-hidden="true"
             />
             <div
               ref={mobileNavRef}
-              className={`md:hidden fixed left-0 right-0 z-50 bg-gray-950/90 backdrop-blur-2xl border-b border-white/10 shadow-2xl shadow-purple-500/10 animate-slide-down duration-700 ease-in-out transition-all ${
-                scrolled ? 'top-[72px]' : 'top-[88px]'
-              }`}
+              className={`md:hidden fixed left-0 right-0 z-50 bg-gray-950/95 backdrop-blur-2xl border-b border-white/10 shadow-2xl shadow-purple-500/10 transition-all duration-500 ease-[cubic-bezier(0.23,1,0.32,1)] ${
+                isOpen ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 -translate-y-4 scale-95 pointer-events-none'
+              } ${scrolled ? 'top-[72px]' : 'top-[88px]'}`}
               id={mobileNavId}
               role="dialog"
               aria-modal="true"
