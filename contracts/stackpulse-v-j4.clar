@@ -15,20 +15,44 @@
 ;; 5. User can upgrade tier with (upgrade-subscription)
 
 ;; ============================================
-;; CONSTANTS
+;; ERROR CODES
 ;; ============================================
-
-(define-constant CONTRACT-OWNER tx-sender)
+;; @desc Error returned when a user is already registered in the system
 (define-constant ERR-ALREADY-REGISTERED (err u101))
+;; @desc Error returned when a user attempt to operate on a non-existent profile
 (define-constant ERR-NOT-REGISTERED (err u102))
+;; @desc Error returned when an invalid subscription tier is specified
 (define-constant ERR-INVALID-TIER (err u103))
+;; @desc Error returned when a microSTX transfer operation fails
 (define-constant ERR-TRANSFER-FAILED (err u104))
+;; @desc Error returned when a caller lacks the required administrative or user permissions
 (define-constant ERR-NOT-AUTHORIZED (err u105))
+;; @desc Error returned when a username does not meet length requirements
 (define-constant ERR-INVALID-USERNAME (err u106))
+;; @desc Error returned when an invalid alert configuration bitmask is provided
 (define-constant ERR-INVALID-ALERTS (err u107))
+;; @desc Error returned when a subscription-required action is performed after expiration
 (define-constant ERR-SUBSCRIPTION-EXPIRED (err u108))
+;; @desc Error returned when an upgrade is attempted to the same tier
 (define-constant ERR-SAME-TIER (err u109))
+;; @desc Error returned when an invalid chainhook type is specified
 (define-constant ERR-INVALID-HOOK-TYPE (err u110))
+;; @desc Error returned when an invalid principal is provided (e.g. principal-0)
+(define-constant ERR-INVALID-PRINCIPAL (err u111))
+
+;; @desc Error returned when the contract is currently paused by admin
+(define-constant ERR-CONTRACT-PAUSED (err u120))
+
+;; Chainhook types
+(define-constant HOOK-WHALE-TRANSFER u1)
+(define-constant HOOK-CONTRACT-DEPLOY u2)
+(define-constant HOOK-NFT-MINT u3)
+(define-constant HOOK-TOKEN-LAUNCH u4)
+(define-constant HOOK-LARGE-SWAP u5)
+(define-constant HOOK-SUBSCRIPTION-CREATED u6)
+(define-constant HOOK-ALERT-TRIGGERED u7)
+(define-constant HOOK-FEE-COLLECTED u8)
+(define-constant HOOK-BADGE-EARNED u9)
 
 ;; Subscription duration: ~30 days in blocks (assuming 10 min blocks)
 (define-constant BLOCKS-PER-MONTH u4320)
@@ -42,8 +66,21 @@
 ;; Maximum valid tier
 (define-constant MAX-TIER u3)
 
-;; Maximum alerts bitmask (all 5 alert types)
-(define-constant MAX-ALERTS-BITMASK u31)
+;; User profile constraints
+(define-constant MIN-USERNAME-LEN u1)
+(define-constant MAX-USERNAME-LEN u32)
+(define-constant MAX-EMAIL-LEN u64)
+
+;; Alert bitmasks
+(define-constant ALERT-WHALE u1)
+(define-constant ALERT-NFT u2)
+(define-constant ALERT-TOKEN u4)
+(define-constant ALERT-SWAP u8)
+(define-constant ALERT-CONTRACT u16)
+(define-constant ALL-ALERTS-MASK u31)
+
+;; Maximum alerts bitmask (deprecated in favor of ALL-ALERTS-MASK)
+(define-constant MAX-ALERTS-BITMASK ALL-ALERTS-MASK)
 
 ;; ============================================
 ;; DATA STORAGE
@@ -72,18 +109,25 @@
 ;; READ-ONLY FUNCTIONS
 ;; ============================================
 
+;; @description Returns the current version of the contract.
 (define-read-only (get-version)
   (var-get contract-version)
 )
 
+;; @description Returns the profile data for a specific user.
+;; @param who The principal of the user to query.
 (define-read-only (get-user (who principal))
   (map-get? users who)
 )
 
+;; @description Checks if a principal is registered in the StackPulse system.
+;; @param who The principal to check.
 (define-read-only (is-registered (who principal))
   (is-some (map-get? users who))
 )
 
+;; @description Returns the subscription status and basic stats for a user.
+;; @param who The principal to query.
 (define-read-only (get-subscription-status (who principal))
   (match (map-get? users who)
     user-data 
@@ -99,6 +143,8 @@
   )
 )
 
+;; @description Returns the required microSTX payment for a given tier.
+;; @param tier The tier number (0-3).
 (define-read-only (get-tier-price (tier uint))
   (if (is-eq tier u0) PRICE-FREE
     (if (is-eq tier u1) PRICE-BASIC
@@ -107,6 +153,7 @@
           u0))))
 )
 
+;; @description Returns global registry statistics.
 (define-read-only (get-stats)
   {
     total-users: (var-get total-users),
@@ -116,6 +163,8 @@
 )
 
 ;; V3: Check if subscription is active
+;; @description Checks if a user has an active paid subscription or is on the free tier.
+;; @param who The principal to check.
 (define-read-only (is-subscription-active (who principal))
   (match (map-get? users who)
     user-data
@@ -132,7 +181,7 @@
 ;; V3: Validate username (non-empty, proper length)
 (define-private (is-valid-username (username (string-ascii 32)))
   (let ((username-len (len username)))
-    (and (>= username-len u1) (<= username-len u32))
+    (and (>= username-len MIN-USERNAME-LEN) (<= username-len MAX-USERNAME-LEN))
   )
 )
 
@@ -148,6 +197,11 @@
 ;; Register and subscribe in one transaction
 ;; tier: 0=Free, 1=Basic, 2=Pro, 3=Premium
 ;; alerts: bitmask (1=whale, 2=nft, 4=token, 8=swap, 16=contract) or just pass 31 for all
+;; @description Registers a new user and starts a subscription in a single transaction.
+;; @param username The desired username (1-32 chars).
+;; @param email The user's contact email.
+;; @param tier The subscription tier (0=Free, 1=Basic, 2=Pro, 3=Premium).
+;; @param alerts Bitmask of enabled alerts (1=Whale, 2=NFT, 4=Token, 8=Swap, 16=Contract).
 (define-public (register-and-subscribe 
     (username (string-ascii 32))
     (email (string-ascii 64))
@@ -213,6 +267,10 @@
 )
 
 ;; Update profile (username, email, alerts) - no payment
+;; @description Updates the user's profile information and alert preferences.
+;; @param username New username.
+;; @param email New email.
+;; @param alerts New alert bitmask.
 (define-public (update-profile 
     (username (string-ascii 32))
     (email (string-ascii 64))
@@ -247,6 +305,8 @@
 )
 
 ;; Upgrade or renew subscription
+;; @description Upgrades or renews an existing user subscription.
+;; @param new-tier The target subscription tier.
 (define-public (upgrade-subscription (new-tier uint))
   (let
     (
@@ -292,6 +352,8 @@
 )
 
 ;; Set alert preferences only
+;; @description Sets the user's alert preferences directly.
+;; @param alerts The new alert bitmask.
 (define-public (set-alerts (alerts uint))
   (let
     (
@@ -336,11 +398,17 @@
 ;; 8 = Fee Collected
 ;; 9 = Badge Earned
 
+;; @description Returns the total number of triggers recorded for a specific user and hook type.
+;; @param user The principal of the user.
+;; @param hook-type The type of chainhook (1-9).
 (define-read-only (get-trigger-count (user principal) (hook-type uint))
   (default-to u0 (map-get? chainhook-triggers { user: user, hook-type: hook-type }))
 )
 
 ;; Record a chainhook trigger (called by authorized services or contracts)
+;; @description Records a chainhook trigger event.
+;; @param user The target user principal.
+;; @param hook-type The type identifier for the triggered hook.
 (define-public (record-chainhook-trigger (user principal) (hook-type uint))
   (let
     (
@@ -352,7 +420,7 @@
                   (is-eq tx-sender user)) ERR-NOT-AUTHORIZED)
     
     ;; V3: Validate hook type (1-9)
-    (asserts! (and (>= hook-type u1) (<= hook-type u9)) ERR-INVALID-HOOK-TYPE)
+    (asserts! (and (>= hook-type HOOK-WHALE-TRANSFER) (<= hook-type HOOK-BADGE-EARNED)) ERR-INVALID-HOOK-TYPE)
     
     ;; Update trigger count
     (map-set chainhook-triggers { user: user, hook-type: hook-type } (+ current-count u1))
@@ -380,17 +448,19 @@
 )
 
 ;; Get all chainhook stats for a user
+;; @description Returns a consolidated report of all chainhook trigger stats for a user.
+;; @param user The principal of the user.
 (define-read-only (get-user-chainhook-stats (user principal))
   {
-    whale-alerts: (get-trigger-count user u1),
-    contract-deploys: (get-trigger-count user u2),
-    nft-mints: (get-trigger-count user u3),
-    token-launches: (get-trigger-count user u4),
-    large-swaps: (get-trigger-count user u5),
-    subscriptions: (get-trigger-count user u6),
-    alerts-triggered: (get-trigger-count user u7),
-    fees-collected: (get-trigger-count user u8),
-    badges-earned: (get-trigger-count user u9)
+    whale-alerts: (get-trigger-count user HOOK-WHALE-TRANSFER),
+    contract-deploys: (get-trigger-count user HOOK-CONTRACT-DEPLOY),
+    nft-mints: (get-trigger-count user HOOK-NFT-MINT),
+    token-launches: (get-trigger-count user HOOK-TOKEN-LAUNCH),
+    large-swaps: (get-trigger-count user HOOK-LARGE-SWAP),
+    subscriptions: (get-trigger-count user HOOK-SUBSCRIPTION-CREATED),
+    alerts-triggered: (get-trigger-count user HOOK-ALERT-TRIGGERED),
+    fees-collected: (get-trigger-count user HOOK-FEE-COLLECTED),
+    badges-earned: (get-trigger-count user HOOK-BADGE-EARNED)
   }
 )
 
@@ -399,6 +469,9 @@
 ;; ============================================
 
 ;; Withdraw collected fees (owner only)
+;; @description Allows the contract owner to withdraw collected fees.
+;; @param amount The amount in microSTX to withdraw.
+;; @param recipient The principal to receive the funds.
 (define-public (withdraw-fees (amount uint) (recipient principal))
   (begin
     (asserts! (is-eq tx-sender CONTRACT-OWNER) ERR-NOT-AUTHORIZED)
@@ -417,6 +490,10 @@
 )
 
 ;; Admin grant subscription (for promotions, etc.)
+;; @description Allows the contract owner to grant a subscription tier and duration to a user (e.g., for trials or rewards).
+;; @param user The target user principal.
+;; @param tier The subscription tier to grant.
+;; @param duration-blocks The length of the grant in blocks.
 (define-public (admin-grant-subscription (user principal) (tier uint) (duration-blocks uint))
   (let
     (
