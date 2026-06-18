@@ -108,6 +108,7 @@ const Hero = memo(() => (
             key={stat.label}
             className="bg-gray-900/40 border border-white/5 rounded-2xl p-4 lg:p-6 transition-colors hover:border-purple-500/20 group/stat"
             role="listitem"
+            title={`: `}
           >
             <div className="text-2xl lg:text-3xl font-black bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent group-hover:scale-105 transition-transform duration-300">
               {stat.value}
