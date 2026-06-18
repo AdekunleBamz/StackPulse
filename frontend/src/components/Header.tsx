@@ -186,7 +186,7 @@ export default function Header() {
               title={isOpen ? 'Close mobile menu' : 'Open mobile menu'}
               onClick={() => setIsOpen((v) => !v)}
             >
-              {isOpen ? <X className="w-5 h-5 transition-transform duration-300 rotate-90" /> : <Menu className="w-5 h-5 transition-transform duration-300 rotate-0" />}
+              {isOpen ? <X className="w-5 h-5 transition-transform duration-300 rotate-90" aria-hidden="true" /> : <Menu className="w-5 h-5 transition-transform duration-300 rotate-0" aria-hidden="true" />}
             </button>
 
             {/* Wallet Connection */}
