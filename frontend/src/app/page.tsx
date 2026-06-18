@@ -123,7 +123,7 @@ Hero.displayName = 'Hero';
 
 export default function Home() {
   return (
-    <main id="main" className="min-h-screen" tabIndex={-1} aria-labelledby="hero-title">
+    <main id="main" className="min-h-screen" tabIndex={-1} aria-labelledby="hero-title" title="Main StackPulse content">
       <Header />
       <Hero />
       
