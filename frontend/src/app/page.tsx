@@ -31,7 +31,7 @@ const Hero = memo(() => (
 
     <div className="max-w-7xl mx-auto text-center relative z-10">
       {/* Badge */}
-      <div className="inline-flex items-center px-4 py-2 rounded-full bg-purple-500/10 border border-purple-500/20 mb-10 hover:bg-purple-500/20 hover:border-purple-500/30 transition-all duration-300 transform hover:scale-[1.02] cursor-default group/badge shadow-[0_0_20px_rgba(168,85,247,0.1)]">
+      <div className="inline-flex items-center px-4 py-2 rounded-full bg-purple-500/10 border border-purple-500/20 mb-10 hover:bg-purple-500/20 hover:border-purple-500/30 transition-all duration-300 transform hover:scale-[1.02] cursor-default group/badge shadow-[0_0_20px_rgba(168,85,247,0.1)]" title="Powered by Hiro Chainhooks">
         <span className="w-2 h-2 bg-emerald-400 rounded-full mr-2.5 animate-pulse shadow-[0_0_8px_rgba(52,211,153,0.5)]" />
         <span className="text-sm font-semibold text-purple-200 tracking-tight group-hover/badge:text-white transition-colors">Powered by Hiro Chainhooks</span>
       </div>
