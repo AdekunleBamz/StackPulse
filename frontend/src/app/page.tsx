@@ -78,6 +78,7 @@ const Hero = memo(() => (
       <div className="flex flex-col sm:flex-row gap-5 justify-center mb-20">
         <a 
           href="#pricing" 
+          title="Open pricing and start monitoring"
           className="px-10 py-4 h-14 bg-gradient-to-r from-purple-600 via-indigo-600 to-indigo-700 rounded-2xl font-black text-white hover:from-purple-500 hover:to-indigo-600 transition-all duration-500 shadow-[0_10px_40px_-10px_rgba(168,85,247,0.4)] hover:shadow-[0_20px_60px_-10px_rgba(168,85,247,0.5)] transform hover:-translate-y-1 active:scale-95 inline-flex items-center justify-center min-w-[200px] outline-none focus-visible:ring-2 focus-visible:ring-purple-500/50 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-950"
         >
           Start Monitoring
