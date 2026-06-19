@@ -48,7 +48,7 @@ const Hero = memo(() => (
       </h1>
       
       {/* Subtitle */}
-      <p id="hero-subtitle" className="text-lg sm:text-xl text-gray-400/90 max-w-3xl mx-auto mb-12 leading-relaxed font-medium">
+      <p id="hero-subtitle" className="text-lg sm:text-xl text-gray-400/90 max-w-3xl mx-auto mb-12 leading-relaxed font-medium" title="Real-time alerting summary">
         Never miss a whale transfer, token launch, or NFT mint on Stacks. 
         Get instant notifications for on-chain events that matter to you.
       </p>
