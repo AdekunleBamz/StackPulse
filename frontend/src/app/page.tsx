@@ -133,7 +133,7 @@ export default function Home() {
       </section>
       
       {/* Live Stats Section */}
-      <section id="stats" className="scroll-mt-32 py-32">
+      <section id="stats" className="scroll-mt-32 py-32" aria-label="Live stats section">
         <LiveStats />
       </section>
       
