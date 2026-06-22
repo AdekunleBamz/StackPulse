@@ -165,13 +165,13 @@ const LiveStats = memo(() => {
               key={item.label}
               className="group relative bg-white/[0.03] border border-white/5 rounded-2xl p-6 text-center hover:bg-white/[0.06] hover:border-white/10 transition-all duration-500 hover:-translate-y-1.5 hover:shadow-[0_20px_40px_-15px_rgba(0,0,0,0.5)] overflow-hidden"
             >
-              <div className={`text-3xl font-black tracking-tighter ${item.color} mb-1 group-hover:scale-110 transition-transform duration-500 relative z-10`}>
+              <div className={`text-4xl font-extrabold tracking-tight ${item.color} mb-1 group-hover:scale-110 transition-transform duration-500 relative z-10`}>
                 {item.value.toLocaleString()}
               </div>
-              <div className="text-gray-400 text-[10px] font-bold uppercase tracking-widest mt-2 group-hover:text-gray-200 transition-colors relative z-10">{item.label}</div>
+              <div className="text-gray-400 text-[10px] font-semibold uppercase tracking-[0.15em] mt-2 group-hover:text-gray-200 transition-colors relative z-10">{item.label}</div>
               
               {/* Subtle background glow on hover */}
-              <div className={`absolute inset-0 opacity-0 group-hover:opacity-20 transition-opacity duration-500 bg-gradient-to-br ${item.glow} to-transparent pointer-events-none blur-xl`} />
+              <div className={`absolute inset-0 opacity-0 group-hover:opacity-25 transition-opacity duration-500 bg-gradient-to-br ${item.glow} to-transparent pointer-events-none blur-2xl`} />
             </div>
           ))}
         </div>
