@@ -156,7 +156,7 @@ function Toast({ id, type, title, message, duration = 5000, onClose }: ToastProp
         transitionTimingFunction: 'cubic-bezier(0.4, 0, 0.2, 1)'
       }}
     >
-      <Icon className={`w-5 h-5 mt-0.5 ${styles.iconColor}`} strokeWidth={2.5} />
+      <Icon className={`w-5 h-5 mt-0.5 ${styles.iconColor}`} strokeWidth={2.5} aria-hidden="true" />
       
       <div className="flex-1 min-w-0 py-0.5">
         <h4 className="font-bold text-white text-[13px] tracking-wide antialiased transition-colors">{title}</h4>
