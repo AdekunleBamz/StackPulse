@@ -80,6 +80,10 @@ html {
   .animate-pulse {
     animation: none !important;
   }
+
+  .shimmer {
+    animation: none !important;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
