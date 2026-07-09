@@ -5,7 +5,7 @@ Next.js app for the public landing page plus the registration, dashboard, histor
 ## Commands
 
 ```bash
-npm install
+npm ci
 npm run dev
 npm run build
 npm run start
