@@ -89,7 +89,7 @@ export default function ConnectWallet() {
           <div className="p-3 border-b border-gray-700">
             <p className="text-xs text-gray-400">Wallet</p>
             <div className="mt-2 flex items-center gap-2">
-              <div className="min-w-0 flex-1 rounded-xl border border-white/5 bg-gray-950/50 px-3 py-2.5 font-mono text-[10px] text-gray-300 truncate shadow-inner">
+              <div className="min-w-0 flex-1 rounded-xl border border-white/5 bg-gray-950/50 px-3 py-2.5 font-mono text-[10px] text-gray-300 truncate shadow-inner" title={address || ""}>
                 {address}
               </div>
               <CopyButton value={address || ''} className="h-10 w-10 rounded-xl" />
