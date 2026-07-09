@@ -112,7 +112,7 @@ export default function Header() {
           </Link>
 
           {/* Navigation */}
-          <nav className="hidden md:flex items-center space-x-8" aria-label="Primary">
+          <nav className="hidden md:flex items-center space-x-8" aria-label="Primary" title="Primary navigation">
             <Link 
               href="/#features" 
               className="group/nav text-sm font-semibold text-gray-400 hover:text-white transition-all duration-300 px-3 py-1.5 rounded-lg outline-none focus-visible:ring-2 focus-visible:ring-purple-500/50 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-950 hover:bg-white/5 hover:scale-105 active:scale-95 aria-[current=page]:bg-white/10 aria-[current=page]:text-white aria-[current=page]:shadow-sm relative"
