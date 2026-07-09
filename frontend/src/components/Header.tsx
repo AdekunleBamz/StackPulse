@@ -159,6 +159,7 @@ export default function Header() {
               rel="noopener noreferrer"
               className="text-sm font-semibold text-gray-400 hover:text-white transition-all px-3 py-1.5 rounded-xl outline-none focus-visible:ring-2 focus-visible:ring-purple-500/50 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-950 hover:bg-white/5 flex items-center gap-1.5"
               aria-label="Open Chainhook documentation in a new tab"
+                  title="Open Chainhook documentation"
               title="Open Chainhook documentation"
             >
               Docs
