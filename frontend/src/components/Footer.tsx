@@ -94,7 +94,7 @@ export default function Footer() {
             </ul>
           </nav>
 
-          <nav aria-label="Resource Links">
+          <nav aria-label="Resource Links" title="Resource links">
             <h3 className="text-white/40 font-black text-[11px] uppercase tracking-[0.25em] mb-7">Resources</h3>
             <ul className="space-y-4">
               {footerLinks.resources.map((link) => (
