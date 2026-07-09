@@ -68,6 +68,7 @@ const Hero = memo(() => (
         </a>
         <a
           href="#pricing"
+          title="Jump to pricing plans"
           className="rounded-full border border-white/5 bg-white/5 backdrop-blur-md px-5 py-2.5 text-sm font-bold text-gray-400 hover:border-purple-500/30 hover:text-white hover:bg-white/10 transition-all duration-300 transform active:scale-95"
         >
           Compare Plans
