@@ -64,7 +64,8 @@ export default function CopyButton({
           className={cn(
             "absolute inset-0 h-4 w-4 text-green-400 transition-all duration-300 transform",
             copied ? "opacity-100 scale-100 rotate-0" : "opacity-0 scale-50 -rotate-45"
-          )} 
+          )}
+          aria-hidden="true"
         />
         <Copy 
           className={cn(
