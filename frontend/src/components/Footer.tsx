@@ -38,7 +38,7 @@ const socialLinks = [
 
 export default function Footer() {
   return (
-    <footer className="relative bg-gray-950 border-t border-white/[0.02] pt-24 pb-20 sm:pt-20 sm:pb-10 px-4 sm:px-6 lg:px-8 mt-12 overflow-hidden" aria-labelledby="footer-heading">
+    <footer className="relative bg-gray-950 border-t border-white/[0.02] pt-24 pb-20 sm:pt-20 sm:pb-10 px-4 sm:px-6 lg:px-8 mt-12 overflow-hidden" aria-labelledby="footer-heading" title="StackPulse footer">
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-4xl h-px bg-gradient-to-r from-transparent via-purple-500/20 to-transparent" />
       <h2 id="footer-heading" className="sr-only">Footer</h2>
       
