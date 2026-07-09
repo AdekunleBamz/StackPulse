@@ -155,7 +155,7 @@ export default function ConnectWallet() {
             role="menuitem"
             title="Disconnect wallet"
           >
-            <LogOut className="w-4 h-4" />
+            <LogOut className="w-4 h-4" aria-hidden="true" />
             Disconnect
           </button>
         </div>
