@@ -54,7 +54,7 @@ export default function Breadcrumbs({ className }: BreadcrumbsProps) {
                 ) : (
                   <Link
                     href={href}
-                    className="text-gray-500 hover:text-gray-200 text-xs font-semibold transition-all duration-200 hover:translate-x-0.5"
+                    className="text-gray-500 hover:text-gray-200 text-xs font-semibold transition-all duration-200 hover:translate-x-0.5 rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-500/60"
                   >
                     {label}
                   </Link>
