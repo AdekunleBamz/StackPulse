@@ -166,7 +166,7 @@ function Toast({ id, type, title, message, duration = 5000, onClose }: ToastProp
       <button
         type="button"
         onClick={handleClose}
-        className="text-white/30 hover:text-white transition-all duration-300 rounded-xl p-2 -mr-1.5 hover:bg-white/10 active:scale-90"
+        className="text-white/30 hover:text-white transition-all duration-300 rounded-xl p-2 -mr-1.5 hover:bg-white/10 active:scale-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-500/60"
         aria-label="Dismiss notification"
         title="Dismiss notification"
       >
