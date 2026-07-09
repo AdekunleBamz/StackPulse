@@ -100,7 +100,7 @@ function Toast({ id, type, title, message, duration = 5000, onClose }: ToastProp
         const newProgress = Math.max(0, ((remainingMsRef.current - elapsed) / duration) * 100);
         setProgress(newProgress);
       }
-    }, 16);
+    }, 50);
   }, [clearTimers, duration, id, onClose]);
 
   useEffect(() => {
